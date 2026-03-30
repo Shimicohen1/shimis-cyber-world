@@ -1,13 +1,14 @@
 <header class="site-header">
   <nav class="nav-container">
     <a href="{{ '/' | relative_url }}" class="logo-link">
-      <img src="{{ '/assets/images/logo.jpg' | relative_url }}" alt="{{ site.title }}" class="nav-logo">
+      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="{{ site.title }}" class="nav-logo">
       <span class="site-name">SCW</span>
     </a>
+    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
     <ul class="nav-links">
-      <li><a href="{{ '/' | relative_url }}">Home</a></li>
-      <li><a href="{{ '/about/' | relative_url }}">About</a></li>
-      <li><a href="{{ '/blog/' | relative_url }}">Blog</a></li>
+      {% for item in site.data.navigation.main %}
+      <li><a href="{{ item.url | relative_url }}"{% if page.url == item.url %} class="active"{% endif %}>{{ item.title }}</a></li>
+      {% endfor %}
     </ul>
   </nav>
 </header>

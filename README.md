@@ -9,31 +9,58 @@ Cybersecurity insights, tools, and resources — powered by GitHub Pages + Jekyl
 ## Structure
 
 ```
-├── _config.yml          # Jekyll configuration
-├── _layouts/            # Page templates
-├── _includes/           # Reusable components (header, footer)
-├── _posts/              # Blog posts (Markdown)
-├── _pages/              # Static pages (About, Blog)
-├── assets/
-│   ├── css/style.css    # Custom styles
-│   ├── images/          # Logo, banner, and media
-│   └── js/              # JavaScript (future)
-├── index.html           # Home page
-└── _backup/             # Preserved original content
+/
+  _config.yml              # Jekyll configuration
+  index.md                 # Home page
+  about.md                 # About page
+  posts.md                 # Blog listing
+  library.md               # Resource library
+  tools.md                 # Tools directory
+  _layouts/
+    default.html           # Base layout
+    post.html              # Blog post layout
+    page.html              # Static page layout
+  _includes/
+    head.html              # <head> meta tags
+    header.html            # Site header + nav
+    footer.html            # Site footer
+    post-card.html         # Blog post card component
+    resource-card.html     # Resource card component
+    tool-card.html         # Tool card component
+  _posts/                  # Blog posts (Markdown)
+  _data/
+    navigation.yml         # Nav menu items
+    homepage.yml           # Hero & features config
+    resources.yml          # Resource library data
+    tools.yml              # Tools directory data
+  assets/
+    css/style.css          # Theme styles
+    js/main.js             # Client-side JS
+    img/
+      hero/                # Hero/banner images
+      logos/               # Brand logos
+      posts/               # Post images
+      resources/           # Resource images
+  downloads/               # Downloadable files
+  _backup/                 # Preserved original content
 ```
 
 ## Adding Content
 
-Create a new file in `_posts/` with the format:
-```
-YYYY-MM-DD-title.md
-```
+### Blog Posts
 
-With front matter:
+Create a file in `_posts/` named `YYYY-MM-DD-title.md`:
+
 ```yaml
 ---
 layout: post
 title: "Your Post Title"
 date: YYYY-MM-DD
+tags: [tag1, tag2]
 ---
+Your content here...
 ```
+
+### Resources & Tools
+
+Edit `_data/resources.yml` or `_data/tools.yml` to add entries. Changes appear automatically on the Library and Tools pages.

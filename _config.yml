@@ -4,9 +4,7 @@ url: "https://shimicohen1.github.io"
 baseurl: "/shimis-cyber-world"
 timezone: Asia/Jerusalem
 
-remote_theme: pages-themes/midnight@v0.2.0
 plugins:
-  - jekyll-remote-theme
   - jekyll-seo-tag
   - jekyll-sitemap
 
@@ -20,18 +18,12 @@ defaults:
       layout: "post"
   - scope:
       path: ""
-      type: "pages"
     values:
-      layout: "default"
+      layout: "page"
 
 exclude:
   - _backup
-  - README.md
   - Gemfile
   - Gemfile.lock
   - vendor
-
-collections:
-  pages:
-    output: true
-    permalink: /:title/
+  - node_modules

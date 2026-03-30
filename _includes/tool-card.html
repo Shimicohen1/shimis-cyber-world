@@ -1,0 +1,11 @@
+<a href="{{ item.url }}" class="card tool-card" target="_blank" rel="noopener">
+  <div class="card-body">
+    <h3>{{ item.title }} <span class="external-icon">↗</span></h3>
+    <p>{{ item.description }}</p>
+    {% if item.tags.size > 0 %}
+    <div class="card-tags">
+      {% for tag in item.tags %}<span class="tag tag-sm">{{ tag }}</span>{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</a>

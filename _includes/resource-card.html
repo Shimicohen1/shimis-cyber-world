@@ -1,0 +1,6 @@
+<a href="{{ item.url }}" class="card resource-card" target="_blank" rel="noopener">
+  <div class="card-body">
+    <h3>{{ item.title }} {% if item.type == 'external' %}<span class="external-icon">↗</span>{% endif %}</h3>
+    <p>{{ item.description }}</p>
+  </div>
+</a>

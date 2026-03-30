@@ -2,6 +2,8 @@
 layout: post
 title: "Welcome to Shimi's Cyber World"
 date: 2026-03-30
+tags: [announcement, cybersecurity]
+description: "Introducing Shimi's Cyber World — your new hub for cybersecurity knowledge, tools, and resources."
 ---
 
 Welcome to **Shimi's Cyber World** — your new destination for cybersecurity knowledge, tools, and resources.
@@ -15,8 +17,8 @@ This site will be the home for:
 - **Industry insights** — trends, threat intelligence, and career advice
 - **CTF write-ups** — solutions and walkthroughs for capture-the-flag challenges
 
-## Stay Connected
+## Explore
 
-Follow us on [LinkedIn](https://www.linkedin.com/company/shimis-cyber-world) for updates, and check the [blog](/shimis-cyber-world/blog/) regularly for new content.
+Check out the [Tools](/shimis-cyber-world/tools/) directory for curated security tools, or browse the [Resource Library](/shimis-cyber-world/library/) for learning materials.
 
 More coming soon. Stay sharp, stay secure.

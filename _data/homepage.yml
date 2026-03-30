@@ -1,0 +1,20 @@
+hero:
+  title: "Shimi's Cyber World"
+  tagline: "Cybersecurity insights, tools & resources — protecting the digital frontier."
+  cta_text: "Explore the Blog"
+  cta_url: /posts/
+  image: /assets/img/hero/banner.jpg
+
+features:
+  - icon: "🛡️"
+    title: "Offensive & Defensive Security"
+    description: "Hands-on techniques for red and blue team operations."
+  - icon: "🔍"
+    title: "Threat Intelligence"
+    description: "Stay ahead with threat research, IOCs, and adversary tracking."
+  - icon: "🧰"
+    title: "Tools & Frameworks"
+    description: "Curated reviews and guides for the best cybersecurity tools."
+  - icon: "🏁"
+    title: "CTF Write-ups"
+    description: "Walkthroughs and solutions for capture-the-flag challenges."

@@ -1,0 +1,60 @@
+categories:
+  - name: "Reconnaissance"
+    items:
+      - title: "Nmap"
+        description: "Network discovery and security auditing tool."
+        url: "https://nmap.org/"
+        tags: [scanning, network]
+      - title: "Shodan"
+        description: "Search engine for internet-connected devices."
+        url: "https://www.shodan.io/"
+        tags: [osint, discovery]
+      - title: "theHarvester"
+        description: "Email, subdomain, and name harvesting tool for OSINT."
+        url: "https://github.com/laramies/theHarvester"
+        tags: [osint, enumeration]
+
+  - name: "Exploitation"
+    items:
+      - title: "Metasploit"
+        description: "The world's most used penetration testing framework."
+        url: "https://www.metasploit.com/"
+        tags: [exploitation, framework]
+      - title: "Burp Suite"
+        description: "Leading web application security testing toolkit."
+        url: "https://portswigger.net/burp"
+        tags: [web, proxy]
+      - title: "SQLMap"
+        description: "Automatic SQL injection and database takeover tool."
+        url: "https://sqlmap.org/"
+        tags: [injection, database]
+
+  - name: "Defense & Monitoring"
+    items:
+      - title: "Wireshark"
+        description: "Network protocol analyzer for deep traffic inspection."
+        url: "https://www.wireshark.org/"
+        tags: [network, analysis]
+      - title: "Snort"
+        description: "Open-source intrusion detection and prevention system."
+        url: "https://www.snort.org/"
+        tags: [ids, network]
+      - title: "YARA"
+        description: "Pattern matching tool for malware researchers."
+        url: "https://virustotal.github.io/yara/"
+        tags: [malware, detection]
+
+  - name: "Utilities"
+    items:
+      - title: "CyberChef"
+        description: "Web-based data transformation and analysis tool."
+        url: "https://gchq.github.io/CyberChef/"
+        tags: [encoding, analysis]
+      - title: "Hashcat"
+        description: "Advanced password recovery and hash cracking."
+        url: "https://hashcat.net/hashcat/"
+        tags: [password, cracking]
+      - title: "John the Ripper"
+        description: "Fast password cracker supporting many hash types."
+        url: "https://www.openwall.com/john/"
+        tags: [password, cracking]
