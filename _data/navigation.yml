@@ -6,5 +6,8 @@
   url: /library/
 - label: Toolkit
   url: /tools/
+- label: Premium
+  url: /premium/
+  badge: true
 - label: Manifesto
   url: /about/
