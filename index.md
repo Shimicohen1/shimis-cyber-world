@@ -87,21 +87,34 @@ title: Home
 
 <hr class="section-break">
 
-<!-- VAULT PICKS -->
+<!-- VAULT — RECENTLY ADDED -->
 <section class="vault">
   <div class="container">
     <div class="feed__header">
-      <h2 class="feed__title"><span class="label label--pink">VAULT</span> &nbsp;Curated Intel</h2>
+      <h2 class="feed__title"><span class="label label--pink">VAULT</span> &nbsp;Recently Added</h2>
       <a href="{{ '/library/' | relative_url }}" class="feed__link">Open Vault &rarr;</a>
     </div>
+
+    {% comment %}Collect all resources with dates, sort by added date{% endcomment %}
+    {% assign all_resources = "" | split: "" %}
+    {% for cat in site.data.resources.categories %}
+      {% for sub in cat.subcategories %}
+        {% for res in sub.resources %}
+          {% assign r = res | map: "title" %}
+          {% assign all_resources = all_resources | push: res %}
+        {% endfor %}
+      {% endfor %}
+    {% endfor %}
+    {% assign recent = all_resources | sort: "added" | reverse %}
+
     <div class="vault__grid">
-      {% for resource in site.data.homepage.vault_picks %}
+      {% for resource in recent limit:6 %}
       <a href="{{ resource.url }}" target="_blank" rel="noopener" class="vault-card reveal">
         <div class="vault-card__head">
-          <h4>{{ resource.name }}</h4>
-          {% if resource.badge %}<span class="badge badge--vault">{{ resource.badge }}</span>{% endif %}
+          <h4>{{ resource.title }}</h4>
+          <span class="badge badge--vault">{{ resource.type }}</span>
         </div>
-        <p>{{ resource.description }}</p>
+        <p class="vault-card__meta">Added {{ resource.added }}</p>
       </a>
       {% endfor %}
     </div>
