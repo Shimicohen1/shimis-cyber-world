@@ -160,7 +160,7 @@ RULES = [
     (r'Mitigat|Strateg|Defense|Defender|Protect|Security.*Guidance|CERT', 'Defense Strategies', 'General Defense'),
     (r'SEC22|sec22|paper|Preview|Organizational', 'Industry Reports', 'Research Papers'),
     (r'Wireshark|Nmap|Burp|Tool|Resource|Guide|Checklist|Cookbook|Handbook|Book|Manual|Telegram.*Channel', 'Tools & Resources', 'Guides & Tools'),
-    (r'Cyber|Security|Data|Privacy|Critical|20\d\d|Translated|Star.*Wars|DDS|PEACH|SURF|ploni|ordinal|original|day-2|LanDscAPe|UBTECH|Sludge', 'General Cybersecurity', 'Miscellaneous'),
+    (r'Cyber|Security|Data|Privacy|Critical|20\d\d|Translated|Star.*Wars|DDS|PEACH|ordinal|original|day-2|LanDscAPe|Sludge', 'General Cybersecurity', 'Miscellaneous'),
     (r'^\d+|^__|^download|^file_', 'General Cybersecurity', 'Miscellaneous'),
 ]
 
