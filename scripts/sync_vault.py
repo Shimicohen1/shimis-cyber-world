@@ -159,9 +159,7 @@ RULES = [
     # Catch-all
     (r'Mitigat|Strateg|Defense|Defender|Protect|Security.*Guidance|CERT', 'Defense Strategies', 'General Defense'),
     (r'SEC22|sec22|paper|Preview|Organizational', 'Industry Reports', 'Research Papers'),
-    (r'Wireshark|Nmap|Burp|Tool|Resource|Guide|Checklist|Cookbook|Handbook|Book|Manual|Telegram.*Channel', 'Tools & Resources', 'Guides & Tools'),
-    (r'Cyber|Security|Data|Privacy|Critical|20\d\d|Translated|Star.*Wars|DDS|PEACH|ordinal|original|day-2|LanDscAPe|Sludge', 'General Cybersecurity', 'Miscellaneous'),
-    (r'^\d+|^__|^download|^file_', 'General Cybersecurity', 'Miscellaneous'),
+    (r'Wireshark|Nmap|Burp|Tool|Resource|Guide|Checklist|Cookbook|Handbook|Book|Manual', 'Tools & Resources', 'Guides & Tools'),
 ]
 
 # Category display order and icons
@@ -184,7 +182,6 @@ CAT_ORDER = [
     ('Career & Certifications', '\U0001f393'),
     ('Tools & Resources', '\U0001f9f0'),
     ('Hebrew Resources (\u05e2\u05d1\u05e8\u05d9\u05ea)', '\U0001f1ee\U0001f1f1'),
-    ('General Cybersecurity', '\U0001f4c1'),
 ]
 CAT_ICONS = dict(CAT_ORDER)
 
