@@ -1,49 +1,1787 @@
+# SCW Resource Vault - Auto-generated from Google Drive collection
+# 536 cybersecurity resources categorized
+
 categories:
-  - name: "Getting Started"
-    items:
-      - title: "OWASP Top 10"
-        url: "https://owasp.org/www-project-top-ten/"
-        description: "The definitive guide to the most critical web application security risks."
-        type: external
-        badge: Guide
-      - title: "MITRE ATT&CK Framework"
-        url: "https://attack.mitre.org/"
-        description: "Knowledge base of adversary tactics and techniques based on real-world observations."
-        type: external
-        badge: Reference
-      - title: "CyberChef"
-        url: "https://gchq.github.io/CyberChef/"
-        description: "The Cyber Swiss Army Knife — a web app for encoding, decoding, and data analysis."
-        type: external
-        badge: Tool
-
-  - name: "Practice & Labs"
-    items:
-      - title: "TryHackMe"
-        url: "https://tryhackme.com/"
-        description: "Guided cybersecurity training with hands-on virtual labs."
-        type: external
-        badge: Platform
-      - title: "HackTheBox"
-        url: "https://www.hackthebox.com/"
-        description: "Penetration testing labs and challenges for all skill levels."
-        type: external
-        badge: Platform
-      - title: "PortSwigger Web Security Academy"
-        url: "https://portswigger.net/web-security"
-        description: "Free online training for web application security."
-        type: external
-        badge: Guide
-
-  - name: "References"
-    items:
-      - title: "NIST Cybersecurity Framework"
-        url: "https://www.nist.gov/cyberframework"
-        description: "Standards and guidelines for managing cybersecurity risk."
-        type: external
-        badge: PDF
-      - title: "SANS Reading Room"
-        url: "https://www.sans.org/white-papers/"
-        description: "Extensive library of cybersecurity white papers and research."
-        type: external
-        badge: Reference
+  - name: Threat Intelligence
+    icon: 🔍
+    count: 62
+    subcategories:
+      - name: CTI Frameworks
+        resources:
+          - title: 220728.-.Intelligence.Architecture.v0.7.36
+            file: 220728.-.Intelligence.Architecture.v0.7.36.pdf
+            type: PDF
+          - title: Advanced Security and Threat Intelligence for AD
+            file: Advanced Security and Threat Intelligence for AD.pdf
+            type: PDF
+          - title: CTI Report - Critical Infrastracture - Nov.2025
+            file: CTI Report - Critical Infrastracture - Nov.2025.pdf
+            type: PDF
+          - title: CTI RG
+            file: CTI_RG.pdf
+            type: PDF
+          - title: The Threat Intelligence Handbook pdf
+            file: The_Threat_Intelligence_Handbook_pdf.pdf
+            type: PDF
+      - name: "MITRE ATT&CK"
+        resources:
+          - title: 5 Common Ransomware ATT CK Techniques pdf
+            file: 5_Common_Ransomware_ATT_CK_Techniques_pdf.pdf
+            type: PDF
+          - title: AiTM Attacks
+            file: AiTM_Attacks_1678820501.pdf
+            type: PDF
+          - title: applied MITRE Cybercube
+            file: applied_MITRE_Cybercube.pdf
+            type: PDF
+          - title: Checkpoint Attack Trends 2022
+            file: Checkpoint_Attack_Trends_2022.pdf
+            type: PDF
+          - title: Cloud Security with MITRE ATT CK
+            file: Cloud_Security_with_MITRE_ATT_CK.pdf
+            type: PDF
+          - title: Decider open source MITRE ATT CK mapping
+            file: Decider_open_source_MITRE_ATT_CK_mapping_1678387236.pdf
+            type: PDF
+          - title: Framework Evaluating Emerging Cyberattack Capabilities AI (1)
+            file: Framework_Evaluating Emerging Cyberattack Capabilities_AI (1).pdf
+            type: PDF
+          - title: GETTING STARTED WITH ATT CK
+            file: GETTING_STARTED_WITH_ATT_CK_.pdf
+            type: PDF
+          - title: Malwares used in cyber attacks impacting Ukraine
+            file: Malwares_used_in_cyber_attacks_impacting_Ukraine.pdf
+            type: PDF
+          - title: MITRE ATTACK
+            file: MITRE_ATTACK.pdf
+            type: PDF
+          - title: Russia Ukraine Conflict Related Cyberattacks
+            file: Russia_Ukraine_Conflict_Related_Cyberattacks.pdf
+            type: PDF
+          - title: Stopping Attacks with Cookies
+            file: Stopping_Attacks_with_Cookies.pdf
+            type: PDF
+          - title: Top 10 Blockchain Attacks Vulnerabilities Weaknesses
+            file: Top_10_Blockchain_Attacks_Vulnerabilities_Weaknesses.pdf
+            type: PDF
+          - title: Using MITRE ATT CK in Threat Hunting and Detection
+            file: Using_MITRE_ATT_CK_in_Threat_Hunting_and_Detection.pdf
+            type: PDF
+      - name: "Threat Actors & Campaigns"
+        resources:
+          - title: BeaverTail Infostealer DPRK
+            file: BeaverTail_Infostealer_DPRK_1732308338.pdf
+            type: PDF
+          - title: CISA LockBit 3 0
+            file: CISA_LockBit_3_0_1679055473.pdf
+            type: PDF
+          - title: Information Stealers
+            file: Information_Stealers.pdf
+            type: PDF
+          - title: Information-Stealer-Malware-Advisory
+            file: Information-Stealer-Malware-Advisory.pdf
+            type: PDF
+          - title: Lithuania National Threat Assessment 2022
+            file: Lithuania_National_Threat_Assessment_2022.pdf
+            type: PDF
+          - title: Lumma Stealer Advanced Information Stealer Report
+            file: Lumma_Stealer_Advanced_Information_Stealer_Report.pdf
+            type: PDF
+          - title: MICROSOFTMAR22-CERT-IL-W-1433
+            file: MICROSOFTMAR22-CERT-IL-W-1433.pdf
+            type: PDF
+          - title: MICROSOFTOCT21-CERT-IL-W-1388
+            file: MICROSOFTOCT21-CERT-IL-W-1388.pdf
+            type: PDF
+          - title: Mitigating Russian Threats to U S Critical Infrastructure (1)
+            file: Mitigating_Russian_Threats_to_U_S_Critical_Infrastructure (1).pdf
+            type: PDF
+          - title: NATION STATE RANSOMWARE pdf
+            file: NATION_STATE_RANSOMWARE_pdf_.pdf
+            type: PDF
+          - title: Operation Winter Shield Ten Actions to Improve Cyber Resilience
+            file: Operation Winter Shield Ten Actions to Improve Cyber Resilience.pdf
+            type: PDF
+          - title: OPISRAEL 2023-3
+            file: OPISRAEL 2023-3.pdf
+            type: PDF
+          - title: Rookie Of The Year Lapsus Group
+            file: Rookie_Of_The_Year_Lapsus_Group.pdf
+            type: PDF
+          - title: Russia s Strategy in Cyberspace
+            file: Russia_s_Strategy_in_Cyberspace__ .pdf
+            type: PDF
+          - title: SMISHING-CERT-IL-W-998
+            file: SMISHING-CERT-IL-W-998.pdf
+            type: PDF
+          - title: Special report Ukraine RB
+            file: Special_report_Ukraine_RB_.pdf
+            type: PDF
+          - title: המלצות הגנה לארגונים ואזרחים OPISRAEL
+            file: המלצות הגנה לארגונים ואזרחים OPISRAEL.pdf
+            type: PDF
+          - title: המלצות לאזרחים - OpIsrael 2021 (1)
+            file: המלצות לאזרחים - OpIsrael 2021 (1).pdf
+            type: PDF
+          - title: סיכום OpIsrael ארז דסה
+            file: סיכום OpIsrael ארז דסה.pdf
+            type: PDF
+      - name: Threat Hunting
+        resources:
+          - title: Advanced Incident Detection and Threat Hunting
+            file: Advanced_Incident_Detection_and_Threat_Hunting.pdf
+            type: PDF
+          - title: Handbook The Elastic Guide to Threat Hunting
+            file: Handbook_The_Elastic_Guide_to_Threat_Hunting_.pdf
+            type: PDF
+          - title: The Endgame Guide to Threat Hunting
+            file: The_Endgame_Guide_to_Threat_Hunting.pdf
+            type: PDF
+          - title: Threat hunting checklist pdf
+            file: Threat_hunting_checklist_pdf.pdf
+            type: PDF
+          - title: Threat Hunting Playbook
+            file: Threat_Hunting_Playbook.pdf
+            type: PDF
+      - name: Threat Reports
+        resources:
+          - title: 5 Key Cyber Threat Trends 2022 Open to discussing this
+            file: 5_Key_Cyber_Threat_Trends_2022_Open_to_discussing_this.pdf
+            type: PDF
+          - title: Adversarial Threat Report Meta
+            file: Adversarial_Threat_Report_Meta.pdf
+            type: PDF
+          - title: ATA-2025-Unclassified-Report
+            file: ATA-2025-Unclassified-Report.pdf
+            type: PDF
+          - title: ATA-2026-Unclassified-Report 260318 182641
+            file: ATA-2026-Unclassified-Report_260318_182641.pdf
+            type: PDF
+          - title: cloud threat horizons report h12026 260310 211244
+            file: cloud_threat_horizons_report_h12026_260310_211244.pdf
+            type: PDF
+          - title: cloud threat horizons report h22025 250731 123846
+            file: cloud_threat_horizons_report_h22025_250731_123846.pdf
+            type: PDF
+          - title: Cyber Threat Trends 2022
+            file: Cyber_Threat_Trends_2022.pdf
+            type: PDF
+          - title: Cybersecurity mitigation measures against critical threats
+            file: Cybersecurity_mitigation_measures_against_critical_threats_1679081800.pdf
+            type: PDF
+          - title: ENISA Threat Landscape for Ransomware Victoria Beckman
+            file: ENISA_Threat_Landscape_for_Ransomware_Victoria_Beckman_1660162487.pdf
+            type: PDF
+          - title: Global Threat Report 2022
+            file: Global_Threat_Report_2022.pdf
+            type: PDF
+          - title: impact-ai-cyber-threat-now-2027
+            file: impact-ai-cyber-threat-now-2027.pdf
+            type: PDF
+          - title: Intel471 Cyber Threats 2022
+            file: Intel471_Cyber_Threats_2022.pdf
+            type: PDF
+          - title: INTERNET ORGANISED CRIME THREAT ASSESSMENT 2021
+            file: INTERNET_ORGANISED_CRIME_THREAT_ASSESSMENT_2021__1640901050.pdf
+            type: PDF
+          - title: Masscan Ransomware Threat Analysis Report RB
+            file: Masscan_Ransomware_Threat_Analysis_Report_RB_1672850784.pdf
+            type: PDF
+          - title: Modern Cloud Threat Horizon
+            file: Modern_Cloud_Threat_Horizon.pdf
+            type: PDF
+          - title: Ransomware Threat Report 2022
+            file: Ransomware_Threat_Report_2022.pdf
+            type: PDF
+          - title: RSecurity 2024 Global Cyber Threat Landscape Report
+            file: RSecurity_2024_Global_Cyber_Threat_Landscape_Report.pdf
+            type: PDF
+          - title: Threat Landscape
+            file: Threat_Landscape_.pdf
+            type: PDF
+          - title: wp-threat-prediction-2023
+            file: wp-threat-prediction-2023.pdf
+            type: PDF
+  - name: Incident Response
+    icon: 🚨
+    count: 36
+    subcategories:
+      - name: Digital Forensics
+        resources:
+          - title: Autopsy pdf
+            file: Autopsy_pdf_1640352842.pdf
+            type: PDF
+          - title: Forensic artifacts to hunt Red Team activities (1)
+            file: Forensic_artifacts_to_hunt_Red_Team_activities (1).pdf
+            type: PDF
+          - title: GUIDELINES FOR DIGITAL FORENSICS FIRST RESPONDERS
+            file: GUIDELINES_FOR_DIGITAL_FORENSICS_FIRST_RESPONDERS.pdf
+            type: PDF
+          - title: M365 Forensics
+            file: M365_Forensics_.pdf
+            type: PDF
+          - title: SANS-DFPS FOR500 v4.14 12-22
+            file: SANS-DFPS_FOR500_v4.14_12-22.pdf
+            type: PDF
+          - title: The Hitchhiker s Guide to DFIR
+            file: The_Hitchhiker_s_Guide_to_DFIR_1681714906.pdf
+            type: PDF
+          - title: Windows Registry Forensic Cheatsheet (1)
+            file: Windows_Registry_Forensic_Cheatsheet (1).pdf
+            type: PDF
+          - title: Windows Registry Forensics Cheatsheet
+            file: Windows_Registry_Forensics_Cheatsheet_1642192166.pdf
+            type: PDF
+      - name: Log Analysis
+        resources:
+          - title: Event Log Analysis for SOC Analyst
+            file: Event_Log_Analysis_for_SOC_Analyst.pdf
+            type: PDF
+          - title: Mitigating Log4Shell Other Log4j Related Vulnerabilities 1640808077 (1)
+            file: Mitigating_Log4Shell_Other_Log4j_Related_Vulnerabilities_1640808077 (1).pdf
+            type: PDF
+          - title: Offensive Windows Event Logs
+            file: Offensive_Windows_Event_Logs_1681747956.pdf
+            type: PDF
+          - title: Windows Detection Engineering
+            file: Windows_Detection_Engineering.pdf
+            type: PDF
+          - title: Windows Event Log Analysis
+            file: Windows_Event_Log_Analysis.pdf
+            type: PDF
+      - name: Malware Analysis
+        resources:
+          - title: 4-MalwareAnalysis (1) (1)
+            file: 4-MalwareAnalysis (1) (1).pdf
+            type: PDF
+          - title: IoC Malware
+            file: IoC_Malware_.pdf
+            type: PDF
+          - title: Malware Analysis for Beginners
+            file: Malware_Analysis_for_Beginners.pdf
+            type: PDF
+          - title: Malware Analysis Report
+            file: Malware_Analysis_Report.pdf
+            type: PDF
+          - title: Practical Malware Analysis
+            file: Practical_Malware_Analysis.pdf
+            type: PDF
+          - title: TrendMicro IOC Resource for R U Conflict cyber attacks
+            file: TrendMicro_IOC_Resource_for_R_U_Conflict_cyber_attacks.pdf
+            type: PDF
+      - name: "Playbooks & Guides"
+        resources:
+          - title: 2-IR01 - Incidents Response Intro (1)
+            file: 2-IR01 - Incidents Response Intro (1).pdf
+            type: PDF
+          - title: Anatomy of an Incident
+            file: Anatomy_of_an_Incident__.pdf
+            type: PDF
+          - title: AWS Security Incident Response Guide (1)
+            file: AWS_Security_Incident_Response_Guide (1).pdf
+            type: PDF
+          - title: Cyber IR playbook
+            file: Cyber IR playbook .pdf
+            type: PDF
+          - title: Cyber Security Incident Vulnerability Response Playbooks
+            file: Cyber_Security_Incident_Vulnerability_Response_Playbooks_1683132662.pdf
+            type: PDF
+          - title: CYBER SECURITY INCIDENTS MANAGEMENT
+            file: CYBER_SECURITY_INCIDENTS_MANAGEMENT_.pdf
+            type: PDF
+          - title: Cybersecurity Incident Response Plan
+            file: Cybersecurity_Incident_Response_Plan_1730742937.pdf
+            type: PDF
+          - title: Cybersecurity Incident Vulnerability Response Playbooks
+            file: Cybersecurity_Incident_Vulnerability_Response_Playbooks_1638645273.pdf
+            type: PDF
+          - title: Cybersecurity Incident Vulnerability Response Playbooks
+            file: Cybersecurity_Incident_Vulnerability_Response_Playbooks_1673091734.pdf
+            type: PDF
+          - title: Incident Response Play Books Unauthorized Access
+            file: Incident_Response_Play_Books_Unauthorized_Access_.pdf
+            type: PDF
+          - title: Incident Response Playbook MS
+            file: Incident_Response_Playbook_MS_1667129233.pdf
+            type: PDF
+          - title: Incident response playbook Phishing investigation
+            file: Incident_response_playbook_Phishing_investigation.pdf
+            type: PDF
+          - title: Incident Response Playbooks and Workflows
+            file: Incident_Response_Playbooks_and_Workflows_1683177366.pdf
+            type: PDF
+          - title: Log4J SOC Incident Response
+            file: Log4J_SOC_Incident_Response_1640241500.pdf
+            type: PDF
+          - title: Public Power Grid cyber incident response playbook
+            file: Public_Power_Grid_cyber_incident_response_playbook_1679420393.pdf
+            type: PDF
+          - title: Top Incident Response Exercises for Common Cyber Attacks
+            file: Top_Incident_Response_Exercises_for_Common_Cyber_Attacks_1682969483.pdf
+            type: PDF
+          - title: What To Do If Your Company Has Been Hacked
+            file: What_To_Do_If_Your_Company_Has_Been_Hacked.pdf
+            type: PDF
+  - name: Penetration Testing
+    icon: ⚔️
+    count: 41
+    subcategories:
+      - name: Active Directory Attacks
+        resources:
+          - title: AD Privilege Escalation Hardening Checklist
+            file: AD_Privilege_Escalation_Hardening_Checklist.pdf
+            type: PDF
+          - title: Credential Dumping windows autologon password pdf
+            file: Credential_Dumping_windows_autologon_password_pdf_1664914454.pdf
+            type: PDF
+          - title: Credentials Dumping cheatcheat
+            file: Credentials_Dumping_cheatcheat.pdf
+            type: PDF
+          - title: NTLM Theft pdf
+            file: NTLM_Theft_pdf.pdf
+            type: PDF
+          - title: powerview
+            file: powerview.pdf
+            type: PDF
+      - name: Offensive Security
+        resources:
+          - title: Active Directory Pentesting Mind Map
+            file: Active_Directory_Pentesting_Mind_Map.pdf
+            type: PDF
+          - title: AD Exploitation
+            file: AD_Exploitation.pdf
+            type: PDF
+          - title: AI Pentesting Superhuman Performance Now
+            file: AI_Pentesting_Superhuman_Performance_Now.pdf
+            type: PDF
+          - title: Bug Bounty Career
+            file: Bug_Bounty_Career_.pdf
+            type: PDF
+          - title: Bug Bounty Hunting
+            file: Bug_Bounty_Hunting__1674070185.pdf
+            type: PDF
+          - title: Cloud Pentesting Cheatsheet
+            file: Cloud_Pentesting_Cheatsheet_.pdf
+            type: PDF
+          - title: Drozer
+            file: Drozer_.pdf
+            type: PDF
+          - title: File Transfer Cheatsheet
+            file: File_Transfer_Cheatsheet.pdf
+            type: PDF
+          - title: Final Purple Team Exercise Framework PTEFv2 pdf
+            file: Final_Purple_Team_Exercise_Framework_PTEFv2_pdf_.pdf
+            type: PDF
+          - title: Hacking with Golang
+            file: Hacking_with_Golang_1683207496.pdf
+            type: PDF
+          - title: Infrastructure Penetration Testing Course Online
+            file: Infrastructure_Penetration_Testing_Course_Online__1652517702.pdf
+            type: PDF
+          - title: Infrastructure Penetration Testing Course Online
+            file: Infrastructure_Penetration_Testing_Course_Online_.pdf
+            type: PDF
+          - title: Jumping the air gap
+            file: Jumping_the_air_gap.pdf
+            type: PDF
+          - title: Master Infrastructure Penetration Testing
+            file: Master_Infrastructure_Penetration_Testing_1683132615.pdf
+            type: PDF
+          - title: Network Penetration Testing Course Online
+            file: Network_Penetration_Testing_Course_Online_.pdf
+            type: PDF
+          - title: Offensive Active Directory 101 pdf
+            file: Offensive_Active_Directory_101_pdf.pdf
+            type: PDF
+          - title: OFFENSIVE SECURITY EVASION TECHNIQUES PT 1
+            file: OFFENSIVE_SECURITY_EVASION_TECHNIQUES_PT_1.pdf
+            type: PDF
+          - title: OSCP Notes Active Directory
+            file: OSCP_Notes_Active_Directory_1669385958.pdf
+            type: PDF
+          - title: OSCP-Certificate-notes-
+            file: OSCP-Certificate-notes-1643917449.pdf
+            type: PDF
+          - title: RDP
+            file: RDP_1683481330.pdf
+            type: PDF
+          - title: Red Team Field Manual
+            file: Red_Team_Field_Manual__1641408927.pdf
+            type: PDF
+          - title: Red Team Field Manual
+            file: Red_Team_Field_Manual.pdf
+            type: PDF
+          - title: SHODAN for Penetration Testers
+            file: SHODAN_for_Penetration_Testers_1683132696.pdf
+            type: PDF
+          - title: The State of Pentesting 2022 pdf
+            file: The_State_of_Pentesting_2022_pdf_1665225505.pdf
+            type: PDF
+          - title: Ultimate Guide To Penetration Testing
+            file: Ultimate_Guide_To_Penetration_Testing__.pdf
+            type: PDF
+          - title: Windows Active Directory Exploitation
+            file: Windows_Active_Directory_Exploitation_1730742197.pdf
+            type: PDF
+          - title: wordpress Pentest
+            file: wordpress_Pentest.pdf
+            type: PDF
+      - name: Web Application Attacks
+        resources:
+          - title: 2022 in WAF bypasses
+            file: 2022_in_WAF_bypasses_1674029202.pdf
+            type: PDF
+          - title: DW103-5-XSSBack
+            file: DW103-5-XSSBack.pdf
+            type: PDF
+          - title: MS SQL
+            file: MS_SQL.pdf
+            type: PDF
+          - title: mysql-security-excerpt-8.0-en
+            file: mysql-security-excerpt-8.0-en.pdf
+            type: PDF
+          - title: PortSwigger XSS Cheatsheet
+            file: PortSwigger_XSS_Cheatsheet_.pdf
+            type: PDF
+          - title: Server Side Vulnerability
+            file: Server_Side_Vulnerability__1666554016.pdf
+            type: PDF
+          - title: Top 10 Remote Code Execution RCE Parameter Attacks
+            file: Top_10_Remote_Code_Execution_RCE_Parameter_Attacks.pdf
+            type: PDF
+          - title: XML External Entity Prevention Cheat Sheet
+            file: XML_External_Entity_Prevention_Cheat_Sheet_1675164769.pdf
+            type: PDF
+          - title: XSS
+            file: XSS.pdf
+            type: PDF
+  - name: "Blue Team & SOC"
+    icon: 🛡️
+    count: 27
+    subcategories:
+      - name: Cheat Sheets
+        resources:
+          - title: Cheat Sheet
+            file: Cheat_Sheet_1683747757.pdf
+            type: PDF
+          - title: CISSP cheat shit
+            file: CISSP_cheat shit.pdf
+            type: PDF
+          - title: DotNet Security Cheat Sheet
+            file: DotNet_Security_Cheat_Sheet_1678978926.pdf
+            type: PDF
+          - title: Git cheatsheet
+            file: Git_cheatsheet.pdf
+            type: PDF
+      - name: Endpoint Detection
+        resources:
+          - title: Deploy an EDR solution with Microsoft
+            file: Deploy_an_EDR_solution_with_Microsoft_1683299331.pdf
+            type: PDF
+          - title: EPR Comparative Report 2022
+            file: EPR_Comparative_Report_2022.pdf
+            type: PDF
+      - name: SOC Operations
+        resources:
+          - title: Azure Sentinel Deployment best Practices
+            file: Azure_Sentinel_Deployment_best_Practices.pdf
+            type: PDF
+          - title: Blue Team Cheat Sheet
+            file: Blue Team Cheat Sheet .pdf
+            type: PDF
+          - title: Blue Team Cheat Sheets
+            file: Blue_Team_Cheat_Sheets.pdf
+            type: PDF
+          - title: brochure-soc-powered-by-kl-eng
+            file: brochure-soc-powered-by-kl-eng.pdf
+            type: PDF
+          - title: Build A SOC on a budget
+            file: Build_A_SOC_on_a_budget.pdf
+            type: PDF
+          - title: cyber security blueteam strategies
+            file: cyber_security_blueteam_strategies_1683132507.pdf
+            type: PDF
+          - title: Designing and Building A Security Operations Center
+            file: Designing and Building A Security Operations Center.pdf
+            type: PDF
+          - title: How to Build a Security Operation Center on Budget
+            file: How_to_Build_a_Security_Operation_Center_on_Budget.pdf
+            type: PDF
+          - title: Install a SIEM on a Linux Server
+            file: Install_a_SIEM_on_a_Linux_Server_1674406198.pdf
+            type: PDF
+          - title: Investigation the Spring4Shell Incident in SOC
+            file: Investigation_the_Spring4Shell_Incident_in_SOC.pdf
+            type: PDF
+          - title: Microsoft Sentinel
+            file: Microsoft_Sentinel.pdf
+            type: PDF
+          - title: Modernizing Your SOC - David Swift
+            file: Modernizing Your SOC - David Swift.pptx
+            type: PPTX
+          - title: Qradar
+            file: Qradar__1669484789.pdf
+            type: PDF
+          - title: Security operation center Opene Source
+            file: Security_operation_center_Opene_Source_1651155233.pdf
+            type: PDF
+          - title: Sentinel Best Practice Microsoft BlueVoyant
+            file: Sentinel_Best_Practice_Microsoft_BlueVoyant_1670748237.pdf
+            type: PDF
+          - title: Sentinel Use Case for BEC
+            file: Sentinel_Use_Case_for_BEC.pdf
+            type: PDF
+          - title: SIEM Detection Risk
+            file: SIEM_Detection_Risk_.pdf
+            type: PDF
+          - title: SOC MS
+            file: SOC MS.pdf
+            type: PDF
+          - title: SOC Powered by KL EN
+            file: SOC_Powered_by_KL_EN.pdf
+            type: PDF
+          - title: SOCTOM whitepaper
+            file: SOCTOM whitepaper.pdf
+            type: PDF
+          - title: V0.6 עותק של דרישות שירות SOC מנוהל
+            file: V0.6 עותק של דרישות שירות SOC מנוהל.xlsx
+            type: XLSX
+  - name: "Ransomware & Malware"
+    icon: 🦠
+    count: 16
+    subcategories:
+      - name: Malware
+        resources:
+          - title: 2025 State of Malware
+            file: 2025_State_of_Malware.pdf
+            type: PDF
+          - title: "Malware, IR - Tools & Resources"
+            file: "Malware, IR - Tools & Resources.xlsx"
+            type: XLSX
+      - name: "Phishing & Social Engineering"
+        resources:
+          - title: 10 Ways To Detect Phishing Emails
+            file: 10_Ways_To_Detect_Phishing_Emails.pdf
+            type: PDF
+          - title: Business Email Compromise Webcast
+            file: Business_Email_Compromise_Webcast.pdf
+            type: PDF
+          - title: Phishing Email Analysis
+            file: Phishing_Email_Analysis.pdf
+            type: PDF
+          - title: Phishing Smishing and Vishing
+            file: Phishing_Smishing_and_Vishing_1675852919.pdf
+            type: PDF
+          - title: PWC Business Email Compromise Guide
+            file: PWC_Business_Email_Compromise_Guide_1732807312.pdf
+            type: PDF
+          - title: Why Reasoning AI Is Becoming Critical for Cybersecurity - ES
+            file: Why Reasoning AI Is Becoming Critical for Cybersecurity - ES.docx
+            type: DOCX
+      - name: Ransomware
+        resources:
+          - title: 2022 CISO-Circuit-Ransomware-Report E-8
+            file: 2022_CISO-Circuit-Ransomware-Report_E-8.pdf
+            type: PDF
+          - title: Common TTPs of Modern Ransomwares
+            file: Common_TTPs_of_Modern_Ransomwares.pdf
+            type: PDF
+          - title: Common-TTPs-of-the-modern-ransomware low-res
+            file: Common-TTPs-of-the-modern-ransomware_low-res.pdf
+            type: PDF
+          - title: Ransomware Facts
+            file: Ransomware_Facts_.pdf
+            type: PDF
+          - title: Ransomware Risk Management
+            file: Ransomware_Risk_Management_1672404768.pdf
+            type: PDF
+          - title: THE RANSOMWARE ECOSYSTEM
+            file: THE_RANSOMWARE_ECOSYSTEM.pdf
+            type: PDF
+          - title: vt-ransomware-report-2021
+            file: vt-ransomware-report-2021.pdf
+            type: PDF
+          - title: מאמר הסבירות לאירוע כופרה V2
+            file: מאמר הסבירות לאירוע כופרה V2.pdf
+            type: PDF
+  - name: "OSINT & Intelligence"
+    icon: 🕵️
+    count: 29
+    subcategories:
+      - name: "OSINT Tools & Techniques"
+        resources:
+          - title: 21 OSINT Research Tools for Threat Intelligence
+            file: 21_OSINT_Research_Tools_for_Threat_Intelligence.pdf
+            type: PDF
+          - title: Handbook for Social Media Investigations
+            file: Handbook_for_Social_Media_Investigations_.pdf
+            type: PDF
+          - title: OSINT
+            file: OSINT_1675096102.pdf
+            type: PDF
+          - title: OSINT Case Study Unmasking the wannabe hacker
+            file: OSINT_Case_Study_Unmasking_the_wannabe_hacker__1677528996.pdf
+            type: PDF
+      - name: Platform Attack Surfaces
+        resources:
+          - title: Discord OSINT Attack Surface
+            file: Discord OSINT Attack Surface.pdf
+            type: PDF
+          - title: DWM OSINT Attack Surface
+            file: DWM OSINT Attack Surface.pdf
+            type: PDF
+          - title: EMAIL OSINT Attack Surface
+            file: EMAIL OSINT Attack Surface.pdf
+            type: PDF
+          - title: Gab OSINT Attack Surface
+            file: Gab OSINT Attack Surface.pdf
+            type: PDF
+          - title: Gettr OSINT Attack Surface
+            file: Gettr OSINT Attack Surface.pdf
+            type: PDF
+          - title: Github OSINT Attack Surface
+            file: Github OSINT Attack Surface.pdf
+            type: PDF
+          - title: IMAGE OSINT Attack Surface
+            file: IMAGE OSINT Attack Surface.pdf
+            type: PDF
+          - title: Instagram OSINT Attack Surface
+            file: Instagram OSINT Attack Surface.pdf
+            type: PDF
+          - title: IP Address OSINT Attack Surface
+            file: IP Address OSINT Attack Surface.pdf
+            type: PDF
+          - title: LinkedIn OSINT Attack Surface
+            file: LinkedIn OSINT Attack Surface.pdf
+            type: PDF
+          - title: Mastodon OSINT Attack Surface
+            file: Mastodon OSINT Attack Surface.pdf
+            type: PDF
+          - title: OpenSea OSINT Attack Surface
+            file: OpenSea OSINT Attack Surface.pdf
+            type: PDF
+          - title: Person OSINT Attack Surface
+            file: Person OSINT Attack Surface.pdf
+            type: PDF
+          - title: Pinterest OSINT Attack Surface
+            file: Pinterest OSINT Attack Surface.pdf
+            type: PDF
+          - title: PokemonGo OSINT Attack Surface
+            file: PokemonGo OSINT Attack Surface.pdf
+            type: PDF
+          - title: Reddit OSINT Attack Surface
+            file: Reddit OSINT Attack Surface.pdf
+            type: PDF
+          - title: Skype OSINT Attack Surface
+            file: Skype OSINT Attack Surface.pdf
+            type: PDF
+          - title: Snapchat OSINT Attack Surface
+            file: Snapchat OSINT Attack Surface.pdf
+            type: PDF
+          - title: Telephone Number OSINT Attack Surface
+            file: Telephone Number OSINT Attack Surface.pdf
+            type: PDF
+          - title: TikTok OSINT Attack Surface
+            file: TikTok OSINT Attack Surface.pdf
+            type: PDF
+          - title: Tumblr OSINT Attack Surface
+            file: Tumblr OSINT Attack Surface.pdf
+            type: PDF
+          - title: Twitter OSINT Attack Surface
+            file: Twitter OSINT Attack Surface.pdf
+            type: PDF
+          - title: USERNAME OSINT Attack Surface
+            file: USERNAME OSINT Attack Surface.pdf
+            type: PDF
+          - title: Website OSINT Attack Surface
+            file: Website OSINT Attack Surface.pdf
+            type: PDF
+          - title: Youtube OSINT Attack Surface
+            file: Youtube OSINT Attack Surface.pdf
+            type: PDF
+  - name: Cloud Security
+    icon: ☁️
+    count: 17
+    subcategories:
+      - name: AWS
+        resources:
+          - title: AWS Security Reference Architecture
+            file: AWS_Security_Reference_Architecture_1676270669.pdf
+            type: PDF
+          - title: AWS Security Services
+            file: AWS_Security_Services.pdf
+            type: PDF
+          - title: CIS Amazon Web Services Foundations Benchmark v1.5.0
+            file: CIS_Amazon_Web_Services_Foundations_Benchmark_v1.5.0.pdf
+            type: PDF
+      - name: Azure
+        resources:
+          - title: Azure DevOps Security
+            file: Azure_DevOps_Security.pdf
+            type: PDF
+          - title: CIS Microsoft Azure Foundations Benchmark v2.0.0
+            file: CIS_Microsoft_Azure_Foundations_Benchmark_v2.0.0.pdf
+            type: PDF
+          - title: Microsoft Azure Security Framework
+            file: Microsoft_Azure_Security_Framework.pdf
+            type: PDF
+          - title: Microsoft Cloud Security for Enterprise Architects
+            file: Microsoft_Cloud_Security_for_Enterprise_Architects.pdf
+            type: PDF
+      - name: Cloud Security
+        resources:
+          - title: CISA s Cloud Security Technical Reference Architecture
+            file: CISA_s_Cloud_Security_Technical_Reference_Architecture_.pdf
+            type: PDF
+          - title: Cloud Computing
+            file: Cloud_Computing.pdf
+            type: PDF
+          - title: CSI-CloudTop10-Identity-Access-Management
+            file: CSI-CloudTop10-Identity-Access-Management.pdf
+            type: PDF
+          - title: TX-RAMP Certified Cloud Products 8.1.24
+            file: TX-RAMP Certified Cloud Products 8.1.24.xlsx
+            type: XLSX
+      - name: Containers
+        resources:
+          - title: Kubernetes Harding Guide
+            file: Kubernetes_Harding_Guide.pdf
+            type: PDF
+          - title: Kubernetes Security Guide
+            file: Kubernetes_Security_Guide.pdf
+            type: PDF
+      - name: DevSecOps
+        resources:
+          - title: Enterprise DevSecOps Strategy Guide
+            file: Enterprise_DevSecOps_Strategy_Guide_1683481496.pdf
+            type: PDF
+          - title: Securing Enterprise DevOps Environments
+            file: Securing_Enterprise_DevOps_Environments_.pdf
+            type: PDF
+          - title: The DevOps security checklist
+            file: The DevOps security checklist .pdf
+            type: PDF
+          - title: Top 10 CI CD security risks
+            file: Top_10_CI_CD_security_risks.pdf
+            type: PDF
+  - name: "Network & Infrastructure"
+    icon: 🌐
+    count: 21
+    subcategories:
+      - name: Active Directory
+        resources:
+          - title: Active Directory Enumeration with PowerShell
+            file: Active_Directory_Enumeration_with_PowerShell_.pdf
+            type: PDF
+          - title: Active Directory Security Assessment 2
+            file: Active_Directory_Security_Assessment 2.pdf
+            type: PDF
+          - title: AD Security Checklist
+            file: AD_Security_Checklist_1664996838.pdf
+            type: PDF
+          - title: Advanced Browser Security datasheet
+            file: Advanced Browser Security datasheet.pdf
+            type: PDF
+          - title: advanced browser security datasheet-1
+            file: advanced_browser_security_datasheet-1.pdf
+            type: PDF
+          - title: Integration of Ubuntu in Active Directory
+            file: Integration_of_Ubuntu_in_Active_Directory.pdf
+            type: PDF
+          - title: Securing Active Directory
+            file: Securing_Active_Directory_1730742154.pdf
+            type: PDF
+      - name: Microsoft Security
+        resources:
+          - title: Microsoft CISO Insider
+            file: Microsoft_CISO_Insider.pdf
+            type: PDF
+          - title: Microsoft Security Best Practices pdf
+            file: Microsoft_Security_Best_Practices_pdf_.pdf
+            type: PDF
+          - title: Secure Future Initiative
+            file: Secure_Future_Initiative_1731772146.pdf
+            type: PDF
+      - name: Network Security
+        resources:
+          - title: DNS Filtering Solutions
+            file: DNS_Filtering_Solutions_1669724910.pdf
+            type: PDF
+          - title: Network Infrastructure Security Guidance
+            file: Network_Infrastructure_Security_Guidance.pdf
+            type: PDF
+          - title: Role of DNS in Cybersecurity
+            file: Role_of_DNS_in_Cybersecurity_.pdf
+            type: PDF
+          - title: The Human Firewall The First Step to Cybersecurity
+            file: The_Human_Firewall_The_First_Step_to_Cybersecurity.pdf
+            type: PDF
+      - name: OS Hardening
+        resources:
+          - title: Apple Security Platform
+            file: Apple_Security_Platform.pdf
+            type: PDF
+          - title: linux-endpoint-hardening (1)
+            file: linux-endpoint-hardening (1).pdf
+            type: PDF
+          - title: Servers
+            file: Servers.pdf
+            type: PDF
+          - title: Windows 11 Security Book
+            file: _Windows_11_Security_Book.pdf
+            type: PDF
+          - title: Windows 11 Security Book
+            file: Windows_11_Security_Book_1667158298.pdf
+            type: PDF
+          - title: Windows 11 Security Book
+            file: Windows_11_Security_Book_1670616488.pdf
+            type: PDF
+          - title: Windows powerShell CookBook
+            file: Windows powerShell CookBook.pdf
+            type: PDF
+  - name: Application Security
+    icon: 🔒
+    count: 10
+    subcategories:
+      - name: Authentication
+        resources:
+          - title: 2FA
+            file: 2FA_.pdf
+            type: PDF
+          - title: Apple SSO
+            file: Apple_SSO_1682404374.pdf
+            type: PDF
+      - name: Secure Development
+        resources:
+          - title: Principles and Approaches for Security by Design
+            file: Principles_and_Approaches_for_Security_by_Design_1681663584.pdf
+            type: PDF
+          - title: Product Security Bad Practices
+            file: Product_Security_Bad_Practices.pdf
+            type: PDF
+      - name: "Web & API"
+        resources:
+          - title: API Security Testing
+            file: API_Security_Testing_1679599190.pdf
+            type: PDF
+          - title: OWASP Secure Coding Practices
+            file: OWASP_Secure_Coding_Practices_1681670032.pdf
+            type: PDF
+          - title: OWASP Top 10 Privacy Risks Countermeasures v2.0 (1)
+            file: OWASP_Top_10_Privacy_Risks_Countermeasures_v2.0 (1).pdf
+            type: PDF
+          - title: Python security Book
+            file: Python security Book.pdf
+            type: PDF
+          - title: Secure Software Development Framework SSDF
+            file: Secure_Software_Development_Framework_SSDF.pdf
+            type: PDF
+          - title: Web Security Testing Guide
+            file: Web_Security_Testing_Guide_1666727956.pdf
+            type: PDF
+  - name: "AI & Emerging Tech"
+    icon: 🤖
+    count: 15
+    subcategories:
+      - name: "AI & Cybersecurity"
+        resources:
+          - title: AICM Bundle - Presentation 20251020
+            file: AICM Bundle - Presentation 20251020.pdf
+            type: PDF
+          - title: ChatGPT for Offsec
+            file: ChatGPT_for_Offsec_1671691491.pdf
+            type: PDF
+          - title: ChatGPT SecurityImplications pdf
+            file: _ChatGPT_SecurityImplications_pdf_1683213310.pdf
+            type: PDF
+          - title: Cybersecurity Implications of ChatGPT
+            file: Cybersecurity_Implications_of_ChatGPT_1674722637.pdf
+            type: PDF
+          - title: DeepSeek Ai assessment report
+            file: DeepSeek_Ai_assessment_report.pdf
+            type: PDF
+          - title: DeepSeek Final 250420 061224
+            file: DeepSeek Final_250420_061224.pdf
+            type: PDF
+          - title: Generative AI and ChatGPT Enterprise Risk
+            file: Generative_AI_and_ChatGPT_Enterprise_Risk_1682328073.pdf
+            type: PDF
+          - title: Gmail - CyberInsight Weekly Brief - 9 27 2025
+            file: Gmail - CyberInsight Weekly Brief - 9_27_2025.pdf
+            type: PDF
+          - title: Hallucinated Intelligence
+            file: Hallucinated_Intelligence.pptx
+            type: PPTX
+          - title: Jailbreaking LLMs with Information Overload
+            file: Jailbreaking_LLMs_with_Information_Overload.pdf
+            type: PDF
+          - title: Response for AI Loss of Control Incidents
+            file: Response for AI Loss of Control Incidents.pdf
+            type: PDF
+      - name: Deepfakes
+        resources:
+          - title: Law enforcement and the challenge of deepfakes
+            file: Law_enforcement_and_the_challenge_of_deepfakes.pdf
+            type: PDF
+      - name: IoT Security
+        resources:
+          - title: IoT Device Cybersecurity Guidance
+            file: IoT_Device_Cybersecurity_Guidance.pdf
+            type: PDF
+          - title: IOT+Security+for+Dummies
+            file: IOT+Security+for+Dummies.pdf
+            type: PDF
+          - title: The State of Healthcare IoT Device Security 2022
+            file: The_State_of_Healthcare_IoT_Device_Security_2022.pdf
+            type: PDF
+  - name: Critical Infrastructure
+    icon: 🏭
+    count: 14
+    subcategories:
+      - name: Financial Sector
+        resources:
+          - title: FinTech Cybersecurity An ASEAN Outlook
+            file: _FinTech_Cybersecurity_An_ASEAN_Outlook.pdf
+            type: PDF
+          - title: מסמך-חוות-דעת-על-אירוע-פריצה-לבנקים---CyberTeam360
+            file: מסמך-חוות-דעת-על-אירוע-פריצה-לבנקים---CyberTeam360.pdf
+            type: PDF
+      - name: Healthcare
+        resources:
+          - title: Healthcare CyberSecurity RotemBar
+            file: Healthcare_CyberSecurity_RotemBar.pdf
+            type: PDF
+      - name: "OT & ICS"
+        resources:
+          - title: 05f655843 CyberInsightMagazineIssue06-Nov25SE-ManufacturingSector
+            file: 05f655843_CyberInsightMagazineIssue06-Nov25SE-ManufacturingSector.pdf
+            type: PDF
+          - title: BRIDGING THE GAPS IN OT CYBERSECURITY PROGRAMS RB
+            file: BRIDGING_THE_GAPS_IN_OT_CYBERSECURITY_PROGRAMS_RB_1681326774.pdf
+            type: PDF
+          - title: Civil nuclear cyber security strategy 2022
+            file: Civil_nuclear_cyber_security_strategy_2022.pdf
+            type: PDF
+          - title: Cybersecurity Basics
+            file: Cybersecurity_Basics.pdf
+            type: PDF
+          - title: Fortinet OT Security Workshop and Hands on Lab
+            file: Fortinet_OT_Security_Workshop_and_Hands_on_Lab_1670616136.pdf
+            type: PDF
+          - title: Manufacturing Execution Systems (MES)
+            file: Manufacturing Execution Systems (MES).pdf
+            type: PDF
+          - title: mfg-recovery-project-description-final
+            file: mfg-recovery-project-description-final.pdf
+            type: PDF
+          - title: OT-Security-Incidents-ebook FINAL
+            file: OT-Security-Incidents-ebook_FINAL.pdf
+            type: PDF
+          - title: Predicts 2022 CyberPhysical Systems Security
+            file: Predicts_2022_CyberPhysical_Systems_Security.pdf
+            type: PDF
+          - title: Securing Critical Infrastructure
+            file: Securing_Critical_Infrastructure.pdf
+            type: PDF
+          - title: Statistics on Small Business Cyber Crime
+            file: Statistics_on_Small_Business_Cyber_Crime.pdf
+            type: PDF
+  - name: "Compliance & Standards"
+    icon: 📋
+    count: 71
+    subcategories:
+      - name: CIS Benchmarks
+        resources:
+          - title: CIS Distribution Independent Linux Benchmark v2.0.0 (1)
+            file: CIS_Distribution_Independent_Linux_Benchmark_v2.0.0 (1).pdf
+            type: PDF
+          - title: CIS GitHub Benchmark v1.0.0 PDF
+            file: CIS GitHub Benchmark v1.0.0 PDF.pdf
+            type: PDF
+          - title: CIS Microsoft 365 Foundations Benchmark v1.5.0
+            file: CIS_Microsoft_365_Foundations_Benchmark_v1.5.0.pdf
+            type: PDF
+          - title: CIS Microsoft 365 Foundations Benchmark v1.5.0 2
+            file: CIS_Microsoft_365_Foundations_Benchmark_v1.5.0 2.pdf
+            type: PDF
+          - title: CIS Microsoft Edge Benchmark v1.1.0
+            file: CIS_Microsoft_Edge_Benchmark_v1.1.0.pdf
+            type: PDF
+          - title: CIS Microsoft Exchange Server 2016 Benchmark v1.0.0
+            file: CIS_Microsoft_Exchange_Server_2016_Benchmark_v1.0.0.pdf
+            type: PDF
+          - title: CIS Microsoft IIS 10 Benchmark v1.2.0
+            file: CIS_Microsoft_IIS_10_Benchmark_v1.2.0.pdf
+            type: PDF
+          - title: CIS Microsoft Intune for Windows 11 Benchmark v1.0.0
+            file: CIS_Microsoft_Intune_for_Windows_11_Benchmark_v1.0.0.pdf
+            type: PDF
+          - title: CIS Microsoft Office Enterprise Benchmark v1.0.0
+            file: CIS_Microsoft_Office_Enterprise_Benchmark_v1.0.0.pdf
+            type: PDF
+          - title: CIS Microsoft Windows 10 Enterprise Release 2004 Benchmark v1.9.1
+            file: CIS_Microsoft_Windows_10_Enterprise_Release_2004_Benchmark_v1.9.1.pdf
+            type: PDF
+          - title: CIS Microsoft Windows 11 Stand-alone Benchmark v1.0.0
+            file: CIS_Microsoft_Windows_11_Stand-alone_Benchmark_v1.0.0.pdf
+            type: PDF
+          - title: CIS Microsoft Windows Server 2012 R2 Benchmark v2.6.0
+            file: CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v2.6.0.pdf
+            type: PDF
+          - title: CIS Microsoft Windows Server 2016 Benchmark v1.4.0
+            file: CIS_Microsoft_Windows_Server_2016_Benchmark_v1.4.0.pdf
+            type: PDF
+          - title: CIS Microsoft Windows Server 2019 Benchmark v1.3.0
+            file: CIS_Microsoft_Windows_Server_2019_Benchmark_v1.3.0.pdf
+            type: PDF
+          - title: CIS Microsoft Windows Server 2022 Benchmark v1.0.0
+            file: CIS_Microsoft_Windows_Server_2022_Benchmark_v1.0.0.pdf
+            type: PDF
+          - title: CIS Multi-Function Device Benchmark v1.0.0
+            file: CIS_Multi-Function_Device_Benchmark_v1.0.0.pdf
+            type: PDF
+          - title: CIS Software Supply Chain Security Guide RB
+            file: CIS_Software_Supply_Chain_Security_Guide_RB.pdf
+            type: PDF
+          - title: CIS Zoom Benchmark v1.0.0 PDF
+            file: CIS_Zoom_Benchmark_v1.0.0 PDF.pdf
+            type: PDF
+      - name: GRC
+        resources:
+          - title: Cyber Security Governance Principles Oct 2022
+            file: Cyber_Security_Governance_Principles_Oct_2022_1676322458.pdf
+            type: PDF
+          - title: DFARS FCA Settlement - December 2025
+            file: DFARS FCA Settlement - December 2025.pdf
+            type: PDF
+          - title: GRC Ecosystem
+            file: GRC_Ecosystem.pdf
+            type: PDF
+          - title: ITGC Martix
+            file: ITGC Martix.xlsx
+            type: XLSX
+          - title: LLM AI Cybersecurity Governance Checklist
+            file: LLM_AI_Cybersecurity_Governance_Checklist_1731952716.pdf
+            type: PDF
+          - title: Modular Security Requirements
+            file: Modular_Security_Requirements.pdf
+            type: PDF
+          - title: Organizational Cyber Readiness to the Post Quantum Age
+            file: Organizational_Cyber_Readiness_to_the_Post_Quantum_Age.pdf
+            type: PDF
+          - title: Security Obligations – Cyber Security Exercise 241203 182938
+            file: Security Obligations – Cyber Security Exercise_241203_182938.pdf
+            type: PDF
+          - title: The SOC 2 Compliance Handbook
+            file: The_SOC_2_Compliance_Handbook.pdf
+            type: PDF
+      - name: HIPAA
+        resources:
+          - title: Assessment Tool Share HIPAA
+            file: Assessment_Tool_Share_HIPAA.xls
+            type: XLS
+          - title: HCR-HIPAA-COW-Risk-Assessment-Template-07-16-13
+            file: HCR-HIPAA-COW-Risk-Assessment-Template-07-16-13.xls
+            type: XLS
+          - title: HIPAA-Security-Controls-Mapping
+            file: HIPAA-Security-Controls-Mapping.xlsx
+            type: XLSX
+          - title: HIPAA-Security-Controls-Mapping-1
+            file: HIPAA-Security-Controls-Mapping-1.xlsx
+            type: XLSX
+      - name: ISO 27001
+        resources:
+          - title: 27001 ISO
+            file: 27001 ISO.xlsx
+            type: XLSX
+          - title: ISMS Implementation Guideline 27001
+            file: ISMS_Implementation_Guideline_27001.pdf
+            type: PDF
+          - title: ISO 22301 Business Continuity business case
+            file: ISO_22301_Business_Continuity_business_case.pdf
+            type: PDF
+          - title: ISO 27001 Advantages and Disadvantages
+            file: ISO_27001_Advantages_and_Disadvantages_.pdf
+            type: PDF
+          - title: "ISO 27001 controls 2022, 230313"
+            file: "ISO 27001 controls 2022, 230313.pdf"
+            type: PDF
+          - title: ISO 27001 Mandatory Document
+            file: ISO_27001_Mandatory_Document.pdf
+            type: PDF
+          - title: ISO 27001 Mind Map
+            file: ISO_27001_Mind_Map_1678601726.pdf
+            type: PDF
+          - title: ISO 27011 Information Security Checklist
+            file: ISO_27011_Information_Security_Checklist_1640726981.pdf
+            type: PDF
+          - title: ISO IEC 27001-2022
+            file: ISO IEC 27001-2022.pdf
+            type: PDF
+          - title: ISO27k ISMS 6.1 SoA 2022
+            file: ISO27k ISMS 6.1 SoA 2022.xlsx
+            type: XLSX
+          - title: NIST CSF 2 0 Vs ISO 27001 2022 Mapping
+            file: NIST_CSF_2_0_Vs_ISO_27001_2022_Mapping_1732034466.pdf
+            type: PDF
+      - name: NIST
+        resources:
+          - title: C2M2 v2 1
+            file: C2M2_v2_1_1678946363.pdf
+            type: PDF
+          - title: CSF 2 0
+            file: CSF_2_0_1682403805.pdf
+            type: PDF
+          - title: Microsoft 365 the NIST cybersecurity framework
+            file: Microsoft_365_the_NIST_cybersecurity_framework.pdf
+            type: PDF
+          - title: NIST Access Control Guidance For Cloud Systems
+            file: NIST_Access_Control_Guidance_For_Cloud_Systems.pdf
+            type: PDF
+          - title: NIST Cybersecurity for Small Businesses The Fundamentals
+            file: NIST_Cybersecurity_for_Small_Businesses_The_Fundamentals_1674676682.pdf
+            type: PDF
+          - title: NIST Cybersecurity Framework Policy
+            file: NIST_Cybersecurity_Framework_Policy_.pdf
+            type: PDF
+          - title: NIST Cybersecurity Supply Chain Risk Management Practices
+            file: NIST_Cybersecurity_Supply_Chain_Risk_Management_Practices.pdf
+            type: PDF
+          - title: NIST Risk Management Framework
+            file: NIST_Risk_Management_Framework__1641019029.pdf
+            type: PDF
+          - title: NIST Risk Management Framework
+            file: NIST_Risk_Management_Framework.pdf
+            type: PDF
+          - title: NIST.SP.800-161r1
+            file: NIST.SP.800-161r1.pdf
+            type: PDF
+          - title: PDS NIST Cybersecurity Framework RACI
+            file: PDS_NIST_Cybersecurity_Framework_RACI.pdf
+            type: PDF
+      - name: PCI DSS
+        resources:
+          - title: CAPSAB-PCI-DSS-v3-assesment-help
+            file: CAPSAB-PCI-DSS-v3-assesment-help.xlsm
+            type: XLSM
+          - title: PCI 4 0
+            file: PCI_4_0_.pdf
+            type: PDF
+          - title: PCI DSS
+            file: PCI_DSS.pdf
+            type: PDF
+          - title: PCI-Security-Controls-Tracking-Worksheet
+            file: PCI-Security-Controls-Tracking-Worksheet.xlsx
+            type: XLSX
+          - title: Prioritized Approach PCI DSS version1 2
+            file: Prioritized_Approach_PCI_DSS_version1_2.xls
+            type: XLS
+          - title: Security Rules and Procedures Merchant Edition
+            file: Security_Rules_and_Procedures_Merchant_Edition_.pdf
+            type: PDF
+      - name: "Privacy & Regulations"
+        resources:
+          - title: 250212 reuschlaw AHK Israel The new EU cybersecurity regulations CK
+            file: 250212_reuschlaw_AHK Israel_The new EU cybersecurity regulations_CK.pdf
+            type: PDF
+          - title: Draft Regulations Data transferred from EEA to Israel
+            file: Draft_Regulations_Data_transferred_from_EEA_to_Israel_1669746521.pdf
+            type: PDF
+          - title: GDPR for Third party Risk Management
+            file: GDPR_for_Third_party_Risk_Management__1676270657.pdf
+            type: PDF
+          - title: Notifiable Data Breach statistics dashboard
+            file: Notifiable Data Breach statistics dashboard.pdf
+            type: PDF
+          - title: South Korea’s data protection law (PIPA) to generative AI
+            file: South Korea’s data protection law (PIPA) to generative AI.pdf
+            type: PDF
+      - name: Security Assessments
+        resources:
+          - title: Cybersecurity posture Self Assessment
+            file: Cybersecurity_posture_Self_Assessment.pdf
+            type: PDF
+          - title: Sample SelfAssessment Questionnaire SAQ
+            file: Sample_SelfAssessment_Questionnaire_SAQ.xls
+            type: XLS
+          - title: Security Assessment and Testing
+            file: Security_Assessment_and_Testing_.pdf
+            type: PDF
+      - name: Zero Trust
+        resources:
+          - title: Federal Zero Trust Strategy (1)
+            file: Federal_Zero_Trust_Strategy (1).pdf
+            type: PDF
+          - title: Planning for a Zero Trust Architecture
+            file: Planning_for_a_Zero_Trust_Architecture.pdf
+            type: PDF
+          - title: Zero Trust deployment plan with Microsoft 365
+            file: Zero_Trust_deployment_plan_with_Microsoft_365_1677518770.pdf
+            type: PDF
+          - title: Zero Trust Reference Architecture
+            file: Zero_Trust_Reference_Architecture_1674223484.pdf
+            type: PDF
+  - name: Risk Management
+    icon: ⚖️
+    count: 25
+    subcategories:
+      - name: Cyber Insurance
+        resources:
+          - title: A New Cyber Insurance Model Continuous Control Validation
+            file: A_New_Cyber_Insurance_Model_Continuous_Control_Validation.pdf
+            type: PDF
+      - name: Risk Frameworks
+        resources:
+          - title: AI Risk Management Framework
+            file: AI_Risk_Management_Framework_1674038781.pdf
+            type: PDF
+          - title: Allianz Risk Barometer 2026
+            file: Allianz_Risk_Barometer_2026.pdf
+            type: PDF
+          - title: allianz-risk-barometer-2026 260309 222204
+            file: allianz-risk-barometer-2026_260309_222204.pdf
+            type: PDF
+          - title: Business Impact Analysis
+            file: Business_Impact_Analysis__1682281570.pdf
+            type: PDF
+          - title: Cyber Compliance Is Fraud Risk
+            file: Cyber_Compliance_Is_Fraud_Risk.pdf
+            type: PDF
+          - title: Cyber-Risk-Oversight-Handbook WEB
+            file: Cyber-Risk-Oversight-Handbook_WEB.pdf
+            type: PDF
+          - title: Effective Enterprise Risk Management
+            file: Effective_Enterprise_Risk_Management.pdf
+            type: PDF
+          - title: Healthcare Supply Chain Cybersecurity Risk Management
+            file: Healthcare_Supply_Chain_Cybersecurity_Risk_Management.pdf
+            type: PDF
+          - title: Next Generation Cyber Risk Management
+            file: Next Generation Cyber Risk Management.pdf
+            type: PDF
+          - title: potential risk indicators foreign considerations
+            file: potential_risk_indicators_foreign_considerations.pdf
+            type: PDF
+          - title: risk
+            file: risk.pdf
+            type: PDF
+          - title: Risk Assessment and Treatment process
+            file: Risk_Assessment_and_Treatment_process__1670134578.pdf
+            type: PDF
+          - title: Risk Management Framework
+            file: Risk_Management_Framework_.pdf
+            type: PDF
+          - title: Risk Management Framework
+            file: Risk_Management_Framework.pdf
+            type: PDF
+          - title: risk management user
+            file: risk_management_user_1680241660.pdf
+            type: PDF
+          - title: RISK RiskLens Annual Report
+            file: RISK_RiskLens Annual Report.pdf
+            type: PDF
+          - title: The Global Risks Report 2022
+            file: The_Global_Risks_Report_2022.pdf
+            type: PDF
+          - title: The Vulnerability Assessment Mitigation Methodology
+            file: The_Vulnerability_Assessment_Mitigation_Methodology_.pdf
+            type: PDF
+          - title: TheNecessityofCyberRiskQuantification-1 230511 060352
+            file: TheNecessityofCyberRiskQuantification-1_230511_060352.pdf
+            type: PDF
+      - name: Supply Chain
+        resources:
+          - title: 2021 Software Supply Chain Security Report
+            file: 2021_Software_Supply_Chain_Security_Report.pdf
+            type: PDF
+          - title: ESF SECURING THE SOFTWARE SUPPLY CHAIN DEVELOPERS
+            file: ESF_SECURING_THE_SOFTWARE_SUPPLY_CHAIN_DEVELOPERS.pdf
+            type: PDF
+      - name: Vulnerability Management
+        resources:
+          - title: CVE-2022-22963
+            file: CVE-2022-22963.yaml
+            type: YAML
+          - title: Microsoft Vulnerabilities Report 2022 (1)
+            file: Microsoft_Vulnerabilities_Report_2022 (1).pdf
+            type: PDF
+          - title: Vulnerability Stats Report 2022
+            file: Vulnerability_Stats_Report_2022.pdf
+            type: PDF
+  - name: Industry Reports
+    icon: 📊
+    count: 63
+    subcategories:
+      - name: "Annual & Special Reports"
+        resources:
+          - title: 2021 NSA Cyber Security Year In Review
+            file: 2021_NSA_Cyber_Security_Year_In_Review.pdf
+            type: PDF
+          - title: Best Cyber Insights of 2022
+            file: Best_Cyber_Insights_of_2022_.pdf
+            type: PDF
+          - title: Best Cyber Insights of 2022
+            file: Best_Cyber_Insights_of_2022.pdf
+            type: PDF
+          - title: Breaches Anticipated in 2022
+            file: Breaches_Anticipated_in_2022.pdf
+            type: PDF
+          - title: CYBER CAPABILITIES AND NATIONAL POWER A Net Assessment
+            file: CYBER_CAPABILITIES_AND_NATIONAL_POWER_A_Net_Assessment.pdf
+            type: PDF
+          - title: End of a Year Report 2022
+            file: End_of_a_Year_Report_2022_1675165332.pdf
+            type: PDF
+      - name: Breach Reports
+        resources:
+          - title: 2022 IC3Report
+            file: 2022_IC3Report.pdf
+            type: PDF
+          - title: Cost of A Breach - Sam Elkholy
+            file: Cost of A Breach - Sam Elkholy.pptx
+            type: PPTX
+          - title: Cost of a Data Breach Full Report 2022
+            file: Cost of a Data Breach Full Report 2022.pdf
+            type: PDF
+          - title: Cost of a Data Breach Report 2021
+            file: Cost_of_a_Data_Breach_Report_2021.pdf
+            type: PDF
+          - title: FBI Flash March 7th
+            file: FBI_Flash_March_7th.pdf
+            type: PDF
+          - title: FBI Internet Crime Report 2021
+            file: FBI_Internet_Crime_Report_2021.pdf
+            type: PDF
+          - title: FBI NSA and CISA Issue Warning
+            file: FBI_NSA_and_CISA_Issue_Warning.pdf
+            type: PDF
+          - title: IBM Cost of Data Breach Report 2022
+            file: IBM_Cost_of_Data_Breach_Report_2022.pdf
+            type: PDF
+          - title: Verizon DBIR 2021
+            file: Verizon_DBIR_2021.pdf
+            type: PDF
+      - name: CISO Resources
+        resources:
+          - title: 2021 Global CISO Survey
+            file: 2021_Global_CISO_Survey.pdf
+            type: PDF
+          - title: CISO Guidebook Basic pd
+            file: CISO_Guidebook_Basic_pd.pdf
+            type: PDF
+          - title: CISO Stress Report
+            file: CISO Stress Report.pdf
+            type: PDF
+          - title: INSIDE THE MIND OF A CISO 2024 240922 071949
+            file: INSIDE THE MIND OF A CISO 2024_240922_071949.pdf
+            type: PDF
+      - name: Cyber Insight Magazine
+        resources:
+          - title: 86c00b46f CyberInsightMagazineIssue08-Dec25
+            file: 86c00b46f_CyberInsightMagazineIssue08-Dec25.pdf
+            type: PDF
+          - title: 98fd178ce CyberInsightMagazineIssue09-Dec25
+            file: 98fd178ce_CyberInsightMagazineIssue09-Dec25.pdf
+            type: PDF
+          - title: c99a5f15e CyberInsightMagazineIssue05-Oct25SE-HealthSector
+            file: c99a5f15e_CyberInsightMagazineIssue05-Oct25SE-HealthSector.pdf
+            type: PDF
+          - title: Cyber Insight Magazine Issue 01 - September 2025
+            file: Cyber Insight Magazine Issue 01 - September 2025.pdf
+            type: PDF
+          - title: Cyber Insight Magazine Issue 02 - September 2025
+            file: Cyber Insight Magazine Issue 02 - September 2025.pdf
+            type: PDF
+          - title: Cyber Insight Magazine Issue 07 - Nov 25
+            file: Cyber Insight Magazine Issue 07 - Nov 25.pdf
+            type: PDF
+          - title: CyberInsight Magazine Issue 03 - Special Edition
+            file: CyberInsight Magazine Issue 03 - Special Edition.pdf
+            type: PDF
+          - title: CyberInsight Magazine Issue 04 - October 2025
+            file: CyberInsight Magazine Issue 04 - October 2025.pdf
+            type: PDF
+      - name: Research Papers
+        resources:
+          - title: Organizational coping
+            file: Organizational_coping.pdf
+            type: PDF
+          - title: Preview Cyber Security And Human Factors
+            file: Preview_Cyber_Security_And_Human_Factors.pdf
+            type: PDF
+          - title: sec22summer wang-kai
+            file: sec22summer_wang-kai.pdf
+            type: PDF
+      - name: "Surveys & Research"
+        resources:
+          - title: Cyber Security Breaches Survey 2022
+            file: _Cyber_Security_Breaches_Survey_2022.pdf
+            type: PDF
+          - title: Cyber Security Longitudinal Survey Wave 1
+            file: _Cyber_Security_Longitudinal_Survey_Wave_1.pdf
+            type: PDF
+      - name: "Trends & Forecasts"
+        resources:
+          - title: Hillel Kobrovski - Cyber Security Trends Analysis 2020 and 10 Insights That Will Shape 2021 ver 1 Feb 2021 - Low resolution images
+            file: Hillel Kobrovski - Cyber Security Trends Analysis 2020 and 10 Insights That Will Shape 2021 ver 1  Feb 2021 - Low resolution images.pdf
+            type: PDF
+      - name: Vendor Reports
+        resources:
+          - title: 2022-06-24-csiac-dod-cybersecurity-policy-chart
+            file: 2022-06-24-csiac-dod-cybersecurity-policy-chart.pdf
+            type: PDF
+          - title: 6 Cybersecurity Trends you can expect in 2023
+            file: 6_Cybersecurity_Trends_you_can_expect_in_2023__1674116390.pdf
+            type: PDF
+          - title: Building a Cybersecurity and Privacy Learning Prog
+            file: Building a Cybersecurity and Privacy Learning Prog.pdf
+            type: PDF
+          - title: Cybersecurity Acronyms (1)
+            file: Cybersecurity_Acronyms (1).pdf
+            type: PDF
+          - title: Cybersecurity as a Matter of Competitive Advantage
+            file: Cybersecurity_as_a_Matter_of_Competitive_Advantage.pdf
+            type: PDF
+          - title: Cybersecurity for Industry 4 0
+            file: Cybersecurity_for_Industry_4_0_1681834579.pdf
+            type: PDF
+          - title: Cybersecurity for SMB
+            file: Cybersecurity_for_SMB_1672763649.pdf
+            type: PDF
+          - title: Cybersecurity for startups
+            file: Cybersecurity_for_startups_1720369445.pdf
+            type: PDF
+          - title: Cybersecurity Infographic
+            file: Cybersecurity_Infographic.pdf
+            type: PDF
+          - title: Cybersecurity Resource and Reference Guide
+            file: Cybersecurity_Resource_and_Reference_Guide.pdf
+            type: PDF
+          - title: CyberSecurity skills in the UK 2022 RB
+            file: CyberSecurity_skills_in_the_UK_2022_RB_.pdf
+            type: PDF
+          - title: Cybersecurity Terms
+            file: Cybersecurity_Terms__1670136574.pdf
+            type: PDF
+          - title: cybersecurity-forecast-2026-en
+            file: cybersecurity-forecast-2026-en.pdf
+            type: PDF
+          - title: Executive Guide to Cybersecurity for SMBs-1
+            file: Executive Guide to Cybersecurity for SMBs-1.pdf
+            type: PDF
+          - title: Global Cybersecurity Outlook 2022
+            file: Global_Cybersecurity_Outlook_2022.pdf
+            type: PDF
+          - title: Global Cybersecurity Outlook 2025
+            file: Global Cybersecurity Outlook 2025.pdf
+            type: PDF
+          - title: kaspersky-threat-data-feeds-datasheet
+            file: kaspersky-threat-data-feeds-datasheet.pdf
+            type: PDF
+          - title: M Trends 2022
+            file: M_Trends_2022_.pdf
+            type: PDF
+          - title: M Trends Report 2025
+            file: M_Trends_Report_2025.pdf
+            type: PDF
+          - title: m-trends-2025-en
+            file: m-trends-2025-en.pdf
+            type: PDF
+          - title: Mandiant M Trends 2023
+            file: Mandiant_M_Trends_2023_1681842913.pdf
+            type: PDF
+          - title: Microsoft-Digital-Defense-Report-2025 (1)
+            file: Microsoft-Digital-Defense-Report-2025 (1).pdf
+            type: PDF
+          - title: National CyberSecurity Guide RB
+            file: _National_CyberSecurity_Guide_RB.pdf
+            type: PDF
+          - title: SPECIAL REPORT MANDIANT M TRENDS 2022
+            file: SPECIAL_REPORT_MANDIANT_M_TRENDS_2022.pdf
+            type: PDF
+          - title: Star Wars Cybersecurity
+            file: Star_Wars_Cybersecurity_.pdf
+            type: PDF
+          - title: State of Cybersecurity 2022
+            file: State_of_Cybersecurity_2022.pdf
+            type: PDF
+          - title: Top 50 Cybersecurity Questions
+            file: Top_50_Cybersecurity_Questions_1683137536.pdf
+            type: PDF
+          - title: update ms-isac-cybersecurity-resources guide 51822
+            file: update_ms-isac-cybersecurity-resources_guide_51822.pdf
+            type: PDF
+          - title: WEF Global Cybersecurity Outlook 2025 250113 213446
+            file: WEF_Global_Cybersecurity_Outlook_2025_250113_213446.pdf
+            type: PDF
+          - title: Yigal Cybersecurity
+            file: Yigal_Cybersecurity.pdf
+            type: PDF
+  - name: Defense Strategies
+    icon: 🏰
+    count: 7
+    subcategories:
+      - name: General Defense
+        resources:
+          - title: 2022 CYBER DEFENDERS PLAYBOOK
+            file: 2022_CYBER_DEFENDERS_PLAYBOOK.pdf
+            type: PDF
+          - title: A Guide to Activating Cyber Defense
+            file: A_Guide_to_Activating_Cyber_Defense__1670322809.pdf
+            type: PDF
+          - title: CERT EU Security Guidance 22 001
+            file: CERT_EU_Security_Guidance_22_001.pdf
+            type: PDF
+          - title: Strategic Decision Making Process Guide Crisis Man 250703 190236
+            file: Strategic Decision Making Process_Guide_Crisis Man_250703_190236.pdf
+            type: PDF
+          - title: Strategies to Mitigate Cyber Security Incidents
+            file: Strategies_to_Mitigate_Cyber_Security_Incidents_1674045602.pdf
+            type: PDF
+          - title: Sub Optimal Strategies in Cyberspace
+            file: Sub_Optimal_Strategies_in_Cyberspace_1671390224.pdf
+            type: PDF
+          - title: The Defensers Advantage
+            file: The_Defensers_Advantage_1675877854.pdf
+            type: PDF
+  - name: "Career & Certifications"
+    icon: 🎓
+    count: 14
+    subcategories:
+      - name: "Certifications & Career"
+        resources:
+          - title: ceh notes
+            file: ceh notes.pdf
+            type: PDF
+          - title: CEH v11 Practical Test
+            file: CEH_v11_Practical_Test.pdf
+            type: PDF
+          - title: Certified Ethical Hacker CEH Summarized by Mohammad Alkhudari
+            file: Certified_Ethical_Hacker_CEH_Summarized_by_Mohammad_Alkhudari_.pdf
+            type: PDF
+          - title: CISSP Exam Study Guide
+            file: CISSP_Exam_Study_Guide_.pdf
+            type: PDF
+          - title: CISSP Guide
+            file: CISSP_Guide.pdf
+            type: PDF
+          - title: CISSP תיבת אוצר
+            file: __CISSP תיבת אוצר.pdf
+            type: PDF
+          - title: CISSP-Study-Guide-2021
+            file: CISSP-Study-Guide-2021.pdf
+            type: PDF
+          - title: Security Plus 200 Questions and Answers Test Prep
+            file: Security_Plus_200_Questions_and_Answers_Test_Prep_1678979831.pdf
+            type: PDF
+          - title: Slides How to Burn Out in Infosec
+            file: Slides_How_to_Burn_Out_in_Infosec.pdf
+            type: PDF
+          - title: אירוע תעסוקה עבורי בוגרי 8200 - סייבר 29.01.23 (1)
+            file: אירוע תעסוקה עבורי בוגרי 8200 - סייבר 29.01.23 (1).pdf
+            type: PDF
+          - title: שאלות ותשובות לראיונות עבודה מתחום הסייבר ואבטחת המידע
+            file: שאלות ותשובות לראיונות עבודה מתחום הסייבר ואבטחת המידע.pdf
+            type: PDF
+      - name: Getting Started
+        resources:
+          - title: Cyber Security Toolkit for Boards
+            file: Cyber_Security_Toolkit_for_Boards.pdf
+            type: PDF
+          - title: Introduction To Cyber Security
+            file: Introduction_To_Cyber_Security__1675503324.pdf
+            type: PDF
+      - name: Quick References
+        resources:
+          - title: IT vs IS
+            file: IT_vs_IS.pdf
+            type: PDF
+  - name: "Tools & Resources"
+    icon: 🧰
+    count: 10
+    subcategories:
+      - name: "Guides & Tools"
+        resources:
+          - title: A Practical Guide for a Successful SOC
+            file: A_Practical_Guide_for_a_Successful_SOC_1650530583.pdf
+            type: PDF
+          - title: Conceptual Guide to Enterprise Cyber Security 2023-1
+            file: Conceptual Guide to Enterprise Cyber Security 2023-1.pdf
+            type: PDF
+          - title: FREE Open Source Security Tools
+            file: FREE_Open_Source_Security_Tools_.pdf
+            type: PDF
+          - title: FREE Open Source Security Tools
+            file: FREE_Open_Source_Security_Tools.pdf
+            type: PDF
+          - title: Information Security Handbook
+            file: Information_Security_Handbook.pdf
+            type: PDF
+          - title: Prioritized-Approach-Tool-v3 2 1
+            file: Prioritized-Approach-Tool-v3_2_1.xlsx
+            type: XLSX
+          - title: RedTeam Tools
+            file: RedTeam_Tools_1676474230.pdf
+            type: PDF
+          - title: SOC Tools
+            file: SOC_Tools.pdf
+            type: PDF
+          - title: Telegram Channels
+            file: Telegram Channels.xlsx
+            type: XLSX
+          - title: Wireshark User Guide
+            file: Wireshark_User_Guide__1681326946.pdf
+            type: PDF
+  - name: Hebrew Resources (עברית)
+    icon: 🇮🇱
+    count: 13
+    subcategories:
+      - name: General
+        resources:
+          - title: "10 כללי חובה לשמירה על החיים הדיגיטליים בזמן מלחמה!"
+            file: "10 כללי חובה לשמירה על החיים הדיגיטליים בזמן מלחמה!.pdf"
+            type: PDF
+          - title: Adobe Scan 29 ביולי 2025
+            file: Adobe Scan 29 ביולי 2025.pdf
+            type: PDF
+          - title: אירוע חשיפה MarketPlace עדכני
+            file: אירוע חשיפה MarketPlace עדכני.pdf
+            type: PDF
+          - title: בקרות תורת ההגנה 2.0 גרסה 1.3
+            file: בקרות תורת ההגנה 2.0 גרסה 1.3.xlsx
+            type: XLSX
+          - title: גילוי דעת בנושא תכנית אכיפה פנימית ככלי לניהול סיכוני סייבר בדירקטוריונים V1
+            file: גילוי דעת בנושא תכנית אכיפה פנימית ככלי לניהול סיכוני סייבר בדירקטוריונים V1.pdf
+            type: PDF
+          - title: דוח בלימת מתקפת סייבר צפון קוריאנית
+            file: דוח בלימת מתקפת סייבר צפון קוריאנית.pdf
+            type: PDF
+          - title: מדיניות יישום סייבר 2021
+            file: מדיניות יישום סייבר 2021.pdf
+            type: PDF
+          - title: מדריך לשימוש אחראי בבינה מלאכותית במגזר הציבורי - 250604 130228
+            file: מדריך לשימוש אחראי בבינה מלאכותית במגזר הציבורי - _250604_130228.pdf
+            type: PDF
+          - title: מתקפת סייבר 18-05-2022 מכתב ללקוח
+            file: מתקפת סייבר 18-05-2022 מכתב ללקוח.pdf
+            type: PDF
+          - title: סכנות ברשת יובל 1
+            file: סכנות ברשת יובל 1.pptx
+            type: PPTX
+          - title: עדכון מודיעין 3 – תקיפת סייבר על הטכניון 12.02.23
+            file: עדכון מודיעין 3 – תקיפת סייבר על הטכניון  12.02.23.pdf
+            type: PDF
+          - title: תקינה בסייבר
+            file: תקינה בסייבר.pdf
+            type: PDF
+          - title: תקנות אבטחת מידע (1)
+            file: תקנות אבטחת מידע (1).xlsx
+            type: XLSX
+  - name: General Cybersecurity
+    icon: 📁
+    count: 34
+    subcategories:
+      - name: Miscellaneous
+        resources:
+          - title: 
+            file: __1666554480.pdf
+            type: PDF
+          - title: 
+            file: __1682400112.pdf
+            type: PDF
+          - title: 
+            file: 1683711470079.pdf
+            type: PDF
+          - title: 
+            file: 1745309745679.pdf
+            type: PDF
+          - title: 
+            file: 1750835830567.pdf
+            type: PDF
+          - title: 
+            file: 1759380457478.pdf
+            type: PDF
+          - title: 
+            file: 1769442214362.pdf
+            type: PDF
+          - title: 
+            file: 1770888006638.pdf
+            type: PDF
+          - title: 
+            file: 1773412006137.pdf
+            type: PDF
+          - title: 
+            file: 1773644508484.pdf
+            type: PDF
+          - title: 1772916828036 260307 225539
+            file: 1772916828036_260307_225539.pdf
+            type: PDF
+          - title: 20 critical security controls
+            file: 20 critical security controls .pdf
+            type: PDF
+          - title: 2022
+            file: _2022_1672564504.pdf
+            type: PDF
+          - title: 2024 FR Email Security PerceptionPoint (1)
+            file: 2024 FR_Email Security_PerceptionPoint (1).pdf
+            type: PDF
+          - title: 220204
+            file: 220204.pdf
+            type: PDF
+          - title: 250318813v2 251205 061606
+            file: 250318813v2_251205_061606.pdf
+            type: PDF
+          - title: 260320
+            file: 260320.pdf
+            type: PDF
+          - title: Cyber crime online business model
+            file: Cyber_crime_online_business_model_.pdf
+            type: PDF
+          - title: Cyber Security Gaint Palo Alto Networks
+            file: Cyber_Security_Gaint_Palo_Alto_Networks_1676644870.pdf
+            type: PDF
+          - title: data security
+            file: data_security_.pdf
+            type: PDF
+          - title: day-2
+            file: day-2.pdf
+            type: PDF
+          - title: DDS
+            file: DDS.pdf
+            type: PDF
+          - title: download
+            file: download.pdf
+            type: PDF
+          - title: E03515734 - Government Cyber Action Plan ACCESSIBL 260107 095027
+            file: E03515734_-_Government_Cyber_Action_Plan_ACCESSIBL_260107_095027.pdf
+            type: PDF
+          - title: file 57D0B51E-B7A2-4BD5-BABB-709A44AE6857
+            file: file_57D0B51E-B7A2-4BD5-BABB-709A44AE6857.pdf
+            type: PDF
+          - title: LanDscAPe
+            file: LanDscAPe.pdf
+            type: PDF
+          - title: ordinal
+            file: ordinal.pdf
+            type: PDF
+          - title: original
+            file: original.pdf
+            type: PDF
+          - title: PEACH
+            file: PEACH_1671224797.pdf
+            type: PDF
+          - title: ploni101
+            file: ploni101.pdf
+            type: PDF
+          - title: Sludge for Good
+            file: Sludge_for_Good_1670002491.pdf
+            type: PDF
+          - title: SURF-SECURITY
+            file: SURF-SECURITY.pdf
+            type: PDF
+          - title: Translated
+            file: Translated.pdf
+            type: PDF
+          - title: UBTECH
+            file: UBTECH.pdf
+            type: PDF
