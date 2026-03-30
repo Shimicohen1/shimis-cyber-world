@@ -6,3 +6,9 @@ vendor/
 .bundle/
 Gemfile.lock
 .DS_Store
+
+# Logs
+scripts/*.log
+
+# Backups
+_backup/
