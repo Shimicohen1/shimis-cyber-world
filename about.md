@@ -2,22 +2,34 @@
 layout: page
 title: About
 permalink: /about/
+description: "The story behind Shimi's Cyber World — who, why, and what's next."
 ---
 
-**Shimi's Cyber World (SCW)** is a cybersecurity knowledge hub focused on sharing practical insights, tools, and resources for security professionals and enthusiasts.
+## What is Cyber World?
+
+Shimi's Cyber World is a personal knowledge base for the cybersecurity community. Not a product, not a company — a working collection of tools, resources, write-ups, and references built by someone who actually uses them.
+
+The idea is simple: gather everything useful in one place and keep it honest. No paywalls, no fluff, no "subscribe for the real answer" games. If something is here, it's because it earned its spot.
+
+## Who is Shimi?
+
+I'm a cybersecurity practitioner with a focus on offensive security, threat intelligence, and building tools that solve real problems. I've spent time in SOCs, on red teams, and in the gaps between them where the interesting work happens.
+
+This site is where I share what I learn — the stuff that actually works, the tools worth knowing, and the thinking behind them.
 
 ## Mission
 
-To make cybersecurity knowledge accessible, practical, and actionable — whether you're just starting out or deep in the field.
+Make practical cybersecurity knowledge accessible to anyone willing to put in the work.
 
-## What We Cover
+That means:
+- **Real write-ups** — not theory, not marketing. Hands-on breakdowns of techniques, tools, and challenges.
+- **Curated resources** — frameworks, training platforms, and references that are actually worth your time.
+- **Tools** — open-source utilities and original tools built for security work. Some exist now, more are coming.
+- **Community** — a place where practitioners share knowledge without gatekeeping.
 
-- **Offensive Security** — penetration testing, red teaming, exploit development
-- **Defensive Security** — blue team operations, incident response, hardening
-- **Threat Intelligence** — adversary tracking, IOCs, threat research
-- **Tools & Frameworks** — curated reviews and hands-on guides
-- **CTF Challenges** — write-ups, walkthroughs, and competition strategies
-- **Career Guidance** — breaking into cybersecurity, certifications, skill paths
+## What's Next
+
+This platform is growing. The roadmap includes original security tools, deeper write-up series, community features, and a resource library that keeps expanding. If you want to follow along or contribute, you're in the right place.
 
 ## Connect
 

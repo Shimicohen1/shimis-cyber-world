@@ -1,11 +1,21 @@
-<a href="{{ item.url }}" class="card tool-card" target="_blank" rel="noopener">
+<div class="card tool-card">
   <div class="card-body">
-    <h3>{{ item.title }} <span class="external-icon">↗</span></h3>
+    <div class="card-head">
+      <h3>{{ item.title }}</h3>
+      {% if item.status %}<span class="badge badge-{{ item.status | slugify }}">{{ item.status }}</span>{% endif %}
+    </div>
     <p>{{ item.description }}</p>
     {% if item.tags.size > 0 %}
     <div class="card-tags">
       {% for tag in item.tags %}<span class="tag tag-sm">{{ tag }}</span>{% endfor %}
     </div>
     {% endif %}
+    <div class="card-actions">
+      {% if item.url %}
+      <a href="{{ item.url }}" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">{{ item.button | default: "Learn More" }} <span class="external-icon">↗</span></a>
+      {% else %}
+      <span class="btn btn-ghost btn-sm btn-disabled">{{ item.button | default: "Coming Soon" }}</span>
+      {% endif %}
+    </div>
   </div>
-</a>
+</div>

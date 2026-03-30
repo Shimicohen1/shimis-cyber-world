@@ -5,14 +5,20 @@ categories:
         description: "Network discovery and security auditing tool."
         url: "https://nmap.org/"
         tags: [scanning, network]
+        status: Open
+        button: Learn More
       - title: "Shodan"
         description: "Search engine for internet-connected devices."
         url: "https://www.shodan.io/"
         tags: [osint, discovery]
+        status: Open
+        button: Learn More
       - title: "theHarvester"
         description: "Email, subdomain, and name harvesting tool for OSINT."
         url: "https://github.com/laramies/theHarvester"
         tags: [osint, enumeration]
+        status: Open
+        button: Learn More
 
   - name: "Exploitation"
     items:
@@ -20,14 +26,20 @@ categories:
         description: "The world's most used penetration testing framework."
         url: "https://www.metasploit.com/"
         tags: [exploitation, framework]
+        status: Open
+        button: Learn More
       - title: "Burp Suite"
         description: "Leading web application security testing toolkit."
         url: "https://portswigger.net/burp"
         tags: [web, proxy]
+        status: Open
+        button: Learn More
       - title: "SQLMap"
         description: "Automatic SQL injection and database takeover tool."
         url: "https://sqlmap.org/"
         tags: [injection, database]
+        status: Open
+        button: Learn More
 
   - name: "Defense & Monitoring"
     items:
@@ -35,14 +47,38 @@ categories:
         description: "Network protocol analyzer for deep traffic inspection."
         url: "https://www.wireshark.org/"
         tags: [network, analysis]
+        status: Open
+        button: Learn More
       - title: "Snort"
         description: "Open-source intrusion detection and prevention system."
         url: "https://www.snort.org/"
         tags: [ids, network]
+        status: Open
+        button: Learn More
       - title: "YARA"
         description: "Pattern matching tool for malware researchers."
         url: "https://virustotal.github.io/yara/"
         tags: [malware, detection]
+        status: Open
+        button: Learn More
+
+  - name: "SCW Tools"
+    items:
+      - title: "Threat Map Dashboard"
+        description: "Real-time visualization of global cyber threats and attack vectors."
+        tags: [visualization, threats]
+        status: Coming Soon
+        button: Request Access
+      - title: "IOC Scanner"
+        description: "Bulk indicator-of-compromise lookup across multiple threat intel feeds."
+        tags: [threat-intel, automation]
+        status: Coming Soon
+        button: Request Access
+      - title: "Hardening Checklist Generator"
+        description: "Auto-generate security hardening checklists for Linux, Windows, and cloud."
+        tags: [defense, compliance]
+        status: Beta
+        button: Request Access
 
   - name: "Utilities"
     items:
@@ -50,11 +86,17 @@ categories:
         description: "Web-based data transformation and analysis tool."
         url: "https://gchq.github.io/CyberChef/"
         tags: [encoding, analysis]
+        status: Open
+        button: Learn More
       - title: "Hashcat"
         description: "Advanced password recovery and hash cracking."
         url: "https://hashcat.net/hashcat/"
         tags: [password, cracking]
+        status: Open
+        button: Learn More
       - title: "John the Ripper"
         description: "Fast password cracker supporting many hash types."
         url: "https://www.openwall.com/john/"
         tags: [password, cracking]
+        status: Open
+        button: Learn More

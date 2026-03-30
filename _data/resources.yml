@@ -5,14 +5,17 @@ categories:
         url: "https://owasp.org/www-project-top-ten/"
         description: "The definitive guide to the most critical web application security risks."
         type: external
+        badge: Guide
       - title: "MITRE ATT&CK Framework"
         url: "https://attack.mitre.org/"
         description: "Knowledge base of adversary tactics and techniques based on real-world observations."
         type: external
+        badge: Reference
       - title: "CyberChef"
         url: "https://gchq.github.io/CyberChef/"
         description: "The Cyber Swiss Army Knife — a web app for encoding, decoding, and data analysis."
         type: external
+        badge: Tool
 
   - name: "Practice & Labs"
     items:
@@ -20,14 +23,17 @@ categories:
         url: "https://tryhackme.com/"
         description: "Guided cybersecurity training with hands-on virtual labs."
         type: external
+        badge: Platform
       - title: "HackTheBox"
         url: "https://www.hackthebox.com/"
         description: "Penetration testing labs and challenges for all skill levels."
         type: external
+        badge: Platform
       - title: "PortSwigger Web Security Academy"
         url: "https://portswigger.net/web-security"
         description: "Free online training for web application security."
         type: external
+        badge: Guide
 
   - name: "References"
     items:
@@ -35,7 +41,9 @@ categories:
         url: "https://www.nist.gov/cyberframework"
         description: "Standards and guidelines for managing cybersecurity risk."
         type: external
+        badge: PDF
       - title: "SANS Reading Room"
         url: "https://www.sans.org/white-papers/"
         description: "Extensive library of cybersecurity white papers and research."
         type: external
+        badge: Reference

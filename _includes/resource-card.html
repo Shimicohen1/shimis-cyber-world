@@ -1,6 +1,9 @@
-<a href="{{ item.url }}" class="card resource-card" target="_blank" rel="noopener">
+<a href="{{ item.url }}" class="card resource-card" {% if item.type == 'external' %}target="_blank" rel="noopener"{% endif %}>
   <div class="card-body">
-    <h3>{{ item.title }} {% if item.type == 'external' %}<span class="external-icon">↗</span>{% endif %}</h3>
+    <div class="card-head">
+      <h3>{{ item.title }} {% if item.type == 'external' %}<span class="external-icon">↗</span>{% endif %}</h3>
+      {% if item.badge %}<span class="badge">{{ item.badge }}</span>{% endif %}
+    </div>
     <p>{{ item.description }}</p>
   </div>
 </a>

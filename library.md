@@ -5,7 +5,7 @@ permalink: /library/
 ---
 
 <h1 class="page-title">Resource Library</h1>
-<p class="page-desc">Curated cybersecurity resources — frameworks, training platforms, and reference materials.</p>
+<p class="page-desc">Curated cybersecurity resources — frameworks, training platforms, references, and learning paths.</p>
 
 {% for category in site.data.resources.categories %}
 <section class="section">
