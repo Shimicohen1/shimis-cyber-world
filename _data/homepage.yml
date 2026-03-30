@@ -1,20 +1,53 @@
 hero:
   title: "Shimi's Cyber World"
-  tagline: "Cybersecurity insights, tools & resources — protecting the digital frontier."
-  cta_text: "Explore the Blog"
-  cta_url: /posts/
+  tagline: "A living knowledge hub — cybersecurity insights, curated tools, open resources, and hands-on learning."
   image: /assets/img/hero/banner.jpg
+  cta:
+    - text: "Read the Blog"
+      url: /posts/
+      style: primary
+    - text: "Browse Tools"
+      url: /tools/
+      style: ghost
 
-features:
-  - icon: "🛡️"
-    title: "Offensive & Defensive Security"
-    description: "Hands-on techniques for red and blue team operations."
-  - icon: "🔍"
-    title: "Threat Intelligence"
-    description: "Stay ahead with threat research, IOCs, and adversary tracking."
-  - icon: "🧰"
-    title: "Tools & Frameworks"
-    description: "Curated reviews and guides for the best cybersecurity tools."
-  - icon: "🏁"
-    title: "CTF Write-ups"
-    description: "Walkthroughs and solutions for capture-the-flag challenges."
+about_block:
+  heading: "What is Cyber World?"
+  body: >
+    Shimi's Cyber World is a personal knowledge base built for the cybersecurity community.
+    It brings together curated tools, learning resources, threat intelligence references,
+    and original write-ups — all in one place. Whether you're just getting started
+    or deep in the trenches, there's something here for you.
+  cta_text: "Learn more →"
+  cta_url: /about/
+
+featured_resources:
+  - title: "OWASP Top 10"
+    url: "https://owasp.org/www-project-top-ten/"
+    description: "The definitive guide to the most critical web application security risks."
+  - title: "MITRE ATT&CK Framework"
+    url: "https://attack.mitre.org/"
+    description: "Knowledge base of adversary tactics and techniques based on real-world observations."
+  - title: "TryHackMe"
+    url: "https://tryhackme.com/"
+    description: "Guided cybersecurity training with hands-on virtual labs."
+  - title: "PortSwigger Web Security Academy"
+    url: "https://portswigger.net/web-security"
+    description: "Free online training for web application security."
+
+featured_tools:
+  - title: "Nmap"
+    url: "https://nmap.org/"
+    description: "Network discovery and security auditing tool."
+    tags: [scanning, network]
+  - title: "Burp Suite"
+    url: "https://portswigger.net/burp"
+    description: "Leading web application security testing toolkit."
+    tags: [web, proxy]
+  - title: "Wireshark"
+    url: "https://www.wireshark.org/"
+    description: "Network protocol analyzer for deep traffic inspection."
+    tags: [network, analysis]
+  - title: "CyberChef"
+    url: "https://gchq.github.io/CyberChef/"
+    description: "Web-based data transformation and analysis tool."
+    tags: [encoding, analysis]
