@@ -3,10 +3,10 @@ layout: post
 title: "Welcome to Shimi's Cyber World"
 date: 2026-03-30
 tags: [announcement, cybersecurity]
-description: "Introducing Shimi's Cyber World — your new hub for cybersecurity knowledge, tools, and resources."
+description: "Introducing SCW — a cyber ecosystem built around a strong community."
 ---
 
-Welcome to **Shimi's Cyber World** — your new destination for cybersecurity knowledge, tools, and resources.
+Welcome to **Shimi's Cyber World** — a cyber ecosystem built around a strong community.
 
 ## What to Expect
 

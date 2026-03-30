@@ -8,7 +8,7 @@ permalink: /premium/
 <div class="premium-hero reveal">
 <span class="premium-hero__icon">🔒</span>
 <h1 class="premium-hero__title"><span>Premium</span> Toolkit</h1>
-<p class="premium-hero__desc">Exclusive tools built by Shimi for real-world cybersecurity operations. Custom automations, scanners, and field utilities — built from the ground up.</p>
+<p class="premium-hero__desc">Exclusive tools built for real-world cybersecurity operations. Custom automations, scanners, and field utilities — built from the ground up by the SCW community.</p>
 </div>
 
 <section class="premium-features">

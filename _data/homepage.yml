@@ -20,7 +20,7 @@ signals:
 # Identity block (compact hero)
 identity:
   title: "Shimi's Cyber World"
-  tagline: "Cybersecurity knowledge curated into a living digital feed. Drops, signals, field tools, and raw intelligence — all in one stream."
+  tagline: "A cyber ecosystem built around a strong community. Real updates, real discussions, tools, and insights from the field — everything driven by the people inside it."
   cta_primary:
     text: "Latest Drops"
     url: "/posts/"
@@ -85,7 +85,7 @@ tools_teaser:
 # Manifesto block
 manifesto:
   label: "The Signal"
-  text: "Cybersecurity isn't a product. It's a practice. This is a living feed of curated knowledge, operational tools, and raw intelligence — built for practitioners, not spectators."
-  sub: "Shimi's Cyber World exists because the best security knowledge shouldn't be buried in PDFs or locked behind paywalls. It should be alive, accessible, and constantly evolving."
+  text: "No noise. No unnecessary marketing. Just real cyber. Built from the community. Growing into much more."
+  sub: "What started as a large cyber community has grown into a place where people, companies, and startups connect, share, and stay ahead. Everything here is driven by the people inside it."
   link_text: "Read the full manifesto"
   link_url: "/about/"
