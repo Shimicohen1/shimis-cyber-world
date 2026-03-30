@@ -19,6 +19,6 @@ This site will be the home for:
 
 ## Explore
 
-Check out the [Tools](/shimis-cyber-world/tools/) directory for curated security tools, or browse the [Resource Library](/shimis-cyber-world/library/) for learning materials.
+Check out the [Tools](/tools/) directory for curated security tools, or browse the [Resource Library](/library/) for learning materials.
 
 More coming soon. Stay sharp, stay secure.

@@ -1,14 +1,12 @@
 title: "Shimi's Cyber World"
-description: "Cybersecurity insights, tools, and resources by Shimi Cohen"
-url: "https://shimicohen1.github.io"
-baseurl: "/shimis-cyber-world"
-timezone: Asia/Jerusalem
+description: "Community, insights, resources, and security tools"
+theme: null
+markdown: kramdown
+permalink: /posts/:title/
 
-plugins:
-  - jekyll-seo-tag
-  - jekyll-sitemap
-
-permalink: /blog/:year/:month/:title/
+collections:
+  pages:
+    output: true
 
 defaults:
   - scope:
@@ -26,4 +24,3 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
-  - node_modules
