@@ -556,6 +556,75 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   color: var(--white);
   margin-bottom: 1rem;
 }
+.manifesto__headline {
+  font-family: var(--f-display);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--gray);
+  margin-bottom: 0;
+}
+.manifesto__headline strong {
+  color: var(--white);
+}
+.manifesto__pillars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin: 2rem 0;
+  max-width: 600px;
+}
+.manifesto__pillar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--f-display);
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--white);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: .55rem 1rem;
+}
+.manifesto__pillar-icon {
+  font-size: .5rem;
+  color: var(--electric);
+}
+.manifesto__pillar-icon--acid { color: var(--acid); }
+.manifesto__pillar-icon--pink { color: var(--pink); }
+.manifesto__pillar-icon--lime { color: var(--lime); }
+.manifesto__pillar-icon--orange { color: var(--orange); }
+.manifesto__bottom {
+  margin-bottom: 2rem;
+}
+.manifesto__closer {
+  font-family: var(--f-display);
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--white);
+  margin-bottom: .8rem;
+}
+.founder-sig {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+}
+.founder-sig__logo {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  opacity: .7;
+}
+.founder-sig__text {
+  font-family: var(--f-mono);
+  font-size: .62rem;
+  letter-spacing: .04em;
+  color: var(--dim);
+}
 .manifesto__sub {
   font-size: .85rem;
   color: var(--gray);
