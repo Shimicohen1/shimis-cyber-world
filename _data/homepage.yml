@@ -1,13 +1,19 @@
 hero:
   title: "Shimi's Cyber World"
   tagline: "A living knowledge hub — cybersecurity insights, curated tools, open resources, and hands-on learning."
-  image: /assets/img/hero/banner.jpg
+  image: /assets/img/logos/logo-full.png
+  floating_tags:
+    - AI Security
+    - Microsoft Security
+    - Threat Intelligence
+    - Open-Source Tools
+    - Community
   cta:
-    - text: "Read the Blog"
+    - text: "Explore Posts"
       url: /posts/
       style: primary
-    - text: "Browse Tools"
-      url: /tools/
+    - text: "Enter the Library"
+      url: /library/
       style: ghost
 
 about_block:
@@ -17,7 +23,7 @@ about_block:
     It brings together curated tools, learning resources, threat intelligence references,
     and original write-ups — all in one place. Whether you're just getting started
     or deep in the trenches, there's something here for you.
-  cta_text: "Learn more →"
+  cta_text: "Learn more"
   cta_url: /about/
 
 featured_resources:

@@ -11,7 +11,7 @@ permalink: /posts/
 {% if posts.size > 0 %}
 <div class="post-list">
   {% for post in posts %}
-  <a href="{{ post.url | relative_url }}" class="post-list-item">
+  <a href="{{ post.url | relative_url }}" class="post-list-item card-glow">
     <div class="post-list-body">
       <h3>{{ post.title }}</h3>
       <p>{{ post.excerpt | strip_html | truncate: 180 }}</p>

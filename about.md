@@ -1,9 +1,21 @@
 ---
-layout: page
+layout: default
 title: About
 permalink: /about/
 description: "The story behind Shimi's Cyber World — who, why, and what's next."
 ---
+
+<div class="page" markdown="1">
+
+<div class="about-hero">
+  <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="Shimi's Cyber World" class="about-hero-logo">
+  <div class="about-hero-text">
+    <h2 class="gradient-text">Shimi's Cyber World</h2>
+    <p>A personal cybersecurity knowledge base — built by a practitioner, for practitioners. No paywalls, no fluff, no gatekeeping.</p>
+  </div>
+</div>
+
+<div class="page-body" markdown="1">
 
 ## What is Cyber World?
 
@@ -13,7 +25,7 @@ The idea is simple: gather everything useful in one place and keep it honest. No
 
 ## Who is Shimi?
 
-I'm a cybersecurity practitioner with a focus on offensive security, threat intelligence, and building tools that solve real problems. I've spent time in SOCs, on red teams, and in the gaps between them where the interesting work happens.
+I'm a cybersecurity practitioner with deep expertise in enterprise security, threat intelligence, and building tools that solve real problems. I've spent time leading security operations, architecting defenses, and working in the gaps where the interesting work happens.
 
 This site is where I share what I learn — the stuff that actually works, the tools worth knowing, and the thinking behind them.
 
@@ -35,3 +47,6 @@ This platform is growing. The roadmap includes original security tools, deeper w
 
 - [LinkedIn](https://www.linkedin.com/company/shimis-cyber-world){:target="_blank"}
 - [GitHub](https://github.com/Shimicohen1){:target="_blank"}
+
+</div>
+</div>

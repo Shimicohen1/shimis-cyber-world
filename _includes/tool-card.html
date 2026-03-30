@@ -1,8 +1,16 @@
-<div class="card tool-card">
+<div class="card tool-card card-glow">
   <div class="card-body">
     <div class="card-head">
       <h3>{{ item.title }}</h3>
-      {% if item.status %}<span class="badge badge-{{ item.status | slugify }}">{{ item.status }}</span>{% endif %}
+      {% if item.status == 'Open' %}
+        <span class="neon-badge neon-badge-green">{{ item.status }}</span>
+      {% elsif item.status == 'Beta' %}
+        <span class="neon-badge neon-badge-orange">{{ item.status }}</span>
+      {% elsif item.status == 'Coming Soon' %}
+        <span class="neon-badge neon-badge-purple">{{ item.status }}</span>
+      {% elsif item.status %}
+        <span class="neon-badge neon-badge-cyan">{{ item.status }}</span>
+      {% endif %}
     </div>
     <p>{{ item.description }}</p>
     {% if item.tags.size > 0 %}
@@ -12,7 +20,7 @@
     {% endif %}
     <div class="card-actions">
       {% if item.url %}
-      <a href="{{ item.url }}" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">{{ item.button | default: "Learn More" }} <span class="external-icon">↗</span></a>
+      <a href="{{ item.url }}" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">{{ item.button | default: "Learn More" }} <span class="external-icon">&#x2197;</span></a>
       {% else %}
       <span class="btn btn-ghost btn-sm btn-disabled">{{ item.button | default: "Coming Soon" }}</span>
       {% endif %}

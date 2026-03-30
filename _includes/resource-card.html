@@ -1,8 +1,8 @@
-<a href="{{ item.url }}" class="card resource-card" {% if item.type == 'external' %}target="_blank" rel="noopener"{% endif %}>
+<a href="{{ item.url }}" class="card resource-card card-glow" {% if item.type == 'external' %}target="_blank" rel="noopener"{% endif %}>
   <div class="card-body">
     <div class="card-head">
-      <h3>{{ item.title }} {% if item.type == 'external' %}<span class="external-icon">↗</span>{% endif %}</h3>
-      {% if item.badge %}<span class="badge">{{ item.badge }}</span>{% endif %}
+      <h3>{{ item.title }} {% if item.type == 'external' %}<span class="external-icon">&#x2197;</span>{% endif %}</h3>
+      {% if item.badge %}<span class="neon-badge neon-badge-cyan">{{ item.badge }}</span>{% endif %}
     </div>
     <p>{{ item.description }}</p>
   </div>
