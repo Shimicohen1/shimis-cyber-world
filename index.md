@@ -138,44 +138,42 @@ title: Home
 <hr class="section-break">
 
 <!-- MANIFESTO -->
-<section class="manifesto">
+<section class="scw-manifesto">
   <div class="container">
-    <div class="manifesto__inner reveal">
-      <div class="label label--acid manifesto__label">The Signal</div>
-      <p class="manifesto__headline">No noise. No unnecessary marketing.<br><strong>Just real cyber.</strong></p>
-    </div>
+    <div class="scw-manifesto-inner reveal">
 
-    <div class="manifesto__pillars reveal">
-      <div class="manifesto__pillar">
-        <span class="manifesto__pillar-icon">&#9679;</span>
-        <span>Real updates</span>
+      <div class="manifesto-line">
+        What started as a community…
       </div>
-      <div class="manifesto__pillar">
-        <span class="manifesto__pillar-icon manifesto__pillar-icon--acid">&#9679;</span>
-        <span>Real discussions</span>
-      </div>
-      <div class="manifesto__pillar">
-        <span class="manifesto__pillar-icon manifesto__pillar-icon--pink">&#9679;</span>
-        <span>Tools &amp; practical resources</span>
-      </div>
-      <div class="manifesto__pillar">
-        <span class="manifesto__pillar-icon manifesto__pillar-icon--lime">&#9679;</span>
-        <span>Insights from the field</span>
-      </div>
-      <div class="manifesto__pillar">
-        <span class="manifesto__pillar-icon manifesto__pillar-icon--orange">&#9679;</span>
-        <span>Things you won't find in official channels</span>
-      </div>
-    </div>
 
-    <div class="manifesto__bottom reveal">
-      <p class="manifesto__closer">Built from the community.<br>Growing into much more.</p>
-      <a href="{{ '/about/' | relative_url }}" class="manifesto__link">Read the full manifesto &rarr;</a>
-    </div>
+      <div class="manifesto-line">
+        became a place where people, companies, and startups connect,
+        share, and stay ahead.
+      </div>
 
-    <div class="founder-sig reveal">
-      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="founder-sig__logo">
-      <span class="founder-sig__text">Founded by Shimi &middot; Driven by the community</span>
+      <div class="manifesto-grid">
+        <div class="manifesto-item">real updates</div>
+        <div class="manifesto-item">real discussions</div>
+        <div class="manifesto-item">tools &amp; resources</div>
+        <div class="manifesto-item">field insights</div>
+        <div class="manifesto-item">what you won't find elsewhere</div>
+      </div>
+
+      <div class="manifesto-final">
+        No noise. No marketing. Just real cyber.
+      </div>
+
+      <div class="manifesto-tag">
+        Built from the community. Growing into much more.
+      </div>
+
+      <a href="{{ '/about/' | relative_url }}" class="manifesto-link">Read the full manifesto &rarr;</a>
+
+      <div class="founder-sig">
+        <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="founder-sig__logo">
+        <span class="founder-sig__text">Founded by Shimi &middot; Driven by the community</span>
+      </div>
+
     </div>
   </div>
 </section>
