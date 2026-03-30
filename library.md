@@ -46,6 +46,10 @@ permalink: /library/
           <div class="vault-resource__info">
             <span class="vault-resource__type">{{ resource.type }}</span>
             <span class="vault-resource__title">{{ resource.title }}</span>
+            {% assign resource_age = resource.added | date: "%s" %}
+            {% assign now_ts = "now" | date: "%s" %}
+            {% assign diff = now_ts | minus: resource_age %}
+            {% if diff < 604800 %}<span class="vault-resource__new">NEW</span>{% endif %}
           </div>
           <svg class="vault-resource__open" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>

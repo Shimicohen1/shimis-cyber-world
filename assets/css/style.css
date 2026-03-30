@@ -675,6 +675,28 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   line-height: 1.5;
   flex: 1;
 }
+.vault-card__meta {
+  font-size: .7rem;
+  color: var(--dim);
+  margin-top: .35rem;
+  font-family: var(--f-mono);
+  letter-spacing: .02em;
+}
+
+/* NEW badge for recently added vault resources */
+.vault-resource__new {
+  font-size: .6rem;
+  font-weight: 700;
+  font-family: var(--f-mono);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--bg);
+  background: var(--acid);
+  padding: .12em .45em;
+  border-radius: 3px;
+  margin-left: .5rem;
+  flex-shrink: 0;
+}
 
 /* =====================================================
    TOOLKIT — field tools
