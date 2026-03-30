@@ -1,9 +1,9 @@
 #!/bin/bash
-# SCW Vault Sync wrapper — launched by macOS LaunchAgent
-# Grant Full Disk Access to /bin/bash in System Settings > Privacy if needed
+# SCW Vault Sync wrapper
+# Run manually: bash scripts/run_sync.sh (from repo root)
 
 export PATH="/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin"
-export HOME="$HOME"
 
-cd REPO_DIR
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR/.."
 /usr/bin/python3 scripts/sync_vault.py

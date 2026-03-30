@@ -4,8 +4,7 @@ SCW Vault Auto-Sync
 Scans Google Drive folder, categorizes files, extracts Drive IDs,
 regenerates _data/resources.yml, and commits/pushes to GitHub.
 
-Run manually:  python3 ~/Documents/shimis-cyber-world-repo/scripts/sync_vault.py
-Scheduled via: ~/Library/LaunchAgents/com.scw.vault-sync.plist (every 2 days)
+Run manually:  python3 scripts/sync_vault.py  (from repo root)
 """
 
 import os
@@ -13,17 +12,30 @@ import re
 import subprocess
 import json
 import datetime
+import glob
 
 # === CONFIGURATION ===
-DRIVE_ROOT = os.path.expanduser(
-    "~/Library/CloudStorage/GoogleDrive-REDACTED_EMAIL/My Drive/"
-)
-REPO_DIR = os.path.expanduser("~/Documents/shimis-cyber-world-repo")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_DIR = os.path.dirname(SCRIPT_DIR)
 ICLOUD_DIR = os.path.expanduser(
     "~/Library/Mobile Documents/com~apple~CloudDocs/MY Startup/shimis-cyber-world/"
 )
 RESOURCES_YML = os.path.join(REPO_DIR, "_data", "resources.yml")
 LOG_FILE = os.path.join(REPO_DIR, "scripts", "sync_vault.log")
+
+
+def find_drive_root():
+    """Auto-detect Google Drive root (works with any Google account)."""
+    cloud_storage = os.path.expanduser("~/Library/CloudStorage")
+    if not os.path.isdir(cloud_storage):
+        raise FileNotFoundError("No CloudStorage directory found")
+    matches = glob.glob(os.path.join(cloud_storage, "GoogleDrive-*/My Drive"))
+    if not matches:
+        raise FileNotFoundError("No Google Drive mount found in CloudStorage")
+    return matches[0]
+
+
+DRIVE_ROOT = find_drive_root()
 
 # === FIND GOOGLE DRIVE FOLDER ===
 def find_scw_folder():
@@ -188,9 +200,10 @@ def log(msg):
 def scan_files(folder):
     """List all files in the Drive folder (non-recursive)."""
     files = []
+    folder_real = os.path.realpath(folder)
     for f in os.listdir(folder):
         fpath = os.path.join(folder, f)
-        if os.path.isfile(fpath) and not f.startswith('.'):
+        if os.path.realpath(fpath).startswith(folder_real + os.sep) and os.path.isfile(fpath) and not f.startswith('.'):
             files.append(f)
     return sorted(files)
 
@@ -252,6 +265,8 @@ def extract_drive_ids(folder, files):
 
 
 def yaml_escape(s):
+    s = s.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').replace('\x00', '')
+    s = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', s)
     if any(c in s for c in ':{}[]&*?|>!%@`#,\'"\\'):
         return '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
     if s.startswith('-') or s.startswith(' '):
