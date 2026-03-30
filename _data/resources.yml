@@ -10,197 +10,259 @@ categories:
         resources:
           - title: 220728.-.Intelligence.Architecture.v0.7.36
             file: 220728.-.Intelligence.Architecture.v0.7.36.pdf
+            url: https://drive.google.com/file/d/1Bw9na3Tbzpcn0H5mYqEQXEFW7bJW0ine/view
             type: PDF
           - title: Advanced Security and Threat Intelligence for AD
             file: Advanced Security and Threat Intelligence for AD.pdf
+            url: https://drive.google.com/file/d/19Z6v0RnfcYSLrC2_4r_uRryH9fl8K37G/view
             type: PDF
           - title: CTI Report - Critical Infrastracture - Nov.2025
             file: CTI Report - Critical Infrastracture - Nov.2025.pdf
+            url: https://drive.google.com/file/d/1Ld6BC4J-1cdhaG_OXaTZbvOHXYblCf_7/view
             type: PDF
           - title: CTI RG
             file: CTI_RG.pdf
+            url: https://drive.google.com/file/d/1SBrcIzgXib-TQlM-UZiJVEpCOg7MIFBA/view
             type: PDF
           - title: The Threat Intelligence Handbook pdf
             file: The_Threat_Intelligence_Handbook_pdf.pdf
+            url: https://drive.google.com/file/d/1l7Bg2P52byoGVvh6i8GKx9vVidsLdvtj/view
             type: PDF
       - name: "MITRE ATT&CK"
         resources:
           - title: 5 Common Ransomware ATT CK Techniques pdf
             file: 5_Common_Ransomware_ATT_CK_Techniques_pdf.pdf
+            url: https://drive.google.com/file/d/1qFgkyTJWIfv3qFppoQRDU6GlvHWSwwAk/view
             type: PDF
           - title: AiTM Attacks
             file: AiTM_Attacks_1678820501.pdf
+            url: https://drive.google.com/file/d/14lViHco4kSMH6Jl1z39GYddtrUUscMc1/view
             type: PDF
           - title: applied MITRE Cybercube
             file: applied_MITRE_Cybercube.pdf
+            url: https://drive.google.com/file/d/165Ahwn1ZrHFHcllhBtGHQJFMjxx5iNi0/view
             type: PDF
           - title: Checkpoint Attack Trends 2022
             file: Checkpoint_Attack_Trends_2022.pdf
+            url: https://drive.google.com/file/d/1vKMMpM31HmPa-PJWskAeFQ65DOCFVxUm/view
             type: PDF
           - title: Cloud Security with MITRE ATT CK
             file: Cloud_Security_with_MITRE_ATT_CK.pdf
+            url: https://drive.google.com/file/d/18KQM5gm2P-6QVNhuCWLBC5YHKfKPn4WM/view
             type: PDF
           - title: Decider open source MITRE ATT CK mapping
             file: Decider_open_source_MITRE_ATT_CK_mapping_1678387236.pdf
+            url: https://drive.google.com/file/d/1sWCLSQLzj6nQ3eaSXlNZ9uI84AuEcaC_/view
             type: PDF
           - title: Framework Evaluating Emerging Cyberattack Capabilities AI (1)
             file: Framework_Evaluating Emerging Cyberattack Capabilities_AI (1).pdf
+            url: https://drive.google.com/file/d/1dQK6lZSsw4EZHgWE-NPIq5HC--b7GxoM/view
             type: PDF
           - title: GETTING STARTED WITH ATT CK
             file: GETTING_STARTED_WITH_ATT_CK_.pdf
+            url: https://drive.google.com/file/d/1D1v8dZTOtrBQN8o3vmmVjlNofH_cHeYf/view
             type: PDF
           - title: Malwares used in cyber attacks impacting Ukraine
             file: Malwares_used_in_cyber_attacks_impacting_Ukraine.pdf
+            url: https://drive.google.com/file/d/1ffYtxzFOiBk1JFLN_qRtMFQ5hzrcXdMx/view
             type: PDF
           - title: MITRE ATTACK
             file: MITRE_ATTACK.pdf
+            url: https://drive.google.com/file/d/1Ax_fXTGq4dh9SMkZSlEXZ7ptjeD9I1rD/view
             type: PDF
           - title: Russia Ukraine Conflict Related Cyberattacks
             file: Russia_Ukraine_Conflict_Related_Cyberattacks.pdf
+            url: https://drive.google.com/file/d/1HJV-NzGXUkmwPgj_ZG_pcUtKBCVa0SjY/view
             type: PDF
           - title: Stopping Attacks with Cookies
             file: Stopping_Attacks_with_Cookies.pdf
+            url: https://drive.google.com/file/d/1C_W4LbVQ0E9Szgh8L-Omj-VObBJh_DJ0/view
             type: PDF
           - title: Top 10 Blockchain Attacks Vulnerabilities Weaknesses
             file: Top_10_Blockchain_Attacks_Vulnerabilities_Weaknesses.pdf
+            url: https://drive.google.com/file/d/1nEh8A5AX_ILLv1BYHoXYBxjMVTNkw8rL/view
             type: PDF
           - title: Using MITRE ATT CK in Threat Hunting and Detection
             file: Using_MITRE_ATT_CK_in_Threat_Hunting_and_Detection.pdf
+            url: https://drive.google.com/file/d/1PTRap3Tfu0e1qdM5bL4M9WzMAsxv47lB/view
             type: PDF
       - name: "Threat Actors & Campaigns"
         resources:
           - title: BeaverTail Infostealer DPRK
             file: BeaverTail_Infostealer_DPRK_1732308338.pdf
+            url: https://drive.google.com/file/d/1KOKPCotetAji4Kr4ALojTgKmDMFypPO0/view
             type: PDF
           - title: CISA LockBit 3 0
             file: CISA_LockBit_3_0_1679055473.pdf
+            url: https://drive.google.com/file/d/1K4u69-BDV5Ljygy-TRGqjKqP5ufKNsIC/view
             type: PDF
           - title: Information Stealers
             file: Information_Stealers.pdf
+            url: https://drive.google.com/file/d/1U3jAqdqKd3llyBLDKOzJDNrt5JuLjcha/view
             type: PDF
           - title: Information-Stealer-Malware-Advisory
             file: Information-Stealer-Malware-Advisory.pdf
+            url: https://drive.google.com/file/d/1PGLyfSuYS5WadqxPnzmKlvSllHNJ7uje/view
             type: PDF
           - title: Lithuania National Threat Assessment 2022
             file: Lithuania_National_Threat_Assessment_2022.pdf
+            url: https://drive.google.com/file/d/18RYK3d7k1f9OEc0vhZfykn6BwGVBqRO4/view
             type: PDF
           - title: Lumma Stealer Advanced Information Stealer Report
             file: Lumma_Stealer_Advanced_Information_Stealer_Report.pdf
+            url: https://drive.google.com/file/d/10MASMVqvqmijwGgdMy5fdMHZKyw4zb1k/view
             type: PDF
           - title: MICROSOFTMAR22-CERT-IL-W-1433
             file: MICROSOFTMAR22-CERT-IL-W-1433.pdf
+            url: https://drive.google.com/file/d/1HUH3F9snflOjjpw3mjM3Dv7NOJxdR2OZ/view
             type: PDF
           - title: MICROSOFTOCT21-CERT-IL-W-1388
             file: MICROSOFTOCT21-CERT-IL-W-1388.pdf
+            url: https://drive.google.com/file/d/1jrqOZjgy4E3Ye2OJb1vLS-2B9_RDfT2D/view
             type: PDF
           - title: Mitigating Russian Threats to U S Critical Infrastructure (1)
             file: Mitigating_Russian_Threats_to_U_S_Critical_Infrastructure (1).pdf
+            url: https://drive.google.com/file/d/1146jt6B2iktG4WH1xECN_rYXjaNc8PiC/view
             type: PDF
           - title: NATION STATE RANSOMWARE pdf
             file: NATION_STATE_RANSOMWARE_pdf_.pdf
+            url: https://drive.google.com/file/d/1OtZTHUgTXFVZtizyP03p-Jbm_ODbtkFf/view
             type: PDF
           - title: Operation Winter Shield Ten Actions to Improve Cyber Resilience
             file: Operation Winter Shield Ten Actions to Improve Cyber Resilience.pdf
+            url: https://drive.google.com/file/d/1bqymq2jVcwHlWcoE8oIaw7ZRonyXFxAL/view
             type: PDF
           - title: OPISRAEL 2023-3
             file: OPISRAEL 2023-3.pdf
+            url: https://drive.google.com/file/d/1Ol01wtfVv--rGKSdPEB5U90w_VxUzs9P/view
             type: PDF
           - title: Rookie Of The Year Lapsus Group
             file: Rookie_Of_The_Year_Lapsus_Group.pdf
+            url: https://drive.google.com/file/d/1puD30rdrbUqh5QkeyK20anPm62FEkksi/view
             type: PDF
           - title: Russia s Strategy in Cyberspace
             file: Russia_s_Strategy_in_Cyberspace__ .pdf
+            url: https://drive.google.com/file/d/15WTUfSu9y3fhoy2LAlbefQAxjRvGrpGM/view
             type: PDF
           - title: SMISHING-CERT-IL-W-998
             file: SMISHING-CERT-IL-W-998.pdf
+            url: https://drive.google.com/file/d/1HJQ57r_3GtYyrZVIOxvlajNeME80hgKp/view
             type: PDF
           - title: Special report Ukraine RB
             file: Special_report_Ukraine_RB_.pdf
+            url: https://drive.google.com/file/d/1Erheo7Uh2Hzs1VMnKx7XLzURXMLJq37Z/view
             type: PDF
           - title: המלצות הגנה לארגונים ואזרחים OPISRAEL
             file: המלצות הגנה לארגונים ואזרחים OPISRAEL.pdf
+            url: https://drive.google.com/file/d/1Hy7lMgIi93MMeIc0rI46uRvBnAiy7SM4/view
             type: PDF
           - title: המלצות לאזרחים - OpIsrael 2021 (1)
             file: המלצות לאזרחים - OpIsrael 2021 (1).pdf
+            url: https://drive.google.com/file/d/1N52f9yz87SqjWVrxfSwFGQna3PZBvKEh/view
             type: PDF
           - title: סיכום OpIsrael ארז דסה
             file: סיכום OpIsrael ארז דסה.pdf
+            url: https://drive.google.com/file/d/1AfIuICk5hG9PuZxLe9AdqvtRO2t_wxKn/view
             type: PDF
       - name: Threat Hunting
         resources:
           - title: Advanced Incident Detection and Threat Hunting
             file: Advanced_Incident_Detection_and_Threat_Hunting.pdf
+            url: https://drive.google.com/file/d/13B9DlWCqa4Xhfr1z_xR2L-8qedrjlrpr/view
             type: PDF
           - title: Handbook The Elastic Guide to Threat Hunting
             file: Handbook_The_Elastic_Guide_to_Threat_Hunting_.pdf
+            url: https://drive.google.com/file/d/17FoF2j_aK9lRr8HZWxbFh1QeUIxjBDJc/view
             type: PDF
           - title: The Endgame Guide to Threat Hunting
             file: The_Endgame_Guide_to_Threat_Hunting.pdf
+            url: https://drive.google.com/file/d/1O4NKu7uILKvYnFbRa4SHQsV2zzj33RVs/view
             type: PDF
           - title: Threat hunting checklist pdf
             file: Threat_hunting_checklist_pdf.pdf
+            url: https://drive.google.com/file/d/1LTJsRr7Mw0ydFC6fo3FR10DeFsYpPsn8/view
             type: PDF
           - title: Threat Hunting Playbook
             file: Threat_Hunting_Playbook.pdf
+            url: https://drive.google.com/file/d/1wJJrADLn31fZ_wWS5o19cMwRG5kPqBli/view
             type: PDF
       - name: Threat Reports
         resources:
           - title: 5 Key Cyber Threat Trends 2022 Open to discussing this
             file: 5_Key_Cyber_Threat_Trends_2022_Open_to_discussing_this.pdf
+            url: https://drive.google.com/file/d/1jWLrNH307pjGJG6KO50X97o7zx-1ZxYE/view
             type: PDF
           - title: Adversarial Threat Report Meta
             file: Adversarial_Threat_Report_Meta.pdf
+            url: https://drive.google.com/file/d/1-XAVthg1Iitssw-tqGGpoIlfXIvZ5WVe/view
             type: PDF
           - title: ATA-2025-Unclassified-Report
             file: ATA-2025-Unclassified-Report.pdf
+            url: https://drive.google.com/file/d/1NrOZOuPIvcXxdsDI7YqZRhBc8WU1UMTn/view
             type: PDF
           - title: ATA-2026-Unclassified-Report 260318 182641
             file: ATA-2026-Unclassified-Report_260318_182641.pdf
+            url: https://drive.google.com/file/d/1wQe4Pattc83lw69Ntng7CsLgTA8d-Lvu/view
             type: PDF
           - title: cloud threat horizons report h12026 260310 211244
             file: cloud_threat_horizons_report_h12026_260310_211244.pdf
+            url: https://drive.google.com/file/d/1QHzXyqDgoQ96OihD-JrvPiTyuBmRmwF0/view
             type: PDF
           - title: cloud threat horizons report h22025 250731 123846
             file: cloud_threat_horizons_report_h22025_250731_123846.pdf
+            url: https://drive.google.com/file/d/1Y3mjTag2SgrEEOYaDjcsW-nFVutpE_UM/view
             type: PDF
           - title: Cyber Threat Trends 2022
             file: Cyber_Threat_Trends_2022.pdf
+            url: https://drive.google.com/file/d/1233b-H1bCo1yrSpTB7QFVLSp1LKR_9pC/view
             type: PDF
           - title: Cybersecurity mitigation measures against critical threats
             file: Cybersecurity_mitigation_measures_against_critical_threats_1679081800.pdf
+            url: https://drive.google.com/file/d/1Swk7V2mT7PS42qwnNrenR--lcNhBWIxE/view
             type: PDF
           - title: ENISA Threat Landscape for Ransomware Victoria Beckman
             file: ENISA_Threat_Landscape_for_Ransomware_Victoria_Beckman_1660162487.pdf
+            url: https://drive.google.com/file/d/1_c7TYmP9PRIZEm3wdBYmI4lJNVo1kb4K/view
             type: PDF
           - title: Global Threat Report 2022
             file: Global_Threat_Report_2022.pdf
+            url: https://drive.google.com/file/d/1b9BS8YKdXiiwIJAX7qYtnpdfVOALJG5N/view
             type: PDF
           - title: impact-ai-cyber-threat-now-2027
             file: impact-ai-cyber-threat-now-2027.pdf
+            url: https://drive.google.com/file/d/1cOo1vO4Rulr7Pv5iQFNJ3yBGDdl4WSyP/view
             type: PDF
           - title: Intel471 Cyber Threats 2022
             file: Intel471_Cyber_Threats_2022.pdf
+            url: https://drive.google.com/file/d/1xddi-AsaDIZc5aM7OZ4cPVkM_MCHxy_M/view
             type: PDF
           - title: INTERNET ORGANISED CRIME THREAT ASSESSMENT 2021
             file: INTERNET_ORGANISED_CRIME_THREAT_ASSESSMENT_2021__1640901050.pdf
+            url: https://drive.google.com/file/d/1DldaTa_JGuPot921efmrYsU4kKMvNWso/view
             type: PDF
           - title: Masscan Ransomware Threat Analysis Report RB
             file: Masscan_Ransomware_Threat_Analysis_Report_RB_1672850784.pdf
+            url: https://drive.google.com/file/d/14v-19CFCR8w3hqebNqCI9bfPejY0DEFu/view
             type: PDF
           - title: Modern Cloud Threat Horizon
             file: Modern_Cloud_Threat_Horizon.pdf
+            url: https://drive.google.com/file/d/1Mc438r0g_sBY5cHyZn5R8-SQybn9-5u6/view
             type: PDF
           - title: Ransomware Threat Report 2022
             file: Ransomware_Threat_Report_2022.pdf
+            url: https://drive.google.com/file/d/1kWLqAl0jMvdFgUXAhfKOt7uZBkiGao0s/view
             type: PDF
           - title: RSecurity 2024 Global Cyber Threat Landscape Report
             file: RSecurity_2024_Global_Cyber_Threat_Landscape_Report.pdf
+            url: https://drive.google.com/file/d/1FOq4uVVwKtkjed2i4XAUynUM62rJxJGg/view
             type: PDF
           - title: Threat Landscape
             file: Threat_Landscape_.pdf
+            url: https://drive.google.com/file/d/1RXmDIlgSnUNvKvS3wdPpRJz-uE5Zy9V4/view
             type: PDF
           - title: wp-threat-prediction-2023
             file: wp-threat-prediction-2023.pdf
+            url: https://drive.google.com/file/d/1cGtgIin46s6UADD-uH3rGhzLIJ4FuOug/view
             type: PDF
   - name: Incident Response
     icon: 🚨
@@ -210,117 +272,153 @@ categories:
         resources:
           - title: Autopsy pdf
             file: Autopsy_pdf_1640352842.pdf
+            url: https://drive.google.com/file/d/1dq3DN481FJzpBm96avzPEF1M6GllgiCP/view
             type: PDF
           - title: Forensic artifacts to hunt Red Team activities (1)
             file: Forensic_artifacts_to_hunt_Red_Team_activities (1).pdf
+            url: https://drive.google.com/file/d/1rFK0LRiccLBsNNRSydRqyQpYrLK9jZGS/view
             type: PDF
           - title: GUIDELINES FOR DIGITAL FORENSICS FIRST RESPONDERS
             file: GUIDELINES_FOR_DIGITAL_FORENSICS_FIRST_RESPONDERS.pdf
+            url: https://drive.google.com/file/d/1rNLcXZ8FyN3PG8nI_4_EvZ5eu-i9L52x/view
             type: PDF
           - title: M365 Forensics
             file: M365_Forensics_.pdf
+            url: https://drive.google.com/file/d/1dmtPieK5-on3pnNV4e6itQudUKiM69cu/view
             type: PDF
           - title: SANS-DFPS FOR500 v4.14 12-22
             file: SANS-DFPS_FOR500_v4.14_12-22.pdf
+            url: https://drive.google.com/file/d/15yB6tHAJTnV9dVg3Hn63NuHbZXxOgjiW/view
             type: PDF
           - title: The Hitchhiker s Guide to DFIR
             file: The_Hitchhiker_s_Guide_to_DFIR_1681714906.pdf
+            url: https://drive.google.com/file/d/1AoR-kzDSKv0IKbwFhtKPVe7IwCDhfLY1/view
             type: PDF
           - title: Windows Registry Forensic Cheatsheet (1)
             file: Windows_Registry_Forensic_Cheatsheet (1).pdf
+            url: https://drive.google.com/file/d/1SpZdaaBx5rnitJS2AgUhSMuUmZZKElzL/view
             type: PDF
           - title: Windows Registry Forensics Cheatsheet
             file: Windows_Registry_Forensics_Cheatsheet_1642192166.pdf
+            url: https://drive.google.com/file/d/1aLQsR_SRG11AhNDga8Q_-_7s-QCjfYCA/view
             type: PDF
       - name: Log Analysis
         resources:
           - title: Event Log Analysis for SOC Analyst
             file: Event_Log_Analysis_for_SOC_Analyst.pdf
+            url: https://drive.google.com/file/d/11fd5il27GOVdN7HeosckQe93xj-MEDR0/view
             type: PDF
           - title: Mitigating Log4Shell Other Log4j Related Vulnerabilities 1640808077 (1)
             file: Mitigating_Log4Shell_Other_Log4j_Related_Vulnerabilities_1640808077 (1).pdf
+            url: https://drive.google.com/file/d/1QV-YrOnhSTVXfZlDBzpMa79F4IpIoCjv/view
             type: PDF
           - title: Offensive Windows Event Logs
             file: Offensive_Windows_Event_Logs_1681747956.pdf
+            url: https://drive.google.com/file/d/1Cr0fyaNB2mx_IfOrC0VxKarF-_b1ezD9/view
             type: PDF
           - title: Windows Detection Engineering
             file: Windows_Detection_Engineering.pdf
+            url: https://drive.google.com/file/d/1jqj9ij-gZHM2hR3sgGD_d1cJJXGyxwEj/view
             type: PDF
           - title: Windows Event Log Analysis
             file: Windows_Event_Log_Analysis.pdf
+            url: https://drive.google.com/file/d/1ut1I6z6n1nNWdJxnSp7wc1P-DAN3T5is/view
             type: PDF
       - name: Malware Analysis
         resources:
           - title: 4-MalwareAnalysis (1) (1)
             file: 4-MalwareAnalysis (1) (1).pdf
+            url: https://drive.google.com/file/d/1REjWJOgq5DrzCou-MNllYeS-Je3uK4KZ/view
             type: PDF
           - title: IoC Malware
             file: IoC_Malware_.pdf
+            url: https://drive.google.com/file/d/1qicNr90bqbZkBoT29QhCzZkr1oX93mzg/view
             type: PDF
           - title: Malware Analysis for Beginners
             file: Malware_Analysis_for_Beginners.pdf
+            url: https://drive.google.com/file/d/1j_5nuB0MFMQV9FERbY-NulHPCFzAYQWL/view
             type: PDF
           - title: Malware Analysis Report
             file: Malware_Analysis_Report.pdf
+            url: https://drive.google.com/file/d/1CwcU-g_LyAHC1nDsJ_cGUo5dzWHp9k9I/view
             type: PDF
           - title: Practical Malware Analysis
             file: Practical_Malware_Analysis.pdf
+            url: https://drive.google.com/file/d/1J-n6G-ehpNJYmwbguKz4JCSXKMXXlejI/view
             type: PDF
           - title: TrendMicro IOC Resource for R U Conflict cyber attacks
             file: TrendMicro_IOC_Resource_for_R_U_Conflict_cyber_attacks.pdf
+            url: https://drive.google.com/file/d/1U-YvNjTx4kC1Vazu2_aa3q_sFw7D09Yf/view
             type: PDF
       - name: "Playbooks & Guides"
         resources:
           - title: 2-IR01 - Incidents Response Intro (1)
             file: 2-IR01 - Incidents Response Intro (1).pdf
+            url: https://drive.google.com/file/d/1wSQQm3RO6ClyMteOIvXbs2x7bTa0FOG9/view
             type: PDF
           - title: Anatomy of an Incident
             file: Anatomy_of_an_Incident__.pdf
+            url: https://drive.google.com/file/d/1DDT1P-2OYPgw3CycJzICviRVTnz8Zrx3/view
             type: PDF
           - title: AWS Security Incident Response Guide (1)
             file: AWS_Security_Incident_Response_Guide (1).pdf
+            url: https://drive.google.com/file/d/1QRXfr213vG-kl3DsGgD8uzmJx7Vov8_3/view
             type: PDF
           - title: Cyber IR playbook
             file: Cyber IR playbook .pdf
+            url: https://drive.google.com/file/d/13jOqkiKqEtEUu8NwvI-EUoXSBYUCldBk/view
             type: PDF
           - title: Cyber Security Incident Vulnerability Response Playbooks
             file: Cyber_Security_Incident_Vulnerability_Response_Playbooks_1683132662.pdf
+            url: https://drive.google.com/file/d/1OLMZ_aZqddRkL1NvSZ3UrvznVLguV0ir/view
             type: PDF
           - title: CYBER SECURITY INCIDENTS MANAGEMENT
             file: CYBER_SECURITY_INCIDENTS_MANAGEMENT_.pdf
+            url: https://drive.google.com/file/d/1hI374PYTyuXQQ7U18CC_jaXInpObqV_8/view
             type: PDF
           - title: Cybersecurity Incident Response Plan
             file: Cybersecurity_Incident_Response_Plan_1730742937.pdf
+            url: https://drive.google.com/file/d/1iTYP-Fb74l5h3ALZjRrG553HH7lFujf2/view
             type: PDF
           - title: Cybersecurity Incident Vulnerability Response Playbooks
             file: Cybersecurity_Incident_Vulnerability_Response_Playbooks_1638645273.pdf
+            url: https://drive.google.com/file/d/1OL9hQAchV02l8mMMqHjWX4Vq3OAtgK5P/view
             type: PDF
           - title: Cybersecurity Incident Vulnerability Response Playbooks
             file: Cybersecurity_Incident_Vulnerability_Response_Playbooks_1673091734.pdf
+            url: https://drive.google.com/file/d/1RfjJvuw15RwRntK_rqh8tqdZaYEJuo71/view
             type: PDF
           - title: Incident Response Play Books Unauthorized Access
             file: Incident_Response_Play_Books_Unauthorized_Access_.pdf
+            url: https://drive.google.com/file/d/18Xq7E6X8BWdcTMneZlz57W2I5SWHsO0g/view
             type: PDF
           - title: Incident Response Playbook MS
             file: Incident_Response_Playbook_MS_1667129233.pdf
+            url: https://drive.google.com/file/d/1F-zPXCLCmW7PYEyr9FEeUtRyrSVwkTQ-/view
             type: PDF
           - title: Incident response playbook Phishing investigation
             file: Incident_response_playbook_Phishing_investigation.pdf
+            url: https://drive.google.com/file/d/1ORBfwxI_guG6RW8yPcQF7j75c3so2Lkk/view
             type: PDF
           - title: Incident Response Playbooks and Workflows
             file: Incident_Response_Playbooks_and_Workflows_1683177366.pdf
+            url: https://drive.google.com/file/d/1gpzY3pgD-yZPRIkF0m58ntlOx-8G32IC/view
             type: PDF
           - title: Log4J SOC Incident Response
             file: Log4J_SOC_Incident_Response_1640241500.pdf
+            url: https://drive.google.com/file/d/1W0CBae4uN3U70rWQts4bVbR24Qf8324h/view
             type: PDF
           - title: Public Power Grid cyber incident response playbook
             file: Public_Power_Grid_cyber_incident_response_playbook_1679420393.pdf
+            url: https://drive.google.com/file/d/1sznUEkOKp3GnWsmN0yrMG3kutgDxP-0A/view
             type: PDF
           - title: Top Incident Response Exercises for Common Cyber Attacks
             file: Top_Incident_Response_Exercises_for_Common_Cyber_Attacks_1682969483.pdf
+            url: https://drive.google.com/file/d/1GsfL6GdXNuszHgb7VgwpxlCBUajw0qrC/view
             type: PDF
           - title: What To Do If Your Company Has Been Hacked
             file: What_To_Do_If_Your_Company_Has_Been_Hacked.pdf
+            url: https://drive.google.com/file/d/1kUH9ug7uTPFwycYDrBVeb1sbDFLT8qPK/view
             type: PDF
   - name: Penetration Testing
     icon: ⚔️
@@ -330,130 +428,171 @@ categories:
         resources:
           - title: AD Privilege Escalation Hardening Checklist
             file: AD_Privilege_Escalation_Hardening_Checklist.pdf
+            url: https://drive.google.com/file/d/1zjMmICCgfTo8t1fECkmEmCHm2ffYNkDe/view
             type: PDF
           - title: Credential Dumping windows autologon password pdf
             file: Credential_Dumping_windows_autologon_password_pdf_1664914454.pdf
+            url: https://drive.google.com/file/d/14Ie358DXbisCCrb2NO5dakbMreEJzl18/view
             type: PDF
           - title: Credentials Dumping cheatcheat
             file: Credentials_Dumping_cheatcheat.pdf
+            url: https://drive.google.com/file/d/1Eq_IlQYC5E4dQOLZ04AJyM2LWOknrIBs/view
             type: PDF
           - title: NTLM Theft pdf
             file: NTLM_Theft_pdf.pdf
+            url: https://drive.google.com/file/d/1ByCTLmM9s8FsIruaIfERivkt3j7npKLp/view
             type: PDF
           - title: powerview
             file: powerview.pdf
+            url: https://drive.google.com/file/d/1SvMq3eiY2FhMesafHYdyJcSQx1fjICzx/view
             type: PDF
       - name: Offensive Security
         resources:
           - title: Active Directory Pentesting Mind Map
             file: Active_Directory_Pentesting_Mind_Map.pdf
+            url: https://drive.google.com/file/d/1fCl2kfy_JeMtJ6KRLJwHngd123LyN7bV/view
             type: PDF
           - title: AD Exploitation
             file: AD_Exploitation.pdf
+            url: https://drive.google.com/file/d/13swYS08ej1zTfmRESoIv64WjnOdFMiwl/view
             type: PDF
           - title: AI Pentesting Superhuman Performance Now
             file: AI_Pentesting_Superhuman_Performance_Now.pdf
+            url: https://drive.google.com/file/d/1IHGnOWGR6_kJ2Yz090nLyDas97WHGzBk/view
             type: PDF
           - title: Bug Bounty Career
             file: Bug_Bounty_Career_.pdf
+            url: https://drive.google.com/file/d/1t8fYwfpxygI1eP3kUGo2Sbu04E0Q3fJ1/view
             type: PDF
           - title: Bug Bounty Hunting
             file: Bug_Bounty_Hunting__1674070185.pdf
+            url: https://drive.google.com/file/d/1tgoAaynO_2C1j8IYsoVfgZaFgPpisQcv/view
             type: PDF
           - title: Cloud Pentesting Cheatsheet
             file: Cloud_Pentesting_Cheatsheet_.pdf
+            url: https://drive.google.com/file/d/1jz9OSZYAr-OMKucHZvkWaKfuL1PGZuid/view
             type: PDF
           - title: Drozer
             file: Drozer_.pdf
+            url: https://drive.google.com/file/d/18QhFLcz42F9kkTprVmQBzRWAKqMctNN5/view
             type: PDF
           - title: File Transfer Cheatsheet
             file: File_Transfer_Cheatsheet.pdf
+            url: https://drive.google.com/file/d/1PxrCNkEMnrDytQav-u-VGqwyyLQq88KY/view
             type: PDF
           - title: Final Purple Team Exercise Framework PTEFv2 pdf
             file: Final_Purple_Team_Exercise_Framework_PTEFv2_pdf_.pdf
+            url: https://drive.google.com/file/d/1uDT8Q3HQ4AyEIggefH6LjTG_GGEtWwd5/view
             type: PDF
           - title: Hacking with Golang
             file: Hacking_with_Golang_1683207496.pdf
+            url: https://drive.google.com/file/d/1wJfmv3IDCKOzjpS9a8gzZUjeT_Lggk7O/view
             type: PDF
           - title: Infrastructure Penetration Testing Course Online
             file: Infrastructure_Penetration_Testing_Course_Online__1652517702.pdf
+            url: https://drive.google.com/file/d/1mUH84GZKXR87EvgbjJKpndEB6lSlIOZw/view
             type: PDF
           - title: Infrastructure Penetration Testing Course Online
             file: Infrastructure_Penetration_Testing_Course_Online_.pdf
+            url: https://drive.google.com/file/d/15D5dukyJKREPAYRXTgRkdLFG0CEgFZFr/view
             type: PDF
           - title: Jumping the air gap
             file: Jumping_the_air_gap.pdf
+            url: https://drive.google.com/file/d/1AOPk_AlWyCKZe5mLOc8CWVetbz4eyjVc/view
             type: PDF
           - title: Master Infrastructure Penetration Testing
             file: Master_Infrastructure_Penetration_Testing_1683132615.pdf
+            url: https://drive.google.com/file/d/1yufCGtj2LyT6yFvwFdaywQTip9g74sO6/view
             type: PDF
           - title: Network Penetration Testing Course Online
             file: Network_Penetration_Testing_Course_Online_.pdf
+            url: https://drive.google.com/file/d/1guOlDe8YgMpoTGVREOex9cxa_xBu6ZrG/view
             type: PDF
           - title: Offensive Active Directory 101 pdf
             file: Offensive_Active_Directory_101_pdf.pdf
+            url: https://drive.google.com/file/d/1Fw-0cSAUTyJPQVHnyam8OEvZpnenNTH6/view
             type: PDF
           - title: OFFENSIVE SECURITY EVASION TECHNIQUES PT 1
             file: OFFENSIVE_SECURITY_EVASION_TECHNIQUES_PT_1.pdf
+            url: https://drive.google.com/file/d/1KxxTweaxSvOXZKL9Qb1h2-d0xGjp0StJ/view
             type: PDF
           - title: OSCP Notes Active Directory
             file: OSCP_Notes_Active_Directory_1669385958.pdf
+            url: https://drive.google.com/file/d/1q_wvYwm51laRGxmXfDyWJXRE76lIWQf1/view
             type: PDF
           - title: OSCP-Certificate-notes-
             file: OSCP-Certificate-notes-1643917449.pdf
+            url: https://drive.google.com/file/d/1MP2dIcENJxgUSFnZUhElus0Ofmp1utXa/view
             type: PDF
           - title: RDP
             file: RDP_1683481330.pdf
+            url: https://drive.google.com/file/d/1hPZ0sVLEXHA_Q4s1D0bw-6qXN33Mt116/view
             type: PDF
           - title: Red Team Field Manual
             file: Red_Team_Field_Manual__1641408927.pdf
+            url: https://drive.google.com/file/d/11gq_sOnilK6SJZcKY_LMurD2TKhl554j/view
             type: PDF
           - title: Red Team Field Manual
             file: Red_Team_Field_Manual.pdf
+            url: https://drive.google.com/file/d/1OblwxszWUF7ly5RYhvKeE9rMmLGZTin4/view
             type: PDF
           - title: SHODAN for Penetration Testers
             file: SHODAN_for_Penetration_Testers_1683132696.pdf
+            url: https://drive.google.com/file/d/1wnIjSJlLpExuDaRI2dhLGiW8REVEMvpu/view
             type: PDF
           - title: The State of Pentesting 2022 pdf
             file: The_State_of_Pentesting_2022_pdf_1665225505.pdf
+            url: https://drive.google.com/file/d/1pW2pOfUl3R4iQF3rsKvG4Ha2enBeSjuj/view
             type: PDF
           - title: Ultimate Guide To Penetration Testing
             file: Ultimate_Guide_To_Penetration_Testing__.pdf
+            url: https://drive.google.com/file/d/1fipwcgaQazHq7cEg-FuDzovzJo27aotg/view
             type: PDF
           - title: Windows Active Directory Exploitation
             file: Windows_Active_Directory_Exploitation_1730742197.pdf
+            url: https://drive.google.com/file/d/1BRrxJW_6VVsbUGdZjDIAAb78AxbYMz8S/view
             type: PDF
           - title: wordpress Pentest
             file: wordpress_Pentest.pdf
+            url: https://drive.google.com/file/d/19cFWaM71hvFWX6HykEdMrcUHD5lNtWT9/view
             type: PDF
       - name: Web Application Attacks
         resources:
           - title: 2022 in WAF bypasses
             file: 2022_in_WAF_bypasses_1674029202.pdf
+            url: https://drive.google.com/file/d/1_UdlOtANUiuJ0_68KsjP830u2tObSKJH/view
             type: PDF
           - title: DW103-5-XSSBack
             file: DW103-5-XSSBack.pdf
+            url: https://drive.google.com/file/d/1V65qYyz26TgF6Vw8P-I8Ejh_b2f23yqk/view
             type: PDF
           - title: MS SQL
             file: MS_SQL.pdf
+            url: https://drive.google.com/file/d/1v3sDbIrZHMChzXGTpwt7BlkItQdtZ-Z-/view
             type: PDF
           - title: mysql-security-excerpt-8.0-en
             file: mysql-security-excerpt-8.0-en.pdf
+            url: https://drive.google.com/file/d/1VuXa6jO1M5N8fUKxPwcb6QgDRzqSiKDE/view
             type: PDF
           - title: PortSwigger XSS Cheatsheet
             file: PortSwigger_XSS_Cheatsheet_.pdf
+            url: https://drive.google.com/file/d/1u2TQ86442dV8EElM7q42gewQY4e3_Gvn/view
             type: PDF
           - title: Server Side Vulnerability
             file: Server_Side_Vulnerability__1666554016.pdf
+            url: https://drive.google.com/file/d/1TQp8CIthubpRcCF-IDVGoWBJlyFSSzBF/view
             type: PDF
           - title: Top 10 Remote Code Execution RCE Parameter Attacks
             file: Top_10_Remote_Code_Execution_RCE_Parameter_Attacks.pdf
+            url: https://drive.google.com/file/d/1sUeyBMVcgDSLvqD1Ni4gNezc03jP58Qq/view
             type: PDF
           - title: XML External Entity Prevention Cheat Sheet
             file: XML_External_Entity_Prevention_Cheat_Sheet_1675164769.pdf
+            url: https://drive.google.com/file/d/1x16Rz8sXTEiRGd6TwxzU0n55BE3o4mYV/view
             type: PDF
           - title: XSS
             file: XSS.pdf
+            url: https://drive.google.com/file/d/1WIk-OwMMCWLsW65EFhouTR8iOQ4Ao2on/view
             type: PDF
   - name: "Blue Team & SOC"
     icon: 🛡️
@@ -463,88 +602,115 @@ categories:
         resources:
           - title: Cheat Sheet
             file: Cheat_Sheet_1683747757.pdf
+            url: https://drive.google.com/file/d/1mxVvZ2XfiP13Ws2BMWWlgU8zn7G3hjnq/view
             type: PDF
           - title: CISSP cheat shit
             file: CISSP_cheat shit.pdf
+            url: https://drive.google.com/file/d/1-715RbrV_s0dNAnHqTFmDFCM898LNSe7/view
             type: PDF
           - title: DotNet Security Cheat Sheet
             file: DotNet_Security_Cheat_Sheet_1678978926.pdf
+            url: https://drive.google.com/file/d/1iYNW9EVc6gFlha0DsdJ6Ur5etyb0GM61/view
             type: PDF
           - title: Git cheatsheet
             file: Git_cheatsheet.pdf
+            url: https://drive.google.com/file/d/1X1H0dl7A1YUuePujnPVhNVjSYG7leMpw/view
             type: PDF
       - name: Endpoint Detection
         resources:
           - title: Deploy an EDR solution with Microsoft
             file: Deploy_an_EDR_solution_with_Microsoft_1683299331.pdf
+            url: https://drive.google.com/file/d/1pS1DjqPCMYNjK-LBWpfzDX_9HoQhyZdA/view
             type: PDF
           - title: EPR Comparative Report 2022
             file: EPR_Comparative_Report_2022.pdf
+            url: https://drive.google.com/file/d/1GJyEe8ykolWdUCIOu_iUoOt_BCyEwXj5/view
             type: PDF
       - name: SOC Operations
         resources:
           - title: Azure Sentinel Deployment best Practices
             file: Azure_Sentinel_Deployment_best_Practices.pdf
+            url: https://drive.google.com/file/d/1uBl9Li2acqmtJlfxByUQyxai8eZpETpi/view
             type: PDF
           - title: Blue Team Cheat Sheet
             file: Blue Team Cheat Sheet .pdf
+            url: https://drive.google.com/file/d/1xsrMVGjJEgMQWPCeEOnedvVCH2iBbAXb/view
             type: PDF
           - title: Blue Team Cheat Sheets
             file: Blue_Team_Cheat_Sheets.pdf
+            url: https://drive.google.com/file/d/1YtniT4fW_1oZ7VtcwGBkSAocs3M1Ktaz/view
             type: PDF
           - title: brochure-soc-powered-by-kl-eng
             file: brochure-soc-powered-by-kl-eng.pdf
+            url: https://drive.google.com/file/d/1V8cqHSskcLMqT22DmYzmZjA6fsC2FQEr/view
             type: PDF
           - title: Build A SOC on a budget
             file: Build_A_SOC_on_a_budget.pdf
+            url: https://drive.google.com/file/d/1MTYLv2XJ4L5mG2YwdQCuHdfttA7uOSi1/view
             type: PDF
           - title: cyber security blueteam strategies
             file: cyber_security_blueteam_strategies_1683132507.pdf
+            url: https://drive.google.com/file/d/1w9gM1WmTyGaoDYVXiVaGESdy3JgPuDXf/view
             type: PDF
           - title: Designing and Building A Security Operations Center
             file: Designing and Building A Security Operations Center.pdf
+            url: https://drive.google.com/file/d/1B3vwMB4c_PDgSxHXEnC8gRylxY6rEYIV/view
             type: PDF
           - title: How to Build a Security Operation Center on Budget
             file: How_to_Build_a_Security_Operation_Center_on_Budget.pdf
+            url: https://drive.google.com/file/d/1U6AzUdDBKV0ng-hAvyo4qsi-1YsOkQR1/view
             type: PDF
           - title: Install a SIEM on a Linux Server
             file: Install_a_SIEM_on_a_Linux_Server_1674406198.pdf
+            url: https://drive.google.com/file/d/1y1NUS5LHoA6NrxQQvXsIlzRsrRMSSO6B/view
             type: PDF
           - title: Investigation the Spring4Shell Incident in SOC
             file: Investigation_the_Spring4Shell_Incident_in_SOC.pdf
+            url: https://drive.google.com/file/d/1sZNj5wWOyTFFOn_Vc0e42EYu63xUz0Oz/view
             type: PDF
           - title: Microsoft Sentinel
             file: Microsoft_Sentinel.pdf
+            url: https://drive.google.com/file/d/1828KtIBNipqegEuOd0EQbRwJq4YyHSaE/view
             type: PDF
           - title: Modernizing Your SOC - David Swift
             file: Modernizing Your SOC - David Swift.pptx
+            url: https://drive.google.com/file/d/11C7ITeC9CB2z6fqZ4mfcp93lCw3hI27c/view
             type: PPTX
           - title: Qradar
             file: Qradar__1669484789.pdf
+            url: https://drive.google.com/file/d/1x8L7nG6_jRX30Ffl0uE5jWBRaZX6dFWX/view
             type: PDF
           - title: Security operation center Opene Source
             file: Security_operation_center_Opene_Source_1651155233.pdf
+            url: https://drive.google.com/file/d/1DqoET7xh07Q6IeJylqSuI8cCDLU6WGIT/view
             type: PDF
           - title: Sentinel Best Practice Microsoft BlueVoyant
             file: Sentinel_Best_Practice_Microsoft_BlueVoyant_1670748237.pdf
+            url: https://drive.google.com/file/d/13TdEHRlCLoQIcEZbaAp9m5UC83cgw4JE/view
             type: PDF
           - title: Sentinel Use Case for BEC
             file: Sentinel_Use_Case_for_BEC.pdf
+            url: https://drive.google.com/file/d/1CuKUldcnaUniGYHDSHaQmZxHkOTXVwdh/view
             type: PDF
           - title: SIEM Detection Risk
             file: SIEM_Detection_Risk_.pdf
+            url: https://drive.google.com/file/d/1bPP1d0yAAlk1Q4h4AYPJTEIeP9lmci0a/view
             type: PDF
           - title: SOC MS
             file: SOC MS.pdf
+            url: https://drive.google.com/file/d/1pMKA9we5uP0HxucUt_5cgLbsfdiYedEu/view
             type: PDF
           - title: SOC Powered by KL EN
             file: SOC_Powered_by_KL_EN.pdf
+            url: https://drive.google.com/file/d/17RqaO1FkGH1yyGjRrTipZUgHcmImXGTn/view
             type: PDF
           - title: SOCTOM whitepaper
             file: SOCTOM whitepaper.pdf
+            url: https://drive.google.com/file/d/17eXlDZulEg5Gr4CiJWiuvUdrgcem4S6p/view
             type: PDF
           - title: V0.6 עותק של דרישות שירות SOC מנוהל
             file: V0.6 עותק של דרישות שירות SOC מנוהל.xlsx
+            url: https://drive.google.com/file/d/1VFX2QX-JinQkPksr2TwnLcy8D4t1RgQx/view
             type: XLSX
   - name: "Ransomware & Malware"
     icon: 🦠
@@ -554,55 +720,71 @@ categories:
         resources:
           - title: 2025 State of Malware
             file: 2025_State_of_Malware.pdf
+            url: https://drive.google.com/file/d/1hQMEwzErO3u_7AHX8PGemVG4EEGECP4j/view
             type: PDF
           - title: "Malware, IR - Tools & Resources"
             file: "Malware, IR - Tools & Resources.xlsx"
+            url: https://drive.google.com/file/d/1PjhaXB_0Nabhe1Ub30xwR5qZLhHuwsb6/view
             type: XLSX
       - name: "Phishing & Social Engineering"
         resources:
           - title: 10 Ways To Detect Phishing Emails
             file: 10_Ways_To_Detect_Phishing_Emails.pdf
+            url: https://drive.google.com/file/d/18z08O0SufwyiXhTKYci4vq_KLMp7Uslr/view
             type: PDF
           - title: Business Email Compromise Webcast
             file: Business_Email_Compromise_Webcast.pdf
+            url: https://drive.google.com/file/d/1UyG1AxWhPp_VUHDgwQTEY7jND5J3Sox6/view
             type: PDF
           - title: Phishing Email Analysis
             file: Phishing_Email_Analysis.pdf
+            url: https://drive.google.com/file/d/1N_1kbbY7YGneYO6r9R0uGoIsl3Ei7gks/view
             type: PDF
           - title: Phishing Smishing and Vishing
             file: Phishing_Smishing_and_Vishing_1675852919.pdf
+            url: https://drive.google.com/file/d/1XFXL6NuBUE7M-sPGQnB8k-6oefWnhnFN/view
             type: PDF
           - title: PWC Business Email Compromise Guide
             file: PWC_Business_Email_Compromise_Guide_1732807312.pdf
+            url: https://drive.google.com/file/d/1YAKGK-nVG03ZDHjDyOEniQRuW0sJyUaV/view
             type: PDF
           - title: Why Reasoning AI Is Becoming Critical for Cybersecurity - ES
             file: Why Reasoning AI Is Becoming Critical for Cybersecurity - ES.docx
+            url: https://drive.google.com/file/d/1sY99lX072UDctpog00HvJ-queIyEgmZG/view
             type: DOCX
       - name: Ransomware
         resources:
           - title: 2022 CISO-Circuit-Ransomware-Report E-8
             file: 2022_CISO-Circuit-Ransomware-Report_E-8.pdf
+            url: https://drive.google.com/file/d/1OlGp73Thr9xm8-TB4JMmOpZ04EPcfK0q/view
             type: PDF
           - title: Common TTPs of Modern Ransomwares
             file: Common_TTPs_of_Modern_Ransomwares.pdf
+            url: https://drive.google.com/file/d/1ZywJrMm3S0jN7dAwVH_On-UgBOCcUE0u/view
             type: PDF
           - title: Common-TTPs-of-the-modern-ransomware low-res
             file: Common-TTPs-of-the-modern-ransomware_low-res.pdf
+            url: https://drive.google.com/file/d/1hQ9KwEXn5IBhzLqa81fs29TRcNMHQ144/view
             type: PDF
           - title: Ransomware Facts
             file: Ransomware_Facts_.pdf
+            url: https://drive.google.com/file/d/1mIaqg_6CUMDPHnmrmv0AfAQEvV-QM94R/view
             type: PDF
           - title: Ransomware Risk Management
             file: Ransomware_Risk_Management_1672404768.pdf
+            url: https://drive.google.com/file/d/16znjrYYVq1F1zX_He8kLvQuH482dydCR/view
             type: PDF
           - title: THE RANSOMWARE ECOSYSTEM
             file: THE_RANSOMWARE_ECOSYSTEM.pdf
+            url: https://drive.google.com/file/d/1XSU8Rj6qWU0DHDK72qXbb3wF2GJ4nd4C/view
             type: PDF
           - title: vt-ransomware-report-2021
             file: vt-ransomware-report-2021.pdf
+            url: https://drive.google.com/file/d/1NErVCq0GKIL6YZkf0_70eR9z1TaVugh7/view
             type: PDF
           - title: מאמר הסבירות לאירוע כופרה V2
             file: מאמר הסבירות לאירוע כופרה V2.pdf
+            url: https://drive.google.com/file/d/1KMkmKoBMixayMIhniUcNggCDro-Mf-sP/view
             type: PDF
   - name: "OSINT & Intelligence"
     icon: 🕵️
@@ -612,92 +794,121 @@ categories:
         resources:
           - title: 21 OSINT Research Tools for Threat Intelligence
             file: 21_OSINT_Research_Tools_for_Threat_Intelligence.pdf
+            url: https://drive.google.com/file/d/17x6KZ_ImbLF6hkrzA22DnLg57xzq_oHa/view
             type: PDF
           - title: Handbook for Social Media Investigations
             file: Handbook_for_Social_Media_Investigations_.pdf
+            url: https://drive.google.com/file/d/13aY54K8CDbfTuksXUN3so0xtsypm8pUz/view
             type: PDF
           - title: OSINT
             file: OSINT_1675096102.pdf
+            url: https://drive.google.com/file/d/1nWJpqbUFxgdWnTvBwYVA3iyXLrOS6pLN/view
             type: PDF
           - title: OSINT Case Study Unmasking the wannabe hacker
             file: OSINT_Case_Study_Unmasking_the_wannabe_hacker__1677528996.pdf
+            url: https://drive.google.com/file/d/1ISNy9uJvARqBAU2_tPtVIhgGkvBqlqIH/view
             type: PDF
       - name: Platform Attack Surfaces
         resources:
           - title: Discord OSINT Attack Surface
             file: Discord OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1XgbCnDLRkVEAoSQIV_oTuYxTzA-oh_5v/view
             type: PDF
           - title: DWM OSINT Attack Surface
             file: DWM OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1HcHQcc2MSjimSLasB29UfQhbJuQiiSm-/view
             type: PDF
           - title: EMAIL OSINT Attack Surface
             file: EMAIL OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1I3D3gp9Zsx3_NtuNKcl1qnRrbFNK26pu/view
             type: PDF
           - title: Gab OSINT Attack Surface
             file: Gab OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1rgQZPSaTwX-TZAVApkxFuI0zpLch71pg/view
             type: PDF
           - title: Gettr OSINT Attack Surface
             file: Gettr OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/13j2e3pw6E-1atpE2Vr9OKfzMP8l3kyVk/view
             type: PDF
           - title: Github OSINT Attack Surface
             file: Github OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1fQGaYpo2dQotmf-fqzVJymQA7hwPEFuF/view
             type: PDF
           - title: IMAGE OSINT Attack Surface
             file: IMAGE OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1P2Vw7YqciooHZNZMP7n8CsE-kvEmCLXS/view
             type: PDF
           - title: Instagram OSINT Attack Surface
             file: Instagram OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1G33M0xVTH3TGJoD6XHBIAKLgj2uTn84G/view
             type: PDF
           - title: IP Address OSINT Attack Surface
             file: IP Address OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1QOX2seaKNuJTQ02YrkdGGtLy1R5b-sqN/view
             type: PDF
           - title: LinkedIn OSINT Attack Surface
             file: LinkedIn OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/198yrXzw5nCMdtKn7BghCNp73jcclBSK3/view
             type: PDF
           - title: Mastodon OSINT Attack Surface
             file: Mastodon OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1t9BN8dTuy0FtKIgAiof0FiPQNE6bCgQ3/view
             type: PDF
           - title: OpenSea OSINT Attack Surface
             file: OpenSea OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/13N6KzwrEfvAXhFSDfZrqI6thezh0VVcI/view
             type: PDF
           - title: Person OSINT Attack Surface
             file: Person OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1Yu6w8kjNpCrsKUpzIsdHmvkJmWKrLw9M/view
             type: PDF
           - title: Pinterest OSINT Attack Surface
             file: Pinterest OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1aWGdsGvPBCEJIXUGlHGvu_667wyz0ao4/view
             type: PDF
           - title: PokemonGo OSINT Attack Surface
             file: PokemonGo OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1OoPSevzT-2zyO4qOGyGiRWUy-5s2I3k6/view
             type: PDF
           - title: Reddit OSINT Attack Surface
             file: Reddit OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1zAG_AFaiBKTtWCnWyl1MDHIIlUORpZcj/view
             type: PDF
           - title: Skype OSINT Attack Surface
             file: Skype OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1x5ZN4a80wkKBF4huGQoeuXF4zpcHU9kU/view
             type: PDF
           - title: Snapchat OSINT Attack Surface
             file: Snapchat OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1ehx7ctVKXm_G6LvaP8PKmr72ZtfiUqAJ/view
             type: PDF
           - title: Telephone Number OSINT Attack Surface
             file: Telephone Number OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1kGCGCoqsM5la2BwRUJmRwmHcqkKLZW4T/view
             type: PDF
           - title: TikTok OSINT Attack Surface
             file: TikTok OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1IuOOgxwMrgcoxhec0DWzbVyPpTBlApfp/view
             type: PDF
           - title: Tumblr OSINT Attack Surface
             file: Tumblr OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/19w_ZKkpXmIia1xbbKvLLvy_b4CnREX-H/view
             type: PDF
           - title: Twitter OSINT Attack Surface
             file: Twitter OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1ac-E3O53VCPXdI123cpMQGREDYvJxsXo/view
             type: PDF
           - title: USERNAME OSINT Attack Surface
             file: USERNAME OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1D4qlV0UBuihEW0w0R9buIqCyFKohLuwh/view
             type: PDF
           - title: Website OSINT Attack Surface
             file: Website OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1RrmTcpMbZgb1urU3WQdwgccPj11eWefC/view
             type: PDF
           - title: Youtube OSINT Attack Surface
             file: Youtube OSINT Attack Surface.pdf
+            url: https://drive.google.com/file/d/1j_v_4BKWM0WtEqs0KuX9AZzxsS8lZzA1/view
             type: PDF
   - name: Cloud Security
     icon: ☁️
@@ -707,62 +918,79 @@ categories:
         resources:
           - title: AWS Security Reference Architecture
             file: AWS_Security_Reference_Architecture_1676270669.pdf
+            url: https://drive.google.com/file/d/1G3OP8ZuXdZ8v60QtB2Ea7JDS2dysiHX8/view
             type: PDF
           - title: AWS Security Services
             file: AWS_Security_Services.pdf
+            url: https://drive.google.com/file/d/11WAW65Yzm5QPHQiSKIIU5TtPtpMuQ_xq/view
             type: PDF
           - title: CIS Amazon Web Services Foundations Benchmark v1.5.0
             file: CIS_Amazon_Web_Services_Foundations_Benchmark_v1.5.0.pdf
+            url: https://drive.google.com/file/d/1UOsPdGqBlGSMM8IDoq3qCzHk-K-qkIFQ/view
             type: PDF
       - name: Azure
         resources:
           - title: Azure DevOps Security
             file: Azure_DevOps_Security.pdf
+            url: https://drive.google.com/file/d/1xcMPl6EqjNauGPHTUD7nwoDoHooFQ8ts/view
             type: PDF
           - title: CIS Microsoft Azure Foundations Benchmark v2.0.0
             file: CIS_Microsoft_Azure_Foundations_Benchmark_v2.0.0.pdf
+            url: https://drive.google.com/file/d/1IYNJUvmcZkhKqvUo7DQM5g0Sl0jShQcf/view
             type: PDF
           - title: Microsoft Azure Security Framework
             file: Microsoft_Azure_Security_Framework.pdf
+            url: https://drive.google.com/file/d/1vmCRG7IqMo1qVBYt4XOC6nVYnK-xXsD4/view
             type: PDF
           - title: Microsoft Cloud Security for Enterprise Architects
             file: Microsoft_Cloud_Security_for_Enterprise_Architects.pdf
+            url: https://drive.google.com/file/d/1AH8obux86xCK1-X_lFFpDelyYLvsixuD/view
             type: PDF
       - name: Cloud Security
         resources:
           - title: CISA s Cloud Security Technical Reference Architecture
             file: CISA_s_Cloud_Security_Technical_Reference_Architecture_.pdf
+            url: https://drive.google.com/file/d/11r3H7n_7Iuak4E5D0oN2ShvdAe71mekt/view
             type: PDF
           - title: Cloud Computing
             file: Cloud_Computing.pdf
+            url: https://drive.google.com/file/d/19WncATMWdJIU9WeJEMUEY2lUiX3oOc_N/view
             type: PDF
           - title: CSI-CloudTop10-Identity-Access-Management
             file: CSI-CloudTop10-Identity-Access-Management.pdf
+            url: https://drive.google.com/file/d/1f8qp3gqQycGK2rOoMx2UQ4j1ouEvMERS/view
             type: PDF
           - title: TX-RAMP Certified Cloud Products 8.1.24
             file: TX-RAMP Certified Cloud Products 8.1.24.xlsx
+            url: https://drive.google.com/file/d/1xigjlr4b_WEWGApva9Rfr6fyvIxcKwn1/view
             type: XLSX
       - name: Containers
         resources:
           - title: Kubernetes Harding Guide
             file: Kubernetes_Harding_Guide.pdf
+            url: https://drive.google.com/file/d/1fUTedbDWi-9emt7fXGnlSDOO94WTu6aV/view
             type: PDF
           - title: Kubernetes Security Guide
             file: Kubernetes_Security_Guide.pdf
+            url: https://drive.google.com/file/d/16nfD52KDgtfOtm317IZzxAkFFimVVSNc/view
             type: PDF
       - name: DevSecOps
         resources:
           - title: Enterprise DevSecOps Strategy Guide
             file: Enterprise_DevSecOps_Strategy_Guide_1683481496.pdf
+            url: https://drive.google.com/file/d/17KCN1BkAya8fyi-5qZDuc1T_EgYPKhDY/view
             type: PDF
           - title: Securing Enterprise DevOps Environments
             file: Securing_Enterprise_DevOps_Environments_.pdf
+            url: https://drive.google.com/file/d/1T9gQgT2qQqz6KDU8bqgITlE_qTqG00rD/view
             type: PDF
           - title: The DevOps security checklist
             file: The DevOps security checklist .pdf
+            url: https://drive.google.com/file/d/1EDoZJgti15hMJdw9g3HVFQjljF40LMzK/view
             type: PDF
           - title: Top 10 CI CD security risks
             file: Top_10_CI_CD_security_risks.pdf
+            url: https://drive.google.com/file/d/100B63T0R-G-DinvDJaEMzmvT_tWC5Gzk/view
             type: PDF
   - name: "Network & Infrastructure"
     icon: 🌐
@@ -772,72 +1000,93 @@ categories:
         resources:
           - title: Active Directory Enumeration with PowerShell
             file: Active_Directory_Enumeration_with_PowerShell_.pdf
+            url: https://drive.google.com/file/d/19D6DQLDnABDtdKYZshrEszt3c68q2mzV/view
             type: PDF
           - title: Active Directory Security Assessment 2
             file: Active_Directory_Security_Assessment 2.pdf
+            url: https://drive.google.com/file/d/1nCmc8Si3pqgAi42CTBcmGkaMoLcQ2_Kj/view
             type: PDF
           - title: AD Security Checklist
             file: AD_Security_Checklist_1664996838.pdf
+            url: https://drive.google.com/file/d/1gmbD-ojkDxhPjgcGc_iM4ApuzFiJFhhw/view
             type: PDF
           - title: Advanced Browser Security datasheet
             file: Advanced Browser Security datasheet.pdf
+            url: https://drive.google.com/file/d/1RJ6PDLzemu-wEjRTb5r0mmwAfEOQ68s-/view
             type: PDF
           - title: advanced browser security datasheet-1
             file: advanced_browser_security_datasheet-1.pdf
+            url: https://drive.google.com/file/d/1g_SZpktJyGJ1mLKAR5uOYbXHBPwRxkBo/view
             type: PDF
           - title: Integration of Ubuntu in Active Directory
             file: Integration_of_Ubuntu_in_Active_Directory.pdf
+            url: https://drive.google.com/file/d/14A2vlUtp8KkJHcJlqwPhUETLj7QV2jUL/view
             type: PDF
           - title: Securing Active Directory
             file: Securing_Active_Directory_1730742154.pdf
+            url: https://drive.google.com/file/d/1DPmrYH0LdbYEABQ4vqZpF0P1PEA2E5wz/view
             type: PDF
       - name: Microsoft Security
         resources:
           - title: Microsoft CISO Insider
             file: Microsoft_CISO_Insider.pdf
+            url: https://drive.google.com/file/d/1RpM3Mzs0-GbPCMRPGEl0x57EW37pNiT7/view
             type: PDF
           - title: Microsoft Security Best Practices pdf
             file: Microsoft_Security_Best_Practices_pdf_.pdf
+            url: https://drive.google.com/file/d/1zscOQf9mVgd3137aauepWGLV3qHf7Ljp/view
             type: PDF
           - title: Secure Future Initiative
             file: Secure_Future_Initiative_1731772146.pdf
+            url: https://drive.google.com/file/d/16crxMPociggCWsX1tr_Ez_aqBGUm8R7-/view
             type: PDF
       - name: Network Security
         resources:
           - title: DNS Filtering Solutions
             file: DNS_Filtering_Solutions_1669724910.pdf
+            url: https://drive.google.com/file/d/182E0Rj2hoe0WJ5bhU3OZp2J-hkNZFzsk/view
             type: PDF
           - title: Network Infrastructure Security Guidance
             file: Network_Infrastructure_Security_Guidance.pdf
+            url: https://drive.google.com/file/d/1SMEreVmMcEX9-svlpPh9Y56nSRTDGpEZ/view
             type: PDF
           - title: Role of DNS in Cybersecurity
             file: Role_of_DNS_in_Cybersecurity_.pdf
+            url: https://drive.google.com/file/d/1s-UsWDJiI-NTsia_xWHuJJAxgbzGniqk/view
             type: PDF
           - title: The Human Firewall The First Step to Cybersecurity
             file: The_Human_Firewall_The_First_Step_to_Cybersecurity.pdf
+            url: https://drive.google.com/file/d/1KqMpNHe1aTIRimaHcPVy-9rqcOr0Pfpw/view
             type: PDF
       - name: OS Hardening
         resources:
           - title: Apple Security Platform
             file: Apple_Security_Platform.pdf
+            url: https://drive.google.com/file/d/1ArcTvM-tshF-vVxpYw4seMNnfH4458nR/view
             type: PDF
           - title: linux-endpoint-hardening (1)
             file: linux-endpoint-hardening (1).pdf
+            url: https://drive.google.com/file/d/16PO2NNJTHTG8IlyohgswAP3fHxdgUwm7/view
             type: PDF
           - title: Servers
             file: Servers.pdf
+            url: https://drive.google.com/file/d/1VsF6fdVBXfRbyFbg2rXcejOUGCuskm0X/view
             type: PDF
           - title: Windows 11 Security Book
             file: _Windows_11_Security_Book.pdf
+            url: https://drive.google.com/file/d/1RBAZMZYtX0G7MQ4_wCUswVI8aKcIzvdQ/view
             type: PDF
           - title: Windows 11 Security Book
             file: Windows_11_Security_Book_1667158298.pdf
+            url: https://drive.google.com/file/d/1TRkgSYq4oBKDXSV3NZ4BdbJKQawGxPbp/view
             type: PDF
           - title: Windows 11 Security Book
             file: Windows_11_Security_Book_1670616488.pdf
+            url: https://drive.google.com/file/d/1je2D8R2CcA9HZxOe3nPPe4Zhk7r_A8yi/view
             type: PDF
           - title: Windows powerShell CookBook
             file: Windows powerShell CookBook.pdf
+            url: https://drive.google.com/file/d/1Tz4FqKuBEvKM6xdNRVV3WRFj48nz6cym/view
             type: PDF
   - name: Application Security
     icon: 🔒
@@ -847,37 +1096,47 @@ categories:
         resources:
           - title: 2FA
             file: 2FA_.pdf
+            url: https://drive.google.com/file/d/1YsZEN9x3qm3irycSFnVXwdLDO4z3gFLO/view
             type: PDF
           - title: Apple SSO
             file: Apple_SSO_1682404374.pdf
+            url: https://drive.google.com/file/d/14-ZgcNdAq1cT4nqj27fQr8ZguW2EMs0_/view
             type: PDF
       - name: Secure Development
         resources:
           - title: Principles and Approaches for Security by Design
             file: Principles_and_Approaches_for_Security_by_Design_1681663584.pdf
+            url: https://drive.google.com/file/d/1PMv0SFc7eF6DUIlTFmv4FiGsspkjt1TX/view
             type: PDF
           - title: Product Security Bad Practices
             file: Product_Security_Bad_Practices.pdf
+            url: https://drive.google.com/file/d/1Gr7pwc9zy8pmubSJpdkqHvkt3DfmjjJ_/view
             type: PDF
       - name: "Web & API"
         resources:
           - title: API Security Testing
             file: API_Security_Testing_1679599190.pdf
+            url: https://drive.google.com/file/d/1Xzhu2cEzUf-aozM3mWlwY023JphzQYNi/view
             type: PDF
           - title: OWASP Secure Coding Practices
             file: OWASP_Secure_Coding_Practices_1681670032.pdf
+            url: https://drive.google.com/file/d/15VybmBZar3fz2l15GIYD66RJEe5OiwU7/view
             type: PDF
           - title: OWASP Top 10 Privacy Risks Countermeasures v2.0 (1)
             file: OWASP_Top_10_Privacy_Risks_Countermeasures_v2.0 (1).pdf
+            url: https://drive.google.com/file/d/1dELi0D6Y-75GFuZMTb7Ko74dpMvzUqWW/view
             type: PDF
           - title: Python security Book
             file: Python security Book.pdf
+            url: https://drive.google.com/file/d/1eDlme84NFPcaS5ci7-EjcSJw_mjxtbjH/view
             type: PDF
           - title: Secure Software Development Framework SSDF
             file: Secure_Software_Development_Framework_SSDF.pdf
+            url: https://drive.google.com/file/d/1VWmdkeU9icx_PNRXOYTn86qErizBuN4-/view
             type: PDF
           - title: Web Security Testing Guide
             file: Web_Security_Testing_Guide_1666727956.pdf
+            url: https://drive.google.com/file/d/1HQypmpakNmTmooy9VCdZG91JpqMEuWo-/view
             type: PDF
   - name: "AI & Emerging Tech"
     icon: 🤖
@@ -887,52 +1146,67 @@ categories:
         resources:
           - title: AICM Bundle - Presentation 20251020
             file: AICM Bundle - Presentation 20251020.pdf
+            url: https://drive.google.com/file/d/1xOFRwUm7YZL14WpZcQZD0TrA5MaUmXkm/view
             type: PDF
           - title: ChatGPT for Offsec
             file: ChatGPT_for_Offsec_1671691491.pdf
+            url: https://drive.google.com/file/d/1rylt4UGaaIMahwyGfs4rgaepYqatA1QC/view
             type: PDF
           - title: ChatGPT SecurityImplications pdf
             file: _ChatGPT_SecurityImplications_pdf_1683213310.pdf
+            url: https://drive.google.com/file/d/1Yx-EhsogeyVPWtM4Xew3GZkWIYhGSBST/view
             type: PDF
           - title: Cybersecurity Implications of ChatGPT
             file: Cybersecurity_Implications_of_ChatGPT_1674722637.pdf
+            url: https://drive.google.com/file/d/1nxPtuM9-35psjiGm7tm_QyraiMbw8766/view
             type: PDF
           - title: DeepSeek Ai assessment report
             file: DeepSeek_Ai_assessment_report.pdf
+            url: https://drive.google.com/file/d/1cIkjIcLcwAwYF0zbtHnddcfWnamRF9k-/view
             type: PDF
           - title: DeepSeek Final 250420 061224
             file: DeepSeek Final_250420_061224.pdf
+            url: https://drive.google.com/file/d/1ThXnuueu4itznXZQqIRybzRlvUkgQN8C/view
             type: PDF
           - title: Generative AI and ChatGPT Enterprise Risk
             file: Generative_AI_and_ChatGPT_Enterprise_Risk_1682328073.pdf
+            url: https://drive.google.com/file/d/1CKjjU2OMFjwApV07tIq4-Fr78h4B1U-r/view
             type: PDF
           - title: Gmail - CyberInsight Weekly Brief - 9 27 2025
             file: Gmail - CyberInsight Weekly Brief - 9_27_2025.pdf
+            url: https://drive.google.com/file/d/1xesn-M92YukyPQbwaXhzDqvZqWdNWR9w/view
             type: PDF
           - title: Hallucinated Intelligence
             file: Hallucinated_Intelligence.pptx
+            url: https://drive.google.com/file/d/1aGrsIHVd2gwCpBHScNXgMJlDRcMszQQq/view
             type: PPTX
           - title: Jailbreaking LLMs with Information Overload
             file: Jailbreaking_LLMs_with_Information_Overload.pdf
+            url: https://drive.google.com/file/d/1F2qNw5taIZO5OnBLaBJDyhXpzLpy5wdt/view
             type: PDF
           - title: Response for AI Loss of Control Incidents
             file: Response for AI Loss of Control Incidents.pdf
+            url: https://drive.google.com/file/d/1s-rHzPtJlVCRwnOrhl0lda2ZDs4FL7I9/view
             type: PDF
       - name: Deepfakes
         resources:
           - title: Law enforcement and the challenge of deepfakes
             file: Law_enforcement_and_the_challenge_of_deepfakes.pdf
+            url: https://drive.google.com/file/d/14mkNkc5pFeKTO3-zBQd-oZMqzqFgkUqG/view
             type: PDF
       - name: IoT Security
         resources:
           - title: IoT Device Cybersecurity Guidance
             file: IoT_Device_Cybersecurity_Guidance.pdf
+            url: https://drive.google.com/file/d/19B4AEDeWGMUgThrjs1SG3VS9jTDtFUq4/view
             type: PDF
           - title: IOT+Security+for+Dummies
             file: IOT+Security+for+Dummies.pdf
+            url: https://drive.google.com/file/d/1y1NCEV6Jjk3saEWTexwHTAwiiGB3UkCI/view
             type: PDF
           - title: The State of Healthcare IoT Device Security 2022
             file: The_State_of_Healthcare_IoT_Device_Security_2022.pdf
+            url: https://drive.google.com/file/d/1Y3rYTVFNrmTY71Y587vIf0beMWwNl-SD/view
             type: PDF
   - name: Critical Infrastructure
     icon: 🏭
@@ -942,49 +1216,63 @@ categories:
         resources:
           - title: FinTech Cybersecurity An ASEAN Outlook
             file: _FinTech_Cybersecurity_An_ASEAN_Outlook.pdf
+            url: https://drive.google.com/file/d/1Vbw0TrKyd3zI4tjj1adKgmimWpvRMxZS/view
             type: PDF
           - title: מסמך-חוות-דעת-על-אירוע-פריצה-לבנקים---CyberTeam360
             file: מסמך-חוות-דעת-על-אירוע-פריצה-לבנקים---CyberTeam360.pdf
+            url: https://drive.google.com/file/d/1frvM9mMyYVLrXssQ_RMHe4Yl1azmqp0Z/view
             type: PDF
       - name: Healthcare
         resources:
           - title: Healthcare CyberSecurity RotemBar
             file: Healthcare_CyberSecurity_RotemBar.pdf
+            url: https://drive.google.com/file/d/1L1e40k825Gr_19hLQv4ePyOQRJagQbxh/view
             type: PDF
       - name: "OT & ICS"
         resources:
           - title: 05f655843 CyberInsightMagazineIssue06-Nov25SE-ManufacturingSector
             file: 05f655843_CyberInsightMagazineIssue06-Nov25SE-ManufacturingSector.pdf
+            url: https://drive.google.com/file/d/1lo1WYQ7eIODfAHQrPc4Q1Sdm9chB5Iy8/view
             type: PDF
           - title: BRIDGING THE GAPS IN OT CYBERSECURITY PROGRAMS RB
             file: BRIDGING_THE_GAPS_IN_OT_CYBERSECURITY_PROGRAMS_RB_1681326774.pdf
+            url: https://drive.google.com/file/d/1_IKpPWu8FKntgw4iqFXZP8HgPSwIcFHw/view
             type: PDF
           - title: Civil nuclear cyber security strategy 2022
             file: Civil_nuclear_cyber_security_strategy_2022.pdf
+            url: https://drive.google.com/file/d/10fFAI1VCuaih95q1gQOpvEh5TG-xd8Gc/view
             type: PDF
           - title: Cybersecurity Basics
             file: Cybersecurity_Basics.pdf
+            url: https://drive.google.com/file/d/1Fau6TZv4qnwQh0ERvOpBIRgvknO7KEfx/view
             type: PDF
           - title: Fortinet OT Security Workshop and Hands on Lab
             file: Fortinet_OT_Security_Workshop_and_Hands_on_Lab_1670616136.pdf
+            url: https://drive.google.com/file/d/1Iltq16NxMjD1HjQaDIP3ZnJS8Hznt6YA/view
             type: PDF
           - title: Manufacturing Execution Systems (MES)
             file: Manufacturing Execution Systems (MES).pdf
+            url: https://drive.google.com/file/d/1b9tDSjoesfb6nleslNUvfEjgO9neRtER/view
             type: PDF
           - title: mfg-recovery-project-description-final
             file: mfg-recovery-project-description-final.pdf
+            url: https://drive.google.com/file/d/13a2LyVtUPsKeJBfxWxI9PfwUuEoednii/view
             type: PDF
           - title: OT-Security-Incidents-ebook FINAL
             file: OT-Security-Incidents-ebook_FINAL.pdf
+            url: https://drive.google.com/file/d/1Fe8Y_azhBBiI51nuAEfIf4c_jbgmczyR/view
             type: PDF
           - title: Predicts 2022 CyberPhysical Systems Security
             file: Predicts_2022_CyberPhysical_Systems_Security.pdf
+            url: https://drive.google.com/file/d/1iBJ0yyb07IFt8zvM3WGJnp9Jp9y5I28B/view
             type: PDF
           - title: Securing Critical Infrastructure
             file: Securing_Critical_Infrastructure.pdf
+            url: https://drive.google.com/file/d/1-rfm4nW9agoSnXhFvPtjpNbfv6UNq4z2/view
             type: PDF
           - title: Statistics on Small Business Cyber Crime
             file: Statistics_on_Small_Business_Cyber_Crime.pdf
+            url: https://drive.google.com/file/d/1OprsetN0MhQO_nb0HreW2cd_gqpGXliO/view
             type: PDF
   - name: "Compliance & Standards"
     icon: 📋
@@ -994,232 +1282,303 @@ categories:
         resources:
           - title: CIS Distribution Independent Linux Benchmark v2.0.0 (1)
             file: CIS_Distribution_Independent_Linux_Benchmark_v2.0.0 (1).pdf
+            url: https://drive.google.com/file/d/1xvdAVtOpheEc7wifCDy1WEBnfE1kwlRO/view
             type: PDF
           - title: CIS GitHub Benchmark v1.0.0 PDF
             file: CIS GitHub Benchmark v1.0.0 PDF.pdf
+            url: https://drive.google.com/file/d/1mDRtKbFkGKRD362Hhy4v4otKDrHJRKkh/view
             type: PDF
           - title: CIS Microsoft 365 Foundations Benchmark v1.5.0
             file: CIS_Microsoft_365_Foundations_Benchmark_v1.5.0.pdf
+            url: https://drive.google.com/file/d/1-jBODthNkxN3dtfLfgDuNgZ2rDrAyV2U/view
             type: PDF
           - title: CIS Microsoft 365 Foundations Benchmark v1.5.0 2
             file: CIS_Microsoft_365_Foundations_Benchmark_v1.5.0 2.pdf
+            url: https://drive.google.com/file/d/1ctWb8fJZ5bYfezveCICNXDEto5hjp8t8/view
             type: PDF
           - title: CIS Microsoft Edge Benchmark v1.1.0
             file: CIS_Microsoft_Edge_Benchmark_v1.1.0.pdf
+            url: https://drive.google.com/file/d/1yXbms_wk0wjbN_JLyjJQMaOCWJyb76iX/view
             type: PDF
           - title: CIS Microsoft Exchange Server 2016 Benchmark v1.0.0
             file: CIS_Microsoft_Exchange_Server_2016_Benchmark_v1.0.0.pdf
+            url: https://drive.google.com/file/d/1L0Sv4GCN4VvtyIMRzKdrWsMlxGx9lq6Y/view
             type: PDF
           - title: CIS Microsoft IIS 10 Benchmark v1.2.0
             file: CIS_Microsoft_IIS_10_Benchmark_v1.2.0.pdf
+            url: https://drive.google.com/file/d/1ZRzj4a_l47Y4tV82zWejqKjBuynh8AwF/view
             type: PDF
           - title: CIS Microsoft Intune for Windows 11 Benchmark v1.0.0
             file: CIS_Microsoft_Intune_for_Windows_11_Benchmark_v1.0.0.pdf
+            url: https://drive.google.com/file/d/1RodVWbj0JrLt4bYNdHPOVHPFYm5UxMEH/view
             type: PDF
           - title: CIS Microsoft Office Enterprise Benchmark v1.0.0
             file: CIS_Microsoft_Office_Enterprise_Benchmark_v1.0.0.pdf
+            url: https://drive.google.com/file/d/1BxpEOxc3LFcyUA9GQYrYp2LdkMGBNssb/view
             type: PDF
           - title: CIS Microsoft Windows 10 Enterprise Release 2004 Benchmark v1.9.1
             file: CIS_Microsoft_Windows_10_Enterprise_Release_2004_Benchmark_v1.9.1.pdf
+            url: https://drive.google.com/file/d/1W-8WyBRGAjw-upR1tx41cQwfL3wEjNd7/view
             type: PDF
           - title: CIS Microsoft Windows 11 Stand-alone Benchmark v1.0.0
             file: CIS_Microsoft_Windows_11_Stand-alone_Benchmark_v1.0.0.pdf
+            url: https://drive.google.com/file/d/1teJ5pTxPiWnLlyugS0epCkT1fJJZlo75/view
             type: PDF
           - title: CIS Microsoft Windows Server 2012 R2 Benchmark v2.6.0
             file: CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v2.6.0.pdf
+            url: https://drive.google.com/file/d/17EEoGEw54ZsO6v7LVfn_sh3l87yjwQC3/view
             type: PDF
           - title: CIS Microsoft Windows Server 2016 Benchmark v1.4.0
             file: CIS_Microsoft_Windows_Server_2016_Benchmark_v1.4.0.pdf
+            url: https://drive.google.com/file/d/1CQV0VRQYRLhP0ySiDvAIgtNDtlsJ1yuf/view
             type: PDF
           - title: CIS Microsoft Windows Server 2019 Benchmark v1.3.0
             file: CIS_Microsoft_Windows_Server_2019_Benchmark_v1.3.0.pdf
+            url: https://drive.google.com/file/d/1lmdYsPtsNmJ_8Q1RXyGM846zdGIBlcB6/view
             type: PDF
           - title: CIS Microsoft Windows Server 2022 Benchmark v1.0.0
             file: CIS_Microsoft_Windows_Server_2022_Benchmark_v1.0.0.pdf
+            url: https://drive.google.com/file/d/11pOBIPLy3xJzo6I87T9VEU1gQ1Xzz8iz/view
             type: PDF
           - title: CIS Multi-Function Device Benchmark v1.0.0
             file: CIS_Multi-Function_Device_Benchmark_v1.0.0.pdf
+            url: https://drive.google.com/file/d/1MpkX1Tfwn3z3KzRXM82lf6YViAlb9GSU/view
             type: PDF
           - title: CIS Software Supply Chain Security Guide RB
             file: CIS_Software_Supply_Chain_Security_Guide_RB.pdf
+            url: https://drive.google.com/file/d/1yKfh4lfHR51dsdEeyKj3NwCCd9ZTL8qU/view
             type: PDF
           - title: CIS Zoom Benchmark v1.0.0 PDF
             file: CIS_Zoom_Benchmark_v1.0.0 PDF.pdf
+            url: https://drive.google.com/file/d/1Obttu89e_SIvNR_us8G_m0p6mrAvF5gg/view
             type: PDF
       - name: GRC
         resources:
           - title: Cyber Security Governance Principles Oct 2022
             file: Cyber_Security_Governance_Principles_Oct_2022_1676322458.pdf
+            url: https://drive.google.com/file/d/19-CvhVvjlYVZn2oe-zWK7GTdjUYyH5lW/view
             type: PDF
           - title: DFARS FCA Settlement - December 2025
             file: DFARS FCA Settlement - December 2025.pdf
+            url: https://drive.google.com/file/d/1pAML7sp-wG7sgRNj_VdogsP0pqvvgvll/view
             type: PDF
           - title: GRC Ecosystem
             file: GRC_Ecosystem.pdf
+            url: https://drive.google.com/file/d/1mgdRa08nTwj1GW-kl1hjLvSSVRipmSZc/view
             type: PDF
           - title: ITGC Martix
             file: ITGC Martix.xlsx
+            url: https://drive.google.com/file/d/1rPTbg6e9Xdk7Gg90A-qyo-jXEboV86f5/view
             type: XLSX
           - title: LLM AI Cybersecurity Governance Checklist
             file: LLM_AI_Cybersecurity_Governance_Checklist_1731952716.pdf
+            url: https://drive.google.com/file/d/1sgXa61ewkFbcA6BPa1YmxoQ4AQNgKjBt/view
             type: PDF
           - title: Modular Security Requirements
             file: Modular_Security_Requirements.pdf
+            url: https://drive.google.com/file/d/13r_3f-VCkEofj1Tl9A_zRUXUvv3T3CIl/view
             type: PDF
           - title: Organizational Cyber Readiness to the Post Quantum Age
             file: Organizational_Cyber_Readiness_to_the_Post_Quantum_Age.pdf
+            url: https://drive.google.com/file/d/19-vNDMEJItKbWOwImECIqMq7HkCMb_4X/view
             type: PDF
           - title: Security Obligations – Cyber Security Exercise 241203 182938
             file: Security Obligations – Cyber Security Exercise_241203_182938.pdf
+            url: https://drive.google.com/file/d/1SV73iSho5oNiSbWhjEj-El8q-tneSZUF/view
             type: PDF
           - title: The SOC 2 Compliance Handbook
             file: The_SOC_2_Compliance_Handbook.pdf
+            url: https://drive.google.com/file/d/1zwGXrLuY3vmmlMzNlt53WELEkIogOOTX/view
             type: PDF
       - name: HIPAA
         resources:
           - title: Assessment Tool Share HIPAA
             file: Assessment_Tool_Share_HIPAA.xls
+            url: https://drive.google.com/file/d/1DyYRWrE8krakAPmu-TAiIQpI6_gKFYeB/view
             type: XLS
           - title: HCR-HIPAA-COW-Risk-Assessment-Template-07-16-13
             file: HCR-HIPAA-COW-Risk-Assessment-Template-07-16-13.xls
+            url: https://drive.google.com/file/d/1okpyC7lhNoz_Gzza0NkiBHJdzHeLLjc-/view
             type: XLS
           - title: HIPAA-Security-Controls-Mapping
             file: HIPAA-Security-Controls-Mapping.xlsx
+            url: https://drive.google.com/file/d/1eTKR99BilYQHulLE9Hr4WaLHoKZm0l16/view
             type: XLSX
           - title: HIPAA-Security-Controls-Mapping-1
             file: HIPAA-Security-Controls-Mapping-1.xlsx
+            url: https://drive.google.com/file/d/1e_cNBtrjSHy1I9Hh77Ihn9IdIOR4ylmK/view
             type: XLSX
       - name: ISO 27001
         resources:
           - title: 27001 ISO
             file: 27001 ISO.xlsx
+            url: https://drive.google.com/file/d/1vzPtogWbPwZRsOGIZwl0eRHbJUrz14sJ/view
             type: XLSX
           - title: ISMS Implementation Guideline 27001
             file: ISMS_Implementation_Guideline_27001.pdf
+            url: https://drive.google.com/file/d/11sMaV1OIhl9g8WODnY6iU1l4YAgSx2mg/view
             type: PDF
           - title: ISO 22301 Business Continuity business case
             file: ISO_22301_Business_Continuity_business_case.pdf
+            url: https://drive.google.com/file/d/1ARjA0l4bSQErqoFfQpS6zR-w_YRSphoo/view
             type: PDF
           - title: ISO 27001 Advantages and Disadvantages
             file: ISO_27001_Advantages_and_Disadvantages_.pdf
+            url: https://drive.google.com/file/d/1hH5PgwR5iwt7T4_eJ4YWtSWLIswVI2fZ/view
             type: PDF
           - title: "ISO 27001 controls 2022, 230313"
             file: "ISO 27001 controls 2022, 230313.pdf"
+            url: https://drive.google.com/file/d/1kTVj5fL_cUXYH61a1-d4Fb2l1SzP2EAh/view
             type: PDF
           - title: ISO 27001 Mandatory Document
             file: ISO_27001_Mandatory_Document.pdf
+            url: https://drive.google.com/file/d/1EoVkF5OzHs4FJR8XPtqpd-l50KX8w9X_/view
             type: PDF
           - title: ISO 27001 Mind Map
             file: ISO_27001_Mind_Map_1678601726.pdf
+            url: https://drive.google.com/file/d/1-d9YrmJ8K3yv2NfxNBnvhIBt8FOwrrSZ/view
             type: PDF
           - title: ISO 27011 Information Security Checklist
             file: ISO_27011_Information_Security_Checklist_1640726981.pdf
+            url: https://drive.google.com/file/d/1EOVnWYJpm9dtcRLpeeTnBknM3WRfYpsl/view
             type: PDF
           - title: ISO IEC 27001-2022
             file: ISO IEC 27001-2022.pdf
+            url: https://drive.google.com/file/d/1A4AJfMyD-gsvuDgGUAmXgHmRVOK0_KTk/view
             type: PDF
           - title: ISO27k ISMS 6.1 SoA 2022
             file: ISO27k ISMS 6.1 SoA 2022.xlsx
+            url: https://drive.google.com/file/d/1ZU2F_NRYnMFHSDzDizs5EQpzy-TPUdab/view
             type: XLSX
           - title: NIST CSF 2 0 Vs ISO 27001 2022 Mapping
             file: NIST_CSF_2_0_Vs_ISO_27001_2022_Mapping_1732034466.pdf
+            url: https://drive.google.com/file/d/1PxBiguRgKVn6iMdDRhVuM7Ixa7kzQQfz/view
             type: PDF
       - name: NIST
         resources:
           - title: C2M2 v2 1
             file: C2M2_v2_1_1678946363.pdf
+            url: https://drive.google.com/file/d/10nm-ntYQkVlPrcea1p2ZJpJAHI-P5XSK/view
             type: PDF
           - title: CSF 2 0
             file: CSF_2_0_1682403805.pdf
+            url: https://drive.google.com/file/d/1SpklpqbtsOppD9sNyfTleCECMVG9lU-Y/view
             type: PDF
           - title: Microsoft 365 the NIST cybersecurity framework
             file: Microsoft_365_the_NIST_cybersecurity_framework.pdf
+            url: https://drive.google.com/file/d/1q5dBPU0hLczgbA52Hds_8Zg73ol_A9Qs/view
             type: PDF
           - title: NIST Access Control Guidance For Cloud Systems
             file: NIST_Access_Control_Guidance_For_Cloud_Systems.pdf
+            url: https://drive.google.com/file/d/1e4kzlqY7TO1Pi4hPI_ssWZNCXzJIkzEx/view
             type: PDF
           - title: NIST Cybersecurity for Small Businesses The Fundamentals
             file: NIST_Cybersecurity_for_Small_Businesses_The_Fundamentals_1674676682.pdf
+            url: https://drive.google.com/file/d/1wUNaGhbm_50W3mv-yqZEU-tNsgKinfBX/view
             type: PDF
           - title: NIST Cybersecurity Framework Policy
             file: NIST_Cybersecurity_Framework_Policy_.pdf
+            url: https://drive.google.com/file/d/1jLDEfPgSRJcLxAgTgvzdr4gjeTy19gay/view
             type: PDF
           - title: NIST Cybersecurity Supply Chain Risk Management Practices
             file: NIST_Cybersecurity_Supply_Chain_Risk_Management_Practices.pdf
+            url: https://drive.google.com/file/d/1Y8gQQJ9BqXyyC56QlgYqpekYVbh0DvVO/view
             type: PDF
           - title: NIST Risk Management Framework
             file: NIST_Risk_Management_Framework__1641019029.pdf
+            url: https://drive.google.com/file/d/1M8_N7kcdNAseQgvbB4Yk-AsCZgKmnPsE/view
             type: PDF
           - title: NIST Risk Management Framework
             file: NIST_Risk_Management_Framework.pdf
+            url: https://drive.google.com/file/d/1XGv0PZcK6S12svyNpVZwWpe6VioM8MKA/view
             type: PDF
           - title: NIST.SP.800-161r1
             file: NIST.SP.800-161r1.pdf
+            url: https://drive.google.com/file/d/1d9ozC3t1ztqgFXqULby4SPQtIAfm3Lsk/view
             type: PDF
           - title: PDS NIST Cybersecurity Framework RACI
             file: PDS_NIST_Cybersecurity_Framework_RACI.pdf
+            url: https://drive.google.com/file/d/1GeI7W1qzI-HUK4ncyaqP6n1mvhpgnPP7/view
             type: PDF
       - name: PCI DSS
         resources:
           - title: CAPSAB-PCI-DSS-v3-assesment-help
             file: CAPSAB-PCI-DSS-v3-assesment-help.xlsm
+            url: https://drive.google.com/file/d/1ImoZ399QnGSO9tFp6W9kXGsATxKtQwcp/view
             type: XLSM
           - title: PCI 4 0
             file: PCI_4_0_.pdf
+            url: https://drive.google.com/file/d/1o9sJMnau9JN5exnp_h1WKbH8lWCjN7oA/view
             type: PDF
           - title: PCI DSS
             file: PCI_DSS.pdf
+            url: https://drive.google.com/file/d/1_9RPe7FCuVPVgLs6ngf120fCgNOsvC51/view
             type: PDF
           - title: PCI-Security-Controls-Tracking-Worksheet
             file: PCI-Security-Controls-Tracking-Worksheet.xlsx
+            url: https://drive.google.com/file/d/1CGjrkRCankNrftnPn3KWrB1G5UF4UzaG/view
             type: XLSX
           - title: Prioritized Approach PCI DSS version1 2
             file: Prioritized_Approach_PCI_DSS_version1_2.xls
+            url: https://drive.google.com/file/d/1CYfQ1oAYTUO8w_bd1m3yRImRS56NYQat/view
             type: XLS
           - title: Security Rules and Procedures Merchant Edition
             file: Security_Rules_and_Procedures_Merchant_Edition_.pdf
+            url: https://drive.google.com/file/d/15SEs3nQGUPNjOhr4BW4Oae1kRMAwrsHw/view
             type: PDF
       - name: "Privacy & Regulations"
         resources:
           - title: 250212 reuschlaw AHK Israel The new EU cybersecurity regulations CK
             file: 250212_reuschlaw_AHK Israel_The new EU cybersecurity regulations_CK.pdf
+            url: https://drive.google.com/file/d/1fpP2dnMc9TxLQBCzOkb20cIv03CKMBZc/view
             type: PDF
           - title: Draft Regulations Data transferred from EEA to Israel
             file: Draft_Regulations_Data_transferred_from_EEA_to_Israel_1669746521.pdf
+            url: https://drive.google.com/file/d/1m_5efxRWK7J4gnE6PKNV06uVOZFLcBza/view
             type: PDF
           - title: GDPR for Third party Risk Management
             file: GDPR_for_Third_party_Risk_Management__1676270657.pdf
+            url: https://drive.google.com/file/d/1xymEFg7vwjOcJpBz_qanArpqLlAVQhSF/view
             type: PDF
           - title: Notifiable Data Breach statistics dashboard
             file: Notifiable Data Breach statistics dashboard.pdf
+            url: https://drive.google.com/file/d/1p_qlVNgcMqta3TwkjAbe8wplk0vekeWS/view
             type: PDF
           - title: South Korea’s data protection law (PIPA) to generative AI
             file: South Korea’s data protection law (PIPA) to generative AI.pdf
+            url: https://drive.google.com/file/d/1Z-_Gnwyp_BZsckDG0xzyjbEdH4v5tE1u/view
             type: PDF
       - name: Security Assessments
         resources:
           - title: Cybersecurity posture Self Assessment
             file: Cybersecurity_posture_Self_Assessment.pdf
+            url: https://drive.google.com/file/d/1NMZH9OfL1CtQ-f-jzZt7ORkINhhvQBTI/view
             type: PDF
           - title: Sample SelfAssessment Questionnaire SAQ
             file: Sample_SelfAssessment_Questionnaire_SAQ.xls
+            url: https://drive.google.com/file/d/1-mtLNsUDU5XQQHE1Z-1iJuoXEy3lyC2W/view
             type: XLS
           - title: Security Assessment and Testing
             file: Security_Assessment_and_Testing_.pdf
+            url: https://drive.google.com/file/d/1ENTpCABxDqwBoZxhByw4m8j_TcipZPHc/view
             type: PDF
       - name: Zero Trust
         resources:
           - title: Federal Zero Trust Strategy (1)
             file: Federal_Zero_Trust_Strategy (1).pdf
+            url: https://drive.google.com/file/d/1bmYBwSWhMFeGQshzXMpRy5zWGxSAYqJJ/view
             type: PDF
           - title: Planning for a Zero Trust Architecture
             file: Planning_for_a_Zero_Trust_Architecture.pdf
+            url: https://drive.google.com/file/d/1NiebDTwg9AaJY-k2cE3289sTQ47VOjmk/view
             type: PDF
           - title: Zero Trust deployment plan with Microsoft 365
             file: Zero_Trust_deployment_plan_with_Microsoft_365_1677518770.pdf
+            url: https://drive.google.com/file/d/1E4V5E_-WS1AdRDcRw479MbVvmAeAgEML/view
             type: PDF
           - title: Zero Trust Reference Architecture
             file: Zero_Trust_Reference_Architecture_1674223484.pdf
+            url: https://drive.google.com/file/d/10fcmcxokhmc4f-fbLnZRMXVfindq03rk/view
             type: PDF
   - name: Risk Management
     icon: ⚖️
@@ -1229,84 +1588,109 @@ categories:
         resources:
           - title: A New Cyber Insurance Model Continuous Control Validation
             file: A_New_Cyber_Insurance_Model_Continuous_Control_Validation.pdf
+            url: https://drive.google.com/file/d/13aPZfq6SC1nSQWSHTX0ARkGZRPJbe3TZ/view
             type: PDF
       - name: Risk Frameworks
         resources:
           - title: AI Risk Management Framework
             file: AI_Risk_Management_Framework_1674038781.pdf
+            url: https://drive.google.com/file/d/1Aecl5SdnNjJDsTI20miW0uWqrOE6tn2c/view
             type: PDF
           - title: Allianz Risk Barometer 2026
             file: Allianz_Risk_Barometer_2026.pdf
+            url: https://drive.google.com/file/d/1GJFCp5QY2iy39_y6IrY5RbQ0cgnqGVs4/view
             type: PDF
           - title: allianz-risk-barometer-2026 260309 222204
             file: allianz-risk-barometer-2026_260309_222204.pdf
+            url: https://drive.google.com/file/d/1KeNFJJO3efiiYKuulsmS-U8lwuQNlkcO/view
             type: PDF
           - title: Business Impact Analysis
             file: Business_Impact_Analysis__1682281570.pdf
+            url: https://drive.google.com/file/d/1E3lbM7tFeKjylEPMtHqEEfZP0z4Oho16/view
             type: PDF
           - title: Cyber Compliance Is Fraud Risk
             file: Cyber_Compliance_Is_Fraud_Risk.pdf
+            url: https://drive.google.com/file/d/1CcwFXXwZ6PwEggx_93GKp6vFjNc6Kz8-/view
             type: PDF
           - title: Cyber-Risk-Oversight-Handbook WEB
             file: Cyber-Risk-Oversight-Handbook_WEB.pdf
+            url: https://drive.google.com/file/d/1V0Io6FSGvGBpFdmSPbNSQuG7iCLnADk2/view
             type: PDF
           - title: Effective Enterprise Risk Management
             file: Effective_Enterprise_Risk_Management.pdf
+            url: https://drive.google.com/file/d/1FfCb4IcDIk_URpP_7L2aU-FI-VEwUPSi/view
             type: PDF
           - title: Healthcare Supply Chain Cybersecurity Risk Management
             file: Healthcare_Supply_Chain_Cybersecurity_Risk_Management.pdf
+            url: https://drive.google.com/file/d/1pO80rIjyE5XuANdbhhoJ9eU8OK1q9wYH/view
             type: PDF
           - title: Next Generation Cyber Risk Management
             file: Next Generation Cyber Risk Management.pdf
+            url: https://drive.google.com/file/d/1TzydQ4Nwx3bjlX9QJUtqYZZDWbdUKho-/view
             type: PDF
           - title: potential risk indicators foreign considerations
             file: potential_risk_indicators_foreign_considerations.pdf
+            url: https://drive.google.com/file/d/1ob3ZC1eEyLnbIf_me-WUrqrHabz8cn12/view
             type: PDF
           - title: risk
             file: risk.pdf
+            url: https://drive.google.com/file/d/13lHyoQ0GyVvZEgr59nYLl-ZUC-C7dlxX/view
             type: PDF
           - title: Risk Assessment and Treatment process
             file: Risk_Assessment_and_Treatment_process__1670134578.pdf
+            url: https://drive.google.com/file/d/1icQHKYoUPOvd2Q-31kJ1-YiVfwWY28Pu/view
             type: PDF
           - title: Risk Management Framework
             file: Risk_Management_Framework_.pdf
+            url: https://drive.google.com/file/d/12_RRJMm3wypinLhRkD34A7u0HEiSZ7Ye/view
             type: PDF
           - title: Risk Management Framework
             file: Risk_Management_Framework.pdf
+            url: https://drive.google.com/file/d/1MnUnLto9ZzgoLKo_sdk6fjIBbtIMsqsM/view
             type: PDF
           - title: risk management user
             file: risk_management_user_1680241660.pdf
+            url: https://drive.google.com/file/d/1b11bF4G9LBO8WFZ2WQQAYLLRnEYZV_iF/view
             type: PDF
           - title: RISK RiskLens Annual Report
             file: RISK_RiskLens Annual Report.pdf
+            url: https://drive.google.com/file/d/1Ne_T-afEpvPoO7Nqa--oCQr5rUixI5Zd/view
             type: PDF
           - title: The Global Risks Report 2022
             file: The_Global_Risks_Report_2022.pdf
+            url: https://drive.google.com/file/d/16xxf3X66V_t58nxzhZQkCZftbqc9KKhF/view
             type: PDF
           - title: The Vulnerability Assessment Mitigation Methodology
             file: The_Vulnerability_Assessment_Mitigation_Methodology_.pdf
+            url: https://drive.google.com/file/d/1MMDcIAS6woA6MZuCIqDuBTeUQrXIegMF/view
             type: PDF
           - title: TheNecessityofCyberRiskQuantification-1 230511 060352
             file: TheNecessityofCyberRiskQuantification-1_230511_060352.pdf
+            url: https://drive.google.com/file/d/14AwaLbQ3Ca0q4cA1VxPSkU3qCBpHUCLm/view
             type: PDF
       - name: Supply Chain
         resources:
           - title: 2021 Software Supply Chain Security Report
             file: 2021_Software_Supply_Chain_Security_Report.pdf
+            url: https://drive.google.com/file/d/1Pa7Ub0BVVWFqlf3VjhrOtQGICcRljgjz/view
             type: PDF
           - title: ESF SECURING THE SOFTWARE SUPPLY CHAIN DEVELOPERS
             file: ESF_SECURING_THE_SOFTWARE_SUPPLY_CHAIN_DEVELOPERS.pdf
+            url: https://drive.google.com/file/d/1oVrTVi09dfbgLL25q8j9l_8NBoEljj2Y/view
             type: PDF
       - name: Vulnerability Management
         resources:
           - title: CVE-2022-22963
             file: CVE-2022-22963.yaml
+            url: https://drive.google.com/file/d/1_Xjt0Y1pPCPcN2lxfiSLHGJDw1tbZaUH/view
             type: YAML
           - title: Microsoft Vulnerabilities Report 2022 (1)
             file: Microsoft_Vulnerabilities_Report_2022 (1).pdf
+            url: https://drive.google.com/file/d/1qZlsHy5P9QlpANEK_3d4cdlzQuG-4QQt/view
             type: PDF
           - title: Vulnerability Stats Report 2022
             file: Vulnerability_Stats_Report_2022.pdf
+            url: https://drive.google.com/file/d/1o7nw_K2E6b92WjULECwGIrwF3E7lP_IT/view
             type: PDF
   - name: Industry Reports
     icon: 📊
@@ -1316,206 +1700,269 @@ categories:
         resources:
           - title: 2021 NSA Cyber Security Year In Review
             file: 2021_NSA_Cyber_Security_Year_In_Review.pdf
+            url: https://drive.google.com/file/d/17HtjGZ6T-YhMlpZkE4vx7vsqL7O9ZpCb/view
             type: PDF
           - title: Best Cyber Insights of 2022
             file: Best_Cyber_Insights_of_2022_.pdf
+            url: https://drive.google.com/file/d/1BV-h5K8I0gtxtsbLaoo5zYntTHWdf6YF/view
             type: PDF
           - title: Best Cyber Insights of 2022
             file: Best_Cyber_Insights_of_2022.pdf
+            url: https://drive.google.com/file/d/16ZkrFv_yCfcFjvjhswGDZrYnhORrbZAs/view
             type: PDF
           - title: Breaches Anticipated in 2022
             file: Breaches_Anticipated_in_2022.pdf
+            url: https://drive.google.com/file/d/1GtjQpPTM8Yhjj3PI1KFHpNfkcUMT193R/view
             type: PDF
           - title: CYBER CAPABILITIES AND NATIONAL POWER A Net Assessment
             file: CYBER_CAPABILITIES_AND_NATIONAL_POWER_A_Net_Assessment.pdf
+            url: https://drive.google.com/file/d/1hjqALNz-3ow6sxtGIo_Ijg4SZ3m21sLR/view
             type: PDF
           - title: End of a Year Report 2022
             file: End_of_a_Year_Report_2022_1675165332.pdf
+            url: https://drive.google.com/file/d/1LjdG2-BVY2xh2UDug5j73foHBOZqhTIJ/view
             type: PDF
       - name: Breach Reports
         resources:
           - title: 2022 IC3Report
             file: 2022_IC3Report.pdf
+            url: https://drive.google.com/file/d/1nTvKucBj-DyQCCarGDstJ0tX6cOj6kLJ/view
             type: PDF
           - title: Cost of A Breach - Sam Elkholy
             file: Cost of A Breach - Sam Elkholy.pptx
+            url: https://drive.google.com/file/d/18FSs9DHfjTcMyYH1Ya4lv41CT3F786yy/view
             type: PPTX
           - title: Cost of a Data Breach Full Report 2022
             file: Cost of a Data Breach Full Report 2022.pdf
+            url: https://drive.google.com/file/d/1H1mGnADfq9GBYnt1IjMSXjIgMSTfprim/view
             type: PDF
           - title: Cost of a Data Breach Report 2021
             file: Cost_of_a_Data_Breach_Report_2021.pdf
+            url: https://drive.google.com/file/d/16nhPQAErEIe-gPQAbHmPYRXVASzX37BH/view
             type: PDF
           - title: FBI Flash March 7th
             file: FBI_Flash_March_7th.pdf
+            url: https://drive.google.com/file/d/18BktlOdGeboqfMMzUw34y-qgGzoS6dxT/view
             type: PDF
           - title: FBI Internet Crime Report 2021
             file: FBI_Internet_Crime_Report_2021.pdf
+            url: https://drive.google.com/file/d/1OkUZy7gRZ3mcW_25EADHqhf1BhXZDMrB/view
             type: PDF
           - title: FBI NSA and CISA Issue Warning
             file: FBI_NSA_and_CISA_Issue_Warning.pdf
+            url: https://drive.google.com/file/d/1tr_UuNGmIQ24hudF1HT_lXQXXa0r5uk9/view
             type: PDF
           - title: IBM Cost of Data Breach Report 2022
             file: IBM_Cost_of_Data_Breach_Report_2022.pdf
+            url: https://drive.google.com/file/d/1L2y77UZhVIg-QINNC-ah46dVZcGx3sDR/view
             type: PDF
           - title: Verizon DBIR 2021
             file: Verizon_DBIR_2021.pdf
+            url: https://drive.google.com/file/d/10sN5nydoOVA0UBJg0_MhnbKQcVjpLzvp/view
             type: PDF
       - name: CISO Resources
         resources:
           - title: 2021 Global CISO Survey
             file: 2021_Global_CISO_Survey.pdf
+            url: https://drive.google.com/file/d/1acgFHAFs7JV-B89dkNMsXyRIF1rdR9WL/view
             type: PDF
           - title: CISO Guidebook Basic pd
             file: CISO_Guidebook_Basic_pd.pdf
+            url: https://drive.google.com/file/d/1zu31OvzLLABRRhNWubJwuGxm9fYVKwtJ/view
             type: PDF
           - title: CISO Stress Report
             file: CISO Stress Report.pdf
+            url: https://drive.google.com/file/d/1K-jumTQHDXUu9Ela82nQzQ44C64UmD2X/view
             type: PDF
           - title: INSIDE THE MIND OF A CISO 2024 240922 071949
             file: INSIDE THE MIND OF A CISO 2024_240922_071949.pdf
+            url: https://drive.google.com/file/d/1RCzXvLD4fTP42dFM6E9gYgq4hZbMVJ8J/view
             type: PDF
       - name: Cyber Insight Magazine
         resources:
           - title: 86c00b46f CyberInsightMagazineIssue08-Dec25
             file: 86c00b46f_CyberInsightMagazineIssue08-Dec25.pdf
+            url: https://drive.google.com/file/d/1nvqWadhNgd4z-VnWtJPiXl-vljCm-IJQ/view
             type: PDF
           - title: 98fd178ce CyberInsightMagazineIssue09-Dec25
             file: 98fd178ce_CyberInsightMagazineIssue09-Dec25.pdf
+            url: https://drive.google.com/file/d/1wPxZKuzDnAeVCzAiuRL2Fql5sbXhwf4g/view
             type: PDF
           - title: c99a5f15e CyberInsightMagazineIssue05-Oct25SE-HealthSector
             file: c99a5f15e_CyberInsightMagazineIssue05-Oct25SE-HealthSector.pdf
+            url: https://drive.google.com/file/d/1EPrldf-1I_XJhShVRAbgV8pQGJfaKrTD/view
             type: PDF
           - title: Cyber Insight Magazine Issue 01 - September 2025
             file: Cyber Insight Magazine Issue 01 - September 2025.pdf
+            url: https://drive.google.com/file/d/1RyJb3sMsRHXn7EkomXz9xxB8hw7xSXJs/view
             type: PDF
           - title: Cyber Insight Magazine Issue 02 - September 2025
             file: Cyber Insight Magazine Issue 02 - September 2025.pdf
+            url: https://drive.google.com/file/d/1XBrflYKo2pKRh4zaKsQgei2Hut2Drk3-/view
             type: PDF
           - title: Cyber Insight Magazine Issue 07 - Nov 25
             file: Cyber Insight Magazine Issue 07 - Nov 25.pdf
+            url: https://drive.google.com/file/d/1rWNTHvsTHKZOUV95jUC53sZwP-A3ZJmv/view
             type: PDF
           - title: CyberInsight Magazine Issue 03 - Special Edition
             file: CyberInsight Magazine Issue 03 - Special Edition.pdf
+            url: https://drive.google.com/file/d/17VVXL75WXkx_4NMZS-JZl8UtGyIWvqVb/view
             type: PDF
           - title: CyberInsight Magazine Issue 04 - October 2025
             file: CyberInsight Magazine Issue 04 - October 2025.pdf
+            url: https://drive.google.com/file/d/1igjnp8tlEt7TPEClELRhxrt7pIEMarkH/view
             type: PDF
       - name: Research Papers
         resources:
           - title: Organizational coping
             file: Organizational_coping.pdf
+            url: https://drive.google.com/file/d/1skjSZpOi6DAXm-ymASbyq37zGGb9vsXr/view
             type: PDF
           - title: Preview Cyber Security And Human Factors
             file: Preview_Cyber_Security_And_Human_Factors.pdf
+            url: https://drive.google.com/file/d/1ybSkMNx_WSHM2zhArRlj_BPabY7BS9PG/view
             type: PDF
           - title: sec22summer wang-kai
             file: sec22summer_wang-kai.pdf
+            url: https://drive.google.com/file/d/1v9AJozSY8cK5JzXldQoHFIdvxKEvv4vt/view
             type: PDF
       - name: "Surveys & Research"
         resources:
           - title: Cyber Security Breaches Survey 2022
             file: _Cyber_Security_Breaches_Survey_2022.pdf
+            url: https://drive.google.com/file/d/1GlhRNLgMYF-C2nWh0Av5G-xtdy4MTNep/view
             type: PDF
           - title: Cyber Security Longitudinal Survey Wave 1
             file: _Cyber_Security_Longitudinal_Survey_Wave_1.pdf
+            url: https://drive.google.com/file/d/1eUW3cog-Va3bfJNHuQqxS-0Gh2glog3-/view
             type: PDF
       - name: "Trends & Forecasts"
         resources:
           - title: Hillel Kobrovski - Cyber Security Trends Analysis 2020 and 10 Insights That Will Shape 2021 ver 1 Feb 2021 - Low resolution images
             file: Hillel Kobrovski - Cyber Security Trends Analysis 2020 and 10 Insights That Will Shape 2021 ver 1  Feb 2021 - Low resolution images.pdf
+            url: https://drive.google.com/file/d/1BEV9jybuHX58t4m0Ikiifm4aDhcDfg99/view
             type: PDF
       - name: Vendor Reports
         resources:
           - title: 2022-06-24-csiac-dod-cybersecurity-policy-chart
             file: 2022-06-24-csiac-dod-cybersecurity-policy-chart.pdf
+            url: https://drive.google.com/file/d/1yydTb2wkk_UNDjqLfKSqmQZLX7bG8HV4/view
             type: PDF
           - title: 6 Cybersecurity Trends you can expect in 2023
             file: 6_Cybersecurity_Trends_you_can_expect_in_2023__1674116390.pdf
+            url: https://drive.google.com/file/d/1-AycVCkdsfrLRIO9fbwZDKSc1guWUMpS/view
             type: PDF
           - title: Building a Cybersecurity and Privacy Learning Prog
             file: Building a Cybersecurity and Privacy Learning Prog.pdf
+            url: https://drive.google.com/file/d/1nN1iNufzjLTJiyIbUMOs7UzGPevMldHl/view
             type: PDF
           - title: Cybersecurity Acronyms (1)
             file: Cybersecurity_Acronyms (1).pdf
+            url: https://drive.google.com/file/d/1BkaDgcb-8uwji5VOPaMkagqnoufpFwm_/view
             type: PDF
           - title: Cybersecurity as a Matter of Competitive Advantage
             file: Cybersecurity_as_a_Matter_of_Competitive_Advantage.pdf
+            url: https://drive.google.com/file/d/1mP_EAzQTU8L9urKl41Fhz_RMuhF5DFYQ/view
             type: PDF
           - title: Cybersecurity for Industry 4 0
             file: Cybersecurity_for_Industry_4_0_1681834579.pdf
+            url: https://drive.google.com/file/d/1TsY2fb3SNt9HA-mhm4iQEeTgS4QI-e8L/view
             type: PDF
           - title: Cybersecurity for SMB
             file: Cybersecurity_for_SMB_1672763649.pdf
+            url: https://drive.google.com/file/d/1BH-sE_QAyWfu7wHTnG6o8Objc7AQBJY_/view
             type: PDF
           - title: Cybersecurity for startups
             file: Cybersecurity_for_startups_1720369445.pdf
+            url: https://drive.google.com/file/d/1ySUzV77i75oWSL-ZPfnF2s0Licxmke-2/view
             type: PDF
           - title: Cybersecurity Infographic
             file: Cybersecurity_Infographic.pdf
+            url: https://drive.google.com/file/d/1HIUxH6JvYM8KncW8eVHRPp3B32ydjD1H/view
             type: PDF
           - title: Cybersecurity Resource and Reference Guide
             file: Cybersecurity_Resource_and_Reference_Guide.pdf
+            url: https://drive.google.com/file/d/1BEG6tUfsEIY0TVPlg2li6EHBRSHzJHwj/view
             type: PDF
           - title: CyberSecurity skills in the UK 2022 RB
             file: CyberSecurity_skills_in_the_UK_2022_RB_.pdf
+            url: https://drive.google.com/file/d/1eJAkiDO07nFAvInYh0m6JQqaU-Fd9gPY/view
             type: PDF
           - title: Cybersecurity Terms
             file: Cybersecurity_Terms__1670136574.pdf
+            url: https://drive.google.com/file/d/1lZursyAnSk-GQS57kMvwCTlSTzzaJ5la/view
             type: PDF
           - title: cybersecurity-forecast-2026-en
             file: cybersecurity-forecast-2026-en.pdf
+            url: https://drive.google.com/file/d/1ETm0TsqVGwi_FDumWiyQijgcFwg1RdiL/view
             type: PDF
           - title: Executive Guide to Cybersecurity for SMBs-1
             file: Executive Guide to Cybersecurity for SMBs-1.pdf
+            url: https://drive.google.com/file/d/1HkRi5l0uFuHglcWQTSYAD0P-F7mBtzJk/view
             type: PDF
           - title: Global Cybersecurity Outlook 2022
             file: Global_Cybersecurity_Outlook_2022.pdf
+            url: https://drive.google.com/file/d/1e_Mhm-diqWMzYFMjjln21G_AlXY7G6a8/view
             type: PDF
           - title: Global Cybersecurity Outlook 2025
             file: Global Cybersecurity Outlook 2025.pdf
+            url: https://drive.google.com/file/d/1Ph2lnY6rC9fnpgPJxjcy-J6Gh7Lsdawq/view
             type: PDF
           - title: kaspersky-threat-data-feeds-datasheet
             file: kaspersky-threat-data-feeds-datasheet.pdf
+            url: https://drive.google.com/file/d/1rwM6Hx36isMK20dj5j0P83ud_OCx0y-o/view
             type: PDF
           - title: M Trends 2022
             file: M_Trends_2022_.pdf
+            url: https://drive.google.com/file/d/1GqcdRFWJddIrqxnsGpCs7V9PaDqW1cyd/view
             type: PDF
           - title: M Trends Report 2025
             file: M_Trends_Report_2025.pdf
+            url: https://drive.google.com/file/d/1mSO20hhcg12LWA6AggTSk_7ehuVhjkyU/view
             type: PDF
           - title: m-trends-2025-en
             file: m-trends-2025-en.pdf
+            url: https://drive.google.com/file/d/1Pq9LbcyxQubZTKMPR9PszxcGCcwuEiSu/view
             type: PDF
           - title: Mandiant M Trends 2023
             file: Mandiant_M_Trends_2023_1681842913.pdf
+            url: https://drive.google.com/file/d/1kVuXbNL3H0PefNSJ0owMRk0C7SdWHlud/view
             type: PDF
           - title: Microsoft-Digital-Defense-Report-2025 (1)
             file: Microsoft-Digital-Defense-Report-2025 (1).pdf
+            url: https://drive.google.com/file/d/1P34s9a8HAeQvVEMmICdu8yWPo4v7G9BR/view
             type: PDF
           - title: National CyberSecurity Guide RB
             file: _National_CyberSecurity_Guide_RB.pdf
+            url: https://drive.google.com/file/d/1FjSfVOfVpg9qO4lzv-tEb7djNqxRrXLE/view
             type: PDF
           - title: SPECIAL REPORT MANDIANT M TRENDS 2022
             file: SPECIAL_REPORT_MANDIANT_M_TRENDS_2022.pdf
+            url: https://drive.google.com/file/d/1sI2FywSjGxr-0_ir3uzBMov79IoOcsjP/view
             type: PDF
           - title: Star Wars Cybersecurity
             file: Star_Wars_Cybersecurity_.pdf
+            url: https://drive.google.com/file/d/1Hif9Mv9AGGe7b45Skm4OVqQFdmHSsTTE/view
             type: PDF
           - title: State of Cybersecurity 2022
             file: State_of_Cybersecurity_2022.pdf
+            url: https://drive.google.com/file/d/1oWUU5QpUidoYGGINji2taxzG_6_WjF_W/view
             type: PDF
           - title: Top 50 Cybersecurity Questions
             file: Top_50_Cybersecurity_Questions_1683137536.pdf
+            url: https://drive.google.com/file/d/1XMgHOaW0xBW9_8a7TYGiZOeW7qDaGYNF/view
             type: PDF
           - title: update ms-isac-cybersecurity-resources guide 51822
             file: update_ms-isac-cybersecurity-resources_guide_51822.pdf
+            url: https://drive.google.com/file/d/1K8ZGYtuxLttkZbYGoEVQDH5cAgr47go1/view
             type: PDF
           - title: WEF Global Cybersecurity Outlook 2025 250113 213446
             file: WEF_Global_Cybersecurity_Outlook_2025_250113_213446.pdf
+            url: https://drive.google.com/file/d/1KrjWnDmLmMyd3JXhTkjNZbMyXHfVTE5Q/view
             type: PDF
           - title: Yigal Cybersecurity
             file: Yigal_Cybersecurity.pdf
+            url: https://drive.google.com/file/d/1w_uDzNATDBkZ6h_2xGriZlSQJS1_Ks03/view
             type: PDF
   - name: Defense Strategies
     icon: 🏰
@@ -1525,24 +1972,31 @@ categories:
         resources:
           - title: 2022 CYBER DEFENDERS PLAYBOOK
             file: 2022_CYBER_DEFENDERS_PLAYBOOK.pdf
+            url: https://drive.google.com/file/d/1yeGKvEPIIOVJjrgvtt8b6Y-k_cJQJAE6/view
             type: PDF
           - title: A Guide to Activating Cyber Defense
             file: A_Guide_to_Activating_Cyber_Defense__1670322809.pdf
+            url: https://drive.google.com/file/d/1hSrKLj3tDFK4riJI6CJCbzYQENtYOxjd/view
             type: PDF
           - title: CERT EU Security Guidance 22 001
             file: CERT_EU_Security_Guidance_22_001.pdf
+            url: https://drive.google.com/file/d/1vc8dXm36NpjroT1rlztXi2dhplPebET2/view
             type: PDF
           - title: Strategic Decision Making Process Guide Crisis Man 250703 190236
             file: Strategic Decision Making Process_Guide_Crisis Man_250703_190236.pdf
+            url: https://drive.google.com/file/d/1DHTtdssE1GPIN3ytYBya7kcnIscY8HN1/view
             type: PDF
           - title: Strategies to Mitigate Cyber Security Incidents
             file: Strategies_to_Mitigate_Cyber_Security_Incidents_1674045602.pdf
+            url: https://drive.google.com/file/d/1snMYmDwFfCWD7Lds47heE7fsptKH5WWA/view
             type: PDF
           - title: Sub Optimal Strategies in Cyberspace
             file: Sub_Optimal_Strategies_in_Cyberspace_1671390224.pdf
+            url: https://drive.google.com/file/d/1_gEhKGTDLXS7gWX3_wYq02HgPmY4BYNL/view
             type: PDF
           - title: The Defensers Advantage
             file: The_Defensers_Advantage_1675877854.pdf
+            url: https://drive.google.com/file/d/1xOSXhMhet-762-jNt_l3bXldA0H01hOn/view
             type: PDF
   - name: "Career & Certifications"
     icon: 🎓
@@ -1552,49 +2006,63 @@ categories:
         resources:
           - title: ceh notes
             file: ceh notes.pdf
+            url: https://drive.google.com/file/d/1Y6H2OKbwWNhVVOJIjHLJQ_QFMyKIfFEW/view
             type: PDF
           - title: CEH v11 Practical Test
             file: CEH_v11_Practical_Test.pdf
+            url: https://drive.google.com/file/d/1RlNaLKsXeVLtLP9cqoRSqfqGhG6hVCjy/view
             type: PDF
           - title: Certified Ethical Hacker CEH Summarized by Mohammad Alkhudari
             file: Certified_Ethical_Hacker_CEH_Summarized_by_Mohammad_Alkhudari_.pdf
+            url: https://drive.google.com/file/d/1IMHfbhVz9S25BhbbWZVn8dOO_uHRO6D1/view
             type: PDF
           - title: CISSP Exam Study Guide
             file: CISSP_Exam_Study_Guide_.pdf
+            url: https://drive.google.com/file/d/1RzSyhaxey0Omjk8n32viK3n0dw2TB9Ah/view
             type: PDF
           - title: CISSP Guide
             file: CISSP_Guide.pdf
+            url: https://drive.google.com/file/d/1aecQCWLfN1RaDEYUy5QQjti9wO9jNP1h/view
             type: PDF
           - title: CISSP תיבת אוצר
             file: __CISSP תיבת אוצר.pdf
+            url: https://drive.google.com/file/d/16lIuff6DKLir6gziGiOF7y2tU-E-0eaI/view
             type: PDF
           - title: CISSP-Study-Guide-2021
             file: CISSP-Study-Guide-2021.pdf
+            url: https://drive.google.com/file/d/1sPmm8ELrqHzkvhkstq7ehYWdsoD3jzsT/view
             type: PDF
           - title: Security Plus 200 Questions and Answers Test Prep
             file: Security_Plus_200_Questions_and_Answers_Test_Prep_1678979831.pdf
+            url: https://drive.google.com/file/d/1_US34rWl4MchQP1s4xsYiEKjeNXa6RMP/view
             type: PDF
           - title: Slides How to Burn Out in Infosec
             file: Slides_How_to_Burn_Out_in_Infosec.pdf
+            url: https://drive.google.com/file/d/1Hg4Sa_oL-pFfq06WNlErogm9LA8mXOq_/view
             type: PDF
           - title: אירוע תעסוקה עבורי בוגרי 8200 - סייבר 29.01.23 (1)
             file: אירוע תעסוקה עבורי בוגרי 8200 - סייבר 29.01.23 (1).pdf
+            url: https://drive.google.com/file/d/1DX3aZFmt3U6GYVS7c9jvOsVnd_2hHvAh/view
             type: PDF
           - title: שאלות ותשובות לראיונות עבודה מתחום הסייבר ואבטחת המידע
             file: שאלות ותשובות לראיונות עבודה מתחום הסייבר ואבטחת המידע.pdf
+            url: https://drive.google.com/file/d/1GKivldJ5lXTU-nfHoVTh2M1fiIE9n5vu/view
             type: PDF
       - name: Getting Started
         resources:
           - title: Cyber Security Toolkit for Boards
             file: Cyber_Security_Toolkit_for_Boards.pdf
+            url: https://drive.google.com/file/d/15WVgikEG5k85BQbp4ktlbTWhKlHsPBj4/view
             type: PDF
           - title: Introduction To Cyber Security
             file: Introduction_To_Cyber_Security__1675503324.pdf
+            url: https://drive.google.com/file/d/1NuGBfY2n4P8fPuDIUA0O8ps-eYCW2typ/view
             type: PDF
       - name: Quick References
         resources:
           - title: IT vs IS
             file: IT_vs_IS.pdf
+            url: https://drive.google.com/file/d/16IXEzYswjPnqLyW2rAUQkp5Cn-L8RBKv/view
             type: PDF
   - name: "Tools & Resources"
     icon: 🧰
@@ -1604,33 +2072,43 @@ categories:
         resources:
           - title: A Practical Guide for a Successful SOC
             file: A_Practical_Guide_for_a_Successful_SOC_1650530583.pdf
+            url: https://drive.google.com/file/d/1an02juEEdsGmh6Ulqo0K1PTZfPHaTH2-/view
             type: PDF
           - title: Conceptual Guide to Enterprise Cyber Security 2023-1
             file: Conceptual Guide to Enterprise Cyber Security 2023-1.pdf
+            url: https://drive.google.com/file/d/18zEUR-Tc0arOCgtsjN27DjtPl4tTCNzo/view
             type: PDF
           - title: FREE Open Source Security Tools
             file: FREE_Open_Source_Security_Tools_.pdf
+            url: https://drive.google.com/file/d/1ljtAHYjOalD5ZYSOjP8XC_Ju1PcYDUX-/view
             type: PDF
           - title: FREE Open Source Security Tools
             file: FREE_Open_Source_Security_Tools.pdf
+            url: https://drive.google.com/file/d/1NqM51eK80n2KQKIK6tn3b_d8-NK1rvto/view
             type: PDF
           - title: Information Security Handbook
             file: Information_Security_Handbook.pdf
+            url: https://drive.google.com/file/d/1z2hV5sh3l6JlmaIUd7hKznDpnm8KVev4/view
             type: PDF
           - title: Prioritized-Approach-Tool-v3 2 1
             file: Prioritized-Approach-Tool-v3_2_1.xlsx
+            url: https://drive.google.com/file/d/1PrI-z6hs3edtYkJ6UDi4T515btndBXpJ/view
             type: XLSX
           - title: RedTeam Tools
             file: RedTeam_Tools_1676474230.pdf
+            url: https://drive.google.com/file/d/1PEhs-B9WrI2iTs1f9Zgl-crHMuRNHwgs/view
             type: PDF
           - title: SOC Tools
             file: SOC_Tools.pdf
+            url: https://drive.google.com/file/d/1lC1PeOnKAzHVF0pPgzARq-2ttuhmXlGg/view
             type: PDF
           - title: Telegram Channels
             file: Telegram Channels.xlsx
+            url: https://drive.google.com/file/d/1oiVeACXky6BmPnMyXGIBq1Zit92Pjof4/view
             type: XLSX
           - title: Wireshark User Guide
             file: Wireshark_User_Guide__1681326946.pdf
+            url: https://drive.google.com/file/d/1ijKyQwkmP1Zi80LGj5iodh7dRebmCLk5/view
             type: PDF
   - name: Hebrew Resources (עברית)
     icon: 🇮🇱
@@ -1640,42 +2118,55 @@ categories:
         resources:
           - title: "10 כללי חובה לשמירה על החיים הדיגיטליים בזמן מלחמה!"
             file: "10 כללי חובה לשמירה על החיים הדיגיטליים בזמן מלחמה!.pdf"
+            url: https://drive.google.com/file/d/17niggTUCWtyQ1GubKRlEHvuXR0-gjGO8/view
             type: PDF
           - title: Adobe Scan 29 ביולי 2025
             file: Adobe Scan 29 ביולי 2025.pdf
+            url: https://drive.google.com/file/d/1pAwoyW9yCFJ2P0zia4GbGyUAUCfkPPS9/view
             type: PDF
           - title: אירוע חשיפה MarketPlace עדכני
             file: אירוע חשיפה MarketPlace עדכני.pdf
+            url: https://drive.google.com/file/d/1pExvBaKV5GUhKXhTHVVbeeVbpXgE2cGJ/view
             type: PDF
           - title: בקרות תורת ההגנה 2.0 גרסה 1.3
             file: בקרות תורת ההגנה 2.0 גרסה 1.3.xlsx
+            url: https://drive.google.com/file/d/1Bn2zqOzVUrg860HDb7AqSLhv5xxWZtxe/view
             type: XLSX
           - title: גילוי דעת בנושא תכנית אכיפה פנימית ככלי לניהול סיכוני סייבר בדירקטוריונים V1
             file: גילוי דעת בנושא תכנית אכיפה פנימית ככלי לניהול סיכוני סייבר בדירקטוריונים V1.pdf
+            url: https://drive.google.com/file/d/1N92NTY-hyvR3mAX2oeK2A9gpeOdqvMKp/view
             type: PDF
           - title: דוח בלימת מתקפת סייבר צפון קוריאנית
             file: דוח בלימת מתקפת סייבר צפון קוריאנית.pdf
+            url: https://drive.google.com/file/d/1uZCJ6NKS5T8ONjNAgoNT4O7Fn18GFMy0/view
             type: PDF
           - title: מדיניות יישום סייבר 2021
             file: מדיניות יישום סייבר 2021.pdf
+            url: https://drive.google.com/file/d/18lQq4oRXnx3yY4FeCYhMUluQm5uerlcm/view
             type: PDF
           - title: מדריך לשימוש אחראי בבינה מלאכותית במגזר הציבורי - 250604 130228
             file: מדריך לשימוש אחראי בבינה מלאכותית במגזר הציבורי - _250604_130228.pdf
+            url: https://drive.google.com/file/d/1FP2CdUFUVyZniCo6g0hniWidhGjFJTwS/view
             type: PDF
           - title: מתקפת סייבר 18-05-2022 מכתב ללקוח
             file: מתקפת סייבר 18-05-2022 מכתב ללקוח.pdf
+            url: https://drive.google.com/file/d/1edVjrFD1fzx9kbnVF1vyqoovQJ--t6FC/view
             type: PDF
           - title: סכנות ברשת יובל 1
             file: סכנות ברשת יובל 1.pptx
+            url: https://drive.google.com/file/d/1I-IgnpAjjrpvGIsSw8U5L9VYh8COlbZH/view
             type: PPTX
           - title: עדכון מודיעין 3 – תקיפת סייבר על הטכניון 12.02.23
             file: עדכון מודיעין 3 – תקיפת סייבר על הטכניון  12.02.23.pdf
+            url: https://drive.google.com/file/d/19LHn_UBM1v68_EjJI2aICjvpk9RBuOfO/view
             type: PDF
           - title: תקינה בסייבר
             file: תקינה בסייבר.pdf
+            url: https://drive.google.com/file/d/1uRW702UWSuLuIsNtvgslDHTH80WLqpJ3/view
             type: PDF
           - title: תקנות אבטחת מידע (1)
             file: תקנות אבטחת מידע (1).xlsx
+            url: https://drive.google.com/file/d/1Y02iU1DxH3-i_YJEiynPOvSi_Kri0rM5/view
             type: XLSX
   - name: General Cybersecurity
     icon: 📁
@@ -1685,103 +2176,137 @@ categories:
         resources:
           - title: 
             file: __1666554480.pdf
+            url: https://drive.google.com/file/d/1d62xgxlyHlj1sygiMb0JOrB7omIhcimk/view
             type: PDF
           - title: 
             file: __1682400112.pdf
+            url: https://drive.google.com/file/d/16Y_ZeE_9O2UpRFXcK1lRI8Y8WVgc-1tV/view
             type: PDF
           - title: 
             file: 1683711470079.pdf
+            url: https://drive.google.com/file/d/1ks7nrJsvpJ6SEG4DZRL2seFUwUFqR_Bx/view
             type: PDF
           - title: 
             file: 1745309745679.pdf
+            url: https://drive.google.com/file/d/1eaVRWFGzlEBj3dI9LTYH5TESZg1dAjuX/view
             type: PDF
           - title: 
             file: 1750835830567.pdf
+            url: https://drive.google.com/file/d/1FNQpmmiXS6BmYQ2PdrFbdz2zt68s6axP/view
             type: PDF
           - title: 
             file: 1759380457478.pdf
+            url: https://drive.google.com/file/d/1NjjS1eXIkQQZ9IQaXnx_yUClf8_-www-/view
             type: PDF
           - title: 
             file: 1769442214362.pdf
+            url: https://drive.google.com/file/d/1JtrTj7qCHGZaBsMTPzEXsxWt9JYtAwgs/view
             type: PDF
           - title: 
             file: 1770888006638.pdf
+            url: https://drive.google.com/file/d/1nJCOFH9CT2bAypolSxoS2VPt7OhW02Dl/view
             type: PDF
           - title: 
             file: 1773412006137.pdf
+            url: https://drive.google.com/file/d/1bTlo_KbIZGhuuPYetjpVQxaWiNQ3cLhK/view
             type: PDF
           - title: 
             file: 1773644508484.pdf
+            url: https://drive.google.com/file/d/1zB2oD--uwLDsJL9mS38DMM5v6xrq5dbk/view
             type: PDF
           - title: 1772916828036 260307 225539
             file: 1772916828036_260307_225539.pdf
+            url: https://drive.google.com/file/d/1aiI3isloVM4DIgAli15LZfs7sCdiWaKm/view
             type: PDF
           - title: 20 critical security controls
             file: 20 critical security controls .pdf
+            url: https://drive.google.com/file/d/103yX_iFZt1tssEWjEvboz3DvgBzHIvgC/view
             type: PDF
           - title: 2022
             file: _2022_1672564504.pdf
+            url: https://drive.google.com/file/d/1wEkdZ1DlxBoIe2P7RUJOSZF-ky182Go5/view
             type: PDF
           - title: 2024 FR Email Security PerceptionPoint (1)
             file: 2024 FR_Email Security_PerceptionPoint (1).pdf
+            url: https://drive.google.com/file/d/1oLbTUmpwvi6HjOoXB0auRfXtkQmxTpRZ/view
             type: PDF
           - title: 220204
             file: 220204.pdf
+            url: https://drive.google.com/file/d/1Xha82pITPPVhKdXowUptHmvNA-3BtjHI/view
             type: PDF
           - title: 250318813v2 251205 061606
             file: 250318813v2_251205_061606.pdf
+            url: https://drive.google.com/file/d/1ZDAnnr8wpg_0JftAzGhUX8xwfq4aPh7h/view
             type: PDF
           - title: 260320
             file: 260320.pdf
+            url: https://drive.google.com/file/d/16Evk7hoyCfycVFhC1gN6gjyf9TXAUcJt/view
             type: PDF
           - title: Cyber crime online business model
             file: Cyber_crime_online_business_model_.pdf
+            url: https://drive.google.com/file/d/18igRb3j2Ai4qujpv62Jh2pi0_Qt89St9/view
             type: PDF
           - title: Cyber Security Gaint Palo Alto Networks
             file: Cyber_Security_Gaint_Palo_Alto_Networks_1676644870.pdf
+            url: https://drive.google.com/file/d/1SMtP-3yWdBsHwpeYzzWaCjXpbc6A6NwX/view
             type: PDF
           - title: data security
             file: data_security_.pdf
+            url: https://drive.google.com/file/d/1nnXx0xsp-_4V-SvP4gMd0r4A2QkLFyny/view
             type: PDF
           - title: day-2
             file: day-2.pdf
+            url: https://drive.google.com/file/d/1qPbI9kkhxi4JPeVt1VgnnthFfFFofDnE/view
             type: PDF
           - title: DDS
             file: DDS.pdf
+            url: https://drive.google.com/file/d/17okjNB9l8l_2UP6kUx21NGmFCoKnxMJC/view
             type: PDF
           - title: download
             file: download.pdf
+            url: https://drive.google.com/file/d/19y6cGaDIoSZjzUNX_3A3APCB6Ns1LEVE/view
             type: PDF
           - title: E03515734 - Government Cyber Action Plan ACCESSIBL 260107 095027
             file: E03515734_-_Government_Cyber_Action_Plan_ACCESSIBL_260107_095027.pdf
+            url: https://drive.google.com/file/d/1l-Icb8CR3VqQrRUpcLTB69QDw2tLWgD4/view
             type: PDF
           - title: file 57D0B51E-B7A2-4BD5-BABB-709A44AE6857
             file: file_57D0B51E-B7A2-4BD5-BABB-709A44AE6857.pdf
+            url: https://drive.google.com/file/d/1pgZVkFMWmjDKRB3InIygoioTbtJwx7an/view
             type: PDF
           - title: LanDscAPe
             file: LanDscAPe.pdf
+            url: https://drive.google.com/file/d/1ZWZ2RRN-d7E1gaVJ1InOB8PZfzO3Q8Ul/view
             type: PDF
           - title: ordinal
             file: ordinal.pdf
+            url: https://drive.google.com/file/d/1WqKlCsvNkkr5iwD1I0EdFKUJpBiAh9ae/view
             type: PDF
           - title: original
             file: original.pdf
+            url: https://drive.google.com/file/d/1zVrb8RUCFCdF3J6BnjtRuOy4sdgZpZJk/view
             type: PDF
           - title: PEACH
             file: PEACH_1671224797.pdf
+            url: https://drive.google.com/file/d/1K84hTF-a6jSlmAJj0SdUVdTD93fvfgmO/view
             type: PDF
           - title: ploni101
             file: ploni101.pdf
+            url: https://drive.google.com/file/d/1nrr89_LG_CJvpxxIogF-Iz9bL9cuRrJ9/view
             type: PDF
           - title: Sludge for Good
             file: Sludge_for_Good_1670002491.pdf
+            url: https://drive.google.com/file/d/17NsgZznFYhrF76k3AdUyAZ9rN8bld6eT/view
             type: PDF
           - title: SURF-SECURITY
             file: SURF-SECURITY.pdf
+            url: https://drive.google.com/file/d/17FPJaTiPD8WyFx1zle7-31E5T8bgvMqS/view
             type: PDF
           - title: Translated
             file: Translated.pdf
+            url: https://drive.google.com/file/d/1y2OmB4pe0BhUw4F77MXKFnDGUa2u7hJk/view
             type: PDF
           - title: UBTECH
             file: UBTECH.pdf
+            url: https://drive.google.com/file/d/1Ww-OBBfK4gXH7kdGtU2CI117uVMflaAM/view
             type: PDF

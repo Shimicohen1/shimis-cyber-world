@@ -593,16 +593,22 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .vault-resource {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: .45rem .7rem;
   border-radius: var(--r-sm);
   transition: background .1s;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
-.vault-resource:hover { background: var(--card); }
+.vault-resource:hover { background: var(--card); color: inherit; }
+.vault-resource:hover .vault-resource__open { opacity: 1; color: var(--electric); }
 .vault-resource__info {
   display: flex;
   align-items: center;
   gap: .6rem;
   min-width: 0;
+  flex: 1;
 }
 .vault-resource__type {
   font-family: var(--f-mono);
@@ -622,6 +628,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.vault-resource__open {
+  color: var(--dim);
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity .15s, color .15s;
+  margin-left: .5rem;
 }
 
 /* Legacy vault-card (for homepage vault picks) */
