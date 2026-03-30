@@ -1,29 +1,25 @@
-<div class="card tool-card card-glow">
-  <div class="card-body">
-    <div class="card-head">
-      <h3>{{ item.title }}</h3>
-      {% if item.status == 'Open' %}
-        <span class="neon-badge neon-badge-green">{{ item.status }}</span>
-      {% elsif item.status == 'Beta' %}
-        <span class="neon-badge neon-badge-orange">{{ item.status }}</span>
-      {% elsif item.status == 'Coming Soon' %}
-        <span class="neon-badge neon-badge-purple">{{ item.status }}</span>
-      {% elsif item.status %}
-        <span class="neon-badge neon-badge-cyan">{{ item.status }}</span>
-      {% endif %}
-    </div>
-    <p>{{ item.description }}</p>
-    {% if item.tags.size > 0 %}
-    <div class="card-tags">
-      {% for tag in item.tags %}<span class="tag tag-sm">{{ tag }}</span>{% endfor %}
-    </div>
+<div class="tool-card">
+  <div class="tool-card__head">
+    <h4>{{ tool.name }}</h4>
+    {% if tool.status == "essential" %}
+      <span class="badge badge--signal">essential</span>
+    {% elsif tool.status == "recommended" %}
+      <span class="badge badge--new">recommended</span>
+    {% elsif tool.status == "beta" %}
+      <span class="badge badge--beta">beta</span>
+    {% elsif tool.status == "coming-soon" %}
+      <span class="badge badge--soon">coming soon</span>
     {% endif %}
-    <div class="card-actions">
-      {% if item.url %}
-      <a href="{{ item.url }}" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">{{ item.button | default: "Learn More" }} <span class="external-icon">&#x2197;</span></a>
-      {% else %}
-      <span class="btn btn-ghost btn-sm btn-disabled">{{ item.button | default: "Coming Soon" }}</span>
-      {% endif %}
-    </div>
   </div>
+  <p>{{ tool.description }}</p>
+  {% if tool.tags %}
+  <div class="tool-card__tags">
+    {% for tag in tool.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+  </div>
+  {% endif %}
+  {% if tool.url %}
+  <div class="tool-card__action">
+    <a href="{{ tool.url }}" target="_blank" rel="noopener" class="btn btn--ghost btn--sm{% if tool.status == 'coming-soon' %} btn--disabled{% endif %}">{% if tool.status == 'coming-soon' %}Coming Soon{% else %}Open Tool &rarr;{% endif %}</a>
+  </div>
+  {% endif %}
 </div>

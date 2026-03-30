@@ -1,36 +1,48 @@
-// Mobile nav toggle
-document.addEventListener('DOMContentLoaded', () => {
+// Shimi's Cyber World — Main JS
+(function () {
+  'use strict';
+
+  // --- Mobile nav toggle ---
   const toggle = document.querySelector('.nav-toggle');
   const menu = document.querySelector('.nav-menu');
   if (toggle && menu) {
-    toggle.addEventListener('click', () => {
-      const open = menu.classList.toggle('open');
-      toggle.classList.toggle('open', open);
-      toggle.setAttribute('aria-expanded', String(open));
+    toggle.addEventListener('click', function () {
+      toggle.classList.toggle('open');
+      menu.classList.toggle('open');
     });
-
-    menu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        menu.classList.remove('open');
+    // Close on link click
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
         toggle.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
+        menu.classList.remove('open');
       });
     });
   }
 
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  if (reveals.length > 0 && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+  // --- Scroll reveal ---
+  var reveals = document.querySelectorAll('.reveal');
+  if (reveals.length && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1 });
-    reveals.forEach(el => observer.observe(el));
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(function (el) { observer.observe(el); });
   } else {
-    reveals.forEach(el => el.classList.add('visible'));
+    // Fallback: show everything
+    reveals.forEach(function (el) { el.classList.add('visible'); });
   }
-});
+
+  // --- Active nav highlighting ---
+  var currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+  document.querySelectorAll('.nav-links a').forEach(function (link) {
+    var linkPath = link.getAttribute('href').replace(/\/$/, '') || '/';
+    if (currentPath === linkPath) {
+      link.classList.add('active');
+    }
+  });
+
+})();

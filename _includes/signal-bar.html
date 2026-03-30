@@ -1,0 +1,18 @@
+<div class="signal-bar">
+  <div class="container">
+    <div class="signal-bar__track">
+      {% for item in site.data.homepage.signals %}
+      <span class="signal-bar__item">
+        <span class="signal-bar__dot{% if item.color %} signal-bar__dot--{{ item.color }}{% endif %}"></span>
+        {{ item.text }}
+      </span>
+      {% endfor %}
+      {% for item in site.data.homepage.signals %}
+      <span class="signal-bar__item">
+        <span class="signal-bar__dot{% if item.color %} signal-bar__dot--{{ item.color }}{% endif %}"></span>
+        {{ item.text }}
+      </span>
+      {% endfor %}
+    </div>
+  </div>
+</div>

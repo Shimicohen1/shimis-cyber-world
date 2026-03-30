@@ -1,52 +1,58 @@
 ---
 layout: default
-title: About
+title: Manifesto
 permalink: /about/
-description: "The story behind Shimi's Cyber World — who, why, and what's next."
 ---
 
-<div class="page" markdown="1">
-
-<div class="about-hero">
-  <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="Shimi's Cyber World" class="about-hero-logo">
-  <div class="about-hero-text">
-    <h2 class="gradient-text">Shimi's Cyber World</h2>
-    <p>A personal cybersecurity knowledge base — built by a practitioner, for practitioners. No paywalls, no fluff, no gatekeeping.</p>
-  </div>
+<div class="container">
+<div class="page-head">
+<div class="label label--acid page-head__label">WHO / WHY / WHAT</div>
+<h1 class="page-head__title">The Manifesto</h1>
+<p class="page-head__desc">What this is, who built it, and why it exists.</p>
 </div>
 
-<div class="page-body" markdown="1">
+<div class="about-identity reveal">
+<img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="Shimi's Cyber World" class="about-identity__logo">
+<div class="about-identity__text">
+<h2>Shimi's Cyber World</h2>
+<p>A living feed of cybersecurity knowledge — curated intelligence, operational tools, and raw signal. Built by Shimi Cohen for practitioners who learn by doing.</p>
+</div>
+</div>
 
-## What is Cyber World?
+<div class="prose" markdown="1">
 
-Shimi's Cyber World is a personal knowledge base for the cybersecurity community. Not a product, not a company — a working collection of tools, resources, write-ups, and references built by someone who actually uses them.
+## What is Shimi's Cyber World?
 
-The idea is simple: gather everything useful in one place and keep it honest. No paywalls, no fluff, no "subscribe for the real answer" games. If something is here, it's because it earned its spot.
+Shimi's Cyber World (SCW) is a personal cybersecurity knowledge platform — a curated digital space where security intelligence, tools, and learning resources converge into a single, living stream.
+
+It's not a blog. It's not a portfolio. It's a **feed** — of drops, signals, curated vault picks, and field-tested tools. Everything here is built to be useful, not decorative.
 
 ## Who is Shimi?
 
-I'm a cybersecurity practitioner with deep expertise in enterprise security, threat intelligence, and building tools that solve real problems. I've spent time leading security operations, architecting defenses, and working in the gaps where the interesting work happens.
+Shimi Cohen is a cybersecurity practitioner and builder — passionate about offensive security, threat intelligence, and making the complex accessible. SCW is the public expression of that work.
 
-This site is where I share what I learn — the stuff that actually works, the tools worth knowing, and the thinking behind them.
+## The Mission
 
-## Mission
+Cybersecurity knowledge shouldn't be buried in PDFs or locked behind certification paywalls. The best learning happens when information is **alive, accessible, and actionable**.
 
-Make practical cybersecurity knowledge accessible to anyone willing to put in the work.
-
-That means:
-- **Real write-ups** — not theory, not marketing. Hands-on breakdowns of techniques, tools, and challenges.
-- **Curated resources** — frameworks, training platforms, and references that are actually worth your time.
-- **Tools** — open-source utilities and original tools built for security work. Some exist now, more are coming.
-- **Community** — a place where practitioners share knowledge without gatekeeping.
+SCW exists to:
+- **Curate** the best resources and tools into one organized stream
+- **Drop** field notes, deep dives, and operational intelligence
+- **Build** custom tools that solve real problems
+- **Share** knowledge openly with the community
 
 ## What's Next
 
-This platform is growing. The roadmap includes original security tools, deeper write-up series, community features, and a resource library that keeps expanding. If you want to follow along or contribute, you're in the right place.
+SCW is always evolving. Upcoming:
+- More drops and field notes
+- Custom SCW tools in beta
+- Expanded vault with curated learning paths
+- Community features and signal sharing
 
 ## Connect
 
-- [LinkedIn](https://www.linkedin.com/company/shimis-cyber-world){:target="_blank"}
-- [GitHub](https://github.com/Shimicohen1){:target="_blank"}
+- [LinkedIn](https://www.linkedin.com/in/shimi-cohen1/)
+- [GitHub](https://github.com/Shimicohen1/shimis-cyber-world)
 
 </div>
 </div>

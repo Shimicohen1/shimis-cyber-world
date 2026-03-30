@@ -1,15 +1,12 @@
-<a href="{{ post.url | relative_url }}" class="card post-card card-glow">
-  {% if post.image %}
-  <div class="card-image" style="background-image: url('{{ post.image | relative_url }}')"></div>
-  {% endif %}
-  <div class="card-body">
+<a href="{{ post.url | relative_url }}" class="archive__item">
+  <span class="archive__date">{{ post.date | date: "%b %d, %Y" }}</span>
+  <div class="archive__body">
     <h3>{{ post.title }}</h3>
-    <p>{{ post.excerpt | strip_html | truncate: 140 }}</p>
-    <div class="card-meta">
-      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time>
-      {% if post.tags.size > 0 %}
-      <span class="card-tags">{% for tag in post.tags limit:3 %}<span class="tag tag-sm">{{ tag }}</span>{% endfor %}</span>
-      {% endif %}
-    </div>
+    {% if post.excerpt %}<p>{{ post.excerpt | strip_html | truncatewords: 20 }}</p>{% endif %}
   </div>
+  {% if post.tags.size > 0 %}
+  <div class="archive__tags">
+    {% for tag in post.tags limit:2 %}<span class="tag">{{ tag }}</span>{% endfor %}
+  </div>
+  {% endif %}
 </a>

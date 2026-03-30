@@ -1,59 +1,91 @@
-hero:
+# Signal bar items (marquee ticker)
+signals:
+  - text: "LIVE SIGNAL FEED"
+    color: ""
+  - text: "LATEST DROPS INCOMING"
+    color: "acid"
+  - text: "NEW TOOLS IN BETA"
+    color: "pink"
+  - text: "VAULT UPDATED"
+    color: "lime"
+  - text: "CYBERSECURITY INTELLIGENCE"
+    color: ""
+  - text: "OPERATOR TOOLKIT ACTIVE"
+    color: "acid"
+  - text: "FIELD NOTES LOADING"
+    color: "pink"
+  - text: "SCW NETWORK ONLINE"
+    color: "lime"
+
+# Identity block (compact hero)
+identity:
   title: "Shimi's Cyber World"
-  tagline: "A living knowledge hub — cybersecurity insights, curated tools, open resources, and hands-on learning."
-  image: /assets/img/logos/logo-full.png
-  floating_tags:
-    - AI Security
-    - Microsoft Security
-    - Threat Intelligence
-    - Open-Source Tools
-    - Community
-  cta:
-    - text: "Explore Posts"
-      url: /posts/
-      style: primary
-    - text: "Enter the Library"
-      url: /library/
-      style: ghost
+  tagline: "Cybersecurity knowledge curated into a living digital feed. Drops, signals, field tools, and raw intelligence — all in one stream."
+  cta_primary:
+    text: "Latest Drops"
+    url: "/posts/"
+  cta_secondary:
+    text: "About SCW"
+    url: "/about/"
 
-about_block:
-  heading: "What is Cyber World?"
-  body: >
-    Shimi's Cyber World is a personal knowledge base built for the cybersecurity community.
-    It brings together curated tools, learning resources, threat intelligence references,
-    and original write-ups — all in one place. Whether you're just getting started
-    or deep in the trenches, there's something here for you.
-  cta_text: "Learn more"
-  cta_url: /about/
+# Quick signals — short insight notes for the homepage
+quick_signals:
+  - title: "OWASP Top 10 — Still the Baseline"
+    text: "Every web security assessment starts here. Know it cold."
+    badge: "signal"
+    tags:
+      - web-security
+      - fundamentals
+  - title: "TryHackMe vs. HackTheBox"
+    text: "THM for learning paths. HTB for proving grounds. Use both."
+    badge: "signal"
+    tags:
+      - labs
+      - training
+  - title: "Nmap is Not Optional"
+    text: "The first tool in every engagement. Master the flags."
+    badge: "signal"
+    tags:
+      - recon
+      - tools
+  - title: "SCW Toolkit in Beta"
+    text: "Custom tools and automations for field operators. Early access."
+    badge: "beta"
+    tags:
+      - scw
+      - tools
 
-featured_resources:
-  - title: "OWASP Top 10"
+# Vault picks — featured resources for homepage
+vault_picks:
+  - name: "OWASP Top 10"
+    description: "The definitive list of critical web application security risks."
     url: "https://owasp.org/www-project-top-ten/"
-    description: "The definitive guide to the most critical web application security risks."
-  - title: "MITRE ATT&CK Framework"
+    badge: "Essential"
+  - name: "MITRE ATT&CK"
+    description: "Global knowledge base of adversary tactics and techniques."
     url: "https://attack.mitre.org/"
-    description: "Knowledge base of adversary tactics and techniques based on real-world observations."
-  - title: "TryHackMe"
+    badge: "Essential"
+  - name: "TryHackMe"
+    description: "Guided learning paths with hands-on cyber labs."
     url: "https://tryhackme.com/"
-    description: "Guided cybersecurity training with hands-on virtual labs."
-  - title: "PortSwigger Web Security Academy"
-    url: "https://portswigger.net/web-security"
-    description: "Free online training for web application security."
+    badge: "Recommended"
 
-featured_tools:
-  - title: "Nmap"
-    url: "https://nmap.org/"
-    description: "Network discovery and security auditing tool."
-    tags: [scanning, network]
-  - title: "Burp Suite"
-    url: "https://portswigger.net/burp"
-    description: "Leading web application security testing toolkit."
-    tags: [web, proxy]
-  - title: "Wireshark"
-    url: "https://www.wireshark.org/"
-    description: "Network protocol analyzer for deep traffic inspection."
-    tags: [network, analysis]
-  - title: "CyberChef"
-    url: "https://gchq.github.io/CyberChef/"
-    description: "Web-based data transformation and analysis tool."
-    tags: [encoding, analysis]
+# Tools teaser for homepage
+tools_teaser:
+  - name: "Nmap"
+    description: "Network scanner and host discovery. The operator's first move."
+    status: "essential"
+  - name: "Burp Suite"
+    description: "Web application security testing platform."
+    status: "essential"
+  - name: "Wireshark"
+    description: "Network protocol analyzer for deep packet inspection."
+    status: "recommended"
+
+# Manifesto block
+manifesto:
+  label: "The Signal"
+  text: "Cybersecurity isn't a product. It's a practice. This is a living feed of curated knowledge, operational tools, and raw intelligence — built for practitioners, not spectators."
+  sub: "Shimi's Cyber World exists because the best security knowledge shouldn't be buried in PDFs or locked behind paywalls. It should be alive, accessible, and constantly evolving."
+  link_text: "Read the full manifesto"
+  link_url: "/about/"

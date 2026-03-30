@@ -1,16 +1,26 @@
-<footer class="site-footer" role="contentinfo">
-  <div class="container footer-content">
-    <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="{{ site.title }}" class="footer-logo">
-    <p class="footer-statement">Cybersecurity insights, curated tools, and open resources — built for the community.</p>
-    <nav class="footer-links-row">
-      <a href="{{ '/' | relative_url }}">Home</a>
-      <a href="{{ '/posts/' | relative_url }}">Posts</a>
-      <a href="{{ '/library/' | relative_url }}">Library</a>
-      <a href="{{ '/tools/' | relative_url }}">Tools</a>
-      <a href="{{ '/about/' | relative_url }}">About</a>
-      <a href="https://www.linkedin.com/company/shimis-cyber-world" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://github.com/Shimicohen1" target="_blank" rel="noopener">GitHub</a>
-    </nav>
-    <p class="footer-copy">&copy; {{ 'now' | date: "%Y" }} {{ site.title }}. All rights reserved.</p>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <div class="footer__brand-name">Shimi's Cyber World</div>
+        <div class="footer__brand-desc">Cybersecurity knowledge, curated intelligence, field tools, and a living digital feed — by Shimi Cohen.</div>
+      </div>
+      <div class="footer__links">
+        <div class="footer__col">
+          <div class="footer__col-title">Navigate</div>
+          {% for item in site.data.navigation %}
+          <a href="{{ item.url | relative_url }}">{{ item.label }}</a>
+          {% endfor %}
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Connect</div>
+          <a href="https://www.linkedin.com/in/shimi-cohen1/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/Shimicohen1/shimis-cyber-world" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      &copy; {{ 'now' | date: '%Y' }} Shimi's Cyber World. All rights reserved.
+    </div>
   </div>
 </footer>

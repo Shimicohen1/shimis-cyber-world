@@ -1,33 +1,25 @@
 ---
-layout: default
-title: Posts
+layout: page
+title: Drops
 permalink: /posts/
 ---
 
-<h1 class="page-title">Posts</h1>
-<p class="page-desc">Cybersecurity write-ups, tutorials, and field notes — newest first.</p>
+<div class="page-head">
+  <div class="label label--acid page-head__label">FEED</div>
+  <h1 class="page-head__title">Drops</h1>
+  <p class="page-head__desc">Field notes, deep dives, and raw cybersecurity intelligence — delivered as they land.</p>
+</div>
 
-{% assign posts = site.posts %}
-{% if posts.size > 0 %}
-<div class="post-list">
-  {% for post in posts %}
-  <a href="{{ post.url | relative_url }}" class="post-list-item card-glow">
-    <div class="post-list-body">
-      <h3>{{ post.title }}</h3>
-      <p>{{ post.excerpt | strip_html | truncate: 180 }}</p>
-      <div class="card-meta">
-        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time>
-        {% if post.tags.size > 0 %}
-        <span class="card-tags">{% for tag in post.tags limit:4 %}<span class="tag tag-sm">{{ tag }}</span>{% endfor %}</span>
-        {% endif %}
-      </div>
-    </div>
-    <span class="post-list-arrow">&rarr;</span>
-  </a>
-  {% endfor %}
+<div class="archive">
+  <div class="archive__list">
+    {% for post in site.posts %}
+    {% include post-card.html %}
+    {% endfor %}
+  </div>
+
+  {% if site.posts.size == 0 %}
+  <div class="empty-state" style="margin-top: 2rem;">
+    <p>Drops are incoming. The feed is warming up.</p>
+  </div>
+  {% endif %}
 </div>
-{% else %}
-<div class="empty-state">
-  <p>No posts yet — new content is on the way. Check back soon.</p>
-</div>
-{% endif %}

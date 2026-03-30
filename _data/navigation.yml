@@ -1,11 +1,10 @@
-main:
-  - title: Home
-    url: /
-  - title: Posts
-    url: /posts/
-  - title: Library
-    url: /library/
-  - title: Tools
-    url: /tools/
-  - title: About
-    url: /about/
+- label: Feed
+  url: /
+- label: Drops
+  url: /posts/
+- label: Vault
+  url: /library/
+- label: Toolkit
+  url: /tools/
+- label: Manifesto
+  url: /about/
