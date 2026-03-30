@@ -1,14 +1,18 @@
-<header class="site-header">
-  <nav class="nav-container">
+<header class="site-header" role="banner">
+  <div class="container nav-wrap">
     <a href="{{ '/' | relative_url }}" class="logo-link">
-      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="{{ site.title }}" class="nav-logo">
-      <span class="site-name">SCW</span>
+      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="{{ site.title }}" class="nav-logo" width="32" height="32">
+      <span class="site-name">Shimi's Cyber World</span>
     </a>
-    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
-    <ul class="nav-links">
-      {% for item in site.data.navigation.main %}
-      <li><a href="{{ item.url | relative_url }}"{% if page.url == item.url %} class="active"{% endif %}>{{ item.title }}</a></li>
-      {% endfor %}
-    </ul>
-  </nav>
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="hamburger"></span>
+    </button>
+    <nav class="nav-menu" role="navigation">
+      <ul class="nav-links">
+        {% for item in site.data.navigation.main %}
+        <li><a href="{{ item.url | relative_url }}"{% if page.url == item.url %} class="active" aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
 </header>

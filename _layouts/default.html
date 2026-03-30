@@ -5,8 +5,10 @@
 </head>
 <body>
   {% include header.html %}
-  <main class="content">
-    {{ content }}
+  <main class="site-main">
+    <div class="container">
+      {{ content }}
+    </div>
   </main>
   {% include footer.html %}
   <script src="{{ '/assets/js/main.js' | relative_url }}" defer></script>
