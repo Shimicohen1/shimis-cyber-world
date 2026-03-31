@@ -35,14 +35,14 @@ title: Home
     <div class="feed__grid reveal">
       {% for post in posts %}
       {% if forloop.first %}
-      <a href="{{ post.url | relative_url }}" class="feed__hero">
+      <a href="{{ post.url | relative_url }}" class="feed__hero"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
         <span class="badge badge--drop">Latest Drop</span>
         <h3>{{ post.title }}</h3>
         <p>{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
         <span class="feed__meta">{{ post.date | date: "%b %d, %Y" }}{% if post.author %} / {{ post.author }}{% endif %}</span>
       </a>
       {% else %}
-      <a href="{{ post.url | relative_url }}" class="feed__card">
+      <a href="{{ post.url | relative_url }}" class="feed__card"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
         <span class="badge badge--signal">Drop</span>
         <h4>{{ post.title }}</h4>
         <p>{{ post.excerpt | strip_html | truncatewords: 15 }}</p>

@@ -23,6 +23,15 @@ layout: default
     <div class="post-body prose"{% if page.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
       {{ content }}
     </div>
+    {% if page.link_preview %}
+    <a href="{{ page.link_preview.url }}" class="link-preview" target="_blank" rel="noopener">
+      {% if page.link_preview.image %}<img class="link-preview__img" src="{{ page.link_preview.image }}" alt="" loading="lazy">{% endif %}
+      <div class="link-preview__body">
+        <div class="link-preview__title">{{ page.link_preview.title }}</div>
+        <div class="link-preview__domain">{{ page.link_preview.domain }}</div>
+      </div>
+    </a>
+    {% endif %}
     <nav class="post-nav">
       <a href="{{ '/posts/' | relative_url }}" class="btn btn--ghost btn--sm">&larr; All Drops</a>
     </nav>
