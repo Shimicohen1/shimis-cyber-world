@@ -30,7 +30,8 @@ title: Home
       <a href="{{ '/posts/' | relative_url }}" class="feed__link">View all &rarr;</a>
     </div>
 
-    {% assign posts = site.posts | slice: 0, 6 %}
+    {% assign non_cve_posts = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" %}
+    {% assign posts = non_cve_posts | slice: 0, 6 %}
     {% if posts.size > 0 %}
     <div class="feed__list reveal">
       {% for post in posts %}
