@@ -30,24 +30,31 @@ title: Home
       <a href="{{ '/posts/' | relative_url }}" class="feed__link">View all &rarr;</a>
     </div>
 
-    {% assign posts = site.posts | slice: 0, 4 %}
+    {% assign posts = site.posts | slice: 0, 6 %}
     {% if posts.size > 0 %}
-    <div class="feed__grid reveal">
+    <div class="feed__list reveal">
       {% for post in posts %}
-      {% if forloop.first %}
-      <a href="{{ post.url | relative_url }}" class="feed__hero"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
-        <span class="badge badge--drop">Latest Drop</span>
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
-        <span class="feed__meta">{{ post.date | date: "%b %d, %Y" }}{% if post.author %} / {{ post.author }}{% endif %}</span>
+      <a href="{{ post.url | relative_url }}" class="feed-item{% if forloop.first %} feed-item--hero{% endif %}"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
+        {% if post.image %}
+        <div class="feed-item__img">
+          <img src="{{ post.image | relative_url }}" alt="" loading="lazy">
+        </div>
+        {% else %}
+        <div class="feed-item__img feed-item__img--placeholder">
+          <span>{{ post.tags.first | upcase | truncate: 3, '' }}</span>
+        </div>
+        {% endif %}
+        <div class="feed-item__body">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
+          <div class="feed-item__meta">
+            <time>{{ post.date | date: "%b %d, %Y" }}</time>
+            {% if post.channel %}<span class="feed-item__sep">/</span><span>{{ post.channel }}</span>{% endif %}
+            {% if post.score %}<span class="feed-item__sep">/</span><span class="feed-item__score feed-item__score--{{ post.score | downcase }}">{{ post.score }}</span>{% endif %}
+            {% for tag in post.tags limit:2 %}<span class="feed-item__sep">/</span><span>{{ tag }}</span>{% endfor %}
+          </div>
+        </div>
       </a>
-      {% else %}
-      <a href="{{ post.url | relative_url }}" class="feed__card"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
-        <span class="badge badge--signal">Drop</span>
-        <h4>{{ post.title }}</h4>
-        <p>{{ post.excerpt | strip_html | truncatewords: 15 }}</p>
-      </a>
-      {% endif %}
       {% endfor %}
     </div>
     {% else %}
