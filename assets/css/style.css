@@ -245,32 +245,48 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 /* =====================================================
    HERO — full-width image header
    ===================================================== */
-.hero {
+.hero,
+.hero-banner,
+.header-banner {
+  position: relative;
   width: 100%;
+  background: #000;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: black;
-  padding: 6px 0 10px;
-  overflow: hidden;
+  padding: 24px 0 0 0;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: unset !important;
+  max-height: none !important;
 }
-.hero-img {
-  width: 100%;
-  max-width: 1200px;
-  height: auto;
-  object-fit: contain;
+
+.hero img,
+.hero-banner img,
+.header-banner img,
+.hero-image {
   display: block;
+  width: 100%;
+  max-width: 1400px;
+  height: auto !important;
+  object-fit: contain !important;
+  object-position: center top;
 }
-.hero-overlay {
+
+.hero-overlay,
+.hero-buttons,
+.banner-buttons {
   display: flex;
-  gap: 15px;
-  margin-top: 10px;
-  z-index: 2;
+  gap: 16px;
+  z-index: 5;
+  padding: 12px 0 16px;
 }
+.hero-buttons .primary,
 .hero-overlay .primary {
   background: #1e90ff;
   color: white;
 }
+.hero-buttons .secondary,
 .hero-overlay .secondary {
   background: transparent;
   border: 1px solid #aaa;
