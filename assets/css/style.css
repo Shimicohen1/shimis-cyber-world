@@ -1100,6 +1100,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 .post-body img { border-radius: var(--r); margin: 1rem 0; }
 
+.post--rtl .post-header { text-align: right; }
+.post--rtl .post-meta { justify-content: flex-end; }
+.post--rtl .post-body { text-align: right; }
+.post--rtl .post-body blockquote { border-left: none; border-right: 2px solid var(--acid); padding: .5rem 1rem .5rem 0; }
+[dir="rtl"] { text-align: right; }
+[dir="rtl"] h3 { text-align: right; }
+[dir="rtl"] p { text-align: right; }
+
 .post-nav {
   margin-top: 2.5rem;
   padding-top: 1.2rem;
