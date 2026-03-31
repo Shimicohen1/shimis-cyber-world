@@ -5,13 +5,14 @@ title: Home
 
 {% include signal-bar.html %}
 
-<section class="hero">
-  <img src="{{ '/assets/img/header-banner.png' | relative_url }}" alt="Shimi's Cyber World Header" class="hero-image">
-  <div class="hero-buttons">
+<header class="hero">
+  <img src="{{ '/assets/img/header-banner.png' | relative_url }}" alt="Shimi Cyber World Header" class="hero-img" />
+
+  <div class="hero-overlay">
     <a href="{{ site.data.homepage.identity.cta_primary.url | relative_url }}" class="btn primary">{{ site.data.homepage.identity.cta_primary.text }}</a>
     <a href="{{ site.data.homepage.identity.cta_secondary.url | relative_url }}" class="btn secondary">{{ site.data.homepage.identity.cta_secondary.text }}</a>
   </div>
-</section>
+</header>
 
 <!-- LIVE FEED -->
 <section class="feed">
