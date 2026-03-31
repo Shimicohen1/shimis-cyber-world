@@ -243,40 +243,43 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 
 /* =====================================================
-   HERO — full-width image header
+   IDENTITY BLOCK — compact hero
    ===================================================== */
-.hero {
-  position: relative;
-  width: 100%;
+.identity {
+  padding: 2.5rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.identity__inner {
   display: flex;
-  justify-content: center;
   align-items: center;
-  background: black;
-  padding: 20px 0;
-  overflow: hidden;
+  gap: 1.5rem;
 }
-.hero-img {
-  width: 100%;
-  max-width: 1200px;
-  height: auto;
-  object-fit: contain;
-  display: block;
+.identity__logo {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--border-hi);
+  flex-shrink: 0;
 }
-.hero-overlay {
-  position: absolute;
-  bottom: 20px;
+.identity__text {}
+.identity__title {
+  font-family: var(--f-display);
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: .25rem;
+}
+.identity__tagline {
+  font-size: .88rem;
+  color: var(--gray);
+  line-height: 1.5;
+  max-width: 480px;
+}
+.identity__actions {
   display: flex;
-  gap: 15px;
-  z-index: 2;
-}
-.hero-overlay .primary {
-  background: #1e90ff;
-  color: white;
-}
-.hero-overlay .secondary {
-  background: transparent;
-  border: 1px solid #aaa;
-  color: white;
+  gap: .5rem;
+  margin-top: .8rem;
 }
 
 /* =====================================================
@@ -1465,8 +1468,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   .nav-links { flex-direction: column; gap: 0; }
   .nav-links li a { display: block; padding: .6rem 1.2rem; border-radius: 0; }
 
-  .hero-overlay { bottom: 10px; gap: 8px; }
-  .hero-overlay .btn { font-size: .7rem; padding: .4rem .8rem; }
+  .identity__inner { flex-direction: column; text-align: center; }
+  .identity__logo { width: 52px; height: 52px; }
+  .identity__tagline { margin: 0 auto; }
+  .identity__actions { justify-content: center; }
 
   .feed__grid { grid-template-columns: 1fr; }
   .feed__hero { min-height: 220px; grid-row: auto; }
