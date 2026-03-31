@@ -245,48 +245,34 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 /* =====================================================
    HERO — full-width image header
    ===================================================== */
-.hero,
-.hero-banner,
-.header-banner {
+.hero {
   position: relative;
   width: 100%;
-  background: #000;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 24px 0 0 0;
-  overflow: visible !important;
-  height: auto !important;
-  min-height: unset !important;
-  max-height: none !important;
+  background: black;
+  padding: 20px 0;
+  overflow: hidden;
 }
-
-.hero img,
-.hero-banner img,
-.header-banner img,
-.hero-image {
-  display: block;
+.hero-img {
   width: 100%;
-  max-width: 1400px;
-  height: auto !important;
-  object-fit: contain !important;
-  object-position: center top;
+  max-width: 1200px;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
-
-.hero-overlay,
-.hero-buttons,
-.banner-buttons {
+.hero-overlay {
+  position: absolute;
+  bottom: 20px;
   display: flex;
-  gap: 16px;
-  z-index: 5;
-  padding: 12px 0 16px;
+  gap: 15px;
+  z-index: 2;
 }
-.hero-buttons .primary,
 .hero-overlay .primary {
   background: #1e90ff;
   color: white;
 }
-.hero-buttons .secondary,
 .hero-overlay .secondary {
   background: transparent;
   border: 1px solid #aaa;
@@ -326,7 +312,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 /* =====================================================
    FEED SECTION — the core
    ===================================================== */
-.feed { padding: 1rem 0 2rem; }
+.feed { padding: 2rem 0; }
 .feed__header {
   display: flex;
   align-items: baseline;
