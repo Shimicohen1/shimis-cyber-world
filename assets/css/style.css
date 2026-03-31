@@ -463,9 +463,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   gap: .75rem;
 }
 .signal-card {
-  display: block;
-  text-decoration: none;
-  color: inherit;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r);
@@ -474,6 +471,39 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   cursor: pointer;
 }
 .signal-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+.signal-card__toggle {
+  font-size: .6rem;
+  color: var(--gray);
+  transition: transform .25s;
+}
+.signal-card.open .signal-card__toggle { transform: rotate(180deg); }
+.signal-card__detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease, opacity .3s ease;
+  opacity: 0;
+}
+.signal-card.open .signal-card__detail {
+  max-height: 12rem;
+  opacity: 1;
+  margin-top: .5rem;
+}
+.signal-card__detail p {
+  font-size: .76rem;
+  color: var(--gray-light, #bbb);
+  line-height: 1.55;
+  margin-bottom: .5rem;
+}
+.signal-card__link {
+  display: inline-block;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--acid);
+  text-decoration: none;
+  transition: opacity .2s;
+}
+.signal-card__link:hover { opacity: .8; text-decoration: underline; }
+.signal-card.open { border-color: var(--border-hi); }
 .signal-card__top {
   display: flex;
   align-items: center;

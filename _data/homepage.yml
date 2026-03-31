@@ -32,29 +32,37 @@ identity:
 quick_signals:
   - title: "OWASP Top 10 — Still the Baseline"
     text: "Every web security assessment starts here. Know it cold."
+    detail: "Injection, Broken Auth, XSS, SSRF — these aren't theoretical. The OWASP Top 10 maps the most exploited vulnerabilities in production web apps. If you're doing any kind of security assessment, this is day-zero reading."
+    link: "https://owasp.org/www-project-top-ten/"
+    link_label: "View OWASP Top 10"
     badge: "signal"
-    url: "/library/"
     tags:
       - web-security
       - fundamentals
   - title: "TryHackMe vs. HackTheBox"
     text: "THM for learning paths. HTB for proving grounds. Use both."
+    detail: "TryHackMe gives you structured rooms with walkthroughs — ideal for beginners. HackTheBox throws you in with minimal hints — ideal for sharpening skills. Serious operators rotate between both."
+    link: "https://tryhackme.com/"
+    link_label: "Start on TryHackMe"
     badge: "signal"
-    url: "/library/"
     tags:
       - labs
       - training
   - title: "Nmap is Not Optional"
     text: "The first tool in every engagement. Master the flags."
+    detail: "Port scanning, service detection, OS fingerprinting, NSE scripts — Nmap does it all. Learn -sV, -sC, -A, -p-, --script, and timing templates. This tool pays for itself on every engagement."
+    link: "https://nmap.org/book/man.html"
+    link_label: "Nmap Reference Guide"
     badge: "signal"
-    url: "/tools/"
     tags:
       - recon
       - tools
   - title: "SCW Toolkit in Beta"
     text: "Custom tools and automations for field operators. Early access."
+    detail: "We're building internal automations and scripts for common tasks — recon pipelines, report generators, and workflow shortcuts. Currently in beta, available to community members."
+    link: "/tools/"
+    link_label: "Explore Tools"
     badge: "beta"
-    url: "/tools/"
     tags:
       - scw
       - tools
