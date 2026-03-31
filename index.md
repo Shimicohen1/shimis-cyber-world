@@ -5,16 +5,14 @@ title: Home
 
 {% include signal-bar.html %}
 
-<!-- HEADER BANNER -->
-<section class="hero-banner reveal">
-  <div class="hero-banner__img-wrap">
-    <img src="{{ '/assets/img/header-banner.png' | relative_url }}" alt="Shimi's Cyber World" class="hero-banner__img">
+<header class="hero">
+  <img src="{{ '/assets/img/header-banner.png' | relative_url }}" alt="Shimi Cyber World Header" class="hero-img" />
+
+  <div class="hero-overlay">
+    <a href="{{ site.data.homepage.identity.cta_primary.url | relative_url }}" class="btn primary">{{ site.data.homepage.identity.cta_primary.text }}</a>
+    <a href="{{ site.data.homepage.identity.cta_secondary.url | relative_url }}" class="btn secondary">{{ site.data.homepage.identity.cta_secondary.text }}</a>
   </div>
-  <div class="hero-banner__cta">
-    <a href="{{ site.data.homepage.identity.cta_primary.url | relative_url }}" class="btn btn--primary">{{ site.data.homepage.identity.cta_primary.text }}</a>
-    <a href="{{ site.data.homepage.identity.cta_secondary.url | relative_url }}" class="btn btn--ghost">{{ site.data.homepage.identity.cta_secondary.text }}</a>
-  </div>
-</section>
+</header>
 
 <!-- LIVE FEED -->
 <section class="feed">
