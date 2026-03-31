@@ -5,14 +5,22 @@ title: Home
 
 {% include signal-bar.html %}
 
-<header class="hero">
-  <img src="{{ '/assets/img/header-banner.png' | relative_url }}" alt="Shimi Cyber World Header" class="hero-img" />
-
-  <div class="hero-overlay">
-    <a href="{{ site.data.homepage.identity.cta_primary.url | relative_url }}" class="btn primary">{{ site.data.homepage.identity.cta_primary.text }}</a>
-    <a href="{{ site.data.homepage.identity.cta_secondary.url | relative_url }}" class="btn secondary">{{ site.data.homepage.identity.cta_secondary.text }}</a>
+<!-- IDENTITY BLOCK -->
+<section class="identity">
+  <div class="container">
+    <div class="identity__inner reveal">
+      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="identity__logo">
+      <div class="identity__text">
+        <h1 class="identity__title">{{ site.data.homepage.identity.title }}</h1>
+        <p class="identity__tagline">{{ site.data.homepage.identity.tagline }}</p>
+        <div class="identity__actions">
+          <a href="{{ site.data.homepage.identity.cta_primary.url | relative_url }}" class="btn btn--primary">{{ site.data.homepage.identity.cta_primary.text }}</a>
+          <a href="{{ site.data.homepage.identity.cta_secondary.url | relative_url }}" class="btn btn--ghost">{{ site.data.homepage.identity.cta_secondary.text }}</a>
+        </div>
+      </div>
+    </div>
   </div>
-</header>
+</section>
 
 <!-- LIVE FEED -->
 <section class="feed">
