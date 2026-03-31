@@ -1403,3 +1403,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   .page-head__title { font-size: 1.4rem; }
   .featured-drop__title { font-size: 1.2rem; }
 }
+
+/* ── Post images ─────────────────────────── */
+.post-image { margin: 1.5rem 0; border-radius: 8px; overflow: hidden; }
+.post-image img { width: 100%; height: auto; display: block; }
+
+/* ── Score badges ────────────────────────── */
+.tag--high { background: rgba(255, 60, 60, 0.15); color: #ff3c3c; border: 1px solid rgba(255, 60, 60, 0.3); }
+.tag--medium { background: rgba(255, 180, 0, 0.15); color: #ffb400; border: 1px solid rgba(255, 180, 0, 0.3); }
