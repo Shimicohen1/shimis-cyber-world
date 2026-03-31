@@ -7,8 +7,8 @@ vendor/
 Gemfile.lock
 .DS_Store
 
-# Logs
-scripts/*.log
+# Scripts (contain local paths)
+scripts/
 
 # Backups
 _backup/
