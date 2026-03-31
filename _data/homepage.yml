@@ -33,24 +33,28 @@ quick_signals:
   - title: "OWASP Top 10 — Still the Baseline"
     text: "Every web security assessment starts here. Know it cold."
     badge: "signal"
+    url: "/library/"
     tags:
       - web-security
       - fundamentals
   - title: "TryHackMe vs. HackTheBox"
     text: "THM for learning paths. HTB for proving grounds. Use both."
     badge: "signal"
+    url: "/library/"
     tags:
       - labs
       - training
   - title: "Nmap is Not Optional"
     text: "The first tool in every engagement. Master the flags."
     badge: "signal"
+    url: "/tools/"
     tags:
       - recon
       - tools
   - title: "SCW Toolkit in Beta"
     text: "Custom tools and automations for field operators. Early access."
     badge: "beta"
+    url: "/tools/"
     tags:
       - scw
       - tools

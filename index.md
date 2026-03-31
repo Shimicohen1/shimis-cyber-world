@@ -75,7 +75,7 @@ title: Home
     </div>
     <div class="signals__grid">
       {% for signal in site.data.homepage.quick_signals %}
-      <div class="signal-card reveal">
+      <a href="{{ signal.url | default: '#' | relative_url }}" class="signal-card reveal">
         <div class="signal-card__top">
           <span class="badge badge--{{ signal.badge }}">{{ signal.badge }}</span>
         </div>
@@ -86,7 +86,7 @@ title: Home
           {% for tag in signal.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
         </div>
         {% endif %}
-      </div>
+      </a>
       {% endfor %}
     </div>
   </div>
