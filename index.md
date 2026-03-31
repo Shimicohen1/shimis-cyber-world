@@ -5,20 +5,14 @@ title: Home
 
 {% include signal-bar.html %}
 
-<!-- IDENTITY BLOCK -->
-<section class="identity">
-  <div class="container">
-    <div class="identity__inner reveal">
-      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="identity__logo">
-      <div class="identity__text">
-        <h1 class="identity__title">{{ site.data.homepage.identity.title }}</h1>
-        <p class="identity__tagline">{{ site.data.homepage.identity.tagline }}</p>
-        <div class="identity__actions">
-          <a href="{{ site.data.homepage.identity.cta_primary.url | relative_url }}" class="btn btn--primary">{{ site.data.homepage.identity.cta_primary.text }}</a>
-          <a href="{{ site.data.homepage.identity.cta_secondary.url | relative_url }}" class="btn btn--ghost">{{ site.data.homepage.identity.cta_secondary.text }}</a>
-        </div>
-      </div>
-    </div>
+<!-- HEADER BANNER -->
+<section class="hero-banner reveal">
+  <div class="hero-banner__img-wrap">
+    <img src="{{ '/assets/img/header-banner.png' | relative_url }}" alt="Shimi's Cyber World" class="hero-banner__img">
+  </div>
+  <div class="hero-banner__cta">
+    <a href="{{ site.data.homepage.identity.cta_primary.url | relative_url }}" class="btn btn--primary">{{ site.data.homepage.identity.cta_primary.text }}</a>
+    <a href="{{ site.data.homepage.identity.cta_secondary.url | relative_url }}" class="btn btn--ghost">{{ site.data.homepage.identity.cta_secondary.text }}</a>
   </div>
 </section>
 
