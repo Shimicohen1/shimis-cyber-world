@@ -463,11 +463,15 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   gap: .75rem;
 }
 .signal-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r);
   padding: 1rem 1.2rem;
   transition: border-color .2s, transform .2s;
+  cursor: pointer;
 }
 .signal-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
 .signal-card__top {
