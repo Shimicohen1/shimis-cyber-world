@@ -2,6 +2,8 @@
   url: /
 - label: Drops
   url: /posts/
+- label: Vulnerabilities
+  url: /vulnerabilities/
 - label: Vault
   url: /library/
 - label: Toolkit

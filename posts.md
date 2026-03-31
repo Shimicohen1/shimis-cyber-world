@@ -13,11 +13,14 @@ permalink: /posts/
 <div class="archive">
   <div class="archive__list">
     {% for post in site.posts %}
+    {% unless post.channel == "CVE Notify" %}
     {% include post-card.html %}
+    {% endunless %}
     {% endfor %}
   </div>
 
-  {% if site.posts.size == 0 %}
+  {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" %}
+  {% if non_cve.size == 0 %}
   <div class="empty-state" style="margin-top: 2rem;">
     <p>Drops are incoming. The feed is warming up.</p>
   </div>

@@ -211,6 +211,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .label--acid { color: var(--acid); }
 .label--pink { color: var(--pink); }
 .label--lime { color: var(--lime); }
+.label--red { color: rgba(255, 60, 60, .9); }
 
 .badge {
   display: inline-block;
