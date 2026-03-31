@@ -1,6 +1,6 @@
 <a href="{{ post.url | relative_url }}" class="archive__item">
   <span class="archive__date">{{ post.date | date: "%b %d, %Y" }}</span>
-  <div class="archive__body">
+  <div class="archive__body"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
     <h3>{{ post.title }}</h3>
     {% if post.excerpt %}<p>{{ post.excerpt | strip_html | truncatewords: 20 }}</p>{% endif %}
   </div>
