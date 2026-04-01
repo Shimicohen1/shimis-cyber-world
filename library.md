@@ -42,9 +42,13 @@ permalink: /library/
       <h3 class="vault-subcategory__title">{{ subcategory.name }}</h3>
       <div class="vault-subcategory__grid">
         {% for resource in subcategory.resources %}
+        {% assign drive_id = resource.url | split: "/d/" | last | split: "/" | first %}
         <a href="{{ resource.url }}" target="_blank" rel="noopener" class="vault-resource" data-title="{{ resource.title | downcase }}">
+          <div class="vault-resource__thumb">
+            <img src="https://drive.google.com/thumbnail?id={{ drive_id }}&sz=w120" alt="" loading="lazy" onerror="this.parentElement.classList.add('no-thumb')">
+            <span class="vault-resource__type-fallback">{{ resource.type }}</span>
+          </div>
           <div class="vault-resource__info">
-            <span class="vault-resource__type">{{ resource.type }}</span>
             <span class="vault-resource__title">{{ resource.title }}</span>
             {% assign resource_age = resource.added | date: "%s" %}
             {% assign now_ts = "now" | date: "%s" %}
