@@ -1,5 +1,6 @@
 title: "Shimi's Cyber World"
 description: "A cyber ecosystem built around a strong community. Real updates, real discussions, tools, and insights from the field."
+baseurl: "/shimis-cyber-world"
 theme: null
 markdown: kramdown
 permalink: /posts/:title/
