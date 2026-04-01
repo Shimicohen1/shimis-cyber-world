@@ -1297,6 +1297,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .post-share__btn--linkedin { background: #0a66c2; }
 .post-share__btn--twitter { background: #000; }
 .post-share__btn--whatsapp { background: #25d366; color: #fff; }
+.post-share__btn--facebook { background: #1877f2; }
 .post-share__btn--reddit { background: #ff4500; }
 
 .post--rtl { direction: rtl; }
