@@ -1162,6 +1162,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   border-left: 2px solid var(--acid); padding: .5rem 1rem; margin: 1rem 0; color: var(--gray);
 }
 .post-body img { border-radius: var(--r); margin: 1rem 0; }
+/* Hide duplicate feed images in post body (already shown in post-image header) */
+.post-body img[src*="/assets/images/feed/"] { display: none; }
 
 /* Source info collapsible */
 .post-source-info {
