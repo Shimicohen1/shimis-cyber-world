@@ -62,4 +62,4 @@ permalink: /library/
 {% endfor %}
 
 <!-- Vault JS: search + filter -->
-<script src="/assets/js/vault.js" defer></script>
+<script src="{{ '/assets/js/vault.js' | relative_url }}" defer></script>
