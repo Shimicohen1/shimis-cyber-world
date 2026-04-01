@@ -1163,6 +1163,49 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 .post-body img { border-radius: var(--r); margin: 1rem 0; }
 
+/* Source info collapsible */
+.post-source-info {
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--card);
+  font-family: var(--f-mono);
+  font-size: .75rem;
+}
+.post-source-info summary {
+  padding: .6rem 1rem;
+  cursor: pointer;
+  color: var(--dim);
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.post-source-info summary::before {
+  content: '▸';
+  transition: transform .2s;
+}
+.post-source-info[open] summary::before {
+  transform: rotate(90deg);
+}
+.post-source-info summary::-webkit-details-marker { display: none; }
+.post-source-info__body {
+  padding: 0 1rem .8rem;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.post-source-info__row {
+  display: flex;
+  gap: .6rem;
+  color: var(--gray);
+}
+.post-source-info__label {
+  color: var(--dim);
+  min-width: 80px;
+}
+
 .post--rtl { direction: rtl; }
 .post--rtl .post-header { text-align: right; }
 .post--rtl .post-meta { justify-content: flex-end; direction: rtl; }
