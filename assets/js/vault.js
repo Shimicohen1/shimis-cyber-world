@@ -6,6 +6,13 @@
   const resources = document.querySelectorAll('.vault-resource');
   let activeFilter = 'all';
 
+  // Category collapse/expand toggle
+  document.querySelectorAll('.vault-category__header').forEach(function(header) {
+    header.addEventListener('click', function() {
+      this.parentElement.classList.toggle('collapsed');
+    });
+  });
+
   function update() {
     const q = searchInput.value.toLowerCase().trim();
     let visible = 0;
