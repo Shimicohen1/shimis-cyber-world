@@ -1236,6 +1236,69 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   min-width: 80px;
 }
 
+/* Follow bar in posts */
+.post-follow {
+  margin: 2rem 0 1.2rem;
+  padding: 1.2rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  text-align: center;
+}
+.post-follow p {
+  font-size: .85rem;
+  color: var(--gray);
+  margin-bottom: .8rem;
+}
+.post-follow__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .5rem;
+}
+
+/* Share bar in posts */
+.post-share {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin: 1rem 0 1.5rem;
+  padding: .8rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.post-share__label {
+  font-family: var(--f-mono);
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--dim);
+  flex-shrink: 0;
+}
+.post-share__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+}
+.post-share__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .4rem .7rem;
+  border-radius: var(--r);
+  font-size: .75rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #fff;
+  transition: opacity .2s;
+}
+.post-share__btn:hover { opacity: .85; }
+.post-share__btn svg { flex-shrink: 0; }
+.post-share__btn--linkedin { background: #0a66c2; }
+.post-share__btn--twitter { background: #000; }
+.post-share__btn--whatsapp { background: #25d366; color: #fff; }
+.post-share__btn--reddit { background: #ff4500; }
+
 .post--rtl { direction: rtl; }
 .post--rtl .post-header { text-align: right; }
 .post--rtl .post-meta { justify-content: flex-end; direction: rtl; }
