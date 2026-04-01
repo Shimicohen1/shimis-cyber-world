@@ -1070,6 +1070,34 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   line-height: 1.55;
 }
 
+/* LinkedIn / Connect buttons */
+.connect-buttons {
+  margin: 1.5rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+.connect-buttons--grid {
+  margin: 1.5rem 0 2rem;
+}
+.btn--linkedin {
+  background: #0a66c2;
+  color: #fff;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .55rem 1.1rem;
+  border-radius: var(--r);
+  font-size: .82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .2s;
+}
+.btn--linkedin:hover { background: #004182; }
+.btn--linkedin svg { flex-shrink: 0; }
+.btn--linkedin-group { background: #0a66c2; }
+
 .prose {
   max-width: var(--w-content);
 }
