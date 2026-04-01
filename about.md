@@ -51,9 +51,9 @@ Everything is driven by the people inside it.
 
 ## The Mission
 
-No noise. No unnecessary marketing. **Just real cyber.**
+Creative. Equal. Connected. **Real cyber, built by real people.**
 
-The best security knowledge shouldn't be buried in PDFs or locked behind paywalls. It should be alive, accessible, and shaped by the community that uses it.
+The best security knowledge shouldn't be buried in PDFs or locked behind paywalls. It should be alive, accessible, and shaped by the community that uses it. We believe everyone has something to contribute — no matter where they come from or where they're headed.
 
 SCW exists to:
 - **Connect** people, companies, and startups in cybersecurity
