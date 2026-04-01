@@ -28,7 +28,7 @@ permalink: /library/
 <!-- Resource Categories -->
 {% for category in site.data.resources.categories %}
 <section class="vault-category reveal collapsed" data-category="{{ category.name | slugify }}">
-  <div class="vault-category__header" onclick="this.parentElement.classList.toggle('collapsed')">
+  <div class="vault-category__header">
     <div class="vault-category__info">
       <span class="vault-category__icon">{{ category.icon }}</span>
       <h2 class="vault-category__title">{{ category.name }}</h2>
