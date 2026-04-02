@@ -94,18 +94,6 @@ layout: default
     </div>
     {% endif %}
 
-    {% comment %}── Source Info (collapsed) ──{% endcomment %}
-    {% if page.source or page.channel or page.channel_id or page.telegram_message_id %}
-    <details class="post-source-info">
-      <summary>Source Info</summary>
-      <div class="post-source-info__body">
-        {% if page.source %}<div class="post-source-info__row"><span class="post-source-info__label">Source</span><span>{{ page.source }}</span></div>{% endif %}
-        {% if page.channel %}<div class="post-source-info__row"><span class="post-source-info__label">Channel</span><span>{{ page.channel }}</span></div>{% endif %}
-        {% if page.channel_id %}<div class="post-source-info__row"><span class="post-source-info__label">Channel ID</span><span>{{ page.channel_id }}</span></div>{% endif %}
-        {% if page.telegram_message_id %}<div class="post-source-info__row"><span class="post-source-info__label">Message ID</span><span>{{ page.telegram_message_id }}</span></div>{% endif %}
-      </div>
-    </details>
-    {% endif %}
     <div class="post-follow">
       <p>Found this interesting? Follow us on LinkedIn to stay ahead.</p>
       <div class="post-follow__links">
