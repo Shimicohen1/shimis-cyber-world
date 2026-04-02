@@ -1730,6 +1730,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 /* ── Post images ─────────────────────────── */
 .post-image { margin: 1.5rem 0; border-radius: 8px; overflow: hidden; }
 .post-image img { width: 100%; height: auto; display: block; }
+.post-image__credit { margin: .35rem 0 0; font-size: .72rem; color: rgba(255,255,255,.35); text-align: right; }
+.post-image__credit a { color: rgba(255,255,255,.45); text-decoration: none; }
+.post-image__credit a:hover { color: #00b4d8; }
 
 /* ── Score badges ────────────────────────── */
 .tag--high { background: rgba(255, 60, 60, 0.15); color: #ff3c3c; border: 1px solid rgba(255, 60, 60, 0.3); }

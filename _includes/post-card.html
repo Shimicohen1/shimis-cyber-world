@@ -1,11 +1,11 @@
 <a href="{{ post.url | relative_url }}" class="feed-item"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
   {% if post.image %}
   <div class="feed-item__img">
-    <img src="{{ post.image | relative_url }}" alt="" loading="lazy">
+    <img src="{{ post.image | relative_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">
   </div>
   {% elsif post.cover_image %}
   <div class="feed-item__img feed-item__img--cover">
-    <img src="{{ post.cover_image | relative_url }}" alt="" loading="lazy">
+    <img src="{{ post.cover_image | relative_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">
   </div>
   {% else %}
   <div class="feed-item__img feed-item__img--placeholder">
