@@ -20,7 +20,7 @@ layout: default
     {% if page.image %}
     <div class="post-image">
       <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy" referrerpolicy="no-referrer">
-      {% if page.source_url %}<p class="post-image__credit">Image via <a href="{{ page.source_url }}" target="_blank" rel="noopener noreferrer">{{ page.source_name | default: "source" }}</a></p>{% endif %}
+      {% assign img_domain = page.image | split: "//" | last | split: "/" | first %}{% if img_domain %}<p class="post-image__credit">Image via <a href="{{ page.source_url | default: page.image }}" target="_blank" rel="noopener noreferrer">{{ img_domain }}</a></p>{% endif %}
     </div>
     {% elsif page.cover_image %}
     <div class="post-image post-image--cover">
