@@ -87,10 +87,18 @@ layout: default
     {% comment %}── Attribution & Disclaimer ──{% endcomment %}
     {% if page.curated %}
     <details class="post-attribution">
-      <summary class="post-attribution__toggle">Source</summary>
+      <summary class="post-attribution__toggle">Source &amp; Attribution</summary>
       <div class="post-attribution__content">
-        <p class="post-attribution__source">{{ page.source_name | default: page.channel }}</p>
-        <p class="post-attribution__disclaimer">Curated and summarized by Shimi's Cyber World. All rights belong to the original source.</p>
+        <table class="post-attribution__table">
+          <tr><td>Source Platform</td><td>{{ page.source | default: "Telegram" }}</td></tr>
+          <tr><td>Channel</td><td>{{ page.source_name | default: page.channel }}</td></tr>
+          {% if page.channel_id %}<tr><td>Channel ID</td><td>{{ page.channel_id }}</td></tr>{% endif %}
+          {% if page.telegram_message_id %}<tr><td>Message ID</td><td>{{ page.telegram_message_id }}</td></tr>{% endif %}
+          <tr><td>Published</td><td>{{ page.date | date: "%B %d, %Y at %H:%M UTC" }}</td></tr>
+          {% if page.source_url %}<tr><td>Original Link</td><td><a href="{{ page.source_url }}" target="_blank" rel="noopener">{{ page.source_url | truncate: 60 }}</a></td></tr>{% endif %}
+        </table>
+        <p class="post-attribution__disclaimer">This content was <strong>curated and summarized</strong> by Shimi's Cyber World for informational purposes. It is not copied or republished in full. All intellectual property rights remain with the original author and source.</p>
+        <p class="post-attribution__disclaimer">Believe this infringes your rights? <a href="{{ '/terms/' | relative_url }}#8-intellectual-property--takedown-requests">Submit a takedown request</a>.</p>
       </div>
     </details>
     {% endif %}
