@@ -78,10 +78,10 @@ layout: default
     </a>
     {% endif %}
 
-    {% comment %}── Read Original button ──{% endcomment %}
+    {% comment %}── Source link ──{% endcomment %}
     {% if page.source_url and page.source_url != '' %}
     <div class="post-read-original">
-      <a href="{{ page.source_url }}" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Read Original Source &rarr;</a>
+      <a href="{{ page.source_url }}" target="_blank" rel="noopener">{{ page.source_url }}</a>
     </div>
     {% endif %}
 
