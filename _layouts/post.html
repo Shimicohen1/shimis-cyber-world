@@ -10,11 +10,10 @@ layout: default
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y %H:%M" }}</time>
         {% if page.score %}<span class="meta-sep">/</span><span class="tag tag--{{ page.score | downcase }}">{{ page.score }}</span>{% endif %}
       </div>
-      {% if page.tags.size > 0 %}
       <div class="post-tags">
+        {% if page.source %}<span class="tag tag--source">{{ page.source }}</span>{% endif %}
         {% for tag in page.tags %}{% unless tag == 'telegram' or tag == 'cyber' or tag == 'live-feed' or tag == 'security' or tag == 'news' %}<span class="tag">{{ tag }}</span>{% endunless %}{% endfor %}
       </div>
-      {% endif %}
     </header>
 
     {% comment %}── Cover image: own source image OR category fallback ──{% endcomment %}
