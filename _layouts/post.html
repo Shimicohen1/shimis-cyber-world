@@ -8,12 +8,11 @@ layout: default
       <h1 class="post-title"{% if page.lang == 'he' %} dir="rtl" lang="he"{% endif %}>{{ page.title }}</h1>
       <div class="post-meta">
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y %H:%M" }}</time>
-        {% if page.source_name %}<span class="meta-sep">/</span><span>{{ page.source_name }}</span>{% endif %}
         {% if page.score %}<span class="meta-sep">/</span><span class="tag tag--{{ page.score | downcase }}">{{ page.score }}</span>{% endif %}
       </div>
       {% if page.tags.size > 0 %}
       <div class="post-tags">
-        {% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+        {% for tag in page.tags %}{% unless tag == 'telegram' or tag == 'cyber' or tag == 'live-feed' or tag == 'security' or tag == 'news' %}<span class="tag">{{ tag }}</span>{% endunless %}{% endfor %}
       </div>
       {% endif %}
     </header>
@@ -88,10 +87,13 @@ layout: default
 
     {% comment %}── Attribution & Disclaimer ──{% endcomment %}
     {% if page.curated %}
-    <div class="post-attribution">
-      <p class="post-attribution__source">Source: {{ page.source_name | default: page.channel }}</p>
-      <p class="post-attribution__disclaimer">Curated and summarized by Shimi's Cyber World. All rights belong to the original source.</p>
-    </div>
+    <details class="post-attribution">
+      <summary class="post-attribution__toggle">Source</summary>
+      <div class="post-attribution__content">
+        <p class="post-attribution__source">{{ page.source_name | default: page.channel }}</p>
+        <p class="post-attribution__disclaimer">Curated and summarized by Shimi's Cyber World. All rights belong to the original source.</p>
+      </div>
+    </details>
     {% endif %}
 
     <div class="post-follow">
