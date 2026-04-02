@@ -1332,6 +1332,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .feed-item__badges { display: flex; gap: .3rem; margin-bottom: .25rem; }
 .feed-item__tags { display: flex; flex-wrap: wrap; gap: .2rem; margin-top: .35rem; }
 .tag--xs { font-size: .6rem; padding: 1px 5px; }
+.tag--source { background: rgba(0,180,216,.15); color: #00b4d8; border-color: rgba(0,180,216,.3); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
 .feed-item__original { font-size: .7rem; color: var(--electric, #00b4d8); font-weight: 400; margin-top: .3rem; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; opacity: .7; }
 
 .post-image--cover { opacity: .7; }
