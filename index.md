@@ -50,7 +50,7 @@ title: Home
         </div>
         {% endif %}
         <div class="feed-item__body">
-          {% if post.curated %}<span class="badge badge--curated-sm">Curated</span>{% endif %}
+          {% if post.featured %}<span class="badge badge--featured-sm">Featured</span>{% endif %}
           <h3>{{ post.title }}</h3>
           <p>{{ post.summary | default: post.excerpt | strip_html | truncatewords: 25 }}</p>
           <div class="feed-item__meta">
