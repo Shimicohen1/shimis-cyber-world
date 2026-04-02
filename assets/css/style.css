@@ -1327,7 +1327,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .post-attribution[open] .post-attribution__toggle::before { content: '▾ '; }
 .post-attribution__content { padding: 0 1rem .75rem; }
 .post-attribution__source { margin: 0 0 .25rem 0; font-weight: 600; color: rgba(255,255,255,.7); }
-.post-attribution__disclaimer { margin: 0; font-style: italic; }
+.post-attribution__table { width: 100%; border-collapse: collapse; margin-bottom: .75rem; font-size: .8rem; }
+.post-attribution__table td { padding: .3rem .5rem; border-bottom: 1px solid rgba(255,255,255,.06); color: rgba(255,255,255,.6); }
+.post-attribution__table td:first-child { font-weight: 600; color: rgba(255,255,255,.45); white-space: nowrap; width: 110px; }
+.post-attribution__table a { color: #00b4d8; word-break: break-all; }
+.post-attribution__disclaimer { margin: .4rem 0 0; font-style: italic; font-size: .78rem; line-height: 1.5; }
+.post-attribution__disclaimer a { color: #00b4d8; }
 
 .feed-item__badges { display: flex; gap: .3rem; margin-bottom: .25rem; }
 .feed-item__tags { display: flex; flex-wrap: wrap; gap: .2rem; margin-top: .35rem; }
