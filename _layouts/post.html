@@ -4,26 +4,56 @@ layout: default
 <div class="container">
   <article class="post{% if page.lang == 'he' %} post--rtl{% endif %}">
     <header class="post-header">
+      {% if page.curated %}<span class="badge badge--curated">Curated</span>{% endif %}
+      {% if page.featured %}<span class="badge badge--featured">Featured</span>{% endif %}
       <h1 class="post-title"{% if page.lang == 'he' %} dir="rtl" lang="he"{% endif %}>{{ page.title }}</h1>
       <div class="post-meta">
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y %H:%M" }}</time>
-        {% if page.channel %}<span class="meta-sep">/</span><span>{{ page.channel }}</span>{% endif %}
+        {% if page.source_name %}<span class="meta-sep">/</span><span>{{ page.source_name }}</span>{% endif %}
         {% if page.score %}<span class="meta-sep">/</span><span class="tag tag--{{ page.score | downcase }}">{{ page.score }}</span>{% endif %}
-        {% if page.tags.size > 0 %}
-        <span class="meta-sep">/</span>
-        {% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
-        {% endif %}
       </div>
+      {% if page.tags.size > 0 %}
+      <div class="post-tags">
+        {% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+      </div>
+      {% endif %}
     </header>
+
+    {% comment %}── Cover image: own source image OR category fallback ──{% endcomment %}
     {% if page.image %}
     <div class="post-image">
       <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy">
     </div>
+    {% elsif page.cover_image %}
+    <div class="post-image post-image--cover">
+      <img src="{{ page.cover_image | relative_url }}" alt="{{ page.title }}" loading="lazy">
+    </div>
     {% endif %}
+
+    {% comment %}── Summary ──{% endcomment %}
+    {% if page.summary %}
+    <div class="post-summary">
+      <p{% if page.lang == 'he' %} dir="rtl" lang="he"{% endif %}>{{ page.summary }}</p>
+    </div>
+    {% endif %}
+
+    {% comment %}── Why It Matters ──{% endcomment %}
+    {% if page.why_it_matters.size > 0 %}
+    <div class="post-why-it-matters">
+      <h2>Why It Matters</h2>
+      <ul>
+        {% for point in page.why_it_matters %}
+        <li>{{ point }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% comment %}── Full body (curated summary body or own content) ──{% endcomment %}
     {% assign clean_content = content | split: '<hr />' %}
     {% assign body_parts = '' %}
     {% for part in clean_content %}
-      {% unless part contains '<strong>Source:</strong>' %}
+      {% unless part contains '<strong>Source:</strong>' or part contains 'Curated and summarized by' %}
         {% if body_parts == '' %}
           {% assign body_parts = part %}
         {% else %}
@@ -31,9 +61,13 @@ layout: default
         {% endif %}
       {% endunless %}
     {% endfor %}
+    {% if body_parts != '' %}
     <div class="post-body prose"{% if page.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
       {{ body_parts }}
     </div>
+    {% endif %}
+
+    {% comment %}── Link preview ──{% endcomment %}
     {% if page.link_preview %}
     <a href="{{ page.link_preview.url }}" class="link-preview" target="_blank" rel="noopener">
       {% if page.link_preview.image %}<img class="link-preview__img" src="{{ page.link_preview.image }}" alt="" loading="lazy">{% endif %}
@@ -43,6 +77,23 @@ layout: default
       </div>
     </a>
     {% endif %}
+
+    {% comment %}── Read Original button ──{% endcomment %}
+    {% if page.source_url and page.source_url != '' %}
+    <div class="post-read-original">
+      <a href="{{ page.source_url }}" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Read Original Source &rarr;</a>
+    </div>
+    {% endif %}
+
+    {% comment %}── Attribution & Disclaimer ──{% endcomment %}
+    {% if page.curated %}
+    <div class="post-attribution">
+      <p class="post-attribution__source">Source: {{ page.source_name | default: page.channel }}</p>
+      <p class="post-attribution__disclaimer">Curated and summarized by Shimi's Cyber World. All rights belong to the original source.</p>
+    </div>
+    {% endif %}
+
+    {% comment %}── Source Info (collapsed) ──{% endcomment %}
     {% if page.source or page.channel or page.channel_id or page.telegram_message_id %}
     <details class="post-source-info">
       <summary>Source Info</summary>

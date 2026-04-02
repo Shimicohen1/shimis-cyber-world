@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="300" viewBox="0 0 800 300">
+  <rect width="800" height="300" fill="#0d1117"/>
+  <rect x="0" y="0" width="800" height="300" fill="#8338ec" opacity="0.15"/>
+  <text x="400" y="140" text-anchor="middle" font-size="64">&#x1F4BB;</text>
+  <text x="400" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="24" fill="#8338ec" font-weight="600">endpoint</text>
+  <text x="400" y="240" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" fill="#8b949e">Shimi's Cyber World</text>
+</svg>
