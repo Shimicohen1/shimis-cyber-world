@@ -12,3 +12,10 @@ scripts/
 
 # Backups
 _backup/
+
+# Secrets / credentials
+.env
+.env.*
+*.pem
+*.key
+session.json

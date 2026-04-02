@@ -1,5 +1,6 @@
 ---
 title: Vault Update — 10 New Resources Added
+tags: [threat-intel]
 date: 2026-03-31
 source_name: Unknown
 source_url: https://drive.google.com/file/d/1NwK6yJ8O0GFNdM-dEngzJZlcsuISy82N/view
