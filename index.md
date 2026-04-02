@@ -40,16 +40,22 @@ title: Home
         <div class="feed-item__img">
           <img src="{{ post.image | relative_url }}" alt="" loading="lazy">
         </div>
+        {% elsif post.cover_image %}
+        <div class="feed-item__img feed-item__img--cover">
+          <img src="{{ post.cover_image | relative_url }}" alt="" loading="lazy">
+        </div>
         {% else %}
         <div class="feed-item__img feed-item__img--placeholder">
           <span>{{ post.tags.first | upcase | truncate: 3, '' }}</span>
         </div>
         {% endif %}
         <div class="feed-item__body">
+          {% if post.curated %}<span class="badge badge--curated-sm">Curated</span>{% endif %}
           <h3>{{ post.title }}</h3>
-          <p>{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
+          <p>{{ post.summary | default: post.excerpt | strip_html | truncatewords: 25 }}</p>
           <div class="feed-item__meta">
             <time>{{ post.date | date: "%b %d, %Y %H:%M" }}</time>
+            {% if post.source_name %}<span class="feed-item__sep">/</span><span class="feed-item__source">{{ post.source_name }}</span>{% endif %}
             {% if post.score %}<span class="feed-item__sep">/</span><span class="feed-item__score feed-item__score--{{ post.score | downcase }}">{{ post.score }}</span>{% endif %}
           </div>
         </div>
