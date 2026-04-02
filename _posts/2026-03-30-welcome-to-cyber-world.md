@@ -1,24 +1,28 @@
 ---
-layout: post
 title: "Welcome to Shimi's Cyber World"
 date: 2026-03-30
-tags: [announcement, cybersecurity]
-description: "Introducing SCW — a cyber ecosystem built around a strong community."
+source_name: "Unknown"
+tags: [announcement, cybersecurity, threat-intel, tools]
+summary: "Welcome to Shimi's Cyber World — a cyber ecosystem built around a strong community. More coming soon. Stay sharp, stay secure."
+layout: post
+curated: true
+featured: false
+hidden: false
+priority: 55
+cover_image: "/assets/images/covers/threat-intel.svg"
+why_it_matters:
+  - "New tool or resource available — evaluate for your security workflow."
 ---
 
-Welcome to **Shimi's Cyber World** — a cyber ecosystem built around a strong community.
+Welcome to Shimi's Cyber World — a cyber ecosystem built around a strong community. More coming soon. Stay sharp, stay secure.
 
-## What to Expect
+## Why It Matters
 
-This site will be the home for:
+- New tool or resource available — evaluate for your security workflow.
 
-- **Security tutorials** — hands-on guides for offensive and defensive security
-- **Tool reviews** — breakdowns of the best cybersecurity tools and frameworks
-- **Industry insights** — trends, threat intelligence, and career advice
-- **CTF write-ups** — solutions and walkthroughs for capture-the-flag challenges
+---
 
-## Explore
+*Source: Unknown*
 
-Check out the [Tools](/tools/) directory for curated security tools, or browse the [Resource Library](/library/) for learning materials.
+*Curated and summarized by Shimi's Cyber World. All rights belong to the original source.*
 
-More coming soon. Stay sharp, stay secure.
