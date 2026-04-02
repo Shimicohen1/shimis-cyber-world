@@ -27,7 +27,7 @@
       {% if post.score %}<span class="feed-item__sep">/</span><span class="feed-item__score feed-item__score--{{ post.score | downcase }}">{{ post.score }}</span>{% endif %}
     </div>
     {% if post.source_url and post.source_url != '' %}
-    <span class="feed-item__original">Read original &rarr;</span>
+    <span class="feed-item__original">{{ post.source_url }}</span>
     {% endif %}
   </div>
 </a>
