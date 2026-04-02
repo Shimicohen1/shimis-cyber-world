@@ -3,6 +3,7 @@ description: "A cyber ecosystem built around a strong community. Real updates, r
 baseurl: "/shimis-cyber-world"
 theme: null
 markdown: kramdown
+timezone: Asia/Jerusalem
 permalink: /posts/:title/
 
 collections:
