@@ -53,9 +53,13 @@ title: Home
           {% if post.featured %}<span class="badge badge--featured-sm">Featured</span>{% endif %}
           <h3>{{ post.title }}</h3>
           <p>{{ post.summary | default: post.excerpt | strip_html | truncatewords: 25 }}</p>
+          {% if post.tags.size > 0 %}
+          <div class="feed-item__tags">
+            {% for tag in post.tags %}{% unless tag == 'telegram' or tag == 'cyber' or tag == 'live-feed' or tag == 'security' or tag == 'news' %}<span class="tag tag--xs">{{ tag }}</span>{% endunless %}{% endfor %}
+          </div>
+          {% endif %}
           <div class="feed-item__meta">
             <time>{{ post.date | date: "%b %d, %Y %H:%M" }}</time>
-            {% if post.source_name %}<span class="feed-item__sep">/</span><span class="feed-item__source">{{ post.source_name }}</span>{% endif %}
             {% if post.score %}<span class="feed-item__sep">/</span><span class="feed-item__score feed-item__score--{{ post.score | downcase }}">{{ post.score }}</span>{% endif %}
           </div>
         </div>
