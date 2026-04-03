@@ -18,9 +18,9 @@ layout: default
 
     {% comment %}── Cover image: own source image OR category fallback ──{% endcomment %}
     {% if page.image %}
-    <div class="post-image">
+    <div class="post-image{% if page.ai_rewritten %} post-image--ai{% endif %}">
       <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy" referrerpolicy="no-referrer">
-      {% assign img_domain = page.image | split: "//" | last | split: "/" | first %}{% if img_domain %}<p class="post-image__credit">Image via <a href="{{ page.source_url | default: page.image }}" target="_blank" rel="noopener noreferrer">{{ img_domain }}</a></p>{% endif %}
+      {% unless page.ai_rewritten or page.image_pool_used %}{% assign img_domain = page.image | split: "//" | last | split: "/" | first %}{% if img_domain %}<p class="post-image__credit">Image via <a href="{{ page.source_url | default: page.image }}" target="_blank" rel="noopener noreferrer">{{ img_domain }}</a></p>{% endif %}{% endunless %}
     </div>
     {% elsif page.cover_image %}
     <div class="post-image post-image--cover">
@@ -28,12 +28,14 @@ layout: default
     </div>
     {% endif %}
 
-    {% comment %}── Summary ──{% endcomment %}
+    {% comment %}── Summary (skip for AI posts — body IS the content) ──{% endcomment %}
+    {% unless page.ai_rewritten %}
     {% if page.summary %}
     <div class="post-summary">
       <p{% if page.lang == 'he' %} dir="rtl" lang="he"{% endif %}>{{ page.summary }}</p>
     </div>
     {% endif %}
+    {% endunless %}
 
     {% comment %}── Why It Matters ──{% endcomment %}
     {% if page.why_it_matters.size > 0 %}
@@ -47,8 +49,17 @@ layout: default
     </div>
     {% endif %}
 
-    {% comment %}── Full body (only for non-curated / own-source posts) ──{% endcomment %}
-    {% unless page.curated %}
+    {% comment %}── Full body ──{% endcomment %}
+    {% if page.ai_rewritten %}
+    {% assign _ai = content | split: 'Reference:' | first %}
+    {% assign _parts = _ai | split: '<hr' %}
+    {% assign _body = '' %}
+    {% for _p in _parts %}
+      {% unless _p contains 'Written by Hacker Republic' %}
+        {% if _body == '' %}{% assign _body = _p %}{% else %}{% assign _body = _body | append: '<hr' | append: _p %}{% endif %}
+      {% endunless %}
+    {% endfor %}
+    <div class="post-body prose"{% if page.lang == 'he' %} dir="rtl" lang="he"{% endif %}>{{ _body }}</div>    {% elsif page.curated != true %}
     {% assign clean_content = content | split: '<hr />' %}
     {% assign body_parts = '' %}
     {% for part in clean_content %}
@@ -65,9 +76,10 @@ layout: default
       {{ body_parts }}
     </div>
     {% endif %}
-    {% endunless %}
+    {% endif %}
 
-    {% comment %}── Link preview ──{% endcomment %}
+    {% comment %}── Link preview (not for AI posts) ──{% endcomment %}
+    {% unless page.ai_rewritten %}
     {% if page.link_preview %}
     <a href="{{ page.link_preview.url }}" class="link-preview" target="_blank" rel="noopener">
       {% if page.link_preview.image %}<img class="link-preview__img" src="{{ page.link_preview.image }}" alt="" loading="lazy">{% endif %}
@@ -77,16 +89,17 @@ layout: default
       </div>
     </a>
     {% endif %}
+    {% endunless %}
 
-    {% comment %}── Source link ──{% endcomment %}
-    {% if page.source_url and page.source_url != '' %}
+    {% comment %}── Source link (not for AI posts) ──{% endcomment %}
+    {% unless page.ai_rewritten %}{% if page.source_url and page.source_url != '' %}
     <div class="post-read-original">
       <a href="{{ page.source_url }}" target="_blank" rel="noopener">{{ page.source_url }}</a>
     </div>
-    {% endif %}
+    {% endif %}{% endunless %}
 
     {% comment %}── Attribution & Disclaimer ──{% endcomment %}
-    {% if page.curated %}
+    {% if page.curated and page.ai_rewritten != true %}
     <details class="post-attribution">
       <summary class="post-attribution__toggle">Source &amp; Attribution</summary>
       <div class="post-attribution__content">
