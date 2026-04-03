@@ -1418,14 +1418,15 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .post-iocs__table tbody tr { border-bottom: 1px solid rgba(255,255,255,.04); }
 .post-iocs__table tbody tr:last-child { border-bottom: none; }
 .post-iocs__table td { padding: .4rem .5rem; color: rgba(255,255,255,.8); vertical-align: top; }
-.ioc-type { display: inline-block; padding: .1rem .4rem; border-radius: 3px; font-family: var(--f-mono); font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .02em; }
-.ioc-type--cve { background: rgba(255,60,60,.12); color: rgba(255,100,100,.9); }
-.ioc-type--ghsa { background: rgba(255,165,0,.12); color: rgba(255,180,60,.9); }
-.ioc-type--sha256, .ioc-type--sha1, .ioc-type--md5 { background: rgba(138,43,226,.12); color: rgba(180,120,255,.9); }
-.ioc-type--ipv4 { background: rgba(0,180,216,.12); color: rgba(100,200,255,.9); }
-.ioc-type--url { background: rgba(0,180,216,.08); color: rgba(100,200,255,.7); }
-.ioc-type--email { background: rgba(255,180,0,.1); color: rgba(255,200,60,.8); }
-.ioc-type--mitre-attack { background: rgba(6,182,212,.12); color: rgba(80,220,240,.9); }
+.ioc-id { font-family: var(--f-mono); font-size: .75rem; color: rgba(255,100,100,.9); font-weight: 600; white-space: nowrap; }
+.ioc-type { display: inline-block; padding: .1rem .4rem; border-radius: 3px; font-family: var(--f-mono); font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .02em; background: rgba(255,60,60,.12); color: rgba(255,100,100,.9); }
+.ioc-type--rce, .ioc-type--code-injection, .ioc-type--command-injection { background: rgba(255,30,30,.15); color: rgba(255,80,80,.95); }
+.ioc-type--xss, .ioc-type--csrf, .ioc-type--open-redirect { background: rgba(255,165,0,.12); color: rgba(255,180,60,.9); }
+.ioc-type--sqli, .ioc-type--deserialization { background: rgba(138,43,226,.12); color: rgba(180,120,255,.9); }
+.ioc-type--path-traversal, .ioc-type--ssrf { background: rgba(0,180,216,.12); color: rgba(100,200,255,.9); }
+.ioc-type--auth-bypass, .ioc-type--idor, .ioc-type--privilege-escalation { background: rgba(255,180,0,.12); color: rgba(255,200,60,.9); }
+.ioc-type--information-disclosure, .ioc-type--misconfiguration, .ioc-type--cryptographic-failure { background: rgba(100,200,255,.12); color: rgba(140,210,255,.85); }
+.ioc-type--dos, .ioc-type--buffer-overflow, .ioc-type--use-after-free, .ioc-type--memory-corruption, .ioc-type--race-condition { background: rgba(255,60,60,.1); color: rgba(255,120,120,.85); }
 .ioc-value { font-family: var(--f-mono); font-size: .78rem; word-break: break-all; }
 .ioc-value a { color: rgba(100,200,255,.8); text-decoration: none; }
 .ioc-value a:hover { text-decoration: underline; }

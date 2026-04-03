@@ -20,13 +20,6 @@ priority: 60
 cover_image: /assets/images/covers/cloud.svg
 why_it_matters:
 - New vulnerability disclosed — verify if your stack is exposed.
-iocs:
-  - type: "url"
-    value: "https://drive.google.com/file/d/1NwK6yJ8O0GFNdM-dEngzJZlcsuISy82N/view"
-  - type: "url"
-    value: "https://drive.google.com/file/d/1flY6QXZYZ6S_ePtUGGL-_4IF2c86RXi4/view"
-  - type: "url"
-    value: "https://drive.google.com/file/d/1LKvWBnrq_qE9xc8rTyTT6FQSse-wPHiX/view"
 ---
 
 **Reference:**

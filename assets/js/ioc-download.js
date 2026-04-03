@@ -18,8 +18,8 @@
       var content, filename, mime;
 
       if (format === 'csv') {
-        content = 'type,value\n' + iocs.map(function (i) {
-          return i.type + ',"' + i.value.replace(/"/g, '""') + '"';
+        content = 'id,type,indicator\n' + iocs.map(function (i) {
+          return '"' + (i.id || '').replace(/"/g, '""') + '","' + (i.type || '').replace(/"/g, '""') + '","' + (i.indicator || '').replace(/"/g, '""') + '"';
         }).join('\n');
         filename = slug + '_iocs.csv';
         mime = 'text/csv';
