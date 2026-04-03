@@ -11,7 +11,9 @@ layout: default
         {% if page.score %}<span class="meta-sep">/</span><span class="tag tag--{{ page.score | downcase }}">{{ page.score }}</span>{% endif %}
       </div>
       <div class="post-tags">
-        {% if page.source %}<span class="tag tag--source">{{ page.source }}</span>{% endif %}
+        {% if page.ai_rewritten %}<span class="tag tag--source">SCW</span>
+        {% elsif page.source_name %}<span class="tag tag--source">{{ page.source_name }}</span>
+        {% endif %}
         {% for tag in page.tags %}{% unless tag == 'telegram' or tag == 'cyber' or tag == 'live-feed' or tag == 'security' or tag == 'news' %}<span class="tag">{{ tag }}</span>{% endunless %}{% endfor %}
       </div>
     </header>
@@ -97,6 +99,13 @@ layout: default
       <a href="{{ page.source_url }}" target="_blank" rel="noopener">{{ page.source_url }}</a>
     </div>
     {% endif %}{% endunless %}
+
+    {% comment %}── AI author byline ──{% endcomment %}
+    {% if page.ai_rewritten %}
+    <div class="post-byline">
+      <p>By <strong>Shimi's Cyber World</strong> Editorial</p>
+    </div>
+    {% endif %}
 
     {% comment %}── Attribution & Disclaimer ──{% endcomment %}
     {% if page.curated and page.ai_rewritten != true %}

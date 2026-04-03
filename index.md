@@ -54,7 +54,6 @@ title: Home
           <h3>{{ post.title }}</h3>
           <p>{{ post.summary | default: post.excerpt | strip_html | truncatewords: 25 }}</p>
           <div class="feed-item__tags">
-            {% if post.source %}<span class="tag tag--xs tag--source">{{ post.source }}</span>{% endif %}
             {% for tag in post.tags %}{% unless tag == 'telegram' or tag == 'cyber' or tag == 'live-feed' or tag == 'security' or tag == 'news' %}<span class="tag tag--xs">{{ tag }}</span>{% endunless %}{% endfor %}
           </div>
           <div class="feed-item__meta">

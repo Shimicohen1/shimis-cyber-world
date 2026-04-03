@@ -1320,6 +1320,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .post-read-original a { color: var(--electric, #00b4d8); font-size: .85rem; word-break: break-all; text-decoration: none; opacity: .8; }
 .post-read-original a:hover { opacity: 1; text-decoration: underline; }
 
+.post-byline { margin: 1.5rem 0 0; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,.08); }
+.post-byline p { font-size: .85rem; color: rgba(255,255,255,.5); margin: 0; }
+.post-byline strong { color: var(--electric, #00b4d8); }
+
 .post-attribution { margin: 1.5rem 0; padding: 0; background: rgba(255,255,255,.03); border-radius: 6px; border: 1px solid rgba(255,255,255,.06); font-size: .85rem; color: rgba(255,255,255,.6); }
 .post-attribution__toggle { padding: .75rem 1rem; cursor: pointer; font-weight: 600; color: rgba(255,255,255,.5); list-style: none; }
 .post-attribution__toggle::-webkit-details-marker { display: none; }
