@@ -7,21 +7,39 @@ permalink: /vulnerabilities/
 <div class="page-head">
   <div class="label label--red page-head__label">CVE</div>
   <h1 class="page-head__title">Vulnerabilities</h1>
-  <p class="page-head__desc">Live CVE feed — vulnerability disclosures tracked and scored as they drop.</p>
+  <p class="page-head__desc">Live CVE feed — high and critical vulnerability disclosures tracked as they drop.</p>
+</div>
+
+<div class="feed-controls">
+  <div class="feed-search">
+    <span class="feed-search__icon">&#128269;</span>
+    <input type="text" class="feed-search__input" placeholder="Search CVEs..." id="vuln-search">
+    <span class="feed-search__count" id="vuln-count"></span>
+  </div>
 </div>
 
 <div class="archive">
-  <div class="archive__list">
+  <div class="archive__list" id="vuln-list">
     {% assign cve_posts = site.posts | where: "channel", "CVE Notify" %}
     {% for post in cve_posts %}
-    {% include post-card.html %}
+    {% if post.score == "HIGH" or post.score == "CRITICAL" %}
+    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}">
+      {% include post-card.html %}
+    </div>
+    {% endif %}
     {% endfor %}
   </div>
 
-  {% assign cve_count = site.posts | where: "channel", "CVE Notify" | size %}
-  {% if cve_count == 0 %}
+  {% assign high_cve = site.posts | where: "channel", "CVE Notify" | where: "score", "HIGH" %}
+  {% assign critical_cve = site.posts | where: "channel", "CVE Notify" | where: "score", "CRITICAL" %}
+  {% assign cve_total = high_cve.size | plus: critical_cve.size %}
+  {% if cve_total == 0 %}
   <div class="empty-state" style="margin-top: 2rem;">
     <p>No vulnerabilities tracked yet. The CVE feed is warming up.</p>
   </div>
   {% endif %}
+
+  <nav class="pagination" id="vuln-pagination" aria-label="Page navigation"></nav>
 </div>
+
+<div data-feed-pagination="vuln-list,vuln-search,vuln-count,vuln-pagination,20" style="display:none"></div>
