@@ -100,6 +100,33 @@ layout: default
     </div>
     {% endif %}
 
+    {% comment %}── IOC Section ──{% endcomment %}
+    {% if page.iocs.size > 0 %}
+    <div class="post-iocs">
+      <div class="post-iocs__header">
+        <h2>Indicators</h2>
+        <div class="post-iocs__actions">
+          <button class="ioc-download-btn" data-format="csv" aria-label="Download IOCs as CSV">CSV</button>
+          <button class="ioc-download-btn" data-format="json" aria-label="Download IOCs as JSON">JSON</button>
+        </div>
+      </div>
+      <table class="post-iocs__table">
+        <thead>
+          <tr><th>Type</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          {% for ioc in page.iocs %}
+          <tr>
+            <td><span class="ioc-type ioc-type--{{ ioc.type }}">{{ ioc.type }}</span></td>
+            <td class="ioc-value">{% if ioc.type == 'url' %}<a href="{{ ioc.value }}" target="_blank" rel="noopener noreferrer">{{ ioc.value | truncate: 80 }}</a>{% else %}{{ ioc.value }}{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <script id="ioc-data" type="application/json">{{ page.iocs | jsonify }}</script>
+    {% endif %}
+
         {% comment %}── AI author byline ──{% endcomment %}
     {% if page.ai_rewritten %}
     <div class="post-byline">
