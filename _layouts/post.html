@@ -21,12 +21,12 @@ layout: default
     {% comment %}── Cover image: own source image OR category fallback ──{% endcomment %}
     {% if page.image %}
     <div class="post-image{% if page.ai_rewritten %} post-image--ai{% endif %}">
-      <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy" referrerpolicy="no-referrer">
+      <img src="{% if page.image contains "://" %}{{ page.image }}{% else %}{{ page.image | relative_url }}{% endif %}" alt="{{ page.title }}" loading="lazy" referrerpolicy="no-referrer">
       {% unless page.ai_rewritten or page.image_pool_used %}{% assign img_domain = page.image | split: "//" | last | split: "/" | first %}{% if img_domain %}<p class="post-image__credit">Image via <a href="{{ page.source_url | default: page.image }}" target="_blank" rel="noopener noreferrer">{{ img_domain }}</a></p>{% endif %}{% endunless %}
     </div>
     {% elsif page.cover_image %}
     <div class="post-image post-image--cover">
-      <img src="{{ page.cover_image | relative_url }}" alt="{{ page.title }}" loading="lazy" referrerpolicy="no-referrer">
+      <img src="{% if page.cover_image contains "://" %}{{ page.cover_image }}{% else %}{{ page.cover_image | relative_url }}{% endif %}" alt="{{ page.title }}" loading="lazy" referrerpolicy="no-referrer">
     </div>
     {% endif %}
 
@@ -38,18 +38,6 @@ layout: default
     </div>
     {% endif %}
     {% endunless %}
-
-    {% comment %}── Why It Matters ──{% endcomment %}
-    {% if page.why_it_matters.size > 0 %}
-    <div class="post-why-it-matters">
-      <h2>Why It Matters</h2>
-      <ul>
-        {% for point in page.why_it_matters %}
-        <li>{{ point }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
 
     {% comment %}── Full body ──{% endcomment %}
     {% if page.ai_rewritten %}
@@ -100,7 +88,19 @@ layout: default
     </div>
     {% endif %}{% endunless %}
 
-    {% comment %}── AI author byline ──{% endcomment %}
+    {% comment %}── What This Means For You ──{% endcomment %}
+    {% if page.why_it_matters.size > 0 %}
+    <div class="post-why-it-matters">
+      <h2>What This Means For You</h2>
+      <ul>
+        {% for point in page.why_it_matters %}
+        <li>{{ point }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+        {% comment %}── AI author byline ──{% endcomment %}
     {% if page.ai_rewritten %}
     <div class="post-byline">
       <p>By <strong>Shimi's Cyber World</strong> Editorial</p>
