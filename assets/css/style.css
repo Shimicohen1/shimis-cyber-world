@@ -1001,6 +1001,97 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 /* Archive uses same .feed-item component from post-card.html */
 
+/* Feed Search */
+.feed-controls { margin-bottom: 1.5rem; }
+.feed-search {
+  position: relative;
+}
+.feed-search__icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: .9rem;
+  pointer-events: none;
+  opacity: .5;
+}
+.feed-search__input {
+  width: 100%;
+  padding: .75rem 5.5rem .75rem 2.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--white);
+  font-family: var(--f-body);
+  font-size: .88rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.feed-search__input::placeholder { color: var(--dim); }
+.feed-search__input:focus { border-color: var(--electric); }
+.feed-search__count {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--f-mono);
+  font-size: .7rem;
+  color: var(--dim);
+  background: var(--card);
+  padding: .15rem .5rem;
+  border-radius: var(--r-sm);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .35rem;
+  padding: 2rem 0 1rem;
+}
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 .5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--gray);
+  font-family: var(--f-mono);
+  font-size: .8rem;
+  cursor: pointer;
+  transition: all .15s;
+}
+.page-btn:hover:not(.page-btn--disabled):not(.page-btn--active) {
+  border-color: var(--border-hi);
+  color: var(--white);
+  background: var(--card);
+}
+.page-btn--active {
+  background: var(--electric);
+  border-color: var(--electric);
+  color: var(--white);
+  font-weight: 600;
+}
+.page-btn--disabled {
+  opacity: .3;
+  cursor: default;
+}
+.page-ellipsis {
+  color: var(--dim);
+  font-family: var(--f-mono);
+  font-size: .8rem;
+  padding: 0 .2rem;
+}
+
+@media (max-width: 480px) {
+  .page-btn { min-width: 1.8rem; height: 1.8rem; font-size: .7rem; }
+}
+
 /* =====================================================
    PAGE LAYOUT
    ===================================================== */
