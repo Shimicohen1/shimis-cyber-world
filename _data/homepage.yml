@@ -82,32 +82,37 @@ vault_picks:
     url: "https://tryhackme.com/"
     badge: "Recommended"
 
-# Tools teaser for homepage — must match titles in tools.yml
+# Tools teaser for homepage — monetization-ready with sponsored tools
 tools_teaser:
-  - name: "Nmap"
-    description: "Network discovery and security auditing. The operator's first move."
-    url: "https://nmap.org/"
-    status: "essential"
+  - name: "Hack The Box"
+    description: "Real-world hacking challenges and enterprise security training."
+    url: "https://www.hackthebox.com/"
+    status: "recommended"
+    sponsored: true
   - name: "Burp Suite"
     description: "Leading web application security testing toolkit."
     url: "https://portswigger.net/burp"
     status: "essential"
-  - name: "Metasploit"
-    description: "The world's most used penetration testing framework."
-    url: "https://www.metasploit.com/"
+    sponsored: true
+  - name: "NordVPN"
+    description: "Fast, secure VPN with threat protection for operators."
+    url: "https://nordvpn.com/"
+    status: "recommended"
+    sponsored: true
+  - name: "Nmap"
+    description: "Network discovery and security auditing. The operator's first move."
+    url: "https://nmap.org/"
     status: "essential"
-  - name: "Wireshark"
-    description: "Network protocol analyzer for deep traffic inspection."
-    url: "https://www.wireshark.org/"
+  - name: "1Password"
+    description: "Secure password manager with zero-knowledge architecture."
+    url: "https://1password.com/"
     status: "recommended"
-  - name: "Shodan"
-    description: "Search engine for internet-connected devices and exposed services."
-    url: "https://www.shodan.io/"
+    sponsored: true
+  - name: "TryHackMe"
+    description: "Guided learning paths with hands-on cyber labs."
+    url: "https://tryhackme.com/"
     status: "recommended"
-  - name: "YARA"
-    description: "Pattern matching tool for malware researchers and threat hunters."
-    url: "https://virustotal.github.io/yara/"
-    status: "recommended"
+    sponsored: true
 
 # Manifesto block
 manifesto:

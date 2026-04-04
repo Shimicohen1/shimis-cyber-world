@@ -15,17 +15,25 @@ permalink: /tools/
   <h2 class="page-section__title">{{ category.name }}</h2>
   <div class="toolkit__grid">
     {% for tool in category.items %}
-    <div class="tool-card">
+    {% if tool.url %}
+    <a href="{{ tool.url }}" target="_blank" rel="noopener noreferrer" class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %}">
+    {% else %}
+    <div class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %}">
+    {% endif %}
       <div class="tool-card__head">
         <h4>{{ tool.title }}</h4>
-        {% if tool.status == "essential" or tool.status == "Open" %}
-          <span class="badge badge--signal">{{ tool.status }}</span>
-        {% elsif tool.status == "recommended" %}
+        {% if tool.sponsored %}
+          <span class="badge badge--partner">Recommended</span>
+        {% elsif tool.status == "Essential" %}
+          <span class="badge badge--signal">essential</span>
+        {% elsif tool.status == "Recommended" %}
           <span class="badge badge--new">recommended</span>
         {% elsif tool.status == "beta" or tool.status == "Beta" %}
           <span class="badge badge--beta">beta</span>
         {% elsif tool.status == "coming-soon" or tool.status == "Coming Soon" %}
           <span class="badge badge--soon">coming soon</span>
+        {% elsif tool.status == "Open" %}
+          <span class="badge badge--signal">open</span>
         {% else %}
           {% if tool.status %}<span class="badge badge--signal">{{ tool.status }}</span>{% endif %}
         {% endif %}
@@ -38,10 +46,14 @@ permalink: /tools/
       {% endif %}
       {% if tool.url %}
       <div class="tool-card__action">
-        <a href="{{ tool.url }}" target="_blank" rel="noopener" class="btn btn--ghost btn--sm">{{ tool.button | default: "Open Tool" }} &rarr;</a>
+        <span class="btn btn--ghost btn--sm">{{ tool.button | default: "Open Tool" }} &rarr;</span>
       </div>
       {% endif %}
+    {% if tool.url %}
+    </a>
+    {% else %}
     </div>
+    {% endif %}
     {% endfor %}
   </div>
 </section>
