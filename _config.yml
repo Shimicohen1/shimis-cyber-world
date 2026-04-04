@@ -1,7 +1,7 @@
 title: "Shimi's Cyber World"
 description: "A cyber ecosystem built around a strong community. Real updates, real discussions, tools, and insights from the field."
-url: "https://shimicohen1.github.io"
-baseurl: "/shimis-cyber-world"
+url: "https://shimiscyberworld.com"
+baseurl: ""
 theme: null
 markdown: kramdown
 timezone: Asia/Jerusalem
