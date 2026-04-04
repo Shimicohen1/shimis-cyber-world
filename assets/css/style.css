@@ -46,6 +46,7 @@
 /* RESET */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+.sr-only { position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
 body {
   font-family: var(--f-body);
