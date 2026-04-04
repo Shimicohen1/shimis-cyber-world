@@ -13,21 +13,23 @@ permalink: /premium/
 
 <section class="premium-pricing reveal">
 <div class="premium-pricing__box">
-<span class="premium-pricing__badge">Membership</span>
+<span class="premium-pricing__badge">Membership Plans</span>
 <div class="premium-pricing__plans">
 <div class="premium-plan">
-<h3 class="premium-plan__name">Monthly</h3>
-<div class="premium-plan__price"><span class="premium-plan__amount">$9</span><span class="premium-plan__period">/mo</span></div>
-<p class="premium-plan__detail">Full access to all premium tools</p>
+<h3 class="premium-plan__name">Pro</h3>
+<div class="premium-plan__price"><span class="premium-plan__amount">$29</span><span class="premium-plan__period">/mo</span></div>
+<p class="premium-plan__detail">All 6 tools, labs, priority updates</p>
+<div class="premium-plan__annual">or <strong>$199/yr</strong> <span class="premium-plan__save">save 43%</span></div>
 </div>
 <div class="premium-plan premium-plan--highlight">
-<span class="premium-plan__popular">BEST VALUE</span>
-<h3 class="premium-plan__name">Annual</h3>
-<div class="premium-plan__price"><span class="premium-plan__amount">$79</span><span class="premium-plan__period">/yr</span></div>
-<p class="premium-plan__detail">Save 27% — full access, priority updates</p>
+<span class="premium-plan__popular">FOR TEAMS</span>
+<h3 class="premium-plan__name">Team</h3>
+<div class="premium-plan__price"><span class="premium-plan__amount">$79</span><span class="premium-plan__period">/mo</span></div>
+<p class="premium-plan__detail">Pro + 5 seats, shared workspace</p>
+<div class="premium-plan__annual">or <strong>$599/yr</strong> <span class="premium-plan__save">save 37%</span></div>
 </div>
 </div>
-<p class="premium-pricing__note">Launching soon — join the waitlist to get early access pricing.</p>
+<p class="premium-pricing__note">Launching soon — join the waitlist to lock in early-access pricing.</p>
 </div>
 </section>
 
