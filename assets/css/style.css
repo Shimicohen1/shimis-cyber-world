@@ -177,6 +177,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   letter-spacing: -.01em;
   color: var(--white);
 }
+.nav-menu {
+  display: flex;
+  align-items: center;
+}
 .nav-links {
   list-style: none;
   display: flex;
