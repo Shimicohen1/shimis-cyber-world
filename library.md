@@ -7,15 +7,19 @@ permalink: /library/
 <div class="page-head">
   <div class="label label--pink page-head__label">RESOURCE LIBRARY</div>
   <h1 class="page-head__title">The Vault</h1>
-  <p class="page-head__desc">525 curated cybersecurity resources — reports, frameworks, cheat sheets, and field guides. Organized by the community, for the community.</p>
+  <p class="page-head__desc">{% assign total = 0 %}{% for cat in site.data.resources.categories %}{% assign total = total | plus: cat.count %}{% endfor %}{{ total }} curated cybersecurity resources — reports, frameworks, cheat sheets, and field guides. Free and open knowledge for the security community.</p>
+</div>
+
+<div class="vault-disclaimer">
+  <p>📋 These resources are shared for <strong>educational and informational purposes only</strong>. All documents remain the intellectual property of their original authors and organizations. Credits are included within each document. If you are a rights holder and would like a resource removed, please <a href="mailto:shimi@shimiscyberworld.com">contact us</a> — we'll act within 48 hours.</p>
 </div>
 
 <!-- Search & Filter Bar -->
 <div class="vault-controls">
   <div class="vault-search">
     <svg class="vault-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="vaultSearch" class="vault-search__input" placeholder="Search 525 resources..." autocomplete="off">
-    <span id="vaultCount" class="vault-search__count">525</span>
+    <input type="text" id="vaultSearch" class="vault-search__input" placeholder="Search resources..." autocomplete="off">
+    <span id="vaultCount" class="vault-search__count">{% assign total = 0 %}{% for cat in site.data.resources.categories %}{% assign total = total | plus: cat.count %}{% endfor %}{{ total }}</span>
   </div>
   <div class="vault-filters" id="vaultFilters">
     <button class="vault-filter active" data-filter="all">All</button>

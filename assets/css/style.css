@@ -666,8 +666,22 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 
 /* =====================================================
-   VAULT — resource library (525 resources)
+   VAULT — resource library
    ===================================================== */
+
+.vault-disclaimer {
+  margin-bottom: 1.5rem;
+  padding: .8rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-size: .75rem;
+  line-height: 1.6;
+  color: var(--dim);
+}
+.vault-disclaimer p { margin: 0; }
+.vault-disclaimer strong { color: var(--gray); }
+.vault-disclaimer a { color: var(--electric); }
 
 /* Controls: search + filter */
 .vault-controls {
