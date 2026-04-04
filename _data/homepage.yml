@@ -25,41 +25,41 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Supply Chain Attacks Continue to Target Popular Software
-    text: Compromised popular packages like Axios and Trivy highlight ongoing supply chain risks.
-    detail: The recent targeting of widely-used libraries like Axios (CVE-2026-34770, CVE-2026-34776) and scanning tools like Trivy underscores the critical need for robust software supply chain security. Organizations must implement rigorous vetting processes for third-party dependencies and monitor for malicious code injection. Prioritize dependency scanning and software bill of materials (SBOM) for better visibility.
-    link: https://owasp.org/www-project-software-supply-chain-security/
-    link_label: OWASP Supply Chain Security
+  - title: Ransomware Cartels Evolve into Corporate Structures
+    text: Ransomware operations are shifting from lone hackers to sophisticated, corporate-style RaaS models.
+    detail: The traditional image of ransomware actors is outdated. Modern cybercrime syndicates operate with industrial efficiency, leveraging Ransomware-as-a-Service (RaaS) to scale operations. This shift necessitates a re-evaluation of threat actor profiling and a focus on disrupting their business models and supply chains.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-075a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
-      - supply-chain
+      - ransomware
+      - malware
       - threat-intel
-      - vulnerability
-  - title: AI Models Accelerate Vulnerability Discovery and Exploitation
-    text: AI tools are increasingly capable of identifying and exploiting software vulnerabilities.
-    detail: The emergence of AI applications that can independently find and exploit vulnerabilities, as seen with the FreeBSD kernel example (CVE-2026-4747), signals a concerning advancement in attack capabilities. Security teams should proactively integrate AI-driven vulnerability analysis into their defense strategies and stay abreast of AI's evolving role in both offense and defense.
-    link: https://www.mitre.org/capabilities/cybersecurity/threat-intelligence
-    link_label: MITRE Threat Intelligence
+  - title: AI's Growing Role in Content Creation and Manipulation
+    text: AI tools are increasingly sophisticated, impacting video editing and potentially creating new avenues for disinformation.
+    detail: New AI models like Netflix's VOID demonstrate advanced capabilities in video manipulation, understanding physics and causality. This signifies a leap in AI's creative potential but also raises concerns about deepfakes and the generation of synthetic media for malicious purposes.
+    link: https://www.nist.gov/itl/applied-cybersecurity/nist-ai-risk-management-framework
+    link_label: NIST AI Risk Management
     badge: signal
     tags:
       - ai
-      - vulnerability
-      - threat-intel
-  - title: Data Breaches Persist Across Various Sectors
-    text: Recent incidents at Crunchyroll, SongTrivia2, and the EU Commission highlight ongoing data exposure.
-    detail: The continuous stream of data breaches affecting services like Crunchyroll and platforms like the EU Commission demonstrates persistent weaknesses in data protection. Organizations must prioritize data minimization, implement strong access controls, and conduct regular security audits to prevent sensitive information from falling into the wrong hands.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/data-privacy-and-security
-    link_label: CISA Data Privacy
+      - malware
+      - disinformation
+  - title: Supply Chain Attacks Escalate Via Open-Source Tools
+    text: Vulnerabilities in widely used open-source tools are becoming prime targets for sophisticated supply chain attacks.
+    detail: Recent incidents involving tools like Trivy and the Axios NPM package highlight the critical risk posed by compromised open-source components. Organizations must implement robust software supply chain security practices and continuous monitoring to mitigate these evolving threats.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP SCA Project
     badge: signal
     tags:
-      - data-breach
-      - threat-intel
-      - privacy
-  - title: OSINT Tools Evolve for Comprehensive Intelligence Gathering
-    text: New directories and resources are emerging to enhance OSINT capabilities.
-    detail: The proliferation of extensive OSINT tool directories and resources signifies a growing demand for efficient intelligence gathering. Professionals should leverage these curated lists to streamline investigations, improve situational awareness, and identify potential threats. Regularly exploring updated OSINT resources is crucial for staying ahead of adversaries.
-    link: https://www.defendify.com/blog/osint-tools/
-    link_label: OSINT Tools Overview
+      - supply-chain
+      - vulnerability
+      - open-source
+  - title: OSINT Tools Directory Expands for Enhanced Investigations
+    text: A comprehensive directory of OSINT tools is now available, streamlining complex investigations for professionals.
+    detail: The proliferation of OSINT tools can be overwhelming. A new, extensive directory aims to empower security professionals by cataloging hundreds of resources. This initiative supports more efficient data gathering and analysis for threat intelligence and law enforcement purposes.
+    link: https://www.defendify.com/blog/osint-tools-for-cybersecurity-professionals/
+    link_label: OSINT Tool Resources
     badge: signal
     tags:
       - osint
