@@ -4,7 +4,7 @@ Cybersecurity insights, tools, and resources — powered by GitHub Pages + Jekyl
 
 ## Live Site
 
-[https://shimicohen1.github.io/shimis-cyber-world](https://shimicohen1.github.io/shimis-cyber-world)
+[https://shimiscyberworld.com](https://shimiscyberworld.com)
 
 ## GitHub Pages Setup
 
@@ -169,5 +169,5 @@ main:
 gem install bundler
 bundle install
 bundle exec jekyll serve
-# → http://localhost:4000/shimis-cyber-world/
+# → http://localhost:4000/
 ```
