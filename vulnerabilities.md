@@ -46,3 +46,5 @@ permalink: /vulnerabilities/
 </div>
 
 <div data-feed-pagination="vuln-list,vuln-search,vuln-count,vuln-pagination,20" style="display:none"></div>
+
+{% include newsletter.html %}
