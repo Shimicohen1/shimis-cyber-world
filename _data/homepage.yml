@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Cartels Operate Like Legitimate Businesses
-    text: Modern ransomware threats are sophisticated, industrial-scale operations, not lone hackers.
-    detail: The Ransomware-as-a-Service (RaaS) model has created complex, hierarchical structures that mirror legitimate businesses. Cybersecurity professionals must adapt threat models to account for this industrialization, focusing on supply chain risks and the operational security of these criminal enterprises. Understanding their business practices is key to disruption.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
-    link_label: CISA Ransomware Guidance
+  - title: Ransomware Cartels Evolve to Corporate Structures
+    text: Modern ransomware operations mimic corporate structures, leveraging RaaS models for industrial-scale cybercrime.
+    detail: The traditional lone hacker is obsolete. Ransomware-as-a-Service (RaaS) has created sophisticated, hierarchical criminal enterprises. Organizations must understand this shift to bolster defenses against professionally managed, large-scale attacks, focusing on supply chain and third-party risk management.
+    link: https://www.cisa.gov/news-events/news/understanding-ransomware-threat-and-how-protect-yourself
+    link_label: Understanding Ransomware
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - malware
-  - title: Supply Chain Attacks Targeting Development Tools Are Rising
-    text: Compromised development tools and libraries pose significant risks to software integrity.
-    detail: Recent incidents highlight the exploitation of vulnerabilities in software scanning tools and popular code packages. Organizations must implement robust supply chain security practices, including vetting dependencies, performing regular security audits of development pipelines, and monitoring for unexpected code changes.
-    link: https://owasp.org/www-project-software-supply-chain-security/
-    link_label: OWASP SCVS Project
+  - title: "AI's Dual Role: Enhancing Tools and Creating New Threats"
+    text: AI is rapidly advancing cybersecurity tools while also presenting new attack vectors and analytical challenges.
+    detail: From advanced video editing (Netflix VOID) to AI exhibiting 'functional emotions' (Claude), AI integration is accelerating. Conversely, AI can be leveraged by attackers, and its outputs require careful validation. Professionals should monitor AI advancements for both defensive and offensive implications.
+    link: https://owasp.org/www-project-top-10-ai-security-risks/
+    link_label: OWASP Top 10 AI Security Risks
+    badge: signal
+    tags:
+      - ai
+      - tools
+      - threat-intel
+  - title: Supply Chain Attacks Target Essential Development Tools
+    text: Attackers are compromising widely used development tools, impacting downstream applications and data integrity.
+    detail: Recent incidents involving the Axios NPM package and the Trivy vulnerability scanner highlight the critical risk in software supply chains. Developers must implement rigorous checks on dependencies and third-party components to prevent malicious code injection, as seen with the European Commission breach.
+    link: https://www.cisa.gov/news-events/advisories/aa23-265a
+    link_label: CISA Guidance on Supply Chain
     badge: signal
     tags:
       - supply-chain
       - vulnerability
-      - threat-intel
-  - title: OSINT Tool Directories Crucial for Modern Investigations
-    text: The proliferation of OSINT tools necessitates curated directories for efficient investigations.
-    detail: Navigating the vast landscape of Open Source Intelligence tools can be overwhelming. Comprehensive directories are vital resources for security professionals to streamline investigations, uncover digital traces, and enhance law enforcement capabilities. Staying updated on these resources is key to effective OSINT.
-    link: https://www.digitalforensics.com/osint-tools/
-    link_label: OSINT Tools Overview
+      - data-breach
+  - title: OSINT Becomes More Accessible and Crucial for Investigations
+    text: A growing directory of OSINT tools empowers investigators to uncover complex digital traces and networks.
+    detail: The proliferation of OSINT tools, from specialist training for law enforcement to comprehensive directories, underscores its increasing importance. Professionals should leverage these resources to enhance their investigative capabilities in tracking threats, identifying perpetrators, and building cases effectively.
+    link: https://www.nist.gov/itl/applied-cybersecurity/nist-cybersecurity-framework
+    link_label: NIST Cybersecurity Framework
     badge: signal
     tags:
       - osint
       - tools
       - investigation
-  - title: AI's Evolving Capabilities Impact Cybersecurity Landscape
-    text: AI is increasingly used in both offensive and defensive cybersecurity applications.
-    detail: From AI understanding physics for video editing to exhibiting 'functional emotions,' AI's capabilities are rapidly advancing. This presents new avenues for threat detection and analysis, but also potential for sophisticated AI-driven attacks. Cybersecurity professionals must understand and adapt to AI's dual role.
-    link: https://www.nist.gov/artificial-intelligence
-    link_label: NIST AI Resources
-    badge: signal
-    tags:
-      - ai
-      - threat-intel
-      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
