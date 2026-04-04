@@ -6,7 +6,7 @@ title: Home
 {% include signal-bar.html %}
 
 <!-- Affiliate verification -->
-<div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;">Impact-Site-Verification: ff92b508-81a2-4f2e-a96e-bbac08a8bbc9</div>
+<div aria-hidden="true" class="sr-only">Impact-Site-Verification: ff92b508-81a2-4f2e-a96e-bbac08a8bbc9</div>
 
 <!-- IDENTITY BLOCK -->
 <section class="identity">
