@@ -2101,3 +2101,85 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 /* ── Score badges ────────────────────────── */
 .tag--high { background: rgba(255, 60, 60, 0.15); color: #ff3c3c; border: 1px solid rgba(255, 60, 60, 0.3); }
 .tag--medium { background: rgba(255, 180, 0, 0.15); color: #ffb400; border: 1px solid rgba(255, 180, 0, 0.3); }
+
+/* ── Newsletter ──────────────────────────── */
+.newsletter {
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.08) 0%, rgba(0, 180, 216, 0.02) 100%);
+  border: 1px solid rgba(0, 180, 216, 0.2);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  max-width: 560px;
+  margin: 3rem auto;
+}
+.newsletter--inline { margin: 2rem 0; }
+.newsletter--post { margin: 2.5rem 0; }
+.newsletter__icon { color: #00b4d8; margin-bottom: 0.75rem; }
+.newsletter__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f0f0f0;
+  margin: 0 0 0.5rem;
+}
+.newsletter__desc {
+  color: #a0a0a0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
+}
+.newsletter__form { margin: 0; }
+.newsletter__input-wrap {
+  display: flex;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s;
+}
+.newsletter__input-wrap:focus-within {
+  border-color: #00b4d8;
+  box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.15);
+}
+.newsletter__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.75rem 1rem;
+  color: #f0f0f0;
+  font-size: 0.95rem;
+  outline: none;
+  min-width: 0;
+}
+.newsletter__input::placeholder { color: #666; }
+.newsletter__btn {
+  background: #00b4d8;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.newsletter__btn:hover { background: #0096b7; }
+.newsletter__btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.newsletter__status {
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  min-height: 1.2em;
+}
+.newsletter__status--success { color: #22c55e; }
+.newsletter__status--error { color: #ff4444; }
+.newsletter__privacy {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0.75rem 0 0;
+}
+.newsletter__privacy a { color: #888; text-decoration: underline; }
+@media (max-width: 600px) {
+  .newsletter { padding: 1.5rem 1.25rem; }
+  .newsletter__input-wrap { flex-direction: column; }
+  .newsletter__btn { padding: 0.75rem; }
+}
