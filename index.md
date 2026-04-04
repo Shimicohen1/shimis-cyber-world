@@ -5,6 +5,9 @@ title: Home
 
 {% include signal-bar.html %}
 
+<!-- Affiliate verification -->
+<p style="font-size:0;line-height:0;height:0;overflow:hidden;margin:0;padding:0;">Impact-Site-Verification: ff92b508-81a2-4f2e-a96e-bbac08a8bbc9</p>
+
 <!-- IDENTITY BLOCK -->
 <section class="identity">
   <div class="container">
