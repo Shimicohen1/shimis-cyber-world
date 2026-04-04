@@ -33,12 +33,23 @@ title: Home
       <a href="{{ '/posts/' | relative_url }}" class="feed__link">View all &rarr;</a>
     </div>
 
+    <div class="feed-filters feed-filters--compact" id="home-filters">
+      <button class="filter-pill filter-pill--active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="threat-intel">Threat Intel</button>
+      <button class="filter-pill" data-filter="malware">Malware</button>
+      <button class="filter-pill" data-filter="ransomware">Ransomware</button>
+      <button class="filter-pill" data-filter="red-team">Red Team</button>
+      <button class="filter-pill" data-filter="osint">OSINT</button>
+      <button class="filter-pill" data-filter="tools">Tools</button>
+      <button class="filter-pill" data-filter="data-breach">Data Breach</button>
+    </div>
+
     {% assign non_cve_posts = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" %}
-    {% assign posts = non_cve_posts | slice: 0, 6 %}
+    {% assign posts = non_cve_posts | slice: 0, 30 %}
     {% if posts.size > 0 %}
-    <div class="feed__list reveal">
+    <div class="feed__list reveal" id="home-drops-list">
       {% for post in posts %}
-      <a href="{{ post.url | relative_url }}" class="feed-item{% if forloop.first %} feed-item--hero{% endif %}"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
+      <a href="{{ post.url | relative_url }}" class="feed-item home-drop{% if forloop.index > 6 %} home-drop--hidden{% endif %}" data-tags="{{ post.tags | join: ' ' | downcase }}"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
         {% if post.image %}
         <div class="feed-item__img">
           <img src="{{ post.image | relative_url }}" alt="" loading="lazy">

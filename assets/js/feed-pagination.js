@@ -1,4 +1,4 @@
-// Feed Pagination + Search — Shimi's Cyber World
+// Feed Pagination + Search + Category Filter — Shimi's Cyber World
 (function () {
   'use strict';
 
@@ -13,6 +13,25 @@
     var filtered = allItems.slice();
     var currentPage = 1;
     var totalPages = 1;
+    var activeFilter = 'all';
+
+    function applyFilters() {
+      var query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      filtered = allItems.filter(function (el) {
+        var tags = el.getAttribute('data-tags') || '';
+        // Category filter
+        if (activeFilter !== 'all' && tags.indexOf(activeFilter) === -1) return false;
+        // Search filter
+        if (query) {
+          var title = el.getAttribute('data-title') || '';
+          var excerpt = el.getAttribute('data-excerpt') || '';
+          var text = title + ' ' + tags + ' ' + excerpt;
+          if (text.indexOf(query) === -1) return false;
+        }
+        return true;
+      });
+      showPage(1);
+    }
 
     function updateCount(n) {
       if (countEl) countEl.textContent = n + ' results';
@@ -104,20 +123,23 @@
       searchInput.addEventListener('input', function () {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(function () {
-          var query = searchInput.value.trim().toLowerCase();
-          if (!query) {
-            filtered = allItems.slice();
-          } else {
-            filtered = allItems.filter(function (el) {
-              var title = el.getAttribute('data-title') || '';
-              var tags = el.getAttribute('data-tags') || '';
-              var excerpt = el.getAttribute('data-excerpt') || '';
-              var text = title + ' ' + tags + ' ' + excerpt;
-              return text.indexOf(query) !== -1;
-            });
-          }
-          showPage(1);
+          applyFilters();
         }, 200);
+      });
+    }
+
+    // Category filter pills
+    var filterContainer = document.getElementById('feed-filters');
+    if (filterContainer) {
+      filterContainer.addEventListener('click', function (e) {
+        var pill = e.target.closest('.filter-pill');
+        if (!pill) return;
+        activeFilter = pill.getAttribute('data-filter') || 'all';
+        filterContainer.querySelectorAll('.filter-pill').forEach(function (p) {
+          p.classList.remove('filter-pill--active');
+        });
+        pill.classList.add('filter-pill--active');
+        applyFilters();
       });
     }
 
@@ -130,4 +152,39 @@
     var cfg = el.getAttribute('data-feed-pagination').split(',');
     initFeedPagination(cfg[0], cfg[1], cfg[2], cfg[3], parseInt(cfg[4], 10) || 20);
   });
+
+  // Homepage drops category filter
+  var homeFilters = document.getElementById('home-filters');
+  var homeList = document.getElementById('home-drops-list');
+  if (homeFilters && homeList) {
+    var MAX_VISIBLE = 6;
+    var homeItems = Array.from(homeList.querySelectorAll('.home-drop'));
+
+    function filterHomeDrops(category) {
+      var shown = 0;
+      homeItems.forEach(function (item) {
+        var tags = item.getAttribute('data-tags') || '';
+        var match = category === 'all' || tags.indexOf(category) !== -1;
+        if (match && shown < MAX_VISIBLE) {
+          item.style.display = '';
+          item.classList.remove('home-drop--hidden');
+          shown++;
+        } else {
+          item.style.display = 'none';
+          item.classList.add('home-drop--hidden');
+        }
+      });
+    }
+
+    homeFilters.addEventListener('click', function (e) {
+      var pill = e.target.closest('.filter-pill');
+      if (!pill) return;
+      var cat = pill.getAttribute('data-filter') || 'all';
+      homeFilters.querySelectorAll('.filter-pill').forEach(function (p) {
+        p.classList.remove('filter-pill--active');
+      });
+      pill.classList.add('filter-pill--active');
+      filterHomeDrops(cat);
+    });
+  }
 })();
