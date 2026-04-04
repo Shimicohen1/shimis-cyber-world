@@ -72,6 +72,57 @@ title: Home
   </div>
 </section>
 
+<!-- LATEST VULNERABILITIES -->
+<section class="feed">
+  <div class="container">
+    <div class="feed__header">
+      <h2 class="feed__title"><span class="label label--red">CVE</span> &nbsp;Latest Vulnerabilities</h2>
+      <a href="{{ '/vulnerabilities/' | relative_url }}" class="feed__link">View all &rarr;</a>
+    </div>
+
+    {% assign cve_posts = site.posts | where: "channel", "CVE Notify" %}
+    {% assign high_cve = cve_posts | where_exp: "post", "post.score == 'HIGH' or post.score == 'CRITICAL'" %}
+    {% assign latest_cve = high_cve | slice: 0, 6 %}
+    {% if latest_cve.size > 0 %}
+    <div class="feed__list reveal">
+      {% for post in latest_cve %}
+      <a href="{{ post.url | relative_url }}" class="feed-item"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
+        {% if post.image %}
+        <div class="feed-item__img">
+          <img src="{{ post.image | relative_url }}" alt="" loading="lazy">
+        </div>
+        {% elsif post.cover_image %}
+        <div class="feed-item__img feed-item__img--cover">
+          <img src="{{ post.cover_image | relative_url }}" alt="" loading="lazy">
+        </div>
+        {% else %}
+        <div class="feed-item__img feed-item__img--placeholder">
+          <span>CVE</span>
+        </div>
+        {% endif %}
+        <div class="feed-item__body">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.summary | default: post.excerpt | strip_html | truncatewords: 25 }}</p>
+          <div class="feed-item__tags">
+            {% for tag in post.tags %}{% unless tag == 'telegram' or tag == 'cyber' or tag == 'live-feed' or tag == 'security' or tag == 'news' %}<span class="tag tag--xs">{{ tag }}</span>{% endunless %}{% endfor %}
+          </div>
+          <div class="feed-item__meta">
+            <time>{{ post.date | date: "%b %d, %Y %H:%M" }}</time>
+            {% if post.score %}<span class="feed-item__sep">/</span><span class="feed-item__score feed-item__score--{{ post.score | downcase }}">{{ post.score }}</span>{% endif %}
+            {% if post.iocs.size > 0 and post.tags contains 'cve' %}<span class="feed-item__sep">/</span><span class="feed-item__ioc-badge" title="{{ post.iocs.size }} indicators">&#9873; {{ post.iocs.size }} IOC{% if post.iocs.size > 1 %}s{% endif %}</span>{% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state reveal">
+      <p>No vulnerabilities tracked yet.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
 <hr class="section-break">
 
 <!-- QUICK SIGNALS -->
