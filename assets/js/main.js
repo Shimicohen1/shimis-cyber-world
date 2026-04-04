@@ -36,6 +36,22 @@
     reveals.forEach(function (el) { el.classList.add('visible'); });
   }
 
+  // --- Theme toggle ---
+  var themeBtn = document.getElementById('theme-toggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      var html = document.documentElement;
+      var isLight = html.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        html.removeAttribute('data-theme');
+        localStorage.setItem('scw-theme', 'dark');
+      } else {
+        html.setAttribute('data-theme', 'light');
+        localStorage.setItem('scw-theme', 'light');
+      }
+    });
+  }
+
   // --- Active nav highlighting ---
   var currentPath = window.location.pathname.replace(/\/$/, '') || '/';
   document.querySelectorAll('.nav-links a').forEach(function (link) {
