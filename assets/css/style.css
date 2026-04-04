@@ -211,6 +211,26 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .nav-toggle.open .hamburger::before { transform: translateY(6px) rotate(45deg); }
 .nav-toggle.open .hamburger::after { transform: translateY(-6px) rotate(-45deg); }
 
+.nav-subscribe {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  margin-left: .75rem;
+  padding: .32rem .85rem;
+  font-size: .75rem;
+  font-weight: 600;
+  color: #0a0a0f;
+  background: #f59e0b;
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+  transition: background .15s, transform .15s;
+}
+.nav-subscribe:hover {
+  background: #fbbf24;
+  color: #0a0a0f;
+  transform: translateY(-1px);
+}
+
 /* =====================================================
    MAIN
    ===================================================== */
@@ -2045,6 +2065,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   .nav-menu.open { display: block; }
   .nav-links { flex-direction: column; gap: 0; }
   .nav-links li a { display: block; padding: .6rem 1.2rem; border-radius: 0; }
+  .nav-subscribe { margin: .4rem 1.2rem .4rem; display: inline-flex; }
 
   .identity__inner { flex-direction: column; text-align: center; }
   .identity__logo { width: 52px; height: 52px; }
