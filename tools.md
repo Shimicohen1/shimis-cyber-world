@@ -16,7 +16,7 @@ permalink: /tools/
   <div class="toolkit__grid">
     {% for tool in category.items %}
     {% if tool.url %}
-    <a href="{{ tool.url }}" target="_blank" rel="noopener noreferrer" class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %}">
+    <a href="{{ tool.url }}" target="_blank" rel="noopener noreferrer" class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %}" data-track="{% if tool.sponsored %}affiliate{% else %}tool{% endif %}">
     {% else %}
     <div class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %}">
     {% endif %}
