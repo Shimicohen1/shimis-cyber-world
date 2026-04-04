@@ -1,123 +1,116 @@
-# Signal bar items (marquee ticker)
 signals:
-  - text: "LIVE SIGNAL FEED"
+  - text: LIVE SIGNAL FEED
     color: ""
-  - text: "LATEST DROPS INCOMING"
-    color: "acid"
-  - text: "NEW TOOLS IN BETA"
-    color: "pink"
-  - text: "VAULT UPDATED"
-    color: "lime"
-  - text: "CYBERSECURITY INTELLIGENCE"
+  - text: LATEST DROPS INCOMING
+    color: acid
+  - text: NEW TOOLS IN BETA
+    color: pink
+  - text: VAULT UPDATED
+    color: lime
+  - text: CYBERSECURITY INTELLIGENCE
     color: ""
-  - text: "OPERATOR TOOLKIT ACTIVE"
-    color: "acid"
-  - text: "FIELD NOTES LOADING"
-    color: "pink"
-  - text: "SCW NETWORK ONLINE"
-    color: "lime"
-
-# Identity block (compact hero)
+  - text: OPERATOR TOOLKIT ACTIVE
+    color: acid
+  - text: FIELD NOTES LOADING
+    color: pink
+  - text: SCW NETWORK ONLINE
+    color: lime
 identity:
-  title: "Shimi's Cyber World"
-  tagline: "A cyber ecosystem built around a strong community. Real updates, real discussions, tools, and insights from the field — everything driven by the people inside it."
+  title: Shimi's Cyber World
+  tagline: A cyber ecosystem built around a strong community. Real updates, real discussions, tools, and insights from the field — everything driven by the people inside it.
   cta_primary:
-    text: "Latest Drops"
-    url: "/posts/"
+    text: Latest Drops
+    url: /posts/
   cta_secondary:
-    text: "About SCW"
-    url: "/about/"
-
-# Quick signals — short insight notes for the homepage
+    text: About SCW
+    url: /about/
 quick_signals:
-  - title: "Ransomware Gangs Shifting to Data Extortion"
-    text: "Encryption is no longer the main play. Exfiltration-first attacks are the new model."
-    detail: "Groups like Cl0p and BianLian increasingly skip encryption entirely, focusing on stealing data and threatening public leaks. Organizations need to prioritize DLP, network segmentation, and monitoring outbound traffic — not just backups."
-    link: "https://www.cisa.gov/stopransomware"
-    link_label: "CISA Ransomware Resources"
-    badge: "signal"
+  - title: AI Models Accelerating Vulnerability Discovery
+    text: AI models are demonstrating advanced capabilities in identifying and exploiting critical software vulnerabilities.
+    detail: Recent experiments show AI models, like Claude, finding critical flaws, such as in FreeBSD's NFS module. This trend signals a new era where AI can rapidly discover zero-day vulnerabilities. Cybersecurity professionals must enhance their AI security posture and explore AI-assisted penetration testing tools to stay ahead of these evolving threats.
+    link: https://www.cisa.gov/news-events/news/advancing-artificial-intelligence-cybersecurity
+    link_label: AI in Cybersecurity
+    badge: signal
     tags:
-      - ransomware
+      - ai
+      - vulnerability
       - threat-intel
-  - title: "API Security Is the New Perimeter"
-    text: "APIs now account for over 80% of web traffic. Most are under-protected."
-    detail: "Broken Object Level Authorization (BOLA) remains the #1 API vulnerability. The OWASP API Top 10 maps the critical risks: mass assignment, SSRF via API, unrestricted resource consumption. If you're not testing APIs separately, you're leaving the front door open."
-    link: "https://owasp.org/API-Security/"
-    link_label: "OWASP API Security Top 10"
-    badge: "signal"
-    tags:
-      - api-security
-      - web-security
-  - title: "Supply Chain Attacks Are Accelerating"
-    text: "Compromised packages, hijacked updates, poisoned containers. Trust nothing upstream."
-    detail: "From SolarWinds to the XZ Utils backdoor — supply chain attacks are hitting harder and more frequently. Pin your dependencies, verify checksums, audit your CI/CD pipelines, and monitor for unexpected package changes."
-    link: "https://slsa.dev/"
-    link_label: "SLSA Framework"
-    badge: "signal"
+  - title: Supply Chain Attacks Targeting Widely Used Packages
+    text: Popular open-source packages like Axios are being compromised to distribute malware via supply chain attacks.
+    detail: The recent compromise of the Axios NPM package, downloaded millions of times weekly, highlights the critical risk in software supply chains. Attackers injected malicious code, potentially impacting countless dependent applications. Organizations must implement robust software supply chain security practices, including dependency scanning and vetting.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: Supply Chain Security
+    badge: signal
     tags:
       - supply-chain
-      - devsecops
-  - title: "Cloud Misconfigurations — #1 Breach Vector"
-    text: "Exposed S3 buckets, open security groups, over-permissive IAM. Still happening daily."
-    detail: "Most cloud breaches aren't sophisticated attacks — they're configuration mistakes. Default settings, wildcard permissions, and public-facing storage cause more incidents than zero-days. Tools like ScoutSuite, Prowler, and CloudSploit can catch these before attackers do."
-    link: "https://www.cisecurity.org/benchmark"
-    link_label: "CIS Benchmarks"
-    badge: "signal"
+      - malware
+      - threat-intel
+  - title: Third-Party Apps Posing Data Exfiltration Risks
+    text: Unverified third-party applications are actively exfiltrating sensitive user data, including phone numbers.
+    detail: Reports indicate that third-party Telegram clients like Nekogram and Cherrygram are collecting user phone numbers. This underscores the inherent risks of using non-official applications. Users should strictly adhere to official app stores and verify the security practices of any third-party software before installation.
+    link: https://www.eff.org/issues/privacy
+    link_label: User Privacy
+    badge: signal
     tags:
-      - cloud-security
-      - hardening
-
-# Vault picks — featured resources for homepage
+      - privacy
+      - data-exfiltration
+      - mobile-security
+  - title: Emergence of New Sophisticated Threat Actors
+    text: New threat actors, KRYBIT and NetRunner, are appearing, increasing the complexity of the cyber threat landscape.
+    detail: The cybersecurity landscape is continually evolving with the emergence of new, sophisticated threat actors like KRYBIT and NetRunner. These groups may bring novel attack vectors and motivations. Staying informed through threat intelligence feeds and adapting defenses proactively is crucial for mitigating emerging risks.
+    link: https://www.mitre.org/attack-matrix
+    link_label: Adversary Tactics
+    badge: signal
+    tags:
+      - threat-intel
+      - darkweb
+      - ransomware
 vault_picks:
-  - name: "OWASP Top 10"
-    description: "The definitive list of critical web application security risks."
-    url: "https://owasp.org/www-project-top-ten/"
-    badge: "Essential"
-  - name: "MITRE ATT&CK"
-    description: "Global knowledge base of adversary tactics and techniques."
-    url: "https://attack.mitre.org/"
-    badge: "Essential"
-  - name: "TryHackMe"
-    description: "Guided learning paths with hands-on cyber labs."
-    url: "https://tryhackme.com/"
-    badge: "Recommended"
-
-# Tools teaser for homepage — monetization-ready with sponsored tools
+  - name: OWASP Top 10
+    description: The definitive list of critical web application security risks.
+    url: https://owasp.org/www-project-top-ten/
+    badge: Essential
+  - name: MITRE ATT&CK
+    description: Global knowledge base of adversary tactics and techniques.
+    url: https://attack.mitre.org/
+    badge: Essential
+  - name: TryHackMe
+    description: Guided learning paths with hands-on cyber labs.
+    url: https://tryhackme.com/
+    badge: Recommended
 tools_teaser:
-  - name: "Hack The Box"
-    description: "Real-world hacking challenges and enterprise security training."
-    url: "https://www.hackthebox.com/"
-    status: "recommended"
+  - name: Hack The Box
+    description: Real-world hacking challenges and enterprise security training.
+    url: https://www.hackthebox.com/
+    status: recommended
     sponsored: true
-  - name: "Burp Suite"
-    description: "Leading web application security testing toolkit."
-    url: "https://portswigger.net/burp"
-    status: "essential"
+  - name: Burp Suite
+    description: Leading web application security testing toolkit.
+    url: https://portswigger.net/burp
+    status: essential
     sponsored: true
-  - name: "NordVPN"
-    description: "Fast, secure VPN with threat protection for operators."
-    url: "https://nordvpn.com/"
-    status: "recommended"
+  - name: NordVPN
+    description: Fast, secure VPN with threat protection for operators.
+    url: https://nordvpn.com/
+    status: recommended
     sponsored: true
-  - name: "Nmap"
-    description: "Network discovery and security auditing. The operator's first move."
-    url: "https://nmap.org/"
-    status: "essential"
-  - name: "1Password"
-    description: "Secure password manager with zero-knowledge architecture."
-    url: "https://1password.com/"
-    status: "recommended"
+  - name: Nmap
+    description: Network discovery and security auditing. The operator's first move.
+    url: https://nmap.org/
+    status: essential
+  - name: 1Password
+    description: Secure password manager with zero-knowledge architecture.
+    url: https://1password.com/
+    status: recommended
     sponsored: true
-  - name: "TryHackMe"
-    description: "Guided learning paths with hands-on cyber labs."
-    url: "https://tryhackme.com/"
-    status: "recommended"
+  - name: TryHackMe
+    description: Guided learning paths with hands-on cyber labs.
+    url: https://tryhackme.com/
+    status: recommended
     sponsored: true
-
-# Manifesto block
 manifesto:
-  label: "The Signal"
-  text: "No noise. No unnecessary marketing. Just real cyber. Built from the community. Growing into much more."
-  sub: "What started as a large cyber community has grown into a place where people, companies, and startups connect, share, and stay ahead. Everything here is driven by the people inside it."
-  link_text: "Read the full manifesto"
-  link_url: "/about/"
+  label: The Signal
+  text: No noise. No unnecessary marketing. Just real cyber. Built from the community. Growing into much more.
+  sub: What started as a large cyber community has grown into a place where people, companies, and startups connect, share, and stay ahead. Everything here is driven by the people inside it.
+  link_text: Read the full manifesto
+  link_url: /about/
