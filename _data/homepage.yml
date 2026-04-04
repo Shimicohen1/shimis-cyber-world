@@ -16,8 +16,8 @@ signals:
   - text: SCW NETWORK ONLINE
     color: lime
 identity:
-  title: "Shimi's Cyber World"
-  tagline: "A security intelligence hub powered by AI and human expertise. Real-time threat feeds, curated tools, and field-driven insights — built for the community, by the community."
+  title: Shimi's Cyber World
+  tagline: A security intelligence hub powered by AI and human expertise. Real-time threat feeds, curated tools, and field-driven insights — built for the community, by the community.
   cta_primary:
     text: Latest Drops
     url: /posts/
@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI Models Accelerating Vulnerability Discovery
-    text: AI models are demonstrating advanced capabilities in identifying and exploiting critical software vulnerabilities.
-    detail: Recent experiments show AI models, like Claude, finding critical flaws, such as in FreeBSD's NFS module. This trend signals a new era where AI can rapidly discover zero-day vulnerabilities. Cybersecurity professionals must enhance their AI security posture and explore AI-assisted penetration testing tools to stay ahead of these evolving threats.
-    link: https://www.cisa.gov/news-events/news/advancing-artificial-intelligence-cybersecurity
-    link_label: AI in Cybersecurity
+  - title: Supply Chain Attacks Continue to Target Popular Software
+    text: Compromised popular packages like Axios and Trivy highlight ongoing supply chain risks.
+    detail: The recent targeting of widely-used libraries like Axios (CVE-2026-34770, CVE-2026-34776) and scanning tools like Trivy underscores the critical need for robust software supply chain security. Organizations must implement rigorous vetting processes for third-party dependencies and monitor for malicious code injection. Prioritize dependency scanning and software bill of materials (SBOM) for better visibility.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: OWASP Supply Chain Security
+    badge: signal
+    tags:
+      - supply-chain
+      - threat-intel
+      - vulnerability
+  - title: AI Models Accelerate Vulnerability Discovery and Exploitation
+    text: AI tools are increasingly capable of identifying and exploiting software vulnerabilities.
+    detail: The emergence of AI applications that can independently find and exploit vulnerabilities, as seen with the FreeBSD kernel example (CVE-2026-4747), signals a concerning advancement in attack capabilities. Security teams should proactively integrate AI-driven vulnerability analysis into their defense strategies and stay abreast of AI's evolving role in both offense and defense.
+    link: https://www.mitre.org/capabilities/cybersecurity/threat-intelligence
+    link_label: MITRE Threat Intelligence
     badge: signal
     tags:
       - ai
       - vulnerability
       - threat-intel
-  - title: Supply Chain Attacks Targeting Widely Used Packages
-    text: Popular open-source packages like Axios are being compromised to distribute malware via supply chain attacks.
-    detail: The recent compromise of the Axios NPM package, downloaded millions of times weekly, highlights the critical risk in software supply chains. Attackers injected malicious code, potentially impacting countless dependent applications. Organizations must implement robust software supply chain security practices, including dependency scanning and vetting.
-    link: https://owasp.org/www-project-software-supply-chain-security/
-    link_label: Supply Chain Security
+  - title: Data Breaches Persist Across Various Sectors
+    text: Recent incidents at Crunchyroll, SongTrivia2, and the EU Commission highlight ongoing data exposure.
+    detail: The continuous stream of data breaches affecting services like Crunchyroll and platforms like the EU Commission demonstrates persistent weaknesses in data protection. Organizations must prioritize data minimization, implement strong access controls, and conduct regular security audits to prevent sensitive information from falling into the wrong hands.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/data-privacy-and-security
+    link_label: CISA Data Privacy
     badge: signal
     tags:
-      - supply-chain
-      - malware
+      - data-breach
       - threat-intel
-  - title: Third-Party Apps Posing Data Exfiltration Risks
-    text: Unverified third-party applications are actively exfiltrating sensitive user data, including phone numbers.
-    detail: Reports indicate that third-party Telegram clients like Nekogram and Cherrygram are collecting user phone numbers. This underscores the inherent risks of using non-official applications. Users should strictly adhere to official app stores and verify the security practices of any third-party software before installation.
-    link: https://www.eff.org/issues/privacy
-    link_label: User Privacy
-    badge: signal
-    tags:
       - privacy
-      - data-exfiltration
-      - mobile-security
-  - title: Emergence of New Sophisticated Threat Actors
-    text: New threat actors, KRYBIT and NetRunner, are appearing, increasing the complexity of the cyber threat landscape.
-    detail: The cybersecurity landscape is continually evolving with the emergence of new, sophisticated threat actors like KRYBIT and NetRunner. These groups may bring novel attack vectors and motivations. Staying informed through threat intelligence feeds and adapting defenses proactively is crucial for mitigating emerging risks.
-    link: https://www.mitre.org/attack-matrix
-    link_label: Adversary Tactics
+  - title: OSINT Tools Evolve for Comprehensive Intelligence Gathering
+    text: New directories and resources are emerging to enhance OSINT capabilities.
+    detail: The proliferation of extensive OSINT tool directories and resources signifies a growing demand for efficient intelligence gathering. Professionals should leverage these curated lists to streamline investigations, improve situational awareness, and identify potential threats. Regularly exploring updated OSINT resources is crucial for staying ahead of adversaries.
+    link: https://www.defendify.com/blog/osint-tools/
+    link_label: OSINT Tools Overview
     badge: signal
     tags:
+      - osint
+      - tools
       - threat-intel
-      - darkweb
-      - ransomware
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
