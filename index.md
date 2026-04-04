@@ -29,7 +29,7 @@ title: Home
 <section class="feed">
   <div class="container">
     <div class="feed__header">
-      <h2 class="feed__title"><span class="label label--electric">LATEST</span> &nbsp;Drops</h2>
+      <h2 class="feed__title"><span class="label label--electric">LATEST</span> &nbsp;Posts</h2>
       <a href="{{ '/posts/' | relative_url }}" class="feed__link">View all &rarr;</a>
     </div>
 
@@ -80,7 +80,7 @@ title: Home
     </div>
     {% else %}
     <div class="empty-state reveal">
-      <p>Drops incoming. The feed is warming up.</p>
+      <p>Posts incoming. The feed is warming up.</p>
     </div>
     {% endif %}
   </div>
