@@ -93,12 +93,32 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   font-family: var(--f-mono);
   font-size: .65rem;
   font-weight: 500;
-  letter-spacing: .1em;
+  letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--dim);
   display: flex;
   align-items: center;
   gap: .5rem;
+}
+.signal-bar__item--link {
+  text-decoration: none;
+  color: var(--dim);
+  transition: color .2s;
+  cursor: pointer;
+}
+.signal-bar__item--link:hover { color: var(--white); }
+.signal-bar__label {
+  font-size: .55rem;
+  font-weight: 700;
+  padding: .1em .4em;
+  border-radius: 2px;
+  background: rgba(168,85,247,.2);
+  color: var(--acid);
+  letter-spacing: .08em;
+}
+.signal-bar__label--cve {
+  background: rgba(239,68,68,.2);
+  color: var(--red);
 }
 .signal-bar__dot {
   width: 5px; height: 5px;
@@ -110,6 +130,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .signal-bar__dot--acid { background: var(--acid); box-shadow: 0 0 6px var(--acid); }
 .signal-bar__dot--pink { background: var(--pink); box-shadow: 0 0 6px var(--pink); }
 .signal-bar__dot--lime { background: var(--lime); box-shadow: 0 0 6px var(--lime); }
+.signal-bar__dot--red { background: var(--red); box-shadow: 0 0 6px var(--red); }
 
 @keyframes marquee {
   0% { transform: translateX(0); }

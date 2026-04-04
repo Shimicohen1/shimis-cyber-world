@@ -16,8 +16,8 @@ signals:
   - text: SCW NETWORK ONLINE
     color: lime
 identity:
-  title: Shimi's Cyber World
-  tagline: A cyber ecosystem built around a strong community. Real updates, real discussions, tools, and insights from the field — everything driven by the people inside it.
+  title: "Shimi's Cyber World"
+  tagline: "A security intelligence hub powered by AI and human expertise. Real-time threat feeds, curated tools, and field-driven insights — built for the community, by the community."
   cta_primary:
     text: Latest Drops
     url: /posts/

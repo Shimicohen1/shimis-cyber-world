@@ -1,17 +1,35 @@
 <div class="signal-bar">
   <div class="container">
     <div class="signal-bar__track">
-      {% for item in site.data.homepage.signals %}
-      <span class="signal-bar__item">
-        <span class="signal-bar__dot{% if item.color %} signal-bar__dot--{{ item.color }}{% endif %}"></span>
-        {{ item.text }}
-      </span>
+      {% assign drops = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" %}
+      {% assign cve_all = site.posts | where: "channel", "CVE Notify" %}
+      {% for post in drops limit:5 %}
+      <a href="{{ post.url | relative_url }}" class="signal-bar__item signal-bar__item--link">
+        <span class="signal-bar__dot signal-bar__dot--acid"></span>
+        <span class="signal-bar__label">DROP</span> {{ post.title | truncatewords: 8 }}
+      </a>
       {% endfor %}
-      {% for item in site.data.homepage.signals %}
-      <span class="signal-bar__item">
-        <span class="signal-bar__dot{% if item.color %} signal-bar__dot--{{ item.color }}{% endif %}"></span>
-        {{ item.text }}
-      </span>
+      {% for post in cve_all limit:5 %}
+      {% if post.score == "HIGH" or post.score == "CRITICAL" %}
+      <a href="{{ post.url | relative_url }}" class="signal-bar__item signal-bar__item--link">
+        <span class="signal-bar__dot signal-bar__dot--red"></span>
+        <span class="signal-bar__label signal-bar__label--cve">CVE</span> {{ post.title | truncatewords: 8 }}
+      </a>
+      {% endif %}
+      {% endfor %}
+      {% for post in drops limit:5 %}
+      <a href="{{ post.url | relative_url }}" class="signal-bar__item signal-bar__item--link">
+        <span class="signal-bar__dot signal-bar__dot--acid"></span>
+        <span class="signal-bar__label">DROP</span> {{ post.title | truncatewords: 8 }}
+      </a>
+      {% endfor %}
+      {% for post in cve_all limit:5 %}
+      {% if post.score == "HIGH" or post.score == "CRITICAL" %}
+      <a href="{{ post.url | relative_url }}" class="signal-bar__item signal-bar__item--link">
+        <span class="signal-bar__dot signal-bar__dot--red"></span>
+        <span class="signal-bar__label signal-bar__label--cve">CVE</span> {{ post.title | truncatewords: 8 }}
+      </a>
+      {% endif %}
       {% endfor %}
     </div>
   </div>
