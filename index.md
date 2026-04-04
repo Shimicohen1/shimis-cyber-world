@@ -236,35 +236,35 @@ title: Home
     <div class="scw-manifesto-inner reveal">
 
       <div class="manifesto-line">
-        What started as a community…
+        Where machines detect and humans decide.
       </div>
 
       <div class="manifesto-line">
-        became a place where people, companies, and startups connect,
-        share, and stay ahead.
+        AI-driven threat intelligence meets real operator experience —
+        creating a security layer that doesn't exist anywhere else.
       </div>
 
       <div class="manifesto-grid">
-        <div class="manifesto-item">real updates</div>
-        <div class="manifesto-item">real discussions</div>
-        <div class="manifesto-item">tools &amp; resources</div>
-        <div class="manifesto-item">field insights</div>
-        <div class="manifesto-item">what you won't find elsewhere</div>
+        <div class="manifesto-item">AI-curated threat feeds</div>
+        <div class="manifesto-item">human-verified intelligence</div>
+        <div class="manifesto-item">operator-grade tools</div>
+        <div class="manifesto-item">real-time CVE tracking</div>
+        <div class="manifesto-item">what no other platform delivers</div>
       </div>
 
       <div class="manifesto-final">
-        No noise. No marketing. Just real cyber.
+        Intelligence at machine speed. Judgment at human depth.
       </div>
 
       <div class="manifesto-tag">
-        Built from the community. Growing into much more.
+        Built from the community. Amplified by AI. Growing into much more.
       </div>
 
       <a href="{{ '/about/' | relative_url }}" class="manifesto-link">Read the full manifesto &rarr;</a>
 
       <div class="founder-sig">
         <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="founder-sig__logo">
-        <span class="founder-sig__text">Founded by Shimi &middot; Driven by the community</span>
+        <span class="founder-sig__text">Founded by Shimi &middot; Powered by AI &amp; community intelligence</span>
       </div>
 
     </div>
