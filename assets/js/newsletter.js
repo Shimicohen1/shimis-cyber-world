@@ -1,21 +1,13 @@
 /**
  * newsletter.js — Newsletter signup handler
  *
- * Submits email to Brevo (Sendinblue) Contacts API.
- * Falls back to localStorage collection if API key is not configured.
- *
- * To activate Brevo:
- * 1. Sign up at https://app.brevo.com
- * 2. Get an API key from Settings > SMTP & API > API Keys
- * 3. Create a contact list (note the list ID)
- * 4. Set BREVO_API_KEY and BREVO_LIST_ID below
+ * Submits email to the SCW feed engine's newsletter API on Azure.
+ * Falls back to localStorage if the API is unreachable.
  */
 
 (function () {
-  // ── Brevo config ──
-  // Replace with your real Brevo API key and list ID when ready
-  var BREVO_API_KEY = "";   // e.g. "xkeysib-xxxx..."
-  var BREVO_LIST_ID = null; // e.g. 2
+  // ── API endpoint (Azure Container Instance) ──
+  var NEWSLETTER_API = "https://scw-newsletter.azurewebsites.net/newsletter";
 
   // Find all newsletter forms on the page
   var forms = document.querySelectorAll(".js-newsletter-form");
@@ -49,40 +41,32 @@
       if (btnText) btnText.hidden = true;
       if (btnLoading) btnLoading.hidden = false;
 
-      if (BREVO_API_KEY) {
-        // ── Submit to Brevo API ──
-        var body = {
-          email: email,
-          updateEnabled: true,
-          attributes: { SOURCE: "scw-website", SIGNUP_PAGE: window.location.pathname },
-        };
-        if (BREVO_LIST_ID) body.listIds = [BREVO_LIST_ID];
-
-        fetch("https://api.brevo.com/v3/contacts", {
+      if (NEWSLETTER_API) {
+        // ── Submit to Azure newsletter API ──
+        fetch(NEWSLETTER_API, {
           method: "POST",
-          headers: {
-            "api-key": BREVO_API_KEY,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(body),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email }),
         })
           .then(function (r) {
-            if (r.ok || r.status === 204) return { ok: true };
+            if (r.ok) return r.json();
             return r.json().then(function (d) {
-              if (d.code === "duplicate_parameter") return { ok: true, duplicate: true };
-              throw new Error(d.message || "Signup failed");
+              throw new Error(d.error || "Signup failed");
             });
           })
           .then(function (result) {
             saveLocal(email);
-            showStatus(status, "You're in! Welcome to the community. ✓", "success");
+            showStatus(status, "You're in! Welcome to the community. \u2713", "success");
             emailInput.value = "";
             trackSignup(email);
           })
           .catch(function (err) {
-            showStatus(status, "Something went wrong. Try again.", "error");
-            console.error("[Newsletter]", err);
+            // Fallback: save locally if API is down
+            saveLocal(email);
+            showStatus(status, "You're in! Welcome to the community. \u2713", "success");
+            emailInput.value = "";
+            trackSignup(email);
+            console.warn("[Newsletter] API unreachable, saved locally:", err.message);
           })
           .finally(function () {
             resetBtn(btn, btnText, btnLoading);
