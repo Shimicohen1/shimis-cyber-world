@@ -815,6 +815,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   padding: 1.2rem 1.4rem;
   transition: border-color .2s, transform .2s;
 }
+a.tool-card { text-decoration: none; color: inherit; display: block; }
 .tool-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
 .tool-card__head {
   display: flex;
