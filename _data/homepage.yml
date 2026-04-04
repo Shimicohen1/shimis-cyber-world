@@ -1,7 +1,7 @@
 signals:
   - text: LIVE SIGNAL FEED
     color: ""
-  - text: LATEST DROPS INCOMING
+  - text: LATEST POSTS INCOMING
     color: acid
   - text: NEW TOOLS IN BETA
     color: pink
@@ -19,7 +19,7 @@ identity:
   title: Shimi's Cyber World
   tagline: A security intelligence hub powered by AI and human expertise. Real-time threat feeds, curated tools, and field-driven insights — built for the community, by the community.
   cta_primary:
-    text: Latest Drops
+    text: Latest Posts
     url: /posts/
   cta_secondary:
     text: About SCW

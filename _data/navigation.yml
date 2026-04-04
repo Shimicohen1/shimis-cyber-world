@@ -1,6 +1,6 @@
 - label: Feed
   url: /
-- label: Drops
+- label: Posts
   url: /posts/
 - label: Vulnerabilities
   url: /vulnerabilities/
