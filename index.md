@@ -80,10 +80,10 @@ title: Home
       <a href="{{ '/vulnerabilities/' | relative_url }}" class="feed__link">View all &rarr;</a>
     </div>
 
-    {% assign cve_posts = site.posts | where: "channel", "CVE Notify" %}
     {% assign cve_shown = 0 %}
     {% assign has_cve = false %}
-    {% for post in cve_posts %}
+    {% for post in site.posts %}
+      {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" %}
       {% if post.score == "HIGH" or post.score == "CRITICAL" %}
         {% if has_cve == false %}
           {% assign has_cve = true %}
@@ -119,6 +119,7 @@ title: Home
       </a>
           {% assign cve_shown = cve_shown | plus: 1 %}
         {% endif %}
+      {% endif %}
       {% endif %}
     {% endfor %}
     {% if has_cve %}
