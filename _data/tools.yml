@@ -5,13 +5,13 @@ categories:
         description: "Network discovery and security auditing tool."
         url: "https://nmap.org/"
         tags: [scanning, network]
-        status: Open
+        status: Essential
         button: Learn More
       - title: "Shodan"
         description: "Search engine for internet-connected devices."
         url: "https://www.shodan.io/"
         tags: [osint, discovery]
-        status: Open
+        status: Essential
         button: Learn More
       - title: "theHarvester"
         description: "Email, subdomain, and name harvesting tool for OSINT."
@@ -26,14 +26,15 @@ categories:
         description: "The world's most used penetration testing framework."
         url: "https://www.metasploit.com/"
         tags: [exploitation, framework]
-        status: Open
+        status: Essential
         button: Learn More
       - title: "Burp Suite"
-        description: "Leading web application security testing toolkit."
+        description: "Leading web application security testing toolkit. Community edition is free; Pro unlocks active scanning, advanced crawling, and CI/CD integration."
         url: "https://portswigger.net/burp"
         tags: [web, proxy]
-        status: Open
-        button: Learn More
+        status: Essential
+        sponsored: true
+        button: Get Burp Suite
       - title: "SQLMap"
         description: "Automatic SQL injection and database takeover tool."
         url: "https://sqlmap.org/"
@@ -47,7 +48,7 @@ categories:
         description: "Network protocol analyzer for deep traffic inspection."
         url: "https://www.wireshark.org/"
         tags: [network, analysis]
-        status: Open
+        status: Essential
         button: Learn More
       - title: "Snort"
         description: "Open-source intrusion detection and prevention system."
@@ -62,23 +63,66 @@ categories:
         status: Open
         button: Learn More
 
-  - name: "SCW Tools"
+  - name: "Training & Labs"
     items:
-      - title: "Threat Map Dashboard"
-        description: "Real-time visualization of global cyber threats and attack vectors."
-        tags: [visualization, threats]
-        status: Coming Soon
-        button: Request Access
-      - title: "IOC Scanner"
-        description: "Bulk indicator-of-compromise lookup across multiple threat intel feeds."
-        tags: [threat-intel, automation]
-        status: Coming Soon
-        button: Request Access
-      - title: "Hardening Checklist Generator"
-        description: "Auto-generate security hardening checklists for Linux, Windows, and cloud."
-        tags: [defense, compliance]
-        status: Beta
-        button: Request Access
+      - title: "Hack The Box"
+        description: "Real-world hacking challenges and enterprise security training. Proving grounds for serious operators."
+        url: "https://www.hackthebox.com/"
+        tags: [labs, training, ctf]
+        status: Recommended
+        sponsored: true
+        button: Start Hacking
+      - title: "TryHackMe"
+        description: "Guided learning paths with hands-on cyber labs. Best starting point for beginners and intermediate learners."
+        url: "https://tryhackme.com/"
+        tags: [labs, training, beginner]
+        status: Recommended
+        sponsored: true
+        button: Start Learning
+      - title: "OffSec (OSCP)"
+        description: "Offensive Security certifications — the gold standard for penetration testers. OSCP, OSEP, OSED."
+        url: "https://www.offsec.com/"
+        tags: [certifications, pentesting]
+        status: Recommended
+        sponsored: true
+        button: Explore Courses
+      - title: "SANS Institute"
+        description: "World-leading cybersecurity training and GIAC certifications. Deep technical courses for all specialties."
+        url: "https://www.sans.org/"
+        tags: [certifications, training]
+        status: Recommended
+        sponsored: true
+        button: View Courses
+
+  - name: "Security & Privacy"
+    items:
+      - title: "NordVPN"
+        description: "Fast, secure VPN with threat protection. Essential for researchers and operators working remotely."
+        url: "https://nordvpn.com/"
+        tags: [vpn, privacy]
+        status: Recommended
+        sponsored: true
+        button: Get NordVPN
+      - title: "ProtonVPN"
+        description: "Swiss-based encrypted VPN with a strong free tier. Built by the team behind ProtonMail."
+        url: "https://protonvpn.com/"
+        tags: [vpn, privacy, encryption]
+        status: Recommended
+        sponsored: true
+        button: Get ProtonVPN
+      - title: "1Password"
+        description: "Secure password manager for teams and individuals. Zero-knowledge architecture, breach monitoring built in."
+        url: "https://1password.com/"
+        tags: [passwords, management]
+        status: Recommended
+        sponsored: true
+        button: Get 1Password
+      - title: "Bitwarden"
+        description: "Open-source password manager. Self-host or cloud — full control over your credentials."
+        url: "https://bitwarden.com/"
+        tags: [passwords, open-source]
+        status: Open
+        button: Learn More
 
   - name: "Utilities"
     items:
@@ -100,3 +144,21 @@ categories:
         tags: [password, cracking]
         status: Open
         button: Learn More
+
+  - name: "SCW Tools"
+    items:
+      - title: "Threat Map Dashboard"
+        description: "Real-time visualization of global cyber threats and attack vectors."
+        tags: [visualization, threats]
+        status: Coming Soon
+        button: Request Access
+      - title: "IOC Scanner"
+        description: "Bulk indicator-of-compromise lookup across multiple threat intel feeds."
+        tags: [threat-intel, automation]
+        status: Coming Soon
+        button: Request Access
+      - title: "Hardening Checklist Generator"
+        description: "Auto-generate security hardening checklists for Linux, Windows, and cloud."
+        tags: [defense, compliance]
+        status: Beta
+        button: Request Access
