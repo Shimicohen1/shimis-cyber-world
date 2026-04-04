@@ -212,7 +212,7 @@ title: Home
     </div>
     <div class="toolkit__grid">
       {% for tool in site.data.homepage.tools_teaser %}
-      <div class="tool-card reveal">
+      <a href="{{ tool.url }}" target="_blank" rel="noopener noreferrer" class="tool-card reveal">
         <div class="tool-card__head">
           <h4>{{ tool.name }}</h4>
           {% if tool.status == "essential" %}
@@ -222,7 +222,7 @@ title: Home
           {% endif %}
         </div>
         <p>{{ tool.description }}</p>
-      </div>
+      </a>
       {% endfor %}
     </div>
   </div>
