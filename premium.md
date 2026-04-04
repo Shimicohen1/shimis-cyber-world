@@ -19,14 +19,14 @@ permalink: /premium/
 <h3 class="premium-plan__name">Pro</h3>
 <div class="premium-plan__price"><span class="premium-plan__amount">$29</span><span class="premium-plan__period">/mo</span></div>
 <p class="premium-plan__detail">All 6 tools, labs, priority updates</p>
-<div class="premium-plan__annual">or <strong>$199/yr</strong> <span class="premium-plan__save">save 43%</span></div>
+<div class="premium-plan__annual">or <strong>$279/yr</strong> <span class="premium-plan__save">save 20%</span></div>
 </div>
 <div class="premium-plan premium-plan--highlight">
 <span class="premium-plan__popular">FOR TEAMS</span>
 <h3 class="premium-plan__name">Team</h3>
 <div class="premium-plan__price"><span class="premium-plan__amount">$79</span><span class="premium-plan__period">/mo</span></div>
 <p class="premium-plan__detail">Pro + 5 seats, shared workspace</p>
-<div class="premium-plan__annual">or <strong>$599/yr</strong> <span class="premium-plan__save">save 37%</span></div>
+<div class="premium-plan__annual">or <strong>$749/yr</strong> <span class="premium-plan__save">save 21%</span></div>
 </div>
 </div>
 <p class="premium-pricing__note">Launching soon — join the waitlist to lock in early-access pricing.</p>
