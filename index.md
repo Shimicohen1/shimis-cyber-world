@@ -81,11 +81,15 @@ title: Home
     </div>
 
     {% assign cve_posts = site.posts | where: "channel", "CVE Notify" %}
-    {% assign high_cve = cve_posts | where_exp: "post", "post.score == 'HIGH' or post.score == 'CRITICAL'" %}
-    {% assign latest_cve = high_cve | slice: 0, 6 %}
-    {% if latest_cve.size > 0 %}
+    {% assign cve_shown = 0 %}
+    {% assign has_cve = false %}
+    {% for post in cve_posts %}
+      {% if post.score == "HIGH" or post.score == "CRITICAL" %}
+        {% if has_cve == false %}
+          {% assign has_cve = true %}
     <div class="feed__list reveal">
-      {% for post in latest_cve %}
+        {% endif %}
+        {% if cve_shown < 6 %}
       <a href="{{ post.url | relative_url }}" class="feed-item"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
         {% if post.image %}
         <div class="feed-item__img">
@@ -109,11 +113,15 @@ title: Home
           <div class="feed-item__meta">
             <time>{{ post.date | date: "%b %d, %Y %H:%M" }}</time>
             {% if post.score %}<span class="feed-item__sep">/</span><span class="feed-item__score feed-item__score--{{ post.score | downcase }}">{{ post.score }}</span>{% endif %}
-            {% if post.iocs.size > 0 and post.tags contains 'cve' %}<span class="feed-item__sep">/</span><span class="feed-item__ioc-badge" title="{{ post.iocs.size }} indicators">&#9873; {{ post.iocs.size }} IOC{% if post.iocs.size > 1 %}s{% endif %}</span>{% endif %}
+            {% if post.iocs and post.iocs.size > 0 %}<span class="feed-item__sep">/</span><span class="feed-item__ioc-badge" title="{{ post.iocs.size }} indicators">&#9873; {{ post.iocs.size }} IOC{% if post.iocs.size > 1 %}s{% endif %}</span>{% endif %}
           </div>
         </div>
       </a>
-      {% endfor %}
+          {% assign cve_shown = cve_shown | plus: 1 %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if has_cve %}
     </div>
     {% else %}
     <div class="empty-state reveal">
