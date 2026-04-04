@@ -8,60 +8,132 @@ permalink: /premium/
 <div class="premium-hero reveal">
 <span class="premium-hero__icon">🔒</span>
 <h1 class="premium-hero__title"><span>Premium</span> Toolkit</h1>
-<p class="premium-hero__desc">Exclusive tools built for real-world cybersecurity operations. Custom automations, scanners, and field utilities — built from the ground up by the SCW community.</p>
+<p class="premium-hero__desc">Custom-built tools for real-world cybersecurity operations. Exclusive automations, scanners, and field utilities — developed by SCW for premium members.</p>
 </div>
 
-<section class="premium-features">
+<section class="premium-pricing reveal">
+<div class="premium-pricing__box">
+<span class="premium-pricing__badge">Membership</span>
+<div class="premium-pricing__plans">
+<div class="premium-plan">
+<h3 class="premium-plan__name">Monthly</h3>
+<div class="premium-plan__price"><span class="premium-plan__amount">$9</span><span class="premium-plan__period">/mo</span></div>
+<p class="premium-plan__detail">Full access to all premium tools</p>
+</div>
+<div class="premium-plan premium-plan--highlight">
+<span class="premium-plan__popular">BEST VALUE</span>
+<h3 class="premium-plan__name">Annual</h3>
+<div class="premium-plan__price"><span class="premium-plan__amount">$79</span><span class="premium-plan__period">/yr</span></div>
+<p class="premium-plan__detail">Save 27% — full access, priority updates</p>
+</div>
+</div>
+<p class="premium-pricing__note">Launching soon — join the waitlist to get early access pricing.</p>
+</div>
+</section>
+
+<section class="premium-tools">
 <div class="feed__header">
-<h2 class="feed__title"><span class="label label--amber">COMING SOON</span> &nbsp;What's Inside</h2>
+<h2 class="feed__title"><span class="label label--amber">PREMIUM</span> &nbsp;Tools Preview</h2>
 </div>
-<div class="premium-features__grid">
+<div class="premium-tools__grid">
 
-<div class="premium-feature reveal">
-<span class="premium-feature__icon">🛡️</span>
-<h4>Custom Recon Automations</h4>
-<p>Purpose-built reconnaissance scripts that chain multiple tools into streamlined workflows. Save hours on every engagement.</p>
+<div class="premium-tool-card premium-tool-card--locked reveal">
+<div class="premium-tool-card__lock"><span>🔒</span></div>
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">🛡️</span>
+<h4>SCW Recon Suite</h4>
+<p>Automated recon pipeline — chains subdomain enum, port scanning, tech fingerprinting into one command.</p>
+<span class="premium-tool-card__tag">Automation</span>
 </div>
-
-<div class="premium-feature reveal">
-<span class="premium-feature__icon">⚡</span>
-<h4>Vulnerability Scanners</h4>
-<p>Targeted scanners for specific attack surfaces — web apps, APIs, cloud configs. Faster and more focused than generic tools.</p>
 </div>
 
-<div class="premium-feature reveal">
-<span class="premium-feature__icon">🔧</span>
-<h4>Field Utilities</h4>
-<p>Operator tools for log analysis, payload generation, encoding/decoding, and quick forensic tasks. Built for speed.</p>
+<div class="premium-tool-card premium-tool-card--locked reveal">
+<div class="premium-tool-card__lock"><span>🔒</span></div>
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">⚡</span>
+<h4>API Vuln Scanner</h4>
+<p>Targeted API security scanner — tests auth bypass, IDOR, rate limiting, injection across REST and GraphQL endpoints.</p>
+<span class="premium-tool-card__tag">Scanner</span>
+</div>
 </div>
 
-<div class="premium-feature reveal">
-<span class="premium-feature__icon">📊</span>
-<h4>Report Generators</h4>
-<p>Automated reporting templates that turn raw findings into professional, client-ready security reports with one command.</p>
+<div class="premium-tool-card premium-tool-card--locked reveal">
+<div class="premium-tool-card__lock"><span>🔒</span></div>
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">🔧</span>
+<h4>Payload Forge</h4>
+<p>Quick payload builder for XSS, SQLi, SSTI, and command injection — with encoding, obfuscation, and WAF bypass options.</p>
+<span class="premium-tool-card__tag">Utility</span>
+</div>
 </div>
 
-<div class="premium-feature reveal">
-<span class="premium-feature__icon">🧪</span>
-<h4>Lab Environments</h4>
-<p>Pre-configured vulnerable environments and challenge labs for practicing real attack techniques in a safe sandbox.</p>
+<div class="premium-tool-card premium-tool-card--locked reveal">
+<div class="premium-tool-card__lock"><span>🔒</span></div>
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">📊</span>
+<h4>Report Generator</h4>
+<p>Turn raw findings into professional, client-ready security reports. Markdown in, styled PDF out.</p>
+<span class="premium-tool-card__tag">Reporting</span>
+</div>
 </div>
 
-<div class="premium-feature reveal">
-<span class="premium-feature__icon">🔄</span>
-<h4>Continuous Updates</h4>
-<p>Premium members get early access to new tools, updates, and improvements as they ship. No waiting, no gatekeeping.</p>
+<div class="premium-tool-card premium-tool-card--locked reveal">
+<div class="premium-tool-card__lock"><span>🔒</span></div>
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">🧪</span>
+<h4>SCW Labs</h4>
+<p>Pre-built vulnerable environments with guided challenges. Practice real attack techniques in a safe sandbox.</p>
+<span class="premium-tool-card__tag">Training</span>
+</div>
+</div>
+
+<div class="premium-tool-card premium-tool-card--locked reveal">
+<div class="premium-tool-card__lock"><span>🔒</span></div>
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">🔍</span>
+<h4>Cloud Config Auditor</h4>
+<p>Scan AWS, Azure, and GCP configs for misconfigurations, exposed storage, and IAM privilege escalation paths.</p>
+<span class="premium-tool-card__tag">Cloud Security</span>
+</div>
 </div>
 
 </div>
 </section>
 
+<section class="premium-includes reveal">
+<div class="feed__header">
+<h2 class="feed__title">What Members Get</h2>
+</div>
+<div class="premium-includes__grid">
+<div class="premium-include">
+<span class="premium-include__icon">🔓</span>
+<h4>Full Tool Access</h4>
+<p>Unlock all premium tools — current and future releases.</p>
+</div>
+<div class="premium-include">
+<span class="premium-include__icon">🚀</span>
+<h4>Priority Updates</h4>
+<p>Get new tools and features before anyone else.</p>
+</div>
+<div class="premium-include">
+<span class="premium-include__icon">💬</span>
+<h4>Members-Only Channel</h4>
+<p>Direct access to the SCW dev team for support and requests.</p>
+</div>
+<div class="premium-include">
+<span class="premium-include__icon">🔄</span>
+<h4>Continuous Development</h4>
+<p>New tools ship regularly. Your membership funds the pipeline.</p>
+</div>
+</div>
+</section>
+
 <section class="premium-cta reveal">
 <div class="premium-cta__box">
-<span class="premium-cta__badge">Premium Access</span>
-<h3 class="premium-cta__title">Not available yet — but it's coming.</h3>
-<p class="premium-cta__text">The Premium Toolkit is currently in development. When it launches, members will get full access to all custom-built tools, automations, and exclusive content.</p>
-<a href="#" class="btn btn--premium btn--disabled" data-track="premium">Join Waitlist — Coming Soon</a>
+<span class="premium-cta__badge">Early Access</span>
+<h3 class="premium-cta__title">Premium launches soon.</h3>
+<p class="premium-cta__text">The first batch of tools is in development. Join the waitlist now and lock in early-access pricing when we go live.</p>
+<a href="#" class="btn btn--premium btn--disabled" data-track="premium">Join Waitlist</a>
 </div>
 </section>
 </div>
