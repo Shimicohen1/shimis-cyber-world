@@ -11,6 +11,10 @@ permalink: /premium/
 <p class="premium-hero__desc">Custom-built tools for real-world cybersecurity operations. Exclusive automations, scanners, and field utilities — developed by SCW for premium members.</p>
 </div>
 
+{% comment %}
+=== PRICING SECTION (hidden until tools are ready) ===
+{% endcomment %}
+{% if false %}
 <section class="premium-pricing reveal">
 <div class="premium-pricing__box">
 <span class="premium-pricing__badge">Membership Plans</span>
@@ -32,6 +36,7 @@ permalink: /premium/
 <p class="premium-pricing__note">Launching soon — join the waitlist to lock in early-access pricing.</p>
 </div>
 </section>
+{% endif %}
 
 <section class="premium-tools">
 <div class="feed__header">
