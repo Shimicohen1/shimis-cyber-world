@@ -46,8 +46,8 @@
 
       // UI: loading state
       btn.disabled = true;
-      if (btnText) btnText.style.display = "none";
-      if (btnLoading) btnLoading.style.display = "inline";
+      if (btnText) btnText.hidden = true;
+      if (btnLoading) btnLoading.hidden = false;
 
       if (BREVO_API_KEY) {
         // ── Submit to Brevo API ──
@@ -114,8 +114,8 @@
 
   function resetBtn(btn, btnText, btnLoading) {
     btn.disabled = false;
-    if (btnText) btnText.style.display = "inline";
-    if (btnLoading) btnLoading.style.display = "none";
+    if (btnText) btnText.hidden = false;
+    if (btnLoading) btnLoading.hidden = true;
   }
 
   function trackSignup(email) {
