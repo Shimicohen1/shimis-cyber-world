@@ -13,7 +13,7 @@ permalink: /premium/
 
 <section class="premium-features">
 <div class="feed__header">
-<h2 class="feed__title"><span class="label" style="color: #f59e0b;">COMING SOON</span> &nbsp;What's Inside</h2>
+<h2 class="feed__title"><span class="label label--amber">COMING SOON</span> &nbsp;What's Inside</h2>
 </div>
 <div class="premium-features__grid">
 
@@ -61,7 +61,7 @@ permalink: /premium/
 <span class="premium-cta__badge">Premium Access</span>
 <h3 class="premium-cta__title">Not available yet — but it's coming.</h3>
 <p class="premium-cta__text">The Premium Toolkit is currently in development. When it launches, members will get full access to all custom-built tools, automations, and exclusive content.</p>
-<a href="#" class="btn btn--premium btn--disabled">Join Waitlist — Coming Soon</a>
+<a href="#" class="btn btn--premium btn--disabled" data-track="premium">Join Waitlist — Coming Soon</a>
 </div>
 </section>
 </div>
