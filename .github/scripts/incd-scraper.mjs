@@ -8,9 +8,13 @@
  * Run: node .github/scripts/incd-scraper.mjs
  */
 
-import { chromium } from "playwright";
+import { chromium as playwrightChromium } from "playwright-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import fs from "fs";
 import path from "path";
+
+// Apply stealth plugin to bypass Cloudflare
+playwrightChromium.use(StealthPlugin());
 
 // ── Constants ────────────────────────────────────────────
 const INCD_PAGE_URL =
@@ -344,8 +348,8 @@ async function main() {
 
   console.log(`[INCD] State: ${publishedSet.size} previously published`);
 
-  // Launch Playwright browser
-  const browser = await chromium.launch({ headless: true });
+  // Launch Playwright browser with stealth to bypass Cloudflare
+  const browser = await playwrightChromium.launch({ headless: true });
   const context = await browser.newContext({
     userAgent:
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -371,9 +375,13 @@ async function main() {
       if (!hasContent) {
         const pageContent = await page.content();
         if (pageContent.includes("Cloudflare") || pageContent.includes("cf-error")) {
-          throw new Error("Blocked by Cloudflare — cannot access gov.il");
+          console.warn("[INCD] Blocked by Cloudflare — will retry next run");
+          await browser.close();
+          return;
         }
-        throw new Error("Page loaded but no publication links found");
+        console.warn("[INCD] Page loaded but no publication links found — will retry next run");
+        await browser.close();
+        return;
       }
     }
     await page.waitForTimeout(3000);

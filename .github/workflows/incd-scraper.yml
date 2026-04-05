@@ -18,9 +18,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Playwright
+      - name: Install dependencies
         run: |
-          npm install playwright
+          npm install playwright playwright-extra puppeteer-extra-plugin-stealth
           npx playwright install chromium --with-deps
 
       - name: Run INCD Scraper
