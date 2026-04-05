@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
+  - title: Emerging OSINT Tools Streamline Investigations
+    text: New browser extensions and online generators are enhancing OSINT capabilities for researchers.
+    detail: Tools like APILEECH and OSINTNova's Google Dorks Generator are emerging, offering advanced functionalities for web analysis and precise information gathering. Professionals should integrate these evolving resources into their workflows to accelerate threat intelligence and investigative processes.
+    link: https://www.owasp.org/www-community/Defensive_Tools
+    link_label: OSINT Tools Overview
+    badge: signal
+    tags:
+      - osint
+      - tools
+      - threat-intel
   - title: North Korea Dominates 2025 Crypto Heists
-    text: North Korean state actors are leading global cryptocurrency theft, accounting for over half of all stolen crypto in 2025.
-    detail: A significant surge in crypto heists attributed to North Korean state-sponsored actors highlights their growing financial gains from illicit activities. This trend underscores the need for enhanced blockchain security measures and international cooperation to track and disrupt these funding streams.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-137a
-    link_label: CISA Advisory on North Korean Cyber Threats
+    text: North Korean state-sponsored actors are responsible for a significant portion of global crypto theft.
+    detail: Reports indicate a substantial surge in cryptocurrency heists attributed to North Korean actors in 2025, accounting for over half of all stolen crypto. Organizations dealing with digital assets should bolster their security measures against sophisticated state-backed threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-132a
+    link_label: North Korea Cyber Activity Advisory
     badge: signal
     tags:
       - threat-intel
-      - crypto-crime
-      - north-korea
-  - title: Exploiting Image Files for Malware Delivery
-    text: Attackers are increasingly using image files to hide malware, bypassing traditional security defenses.
-    detail: Malicious actors are employing sophisticated steganography and obfuscation techniques to embed malware within common image formats. This tactic challenges signature-based detection, necessitating advanced behavioral analysis and endpoint detection solutions capable of identifying anomalous file processing.
-    link: https://owasp.org/www-project-top-10-2021/
-    link_label: OWASP Top 10
+      - crypto-theft
+      - nation-state
+  - title: Image-Based Malware Obfuscation on the Rise
+    text: Attackers are embedding malware within image files, evading traditional detection methods.
+    detail: Sophisticated techniques are being used to hide malicious code within seemingly benign image files, challenging standard security solutions. Cybersecurity professionals must implement advanced threat detection and educate users on identifying suspicious files, regardless of their apparent format.
+    link: https://www.mitre.org/capabilities/attack-techniques/T1041
+    link_label: "MITRE ATT&CK: Exfiltration Over C2 Channel"
     badge: signal
     tags:
       - malware
       - threat-intel
-      - detection-evasion
-  - title: Ransomware Operations Mimic Corporate Structures
-    text: Modern ransomware attacks are orchestrated by sophisticated, corporate-like organizations leveraging a Ransomware-as-a-Service (RaaS) model.
-    detail: The RaaS model has professionalized cybercrime, with specialized roles and hierarchical structures. This evolution demands a shift in defense strategies from targeting individual actors to disrupting the entire operational ecosystem, including affiliates and infrastructure providers.
-    link: https://www.mitre.org/attack-matrix
-    link_label: MITRE ATT&CK Framework
-    badge: signal
-    tags:
-      - ransomware
-      - threat-intel
-      - cybercrime-as-a-service
+      - detection
   - title: Supply Chain Attacks Target Widely Used Packages
-    text: Popular open-source packages like Axios are being compromised, posing a significant risk to downstream applications.
-    detail: The compromise of high-usage NPM packages, such as Axios, demonstrates a critical vulnerability in software supply chains. Organizations must implement robust software composition analysis (SCA) and dependency scanning to identify and mitigate risks from compromised third-party code.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2023-29017
-    link_label: NVD - Axios Vulnerability Example
+    text: Critical supply chain vulnerabilities are being exploited in popular developer packages.
+    detail: The compromise of widely adopted packages like Axios NPM highlights the persistent risk of supply chain attacks. Developers and security teams must prioritize robust dependency management, code scanning, and secure software development practices to mitigate these threats.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP SCA Project
     badge: signal
     tags:
       - supply-chain
-      - threat-intel
       - vulnerability
+      - malware
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
