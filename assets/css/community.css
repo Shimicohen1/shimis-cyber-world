@@ -87,3 +87,19 @@
   font-size: .82rem;
   color: var(--gray);
 }
+
+/* Light theme overrides */
+[data-theme="light"] .community-card__tagline { color: var(--cyan); }
+[data-theme="light"] .community-form__input,
+[data-theme="light"] .community-form__select,
+[data-theme="light"] .community-form__textarea {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--white);
+}
+[data-theme="light"] .community-form__input::placeholder,
+[data-theme="light"] .community-form__textarea::placeholder { color: var(--dim); }
+[data-theme="light"] .community-form__success {
+  background: var(--card);
+  border-color: rgba(101,163,13,.2);
+}
