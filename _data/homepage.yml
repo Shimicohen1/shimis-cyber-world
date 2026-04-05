@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: OSINT Tools Directory Expands for Deeper Investigations
-    text: A comprehensive directory of OSINT tools is now available, streamlining investigations for security professionals.
-    detail: The proliferation of OSINT tools, highlighted by new directories, offers enhanced capabilities for data extraction and web analysis. Professionals should leverage these resources to build robust intelligence gathering workflows, but ensure proper validation of collected data to avoid misinformation.
-    link: https://www.owasp.org/www-community/OSINT
-    link_label: OSINT Best Practices
+  - title: AI-Driven Infrastructure Shifts in Conflict Zones
+    text: AI infrastructure developed in conflict zones is migrating to new international fronts.
+    detail: Recent reports indicate that AI infrastructure, initially developed in Gaza, has been redeployed across Lebanon and Iran. This migration highlights a growing trend of sophisticated cyber capabilities being established and moved across borders, potentially for advanced offensive or defensive operations. Organizations should monitor for AI-driven attacks originating from or targeting these regions.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-cybersecurity
+    link_label: AI & Cybersecurity
     badge: signal
     tags:
-      - osint
-      - tools
       - threat-intel
-  - title: North Korea Dominates 2025 Crypto Heists
-    text: North Korean state actors are responsible for a significant surge in cryptocurrency theft in 2025.
-    detail: Recent reports indicate a substantial increase in cryptocurrency stolen by North Korean state-sponsored actors, now accounting for a majority of global crypto theft. This trend underscores the persistent threat of nation-state-backed cybercrime targeting digital assets.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-285a
-    link_label: Advisory on North Korean Cyber Threats
+      - ai
+      - cloud
+  - title: North Korea's Crypto Heist Escalation Continues
+    text: North Korean state-sponsored actors significantly increased crypto theft in 2025.
+    detail: Reports show a substantial rise in cryptocurrency stolen by North Korean actors in 2025, accounting for a majority of global crypto theft. This trend underscores the persistent threat of nation-state-backed cybercrime targeting digital assets. Financial institutions and cryptocurrency exchanges must enhance their security measures against sophisticated, well-funded adversaries.
+    link: https://www.fincen.gov/news-room/speech/remarks-deputy-director-him--addressing-cyber-threats-and-north-korean-illicit-finance
+    link_label: North Korean Illicit Finance
     badge: signal
     tags:
       - threat-intel
       - cryptocurrency
       - nation-state
-  - title: Image Files Used for Sophisticated Malware Obfuscation
-    text: Attackers are embedding malicious code within image files to evade detection.
-    detail: A new technique involves hiding malware within image files, leveraging how systems process visual data. This 'steganography' method requires advanced detection mechanisms. Security teams should implement stricter file type validation and behavioral analysis for executables.
-    link: https://www.mitre.org/technologies/attack/resources/attack-matrix
-    link_label: MITRE ATT&CK Framework
+  - title: Supply Chain Attacks on Widely Used Packages Persist
+    text: Popular development packages like Axios NPM are increasingly targeted.
+    detail: A recent supply chain attack on the Axios NPM package, downloaded millions of times weekly, demonstrates the ongoing risk to software development pipelines. Attackers are compromising popular libraries to inject malicious code into downstream projects. Developers and security teams must implement robust software supply chain security practices and dependency scanning.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: Software Component Analysis
+    badge: signal
+    tags:
+      - supply-chain
+      - malware
+      - vulnerability
+  - title: Sophisticated Image-Based Malware Obfuscation Techniques
+    text: Malicious code is being hidden within seemingly innocuous image files.
+    detail: A growing trend involves embedding malware within image files, a technique that evades traditional signature-based detection. Attackers leverage image processing to hide executable payloads, making them difficult to identify. Security professionals should employ advanced threat detection solutions that analyze file behavior and content beyond simple file types.
+    link: https://www.mitre.org/capabilities/cybersecurity/all-attacks-techniques-and-procedures/malware-analysis
+    link_label: Malware Analysis Techniques
     badge: signal
     tags:
       - malware
       - threat-intel
       - detection
-  - title: Fortinet Patches Actively Exploited Client Vulnerability
-    text: Fortinet has released a patch for an actively exploited vulnerability in FortiClient EMS.
-    detail: CVE-2026-35616 in FortiClient EMS is being actively exploited, posing a significant risk. Organizations using this product must prioritize immediate patching to mitigate potential compromise and data breaches. Continuous monitoring for indicators of compromise is also advised.
-    link: https://www.fortiguard.com/psirt/advisories/FG-VD-26-35616
-    link_label: Fortinet Security Advisory
-    badge: signal
-    tags:
-      - vulnerability
-      - threat-intel
-      - patch-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
