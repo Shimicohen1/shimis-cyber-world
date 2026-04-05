@@ -21,6 +21,57 @@
 {% else %}<meta name="twitter:image" content="{{ '/assets/img/logos/logo-full.png' | absolute_url }}">
 {% endif %}
 <link rel="icon" href="{{ '/assets/img/logos/logo.jpg' | relative_url }}" type="image/jpeg">
+<link rel="icon" type="image/png" sizes="192x192" href="{{ '/assets/img/logos/logo-full.png' | relative_url }}">
+<link rel="apple-touch-icon" href="{{ '/assets/img/logos/logo-full.png' | relative_url }}">
+
+{% comment %}── Structured Data for Google ──{% endcomment %}
+{% if page.layout == 'post' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ page.title | jsonify }},
+  "description": {{ page.summary | default: page.description | default: site.description | strip_html | truncatewords: 50 | jsonify }},
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "image": "{% if page.image %}{% if page.image contains '://' %}{{ page.image }}{% else %}{{ page.image | absolute_url }}{% endif %}{% elsif page.cover_image %}{% if page.cover_image contains '://' %}{{ page.cover_image }}{% else %}{{ page.cover_image | absolute_url }}{% endif %}{% else %}{{ '/assets/img/logos/logo-full.png' | absolute_url }}{% endif %}",
+  "author": {
+    "@type": "Organization",
+    "name": "Shimi's Cyber World"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shimi's Cyber World",
+    "url": "{{ site.url }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ '/assets/img/logos/logo-full.png' | absolute_url }}"
+    }
+  }
+}
+</script>
+{% else %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Shimi's Cyber World",
+  "url": "{{ site.url }}",
+  "description": {{ site.description | jsonify }},
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shimi's Cyber World",
+    "url": "{{ site.url }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ '/assets/img/logos/logo-full.png' | absolute_url }}"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/shimicohen1/"
+    ]
+  }
+}
+</script>
+{% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
