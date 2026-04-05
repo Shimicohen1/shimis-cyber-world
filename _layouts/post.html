@@ -247,3 +247,18 @@ layout: default
   stopBtn.addEventListener('click', function() { stopSpeech(); });
 })();
 </script>
+
+{% comment %}── Share: open native app on mobile, new tab on desktop ──{% endcomment %}
+<script>
+(function() {
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (!isMobile) return;
+  document.querySelectorAll('.post-share__btn, .share-float__btn').forEach(function(a) {
+    a.removeAttribute('target');
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = a.href;
+    });
+  });
+})();
+</script>
