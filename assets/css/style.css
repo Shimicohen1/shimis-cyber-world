@@ -253,6 +253,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   top: 0; left: 0; right: 0;
   height: 3px;
   background: linear-gradient(90deg, #2563eb, #7c3aed, #db2777, #2563eb);
+  box-shadow: 0 0 12px rgba(37,99,235,.5), 0 0 24px rgba(124,58,237,.3);
   z-index: 201;
 }
 .nav-wrap {
