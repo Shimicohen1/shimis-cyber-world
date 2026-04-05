@@ -115,7 +115,7 @@ layout: default
     {% comment %}── MITRE ATT&CK Techniques ──{% endcomment %}
     {% if page.mitre_attack.size > 0 %}
     <div class="post-mitre-attack">
-      <h2>MITRE ATT&CK</h2>
+      <h2>Related ATT&CK Techniques</h2>
       <div class="mitre-attack__techniques">
         {% for technique in page.mitre_attack %}
         <a href="{{ technique.url }}" class="mitre-attack__item" target="_blank" rel="noopener">
