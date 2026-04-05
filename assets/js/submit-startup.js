@@ -1,8 +1,11 @@
-/* Submit Startup — form validation + localStorage save */
+/* Submit Startup — form validation + API submission */
 (function () {
   var form = document.getElementById('submitForm');
   var success = document.getElementById('submitSuccess');
+  var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
   if (!form) return;
+
+  var API_URL = "https://scw-newsletter.azurewebsites.net/community-submit";
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -16,13 +19,30 @@
     });
     if (!valid) return;
 
-    var submissions = [];
-    try { submissions = JSON.parse(localStorage.getItem('scw_community_submissions') || '[]'); } catch (_) {}
-    data.submitted = new Date().toISOString();
-    submissions.push(data);
-    localStorage.setItem('scw_community_submissions', JSON.stringify(submissions));
+    // Disable button while submitting
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+    }
 
-    form.style.display = 'none';
-    success.style.display = '';
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(function (res) { return res.json().then(function (j) { return { ok: res.ok, data: j }; }); })
+    .then(function (result) {
+      if (result.ok) {
+        form.style.display = 'none';
+        success.style.display = '';
+      } else {
+        alert(result.data.error || 'Submission failed. Please try again.');
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit for Review'; }
+      }
+    })
+    .catch(function () {
+      alert('Network error. Please check your connection and try again.');
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit for Review'; }
+    });
   });
 })();
