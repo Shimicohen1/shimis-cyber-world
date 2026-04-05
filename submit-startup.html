@@ -1,0 +1,168 @@
+---
+layout: null
+permalink: /submit-startup.html
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Your Startup — Community Stage — Shimi's Cyber World</title>
+  <meta name="description" content="Submit your cybersecurity startup, tool, or community project to be featured on Community Stage.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/community-stage.css">
+  <link rel="stylesheet" href="./assets/css/submit-startup.css">
+</head>
+<body class="cs-body">
+
+  <!-- ===== Navigation ===== -->
+  <nav class="cs-nav" role="navigation" aria-label="Submit startup navigation">
+    <div class="cs-container cs-nav__inner">
+      <a href="./" class="cs-nav__brand" aria-label="Back to Shimi's Cyber World">
+        <img src="./assets/img/logos/logo.jpg" alt="SCW" class="cs-nav__logo" width="30" height="30">
+        <span>SCW</span>
+      </a>
+      <div class="cs-nav__links">
+        <a href="./" class="cs-nav__link cs-nav__link--hide-mobile">Main Site</a>
+        <a href="./community-stage.html" class="cs-nav__link">Community Stage</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== Hero ===== -->
+  <section class="cs-hero" style="padding-bottom:var(--cs-space-md);">
+    <div class="cs-container">
+      <span class="cs-hero__badge cs-animate">Community Stage</span>
+      <h1 class="cs-hero__title cs-animate cs-animate--d1">Submit Your Startup</h1>
+      <p class="cs-hero__subtitle cs-animate cs-animate--d2">Bring trusted cyber innovation from the community into the spotlight.</p>
+      <p class="cs-hero__text cs-animate cs-animate--d2">Whether you're building a cybersecurity startup, shipping an open-source tool, or running a community-driven project — this is your stage. Submissions are reviewed for quality and relevance before publication.</p>
+    </div>
+  </section>
+
+  <!-- ===== Form Section ===== -->
+  <section class="cs-form-section" id="form-section">
+    <div class="cs-container cs-form-wrap">
+
+      <!-- The Form -->
+      <form id="startup-form" class="cs-form" novalidate>
+
+        <!-- Required Fields -->
+        <div class="cs-field" id="field-name">
+          <label class="cs-field__label" for="startup-name">Startup / Project Name <span class="cs-field__req">*</span></label>
+          <input type="text" id="startup-name" class="cs-field__input" placeholder="e.g. ThreatNova" required>
+          <span class="cs-field__error">Please enter a startup or project name.</span>
+        </div>
+
+        <div class="cs-field" id="field-website">
+          <label class="cs-field__label" for="startup-website">Website URL <span class="cs-field__req">*</span></label>
+          <input type="url" id="startup-website" class="cs-field__input" placeholder="https://example.com" required>
+          <span class="cs-field__error">Please enter a valid URL (must start with http:// or https://).</span>
+        </div>
+
+        <div class="cs-field" id="field-description">
+          <label class="cs-field__label" for="startup-desc">Short Description <span class="cs-field__req">*</span></label>
+          <textarea id="startup-desc" class="cs-field__textarea" placeholder="Describe your startup, product, or project in 1-2 sentences..." required></textarea>
+          <span class="cs-field__error">Please provide a short description.</span>
+        </div>
+
+        <div class="cs-field" id="field-categories">
+          <label class="cs-field__label">Categories <span class="cs-field__req">*</span></label>
+          <span class="cs-field__hint">Select at least one category</span>
+          <div class="cs-checkbox-group">
+            <label class="cs-checkbox"><input type="checkbox" name="categories" value="AI Security"><span class="cs-checkbox__label">AI Security</span></label>
+            <label class="cs-checkbox"><input type="checkbox" name="categories" value="Cloud Security"><span class="cs-checkbox__label">Cloud Security</span></label>
+            <label class="cs-checkbox"><input type="checkbox" name="categories" value="Identity"><span class="cs-checkbox__label">Identity</span></label>
+            <label class="cs-checkbox"><input type="checkbox" name="categories" value="SOC"><span class="cs-checkbox__label">SOC</span></label>
+            <label class="cs-checkbox"><input type="checkbox" name="categories" value="Threat Intelligence"><span class="cs-checkbox__label">Threat Intelligence</span></label>
+            <label class="cs-checkbox"><input type="checkbox" name="categories" value="AppSec"><span class="cs-checkbox__label">AppSec</span></label>
+            <label class="cs-checkbox"><input type="checkbox" name="categories" value="Community Projects"><span class="cs-checkbox__label">Community Projects</span></label>
+          </div>
+          <span class="cs-field__error">Please select at least one category.</span>
+        </div>
+
+        <div class="cs-field" id="field-contact-name">
+          <label class="cs-field__label" for="contact-name">Contact Name <span class="cs-field__req">*</span></label>
+          <input type="text" id="contact-name" class="cs-field__input" placeholder="Your full name" required>
+          <span class="cs-field__error">Please enter your name.</span>
+        </div>
+
+        <div class="cs-field" id="field-contact-email">
+          <label class="cs-field__label" for="contact-email">Contact Email <span class="cs-field__req">*</span></label>
+          <input type="email" id="contact-email" class="cs-field__input" placeholder="you@company.com" required>
+          <span class="cs-field__error">Please enter a valid email address.</span>
+        </div>
+
+        <hr class="cs-form__divider">
+        <p class="cs-form__section-label">Optional Details</p>
+
+        <div class="cs-field">
+          <label class="cs-field__label" for="startup-linkedin">LinkedIn URL</label>
+          <input type="url" id="startup-linkedin" class="cs-field__input" placeholder="https://linkedin.com/company/...">
+        </div>
+
+        <div class="cs-field">
+          <label class="cs-field__label" for="founder-name">Founder Name</label>
+          <input type="text" id="founder-name" class="cs-field__input" placeholder="Founder's name">
+        </div>
+
+        <div class="cs-field">
+          <label class="cs-field__label" for="why-it-matters">Why It Matters</label>
+          <textarea id="why-it-matters" class="cs-field__textarea" placeholder="Explain why this matters to the cybersecurity community..." style="min-height:80px;"></textarea>
+        </div>
+
+        <div class="cs-field">
+          <label class="cs-field__label" for="startup-stage">Stage</label>
+          <select id="startup-stage" class="cs-field__select">
+            <option value="">Select stage...</option>
+            <option value="Early Stage">Early Stage</option>
+            <option value="Growth">Growth</option>
+            <option value="Community Project">Community Project</option>
+            <option value="Established Company">Established Company</option>
+          </select>
+        </div>
+
+        <div class="cs-field">
+          <label class="cs-field__label" for="additional-notes">Additional Notes</label>
+          <textarea id="additional-notes" class="cs-field__textarea" placeholder="Anything else you'd like us to know..." style="min-height:80px;"></textarea>
+        </div>
+
+        <!-- Notice -->
+        <div class="cs-notice">
+          <p><strong>Please note:</strong></p>
+          <p>Submission does not guarantee publication. SCW may review, edit, and curate content before display. Only relevant and quality submissions will be featured on Community Stage.</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="cs-form__actions">
+          <button type="submit" class="cs-btn cs-btn--primary">Submit Startup</button>
+          <a href="./community-stage.html" class="cs-btn cs-btn--ghost">Back to Community Stage</a>
+        </div>
+
+      </form>
+
+      <!-- Success State (hidden by default) -->
+      <div class="cs-success" id="success-panel" style="display:none;">
+        <div class="cs-success__icon">✓</div>
+        <h2 class="cs-success__title">Submission Received</h2>
+        <p class="cs-success__text">Your startup was submitted successfully and is now waiting for review. We'll reach out if it's selected for Community Stage.</p>
+        <div class="cs-success__actions">
+          <button class="cs-btn cs-btn--primary" id="submit-another">Submit Another</button>
+          <a href="./community-stage.html" class="cs-btn cs-btn--secondary">Go to Community Stage</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="cs-footer">
+    <div class="cs-container">
+      <p class="cs-footer__text">Built from the community. Growing into much more.</p>
+    </div>
+  </footer>
+
+  <script src="./assets/js/community-storage.js"></script>
+  <script src="./assets/js/submit-startup.js"></script>
+</body>
+</html>
