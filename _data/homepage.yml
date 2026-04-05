@@ -25,45 +25,45 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Cartels Evolve to Corporate Structures
-    text: Modern ransomware operates like businesses, leveraging RaaS models for profit.
-    detail: The stereotypical lone hacker is obsolete. Ransomware-as-a-Service (RaaS) has created complex, hierarchical ecosystems where cybercriminals function as profitable entities. This shift necessitates that organizations strengthen defenses against sophisticated, professionally managed cybercrime operations and consider threat intelligence feeds that track these evolving structures.
-    link: https://www.cisa.gov/news-events/news/understanding-ransomware-threat-and-how-defend-against-it
-    link_label: CISA on Ransomware
+  - title: Phishing Campaigns Escalate with SMS and Device Code Tactics
+    text: Phishing attacks are evolving, using SMS and device codes to bypass defenses.
+    detail: Recent reports highlight a surge in SMS-based phishing impersonating official entities and a 37x increase in device code phishing, enabled by readily available attack kits. Cybersecurity professionals should reinforce multi-factor authentication and user education on recognizing sophisticated social engineering tactics.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/recognizing-and-avoiding-phishing-attacks
+    link_label: Phishing Prevention Guide
+    badge: signal
+    tags:
+      - phishing
+      - social-engineering
+      - threat-intel
+  - title: Ransomware Groups Adopt Corporate Structures for Monetization
+    text: Ransomware operations are increasingly structured like businesses, focusing on RaaS models.
+    detail: Modern ransomware threats are shifting from lone actors to sophisticated, industrial-scale operations, often leveraging Ransomware-as-a-Service (RaaS). This trend underscores the need for robust endpoint detection and response (EDR) solutions and comprehensive incident response plans to mitigate potential impacts.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness-month-protecting-yourself-and-your-organization
+    link_label: Ransomware Protection
     badge: signal
     tags:
       - ransomware
       - malware
       - threat-intel
-  - title: Phishing Attacks Mimic Trusted Institutions
-    text: Phishing campaigns are impersonating government bodies and popular services via SMS.
-    detail: Attackers are increasingly using SMS to distribute malicious links that lead to fake websites designed to harvest sensitive data, impersonating entities like Israel's National Insurance Institute. Be vigilant against unsolicited messages, especially those requesting personal information or urging immediate action. Verify sender authenticity through official channels.
-    link: https://www.consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams
-    link_label: FTC Phishing Guide
-    badge: signal
-    tags:
-      - phishing
-      - identity
-      - data-leak
-  - title: Exploitation of Known Vulnerabilities Continues
-    text: Actively exploited vulnerabilities in enterprise software require immediate patching.
-    detail: Recent advisories highlight critical vulnerabilities, such as CVE-2026-35616 in FortiClient EMS, being actively exploited. Organizations must prioritize timely patching and vulnerability management to mitigate risks. Regularly review CISA's Known Exploited Vulnerabilities catalog for critical threats demanding immediate attention.
-    link: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
-    link_label: CISA KEV Catalog
+  - title: Vulnerabilities in Widely Used Software Remain a Target
+    text: Actively exploited vulnerabilities continue to affect popular software and systems.
+    detail: Recent advisories indicate ongoing exploitation of vulnerabilities in established software like FortiClient EMS and various online enrollment systems. Organizations must prioritize timely patching and vulnerability management, focusing on known exploited vulnerabilities as identified by CISA.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/known-exploited-vulnerabilities-catalog
+    link_label: Known Exploited Vulnerabilities
     badge: signal
     tags:
       - vulnerability
-      - threat-intel
       - patch-management
-  - title: OSINT Tools Directory Expands for Investigators
-    text: A comprehensive directory aids professionals in navigating the OSINT landscape.
-    detail: The proliferation of Open Source Intelligence (OSINT) tools can be overwhelming. Resources are emerging to catalog these tools, assisting investigators in uncovering digital traces and building comprehensive profiles. Leverage these directories to enhance your intelligence gathering capabilities and streamline investigations.
+      - cve
+  - title: OSINT Tools Directory Empowers Threat Intelligence Gathering
+    text: A comprehensive OSINT tool directory is now available to aid investigations.
+    detail: The proliferation of OSINT tools presents both opportunities and challenges. A new directory aims to streamline investigations by cataloging hundreds of tools for security professionals. Leveraging these resources effectively requires a strong understanding of ethical data collection and analysis techniques.
     link: https://www.owasp.org/www-community/OSINT
-    link_label: OWASP OSINT Resources
+    link_label: OSINT Best Practices
     badge: signal
     tags:
       - osint
-      - tools
+      - threat-intel
       - investigation
 vault_picks:
   - name: OWASP Top 10
