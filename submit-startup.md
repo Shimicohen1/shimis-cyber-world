@@ -1,13 +1,13 @@
 ---
 layout: page
-title: Submit a Startup
+title: Get Featured
 permalink: /submit-startup/
 ---
 
 <div class="page-head">
-  <div class="label label--cyan page-head__label">LAUNCHPAD</div>
-  <h1 class="page-head__title">Submit a Startup</h1>
-  <p class="page-head__desc">Know a cyber startup that deserves the spotlight? Drop the details — we'll review and list it.</p>
+  <div class="label label--cyan page-head__label">COMMUNITY STAGE</div>
+  <h1 class="page-head__title">Get Featured</h1>
+  <p class="page-head__desc">Submit your startup to be showcased in front of SCW's community of thousands. Every listing is reviewed &mdash; only quality gets in.</p>
 </div>
 
 <form class="community-form" id="submitForm" novalidate>
@@ -72,8 +72,8 @@ permalink: /submit-startup/
 </form>
 
 <div class="community-form__success" id="submitSuccess" style="display: none;">
-  <h3>Received.</h3>
-  <p>We'll review the submission and add it to the directory if it qualifies.</p>
+  <h3>Submission Received.</h3>
+  <p>Our team will review your startup. If selected, you'll be featured on Community Stage &mdash; in front of thousands of cyber professionals.</p>
   <a href="{{ '/community/' | relative_url }}" class="btn btn--ghost btn--sm" style="margin-top: 1rem;">Back to Community Stage &rarr;</a>
 </div>
 
