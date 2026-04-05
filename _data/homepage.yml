@@ -25,47 +25,45 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: OSINT Tooling Ecosystem Continues to Expand
-    text: New directories and generators are emerging to aid OSINT investigations.
-    detail: The cybersecurity landscape sees a continuous influx of new OSINT tools and resources, including browser extensions for web analysis and specialized Google Dork generators. Professionals should regularly explore these emerging tools to enhance their reconnaissance capabilities and stay ahead of adversaries. Keep an updated inventory of available OSINT resources.
-    link: https://www.owasp.org/www-community/Defensive_Tools
-    link_label: OSINT Defensive Tools
+  - title: Emerging Threat Groups Demand Proactive Monitoring
+    text: New threat actor groups are rapidly appearing, requiring continuous monitoring and threat intelligence updates.
+    detail: DARKFEED has identified emerging threat groups like 'ALP001' with recent attack activity. Organizations should enhance their threat hunting capabilities and subscribe to emerging threat intelligence feeds to stay ahead of these new actors and their evolving tactics, techniques, and procedures (TTPs).
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/spotlight-emerging-threats
+    link_label: CISA Emerging Threats
     badge: signal
     tags:
-      - osint
-      - tools
       - threat-intel
-  - title: Ransomware Operations Mimic Corporate Structures
-    text: Ransomware-as-a-Service (RaaS) models foster sophisticated, industrial-scale cybercrime.
-    detail: Modern ransomware threats are increasingly organized, operating with corporate-like structures and division of labor through RaaS. This trend signifies a professionalization of cybercrime, demanding more robust defensive strategies. Organizations must implement comprehensive security measures, including strong endpoint protection and regular backups, to mitigate these evolving threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-139a
-    link_label: CISA Ransomware Guidance
+      - emerging-threats
+  - title: Image-Based Malware Obfuscation on the Rise
+    text: Attackers are hiding malware within image files, bypassing traditional security measures.
+    detail: Posts highlight techniques where malicious code is embedded in image files, evading detection. Security teams should implement advanced endpoint detection and response (EDR) solutions capable of analyzing file content beyond simple signatures and educate users on the risks of downloading untrusted image files.
+    link: https://www.owasp.org/www-community/vulnerabilities/Content_Injection
+    link_label: OWASP Content Injection
     badge: signal
     tags:
-      - ransomware
-      - threat-intel
       - malware
-  - title: Exploitation of Software Vulnerabilities Remains Prevalent
-    text: Actively exploited vulnerabilities in widely used software continue to pose significant risks.
-    detail: Recent reports highlight actively exploited CVEs in products like FortiClient EMS, underscoring the persistent threat of unpatched vulnerabilities. Threat actors are quick to weaponize newly disclosed flaws. Prioritize timely patching and vulnerability management for all software, especially critical infrastructure and widely deployed solutions.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
+      - threat-intel
+      - obfuscation
+  - title: SQL Injection Vulnerabilities Persist in Web Applications
+    text: Numerous SQL injection vulnerabilities continue to be discovered in various web applications.
+    detail: Multiple CVEs (e.g., CVE-2026-5575, CVE-2026-5553) highlight ongoing SQL injection flaws in popular management systems. Developers must prioritize secure coding practices, implement input validation, and utilize parameterized queries to mitigate these persistent and high-impact vulnerabilities.
+    link: https://owasp.org/www-community/vulnerabilities/SQL_Injection
+    link_label: OWASP SQL Injection
     badge: signal
     tags:
       - vulnerability
-      - threat-intel
-      - patch-management
-  - title: Image-Based Malware and Supply Chain Attacks Evolving
-    text: Attackers are using novel methods like steganography and compromising popular packages.
-    detail: Sophisticated techniques are emerging, including hiding malware within image files and compromising widely-used NPM packages like Axios. These methods bypass traditional security controls and target the software development lifecycle. Implement rigorous code review, dependency scanning, and secure coding practices to defend against these advanced threats.
-    link: https://owasp.org/www-project-top-10/
-    link_label: OWASP Top 10
+      - sql-injection
+      - web-security
+  - title: Supply Chain Attacks Target Widely Used Packages
+    text: Critical NPM packages with massive download counts are becoming targets for supply chain attacks.
+    detail: The compromise of the Axios NPM package, used by over 100 million users weekly, underscores the severe risks of supply chain attacks. Organizations must implement robust dependency management, software composition analysis (SCA), and least privilege principles for code repositories.
+    link: https://www.cisa.gov/news-events/advisories/aa21-207a
+    link_label: CISA Supply Chain Guidance
     badge: signal
     tags:
-      - malware
       - supply-chain
       - threat-intel
-      - vulnerability
+      - npm
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
