@@ -304,20 +304,74 @@
 /* Light theme overrides */
 [data-theme="light"] .community-card__tagline { color: var(--cyan); }
 [data-theme="light"] .cs-intro strong { color: var(--white); }
+
+/* Cards: white bg + subtle shadow for depth instead of flat gray */
+[data-theme="light"] .tool-card {
+  background: var(--card);
+  border-color: rgba(0,0,0,.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+[data-theme="light"] .tool-card:hover {
+  border-color: rgba(0,0,0,.18);
+  box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+/* Featured cards: stronger cyan border */
+[data-theme="light"] .tool-card--featured { border-color: rgba(8,145,178,.35); }
+[data-theme="light"] .tool-card--featured:hover { border-color: rgba(8,145,178,.55); }
+
+/* Ghost buttons: more visible border + text */
+[data-theme="light"] .btn--ghost {
+  border-color: rgba(0,0,0,.2);
+  color: var(--white);
+}
+[data-theme="light"] .btn--ghost:hover {
+  border-color: rgba(0,0,0,.35);
+  background: rgba(0,0,0,.04);
+}
+
+/* Tags: slightly more visible */
+[data-theme="light"] .tag {
+  background: rgba(0,0,0,.05);
+  border-color: rgba(0,0,0,.1);
+  color: var(--gray);
+}
+
+/* Search input: white bg for visibility */
+[data-theme="light"] .vault-search__input {
+  background: var(--card);
+  border-color: rgba(0,0,0,.12);
+}
+
+/* Filter pills: clearer active state */
+[data-theme="light"] .vault-filter__btn.active {
+  border-color: var(--electric);
+}
+
+/* FAQ */
 [data-theme="light"] .cs-faq__q { color: var(--white); }
 [data-theme="light"] .cs-faq__q:hover { color: var(--cyan); }
-[data-theme="light"] .cs-cta__box { background: var(--card); }
+[data-theme="light"] .cs-faq__item { border-color: rgba(0,0,0,.08); }
+
+/* CTA box */
+[data-theme="light"] .cs-cta__box {
+  background: var(--card);
+  border-color: rgba(0,0,0,.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
 [data-theme="light"] .cs-cta__title { color: var(--white); }
+
+/* Modal */
 [data-theme="light"] .cs-modal__content { background: var(--card); }
 [data-theme="light"] .cs-modal__backdrop { background: rgba(0,0,0,.4); }
-[data-theme="light"] .cs-modal__block { background: var(--deep); }
-[data-theme="light"] .tool-card--featured { border-color: rgba(8,145,178,.2); }
-[data-theme="light"] .tool-card--featured:hover { border-color: rgba(8,145,178,.4); }
+[data-theme="light"] .cs-modal__block { background: var(--deep); border-color: rgba(0,0,0,.08); }
+
+/* Form */
 [data-theme="light"] .community-form__input,
 [data-theme="light"] .community-form__select,
 [data-theme="light"] .community-form__textarea {
   background: var(--card);
-  border-color: var(--border);
+  border-color: rgba(0,0,0,.12);
   color: var(--white);
 }
 [data-theme="light"] .community-form__input::placeholder,
