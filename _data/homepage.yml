@@ -25,41 +25,41 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Rise of Image-Based Malware Obfuscation
-    text: Malware is increasingly hidden within image files, evading traditional detection methods.
-    detail: Attackers are embedding malicious code into seemingly harmless image files, a technique that can bypass many security solutions. Organizations should implement advanced endpoint detection and response (EDR) solutions and educate users about suspicious file handling, especially when dealing with unexpected image attachments. Threat intelligence feeds are crucial for staying ahead of these evolving obfuscation tactics.
-    link: https://owasp.org/www-community/vulnerabilities/Content_Security_Policy
-    link_label: OWASP Content Security Policy
+  - title: Image Files as Malware Delivery Vector
+    text: Malicious actors are increasingly hiding malware within seemingly innocuous image files.
+    detail: Attackers are leveraging steganography and file processing vulnerabilities to embed executable payloads within images. This technique bypasses traditional signature-based detection. Organizations should implement stricter file type validation and advanced endpoint detection solutions capable of analyzing file content beyond its extension.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/recognizing-and-reporting-phishing-scams
+    link_label: Phishing & Malware Recognition
     badge: signal
     tags:
       - malware
       - threat-intel
-      - obfuscation
-  - title: North Korea Dominates Crypto Heists
-    text: North Korean state actors are the primary culprits behind a surge in global crypto theft.
-    detail: In 2025, North Korea accounted for 59% of global cryptocurrency stolen, totaling $2.02 billion. This highlights the significant financial motivation and sophistication of nation-state actors in the crypto space. Financial institutions and cryptocurrency exchanges must enhance their transaction monitoring and threat intelligence sharing to combat these persistent threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-129a
-    link_label: CISA Advisories
+      - steganography
+  - title: North Korean State-Sponsored Crypto Heists Accelerate
+    text: North Korea's crypto theft has surged, accounting for a significant portion of global cryptocurrency losses.
+    detail: State-sponsored actors are increasingly relying on cryptocurrency heists to fund operations, with North Korea showing a marked increase in stolen assets. This trend underscores the need for enhanced blockchain analytics and proactive threat intelligence to track illicit financial flows and attribute attacks.
+    link: https://www.fbi.gov/how-we-can-help-you/scams-and-safety/common-scams-and-crimes/cryptocurrency-scams
+    link_label: Cryptocurrency Scam Awareness
     badge: signal
     tags:
-      - nation-state
-      - cryptocurrency
       - threat-intel
-  - title: Supply Chain Attacks Target Popular NPM Packages
-    text: Widely-used NPM packages are being compromised, posing a significant risk to downstream projects.
-    detail: The recent compromise of the Axios NPM package, with millions of weekly downloads, exemplifies the pervasive threat of supply chain attacks. Developers must implement rigorous dependency management, code scanning, and software bill of materials (SBOM) practices to mitigate risks associated with third-party code. Continuous monitoring for vulnerabilities in dependencies is essential.
+      - crypto
+      - state-sponsored
+  - title: Supply Chain Attacks Target Widely Used Packages
+    text: Popular software packages like Axios NPM are being compromised, impacting numerous downstream projects.
+    detail: The compromise of high-usage packages like Axios NPM highlights the critical risk posed by supply chain attacks. Organizations must implement robust software supply chain security practices, including dependency scanning, SBOM analysis, and strict validation of third-party code before integration.
     link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
+    link_label: Software Component Analysis
     badge: signal
     tags:
       - supply-chain
-      - npm
+      - threat-intel
       - vulnerability
-  - title: SQL Injection Vulnerabilities Persist in Web Apps
-    text: Multiple systems continue to be vulnerable to SQL injection flaws, particularly in parameter handling.
-    detail: Recent reports highlight ongoing SQL injection vulnerabilities in various web applications, often stemming from improper handling of user-supplied input in GET requests. Developers must prioritize input validation and parameterized queries to prevent these common but critical attacks. Regular security audits and penetration testing are vital for identifying and remediating such flaws.
+  - title: SQL Injection Vulnerabilities Persist in Web Applications
+    text: Multiple SQL injection vulnerabilities continue to be discovered in various open-source web applications.
+    detail: Recent reports indicate persistent SQL injection flaws in systems like itsourcecode Online Cellphone System and Free Hotel Reservation System. These vulnerabilities allow attackers to manipulate database queries for unauthorized access or data exfiltration. Regular code reviews, input validation, and the use of parameterized queries are crucial defenses.
     link: https://owasp.org/www-community/attacks/SQL_Injection
-    link_label: OWASP SQL Injection
+    link_label: SQL Injection Prevention
     badge: signal
     tags:
       - vulnerability
