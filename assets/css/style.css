@@ -242,12 +242,18 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   position: sticky;
   top: 0;
   z-index: 200;
-  background: rgba(6,10,28,.92);
+  background: rgba(6,10,28,.94);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  border-top: 3px solid transparent;
-  border-image: linear-gradient(90deg, #2563eb, #7c3aed, #db2777, #2563eb) 1;
+}
+.site-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #7c3aed, #db2777, #2563eb);
+  z-index: 201;
 }
 .nav-wrap {
   display: flex;
