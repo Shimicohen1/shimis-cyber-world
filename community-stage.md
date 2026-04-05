@@ -16,7 +16,7 @@ permalink: /community/
   <p>Every listing is curated. Every company is reviewed. If you're here, you earned it &mdash; and thousands of eyes in the cyber industry will see it.</p>
   <div class="cs-intro__actions">
     <a href="#startups" class="btn btn--primary">Explore Startups</a>
-    <a href="{{ '/submit-startup.html' | relative_url }}" class="btn btn--ghost">Get Featured</a>
+    <a href="{{ '/submit-startup/' | relative_url }}" class="btn btn--ghost">Get Featured</a>
   </div>
 </section>
 
@@ -136,7 +136,7 @@ permalink: /community/
   </div>
 
   <div class="empty-state" id="communityEmpty" style="display:none; margin-top: 2rem;">
-    <p>No matching startups found. Try adjusting your filters or <a href="{{ '/submit-startup.html' | relative_url }}">get featured</a>.</p>
+    <p>No matching startups found. Try adjusting your filters or <a href="{{ '/submit-startup/' | relative_url }}">get featured</a>.</p>
   </div>
 </section>
 
@@ -228,7 +228,7 @@ permalink: /community/
     <h2 class="cs-cta__title">Your startup deserves to be seen.</h2>
     <p class="cs-cta__text">Join the startups already showcased in front of SCW's community of thousands &mdash; security leaders, investors, and builders who are actively looking for what's next in cyber.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/submit-startup.html' | relative_url }}" class="btn btn--primary">Get Featured</a>
+      <a href="{{ '/submit-startup/' | relative_url }}" class="btn btn--primary">Get Featured</a>
       <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to SCW</a>
     </div>
   </div>
