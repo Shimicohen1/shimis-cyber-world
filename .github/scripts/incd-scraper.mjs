@@ -30,6 +30,41 @@ const POSTS_DIR = path.join(process.cwd(), "_posts");
 const MAX_NEW_PER_RUN = 5;
 const CVE_RE = /CVE-\d{4}-\d{4,}/gi;
 
+// ── Unsplash Image Pool ─────────────────────────────────
+
+const UNSPLASH_BASE = "https://images.unsplash.com";
+const UNSPLASH_PARAMS = "w=800&h=400&fit=crop&auto=format&q=80";
+
+const imagePools = {
+  threats: [
+    "photo-1770159116807-9b2a7bb82294", "photo-1771061863061-8ffdddb28098",
+    "photo-1596457233038-45a990575b2e", "photo-1562813733-b31f71025d54",
+    "photo-1760199789455-49098afd02f0", "photo-1591439657848-9f4b9ce436b9",
+    "photo-1760199789463-b523db55dd8b", "photo-1765299856473-abaac2f1aa70",
+  ],
+  intelligence: [
+    "photo-1680992046626-418f7e910589", "photo-1691435828932-911a7801adfb",
+    "photo-1680992044138-ce4864c2b962", "photo-1680992046615-065f58bcb4d8",
+    "photo-1680992045563-2ab442f3feee", "photo-1573164713988-8665fc963095",
+    "photo-1558494949-ef010cbdcc31", "photo-1555949963-ff9fe0c870eb",
+  ],
+  news: [
+    "photo-1608742213509-815b97c30b36", "photo-1550751827-4bd374c3f58b",
+    "photo-1487058792275-0ad4aaf24ca7", "photo-1579397256979-cc326aefe273",
+    "photo-1642133516482-e99ea85011b3", "photo-1558459654-c430be5b0a44",
+  ],
+};
+
+function pickCoverImage(tags) {
+  const tagStr = tags.join(" ");
+  let pool;
+  if (/vulnerability|cve|exploit|zero.?day/.test(tagStr)) pool = imagePools.threats;
+  else if (/threat-intel|advisory|alert|israel/.test(tagStr)) pool = imagePools.intelligence;
+  else pool = imagePools.news;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  return `${UNSPLASH_BASE}/${pick}?${UNSPLASH_PARAMS}`;
+}
+
 // ── State Management ────────────────────────────────────
 
 function loadState() {
@@ -295,10 +330,8 @@ function buildPostMarkdown(pub, translated, attachments, iocs) {
       "\n";
   }
 
-  // Cover image — use existing SVG covers based on classification
-  const coverImage = isVuln
-    ? "/assets/images/covers/vulnerability.svg"
-    : "/assets/images/covers/threat-intel.svg";
+  // Cover image — pick from Unsplash pool based on tags
+  const coverImage = pickCoverImage(tags);
 
   const markdown = [
     "---",
