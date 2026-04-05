@@ -295,11 +295,10 @@ function buildPostMarkdown(pub, translated, attachments, iocs) {
       "\n";
   }
 
-  // AI image pool (pick random 01-20)
-  const imgNum = String(Math.floor(Math.random() * 20) + 1).padStart(2, "0");
+  // Cover image — use existing SVG covers based on classification
   const coverImage = isVuln
     ? "/assets/images/covers/vulnerability.svg"
-    : `/assets/images/ai/cyber-${imgNum}.webp`;
+    : "/assets/images/covers/threat-intel.svg";
 
   const markdown = [
     "---",
@@ -313,7 +312,7 @@ function buildPostMarkdown(pub, translated, attachments, iocs) {
     `telegram_message_id: ${msgId}`,
     `tags: [${tags.join(", ")}]`,
     `excerpt: "${yamlSafe(title.substring(0, 180))}"`,
-    `summary: "${yamlSafe((title + " — " + (pub.description || "")).substring(0, 300))}"`,
+    `summary: "${yamlSafe((body || title).substring(0, 300))}"`,
     `layout: post`,
     `section: live-feed`,
     `score: ${classification.score}`,
