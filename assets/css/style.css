@@ -1599,11 +1599,6 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .share-float__btn--facebook { background: #1877f2; }
 .share-float__btn--reddit { background: #ff4500; }
 
-/* Inline share bar — mobile only */
-.post-share--inline {
-  display: none;
-}
-
 @media (max-width: 1100px) {
   /* Convert floating sidebar to fixed bottom bar on mobile */
   .share-float {
@@ -1630,15 +1625,6 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   .share-float__btn svg { width: 16px; height: 16px; }
   /* Add bottom padding to body so content isn't hidden behind bar */
   body { padding-bottom: 52px; }
-  .post-share--inline {
-    display: flex;
-    align-items: center;
-    gap: .8rem;
-    margin: 1rem 0 1.5rem;
-    padding: .8rem 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
 }
 
 /* Share inline buttons (kept for mobile) */
