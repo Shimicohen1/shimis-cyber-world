@@ -1,0 +1,292 @@
+/* SCW Premium Tools — Detection Library & Playbooks */
+
+/* ── Live tool cards on premium page ── */
+.premium-tools-live { padding: 2rem 0; }
+.premium-tool-card--live {
+  border-color: rgba(6,182,212,.25);
+  transition: border-color .2s, box-shadow .2s;
+  display: block;
+  color: inherit;
+}
+.premium-tool-card--live:hover {
+  border-color: rgba(6,182,212,.5);
+  box-shadow: 0 4px 16px rgba(6,182,212,.1);
+}
+.premium-tool-card--live .premium-tool-card__tag {
+  color: var(--cyan);
+  background: rgba(6,182,212,.1);
+}
+[data-theme="light"] .premium-tool-card--live {
+  border-color: rgba(8,145,178,.3);
+  background: var(--card);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+[data-theme="light"] .premium-tool-card--live:hover {
+  border-color: rgba(8,145,178,.5);
+  box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+/* ── Stats bar ── */
+.dl-stats__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: .75rem;
+  text-align: center;
+}
+.dl-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.2rem .8rem;
+}
+.dl-stat__number {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--cyan);
+}
+.dl-stat__label {
+  font-family: var(--f-mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--dim);
+  margin-top: .15rem;
+}
+
+/* ── Rule / Playbook card tweaks ── */
+.dl-rule__meta,
+.pb-card .dl-rule__meta {
+  display: flex;
+  gap: .35rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: .6rem 0 .3rem;
+}
+
+/* ── Code blocks ── */
+.dl-rule__code {
+  position: relative;
+  margin-top: .6rem;
+  background: var(--deep, #0a0a0f);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.dl-rule__code pre {
+  margin: 0;
+  padding: .8rem 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.dl-rule__code code {
+  font-family: var(--f-mono);
+  font-size: .72rem;
+  line-height: 1.6;
+  color: var(--gray);
+  white-space: pre;
+}
+
+/* Copy button */
+.dl-copy-btn {
+  position: absolute;
+  top: .4rem;
+  right: .5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--dim);
+  font-size: .75rem;
+  padding: .25rem .5rem;
+  cursor: pointer;
+  z-index: 2;
+  transition: color .15s, border-color .15s;
+}
+.dl-copy-btn:hover {
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+.dl-copy-btn.copied {
+  color: var(--lime);
+  border-color: var(--lime);
+}
+
+/* Locked code / premium overlay */
+.dl-rule__code--locked {
+  position: relative;
+  min-height: 80px;
+}
+.dl-rule__code--locked pre {
+  filter: blur(4px);
+  user-select: none;
+  pointer-events: none;
+  opacity: .5;
+}
+.dl-rule__lock-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  gap: .3rem;
+}
+.dl-rule__lock-overlay span {
+  font-size: 1.4rem;
+}
+.dl-rule__lock-overlay p {
+  font-size: .75rem;
+  color: var(--dim);
+}
+.dl-rule__lock-overlay a {
+  color: var(--cyan);
+  text-decoration: underline;
+}
+
+/* Rule notes */
+.dl-rule__notes {
+  font-size: .72rem;
+  color: var(--dim);
+  margin-top: .5rem;
+  line-height: 1.5;
+  border-top: 1px solid var(--border);
+  padding-top: .5rem;
+}
+.dl-rule__notes strong { color: var(--gray); }
+
+/* Platform filter row */
+.dl-platform-filters {
+  margin-top: .3rem;
+}
+
+/* ── Playbook phases accordion ── */
+.pb-phases {
+  margin-top: .6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+/* Locked phases */
+.pb-phases--locked {
+  position: relative;
+  min-height: 100px;
+  background: var(--deep, #0a0a0f);
+}
+.pb-phases__lock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+  gap: .3rem;
+}
+.pb-phases__lock span { font-size: 1.4rem; }
+.pb-phases__lock p {
+  font-size: .75rem;
+  color: var(--dim);
+}
+.pb-phases__lock a {
+  color: var(--cyan);
+  text-decoration: underline;
+}
+
+/* Phase toggle */
+.pb-phase {
+  border-bottom: 1px solid var(--border);
+}
+.pb-phase:last-child { border-bottom: none; }
+
+.pb-phase__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .7rem .8rem;
+  background: var(--surface);
+  border: none;
+  color: var(--white);
+  font-family: var(--f-display);
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s;
+}
+.pb-phase__toggle:hover { background: var(--border-hi, rgba(255,255,255,.06)); }
+
+.pb-phase__icon { font-size: .9rem; }
+.pb-phase__name { flex: 1; }
+.pb-phase__arrow {
+  color: var(--dim);
+  font-size: .7rem;
+  transition: transform .2s;
+}
+
+.pb-phase.open .pb-phase__arrow {
+  transform: rotate(90deg);
+}
+
+/* Phase content */
+.pb-phase__content {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .3s ease;
+}
+.pb-phase__content[hidden] {
+  display: block;
+  max-height: 0;
+}
+.pb-phase.open .pb-phase__content {
+  max-height: 500px;
+}
+
+.pb-phase__steps {
+  padding: .6rem 1rem .8rem 2rem;
+  margin: 0;
+}
+.pb-phase__steps li {
+  font-size: .78rem;
+  color: var(--gray);
+  line-height: 1.65;
+  margin-bottom: .3rem;
+}
+
+/* ── Light theme ── */
+[data-theme="light"] .dl-stat {
+  background: var(--card);
+  border-color: rgba(0,0,0,.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+[data-theme="light"] .dl-rule__code {
+  background: #f4f4f8;
+  border-color: rgba(0,0,0,.1);
+}
+[data-theme="light"] .dl-rule__code code { color: #334155; }
+[data-theme="light"] .dl-copy-btn {
+  background: #fff;
+  border-color: rgba(0,0,0,.12);
+  color: #555;
+}
+[data-theme="light"] .dl-copy-btn:hover { color: var(--cyan); border-color: var(--cyan); }
+
+[data-theme="light"] .pb-phases {
+  border-color: rgba(0,0,0,.1);
+}
+[data-theme="light"] .pb-phase { border-color: rgba(0,0,0,.08); }
+[data-theme="light"] .pb-phase__toggle {
+  background: var(--card);
+  color: var(--white);
+}
+[data-theme="light"] .pb-phase__toggle:hover { background: rgba(0,0,0,.04); }
+[data-theme="light"] .pb-phases--locked { background: #f4f4f8; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .dl-stats__grid { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+  .dl-stat { padding: .8rem .4rem; }
+  .dl-stat__number { font-size: 1.15rem; }
+}

@@ -1,0 +1,346 @@
+categories:
+  - Ransomware
+  - Phishing
+  - Business Email Compromise
+  - Lateral Movement
+  - Data Breach
+  - Insider Threat
+  - Cloud Compromise
+  - DDoS
+
+severity_levels:
+  - critical
+  - high
+  - medium
+
+playbooks:
+  # ── FREE PLAYBOOKS ──
+  - name: "Ransomware Incident Response"
+    description: "Step-by-step response for active ransomware attacks — from detection through containment, eradication, and recovery."
+    category: "Ransomware"
+    mitre: "T1486"
+    severity: "critical"
+    premium: false
+    estimated_time: "2-8 hours"
+    roles: ["SOC Analyst", "Incident Commander", "IT Ops", "Legal"]
+    tags: [ransomware, encryption, business-continuity]
+    phases:
+      - phase: "Detect"
+        steps:
+          - "Confirm ransomware indicators: mass file renames, ransom notes, encrypted extensions"
+          - "Identify patient zero — first infected host via EDR timeline"
+          - "Determine ransomware variant using ransom note or encrypted file samples"
+          - "Check scope — how many hosts show encryption activity"
+      - phase: "Contain"
+        steps:
+          - "Immediately isolate infected hosts from the network (EDR network isolation or switch port disable)"
+          - "Disable compromised accounts in Active Directory"
+          - "Block C2 IPs/domains at firewall level"
+          - "Suspend automated backups to prevent encryption of backup data"
+          - "Preserve evidence — do NOT reboot infected machines"
+      - phase: "Eradicate"
+        steps:
+          - "Identify initial access vector (phishing email, RDP, VPN exploit)"
+          - "Remove persistence mechanisms (scheduled tasks, services, registry keys)"
+          - "Scan all hosts for dormant payloads using IOCs from the variant"
+          - "Reset all potentially compromised credentials (prioritize service accounts)"
+          - "Patch the vulnerability used for initial access"
+      - phase: "Recover"
+        steps:
+          - "Restore from clean backups (verify backup integrity before restoring)"
+          - "Rebuild compromised hosts from golden images"
+          - "Re-enable network connectivity in stages, monitoring for re-infection"
+          - "Conduct full credential rotation for affected scope"
+          - "Resume normal backup operations"
+      - phase: "Post-Incident"
+        steps:
+          - "Document full timeline from initial access to containment"
+          - "Conduct lessons-learned meeting within 48 hours"
+          - "Update detection rules based on findings"
+          - "Report to relevant authorities (CISA, law enforcement, regulators)"
+          - "Communicate with affected stakeholders (customers, partners)"
+
+  - name: "Phishing Response"
+    description: "Handle reported phishing emails — from triage through user remediation and organization-wide protection."
+    category: "Phishing"
+    mitre: "T1566"
+    severity: "high"
+    premium: false
+    estimated_time: "30-90 minutes"
+    roles: ["SOC Analyst", "Email Admin"]
+    tags: [phishing, email, social-engineering]
+    phases:
+      - phase: "Detect"
+        steps:
+          - "Receive and triage phishing report (user report, email gateway alert, or automated detection)"
+          - "Analyze email headers — check sender, SPF/DKIM/DMARC, reply-to mismatch"
+          - "Inspect URLs without clicking (use sandbox like urlscan.io or ANY.RUN)"
+          - "Check attachments in sandbox environment"
+          - "Determine if email is phishing, spam, or legitimate"
+      - phase: "Contain"
+        steps:
+          - "Search email gateway for same message delivered to other users"
+          - "Purge/quarantine the email from all mailboxes (Exchange: Purge-Content / O365: Threat Explorer)"
+          - "Block sender domain and malicious URLs at email gateway"
+          - "If any user clicked — isolate their endpoint and force password reset"
+      - phase: "Eradicate"
+        steps:
+          - "Check if malicious payload was downloaded or executed"
+          - "If credentials were submitted — immediately reset passwords and revoke sessions"
+          - "Revoke any OAuth tokens if consent-grant phishing"
+          - "Add malicious domains/IPs to blocklists"
+      - phase: "Recover"
+        steps:
+          - "Confirm all instances of the email are removed"
+          - "Verify affected users have reset credentials"
+          - "Send awareness notification to organization about the campaign"
+          - "Update email filtering rules with new indicators"
+      - phase: "Post-Incident"
+        steps:
+          - "Log the incident with IOCs and timeline"
+          - "Share indicators with industry ISACs if applicable"
+          - "Consider targeted phishing training for users who clicked"
+
+  # ── PREMIUM PLAYBOOKS ──
+  - name: "Business Email Compromise (BEC)"
+    description: "Respond to BEC attacks where an attacker compromises or impersonates an executive to redirect payments or steal data."
+    category: "Business Email Compromise"
+    mitre: "T1534"
+    severity: "critical"
+    premium: true
+    estimated_time: "2-6 hours"
+    roles: ["SOC Analyst", "Incident Commander", "Finance", "Legal"]
+    tags: [bec, email, fraud, financial]
+    phases:
+      - phase: "Detect"
+        steps:
+          - "Identify BEC indicators: wire transfer request from executive, urgency language, reply-to mismatch"
+          - "Verify with the alleged sender via out-of-band communication (phone call, in-person)"
+          - "Check Azure AD / O365 sign-in logs for the compromised account"
+          - "Look for mailbox rules created (auto-forward, auto-delete) hiding attacker activity"
+      - phase: "Contain"
+        steps:
+          - "Immediately disable the compromised account"
+          - "Revoke all active sessions and OAuth tokens"
+          - "Contact bank/finance to halt any pending wire transfers"
+          - "Search for all emails sent from the compromised account during attacker's access window"
+          - "Remove malicious inbox rules (forwarding, deletion rules)"
+      - phase: "Eradicate"
+        steps:
+          - "Determine initial compromise method (password spray, phishing, token theft)"
+          - "Reset password and enforce MFA enrollment"
+          - "Audit all inbox rules, delegates, and connected applications"
+          - "Check for data exfiltration (mail forwarding to external addresses)"
+      - phase: "Recover"
+        steps:
+          - "Re-enable account with new credentials and MFA"
+          - "Notify recipients of fraudulent emails sent during compromise"
+          - "Work with finance/legal on any completed fraudulent transactions"
+          - "File reports with FBI IC3, local law enforcement"
+      - phase: "Post-Incident"
+        steps:
+          - "Implement conditional access policies (location, device compliance)"
+          - "Enable risky sign-in detection in Azure AD Identity Protection"
+          - "Conduct executive-targeted security awareness training"
+
+  - name: "Active Lateral Movement"
+    description: "Respond when an attacker is actively moving between systems in your network — time-critical containment."
+    category: "Lateral Movement"
+    mitre: "T1021"
+    severity: "critical"
+    premium: true
+    estimated_time: "1-4 hours"
+    roles: ["SOC Analyst", "Incident Commander", "Network Team"]
+    tags: [lateral-movement, network, containment]
+    phases:
+      - phase: "Detect"
+        steps:
+          - "Identify lateral movement indicators: unusual RDP, PsExec, WMI, or SMB connections"
+          - "Map the attack path — which hosts have been accessed and in what order"
+          - "Identify the compromised credentials being used"
+          - "Determine the attacker's objective (domain admin, database, file server)"
+      - phase: "Contain"
+        steps:
+          - "Isolate all confirmed compromised hosts via EDR network isolation"
+          - "Disable compromised accounts immediately"
+          - "Block attacker's known IPs/tools at network level"
+          - "If domain admin is compromised — activate KRBTGT reset procedure"
+          - "Segment critical assets (VLAN isolation for crown jewels)"
+      - phase: "Eradicate"
+        steps:
+          - "Remove attacker tooling from all accessed hosts (Cobalt Strike, Mimikatz, etc.)"
+          - "Hunt for persistence on every host in the attack path"
+          - "Reset credentials for all accounts used during lateral movement"
+          - "Patch the initial access vulnerability"
+      - phase: "Recover"
+        steps:
+          - "Rebuild compromised hosts from clean images"
+          - "Restore network connectivity in monitored stages"
+          - "Implement network segmentation improvements"
+          - "Deploy additional detection on previously unmonitored paths"
+      - phase: "Post-Incident"
+        steps:
+          - "Map full attack chain to MITRE ATT&CK"
+          - "Conduct adversary simulation on the same path to verify fixes"
+          - "Update firewall rules and network segmentation policies"
+
+  - name: "Cloud Account Compromise"
+    description: "Respond to compromised cloud accounts (AWS, Azure, GCP) — from initial detection through full remediation."
+    category: "Cloud Compromise"
+    mitre: "T1078.004"
+    severity: "critical"
+    premium: true
+    estimated_time: "2-6 hours"
+    roles: ["SOC Analyst", "Cloud Security Engineer", "DevOps"]
+    tags: [cloud, aws, azure, gcp, account-compromise]
+    phases:
+      - phase: "Detect"
+        steps:
+          - "Identify suspicious cloud activity: unusual API calls, new regions, resource creation"
+          - "Check CloudTrail/Activity Log for the compromised identity"
+          - "Identify if access keys, tokens, or console access was compromised"
+          - "Determine scope — which resources were accessed or modified"
+      - phase: "Contain"
+        steps:
+          - "Immediately rotate or disable compromised access keys"
+          - "Revoke active sessions (AWS: revoke IAM sessions, Azure: revoke refresh tokens)"
+          - "Apply explicit deny policy to the compromised identity"
+          - "Disable any new IAM users/roles created by the attacker"
+          - "Block attacker IP ranges at security group / NSG level"
+      - phase: "Eradicate"
+        steps:
+          - "Audit all changes made during the compromise window"
+          - "Remove unauthorized resources (EC2 instances, Lambda functions, storage buckets)"
+          - "Revert security group and IAM policy changes"
+          - "Check for backdoor access (new access keys, cross-account roles, SSO configurations)"
+      - phase: "Recover"
+        steps:
+          - "Reset credentials and enforce MFA on all affected accounts"
+          - "Restore any modified resources from infrastructure-as-code"
+          - "Verify billing — check for crypto-mining instances"
+          - "Re-enable monitoring and alerting for the affected scope"
+      - phase: "Post-Incident"
+        steps:
+          - "Implement least-privilege IAM policies"
+          - "Enable GuardDuty / Defender for Cloud / Security Command Center"
+          - "Set up billing alerts for anomalous spend"
+
+  - name: "Data Breach Response"
+    description: "Full response plan when sensitive data has been confirmed exfiltrated — technical, legal, and communication steps."
+    category: "Data Breach"
+    mitre: "T1048"
+    severity: "critical"
+    premium: true
+    estimated_time: "Days to weeks"
+    roles: ["Incident Commander", "SOC Analyst", "Legal", "PR", "DPO"]
+    tags: [data-breach, exfiltration, gdpr, compliance]
+    phases:
+      - phase: "Detect"
+        steps:
+          - "Confirm data exfiltration — identify what data left and through what channel"
+          - "Determine volume and sensitivity of exfiltrated data"
+          - "Identify affected data subjects (customers, employees, partners)"
+          - "Establish timeline: when did exfiltration start and stop"
+      - phase: "Contain"
+        steps:
+          - "Close the exfiltration channel immediately"
+          - "Isolate affected systems"
+          - "Preserve all evidence (logs, memory dumps, network captures)"
+          - "Engage legal counsel and data protection officer"
+          - "Activate incident communication team"
+      - phase: "Eradicate"
+        steps:
+          - "Remove attacker access and all persistence mechanisms"
+          - "Patch the vulnerability or close the gap that allowed exfiltration"
+          - "Rotate all credentials that may have been exposed in the breach"
+      - phase: "Recover"
+        steps:
+          - "Rebuild affected systems"
+          - "Implement additional DLP controls on exfiltration channels"
+          - "Enhanced monitoring on previously affected data stores"
+      - phase: "Post-Incident"
+        steps:
+          - "Notify regulators within required timeframes (GDPR: 72 hours)"
+          - "Notify affected data subjects"
+          - "Engage external forensics firm if needed for legal proceedings"
+          - "File cyber insurance claim"
+          - "Publish transparency report if appropriate"
+
+  - name: "Insider Threat Investigation"
+    description: "Investigate and respond to suspected malicious insider activity — balancing security with legal and HR requirements."
+    category: "Insider Threat"
+    mitre: "T1078"
+    severity: "high"
+    premium: true
+    estimated_time: "Days to weeks"
+    roles: ["SOC Analyst", "HR", "Legal", "Incident Commander"]
+    tags: [insider-threat, investigation, hr, legal]
+    phases:
+      - phase: "Detect"
+        steps:
+          - "Identify insider threat indicators: unusual data access, off-hours activity, mass downloads"
+          - "Correlate with HR signals (resignation notice, performance issues, access disputes)"
+          - "Review DLP alerts for the suspected user"
+          - "Check for unauthorized USB usage, personal cloud uploads, or email forwarding"
+      - phase: "Contain"
+        steps:
+          - "Engage legal and HR BEFORE taking technical action"
+          - "Increase monitoring on the suspected user (with legal approval)"
+          - "Restrict access to sensitive systems without alerting the user (if investigation is covert)"
+          - "Preserve all evidence with chain-of-custody documentation"
+      - phase: "Eradicate"
+        steps:
+          - "Disable all access upon legal/HR decision to act"
+          - "Collect company devices"
+          - "Revoke VPN, email, cloud, and building access simultaneously"
+          - "Review all systems the user had access to for planted backdoors"
+      - phase: "Recover"
+        steps:
+          - "Change shared credentials the user had access to"
+          - "Review and reassign the user's access and responsibilities"
+          - "Audit any code or configurations the user modified"
+      - phase: "Post-Incident"
+        steps:
+          - "Document findings for potential legal proceedings"
+          - "Review and improve access control policies"
+          - "Consider implementing UEBA (User Entity Behavior Analytics)"
+
+  - name: "DDoS Attack Response"
+    description: "Mitigate active DDoS attacks — from initial detection through traffic scrubbing and service restoration."
+    category: "DDoS"
+    mitre: "T1498"
+    severity: "high"
+    premium: true
+    estimated_time: "1-4 hours"
+    roles: ["SOC Analyst", "Network Team", "DevOps"]
+    tags: [ddos, availability, network, cdn]
+    phases:
+      - phase: "Detect"
+        steps:
+          - "Confirm DDoS indicators: traffic spike, service degradation, bandwidth saturation"
+          - "Identify attack type: volumetric (UDP flood), protocol (SYN flood), or application layer (HTTP flood)"
+          - "Determine attack source distribution (single source vs. botnet)"
+          - "Identify targeted service/IP"
+      - phase: "Contain"
+        steps:
+          - "Activate DDoS mitigation service (Cloudflare, AWS Shield, Akamai)"
+          - "Enable rate limiting at WAF/load balancer"
+          - "Implement geo-blocking if attack originates from specific regions"
+          - "Blackhole route the targeted IP if service is sacrificial"
+          - "Scale infrastructure horizontally if possible (auto-scaling)"
+      - phase: "Eradicate"
+        steps:
+          - "Work with ISP to filter attack traffic upstream"
+          - "Fine-tune WAF rules based on attack signature"
+          - "Block identified bot signatures and patterns"
+      - phase: "Recover"
+        steps:
+          - "Gradually restore service and monitor for re-attack"
+          - "Clear any request queues or backlogs"
+          - "Verify service health across all endpoints"
+      - phase: "Post-Incident"
+        steps:
+          - "Analyze attack traffic patterns for future prevention"
+          - "Review and update DDoS response plan"
+          - "Ensure DDoS protection is active on all public-facing services"
+          - "Consider dedicated DDoS protection if not already in place"

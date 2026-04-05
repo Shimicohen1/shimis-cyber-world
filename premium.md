@@ -38,9 +38,36 @@ permalink: /premium/
 </section>
 {% endif %}
 
+<section class="premium-tools-live">
+<div class="feed__header">
+<h2 class="feed__title"><span class="label label--cyan">LIVE</span> &nbsp;Available Now</h2>
+</div>
+<div class="premium-tools__grid">
+
+<a href="/detections/" class="premium-tool-card premium-tool-card--live reveal" style="text-decoration:none;">
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">🎯</span>
+<h4>Detection Library</h4>
+<p>Production-ready detection rules for KQL, Sigma, and Splunk — mapped to MITRE ATT&CK. Copy, paste, detect.</p>
+<span class="premium-tool-card__tag">Detection</span>
+</div>
+</a>
+
+<a href="/playbooks/" class="premium-tool-card premium-tool-card--live reveal" style="text-decoration:none;">
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">📋</span>
+<h4>Incident Playbooks</h4>
+<p>Step-by-step response playbooks for every attack type. Phase-by-phase actions from detection to recovery.</p>
+<span class="premium-tool-card__tag">Incident Response</span>
+</div>
+</a>
+
+</div>
+</section>
+
 <section class="premium-tools">
 <div class="feed__header">
-<h2 class="feed__title"><span class="label label--amber">PREMIUM</span> &nbsp;Tools Preview</h2>
+<h2 class="feed__title"><span class="label label--amber">COMING SOON</span> &nbsp;In Development</h2>
 </div>
 <div class="premium-tools__grid">
 
@@ -144,3 +171,5 @@ permalink: /premium/
 </div>
 </section>
 </div>
+
+<link rel="stylesheet" href="{{ '/assets/css/premium-tools.css' | relative_url }}">
