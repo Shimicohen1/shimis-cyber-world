@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Cartels Operate Like Businesses
-    text: Modern ransomware threats are evolving into sophisticated, industrial-scale operations.
-    detail: The stereotypical lone hacker is outdated. Today's ransomware landscape is dominated by Ransomware-as-a-Service (RaaS) models, creating complex, hierarchical ecosystems. Cybersecurity professionals must adapt their defenses to counter these organized, profit-driven cybercrime enterprises, focusing on supply chain security and robust endpoint protection.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
-    link_label: CISA Ransomware Guidance
+  - title: Ransomware Cartels Evolve to Corporate Structures
+    text: Modern ransomware operates like businesses, leveraging RaaS models for profit.
+    detail: The stereotypical lone hacker is obsolete. Ransomware-as-a-Service (RaaS) has created complex, hierarchical ecosystems where cybercriminals function as profitable entities. This shift necessitates that organizations strengthen defenses against sophisticated, professionally managed cybercrime operations and consider threat intelligence feeds that track these evolving structures.
+    link: https://www.cisa.gov/news-events/news/understanding-ransomware-threat-and-how-defend-against-it
+    link_label: CISA on Ransomware
     badge: signal
     tags:
       - ransomware
       - malware
       - threat-intel
-  - title: Phishing Tactics Escalate with Device Code Exploitation
-    text: Device code phishing attacks are surging due to readily available attack kits.
-    detail: A 37x increase in device code phishing highlights a significant trend. Attackers are leveraging new, sophisticated phishing kits to streamline attacks targeting user credentials via mobile device prompts. Organizations should educate users on recognizing these evolving tactics and implement multi-factor authentication to mitigate risks.
-    link: https://owasp.org/www-community/attacks/Phishing
-    link_label: OWASP Phishing Information
+  - title: Phishing Attacks Mimic Trusted Institutions
+    text: Phishing campaigns are impersonating government bodies and popular services via SMS.
+    detail: Attackers are increasingly using SMS to distribute malicious links that lead to fake websites designed to harvest sensitive data, impersonating entities like Israel's National Insurance Institute. Be vigilant against unsolicited messages, especially those requesting personal information or urging immediate action. Verify sender authenticity through official channels.
+    link: https://www.consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams
+    link_label: FTC Phishing Guide
     badge: signal
     tags:
       - phishing
-      - threat-intel
-      - attack-vectors
-  - title: AI and Cloud Infrastructure Under Scrutiny
-    text: AI infrastructure is migrating, and cloud services face privacy concerns.
-    detail: The movement of AI infrastructure across borders and reports of services like LinkedIn scanning browser extensions for data collection signal critical areas for attention. Organizations must monitor cloud configurations for unintended data exposure and stay informed about evolving AI deployment strategies.
-    link: https://www.nist.gov/cyberframework/ai-risk-management
-    link_label: NIST AI Risk Management
-    badge: signal
-    tags:
-      - ai
-      - cloud-security
-      - privacy
-  - title: Vulnerabilities in Common Software Demand Vigilance
-    text: Actively exploited vulnerabilities and new CVEs require prompt patching.
-    detail: Recent advisories highlight actively exploited vulnerabilities in enterprise software like FortiClient EMS and new CVEs in enrollment and student management systems. Prioritizing patching for known exploited vulnerabilities and staying updated on CVE notifications is crucial for preventing breaches.
+      - identity
+      - data-leak
+  - title: Exploitation of Known Vulnerabilities Continues
+    text: Actively exploited vulnerabilities in enterprise software require immediate patching.
+    detail: Recent advisories highlight critical vulnerabilities, such as CVE-2026-35616 in FortiClient EMS, being actively exploited. Organizations must prioritize timely patching and vulnerability management to mitigate risks. Regularly review CISA's Known Exploited Vulnerabilities catalog for critical threats demanding immediate attention.
     link: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
     link_label: CISA KEV Catalog
     badge: signal
     tags:
       - vulnerability
-      - cve
+      - threat-intel
       - patch-management
+  - title: OSINT Tools Directory Expands for Investigators
+    text: A comprehensive directory aids professionals in navigating the OSINT landscape.
+    detail: The proliferation of Open Source Intelligence (OSINT) tools can be overwhelming. Resources are emerging to catalog these tools, assisting investigators in uncovering digital traces and building comprehensive profiles. Leverage these directories to enhance your intelligence gathering capabilities and streamline investigations.
+    link: https://www.owasp.org/www-community/OSINT
+    link_label: OWASP OSINT Resources
+    badge: signal
+    tags:
+      - osint
+      - tools
+      - investigation
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
