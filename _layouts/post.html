@@ -112,6 +112,22 @@ layout: default
     </div>
     {% endif %}
 
+    {% comment %}── MITRE ATT&CK Techniques ──{% endcomment %}
+    {% if page.mitre_attack.size > 0 %}
+    <div class="post-mitre-attack">
+      <h2>MITRE ATT&CK</h2>
+      <div class="mitre-attack__techniques">
+        {% for technique in page.mitre_attack %}
+        <a href="{{ technique.url }}" class="mitre-attack__item" target="_blank" rel="noopener">
+          <span class="mitre-attack__id">{{ technique.id }}</span>
+          <span class="mitre-attack__name">{{ technique.name }}</span>
+          <span class="mitre-attack__tactic">{{ technique.tactic }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
     {% comment %}── IOC Section ──{% endcomment %}
     {% if page.iocs.size > 0 %}
     <div class="post-iocs">
