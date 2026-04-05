@@ -16,6 +16,19 @@ layout: default
         {% endif %}
         {% for tag in page.tags %}{% unless tag == 'telegram' or tag == 'cyber' or tag == 'live-feed' or tag == 'security' or tag == 'news' %}<span class="tag">{{ tag }}</span>{% endunless %}{% endfor %}
       </div>
+
+      {% comment %}── Listen & Translate toolbar ──{% endcomment %}
+      <div class="post-toolbar">
+        <button class="post-toolbar__btn" id="listen-btn" aria-label="Listen to this post">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          <span>Listen</span>
+        </button>
+        <button class="post-toolbar__btn post-toolbar__btn--stop" id="listen-stop-btn" aria-label="Stop listening" style="display:none">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>
+          <span>Stop</span>
+        </button>
+        <div class="post-toolbar__translate" id="google_translate_element"></div>
+      </div>
     </header>
 
     {% comment %}── Cover image: own source image OR category fallback ──{% endcomment %}
@@ -179,3 +192,62 @@ layout: default
     </nav>
   </article>
 </div>
+
+{% comment %}── Google Translate Widget ──{% endcomment %}
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: '{{ page.lang | default: "en" }}',
+    layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+{% comment %}── Text-to-Speech ──{% endcomment %}
+<script>
+(function() {
+  var listenBtn = document.getElementById('listen-btn');
+  var stopBtn = document.getElementById('listen-stop-btn');
+  if (!listenBtn || !window.speechSynthesis) {
+    if (listenBtn) listenBtn.style.display = 'none';
+    return;
+  }
+
+  var speaking = false;
+
+  function getPostText() {
+    var el = document.querySelector('.post-body') || document.querySelector('.post-summary');
+    if (!el) return '';
+    var title = document.querySelector('.post-title');
+    var text = (title ? title.textContent + '. ' : '') + el.innerText;
+    return text.substring(0, 5000);
+  }
+
+  function stopSpeech() {
+    speechSynthesis.cancel();
+    speaking = false;
+    listenBtn.style.display = '';
+    stopBtn.style.display = 'none';
+  }
+
+  listenBtn.addEventListener('click', function() {
+    if (speaking) { stopSpeech(); return; }
+    var text = getPostText();
+    if (!text) return;
+    var utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1;
+    utter.lang = '{{ page.lang | default: "en" }}';
+    utter.onend = function() { stopSpeech(); };
+    utter.onerror = function() { stopSpeech(); };
+    speechSynthesis.speak(utter);
+    speaking = true;
+    listenBtn.style.display = 'none';
+    stopBtn.style.display = '';
+  });
+
+  stopBtn.addEventListener('click', function() { stopSpeech(); });
+})();
+</script>
