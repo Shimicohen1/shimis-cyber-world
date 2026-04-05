@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Cartels Evolve to Corporate Structures
-    text: Ransomware operations are adopting sophisticated, business-like models, moving beyond the lone hacker stereotype.
-    detail: The Ransomware-as-a-Service (RaaS) model is prevalent, indicating a complex, hierarchical ecosystem. Professionals should focus on understanding these evolving organizational structures to better predict and counter attacks. Enhanced threat intelligence and proactive defense strategies are crucial.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-what-you-need-know
-    link_label: Ransomware Guidance
+  - title: Ransomware Cartels Operate Like Businesses
+    text: Modern ransomware threats are evolving into sophisticated, industrial-scale operations.
+    detail: The stereotypical lone hacker is outdated. Today's ransomware landscape is dominated by Ransomware-as-a-Service (RaaS) models, creating complex, hierarchical ecosystems. Cybersecurity professionals must adapt their defenses to counter these organized, profit-driven cybercrime enterprises, focusing on supply chain security and robust endpoint protection.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
-      - threat-intel
       - malware
-  - title: AI Infrastructure Migration and Dual-Use Concerns
-    text: AI infrastructure developed in conflict zones is being redeployed across international borders.
-    detail: The migration of AI infrastructure from Gaza to Lebanon and Iran highlights potential dual-use concerns and the rapid evolution of advanced cyber capabilities. Organizations should monitor geopolitical AI developments and their potential impact on global cybersecurity postures.
-    link: https://www.mitre.org/about/news/mitre-engages-ai-policy-makers-and-researchers
-    link_label: AI Policy & Research
+      - threat-intel
+  - title: Phishing Tactics Escalate with Device Code Exploitation
+    text: Device code phishing attacks are surging due to readily available attack kits.
+    detail: A 37x increase in device code phishing highlights a significant trend. Attackers are leveraging new, sophisticated phishing kits to streamline attacks targeting user credentials via mobile device prompts. Organizations should educate users on recognizing these evolving tactics and implement multi-factor authentication to mitigate risks.
+    link: https://owasp.org/www-community/attacks/Phishing
+    link_label: OWASP Phishing Information
+    badge: signal
+    tags:
+      - phishing
+      - threat-intel
+      - attack-vectors
+  - title: AI and Cloud Infrastructure Under Scrutiny
+    text: AI infrastructure is migrating, and cloud services face privacy concerns.
+    detail: The movement of AI infrastructure across borders and reports of services like LinkedIn scanning browser extensions for data collection signal critical areas for attention. Organizations must monitor cloud configurations for unintended data exposure and stay informed about evolving AI deployment strategies.
+    link: https://www.nist.gov/cyberframework/ai-risk-management
+    link_label: NIST AI Risk Management
     badge: signal
     tags:
       - ai
-      - cloud
-      - geopolitics
-  - title: Exploitable Vulnerabilities in Widely Used Software
-    text: Actively exploited vulnerabilities continue to be discovered in popular enterprise and consumer software.
-    detail: Recent advisories highlight actively exploited CVEs in products like FortiClient EMS and TrueConf Client. Organizations must prioritize patching and threat hunting for known exploited vulnerabilities to mitigate immediate risks.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-321a
-    link_label: Known Exploited Vulnerabilities
+      - cloud-security
+      - privacy
+  - title: Vulnerabilities in Common Software Demand Vigilance
+    text: Actively exploited vulnerabilities and new CVEs require prompt patching.
+    detail: Recent advisories highlight actively exploited vulnerabilities in enterprise software like FortiClient EMS and new CVEs in enrollment and student management systems. Prioritizing patching for known exploited vulnerabilities and staying updated on CVE notifications is crucial for preventing breaches.
+    link: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+    link_label: CISA KEV Catalog
     badge: signal
     tags:
       - vulnerability
-      - threat-intel
       - cve
-  - title: OSINT Tooling Expands for Complex Investigations
-    text: A growing directory of OSINT tools is emerging to support intricate investigations.
-    detail: The increasing complexity of cybercrime necessitates advanced Open Source Intelligence capabilities. Security professionals should explore comprehensive OSINT tool directories to enhance their investigative workflows and data analysis.
-    link: https://www.owasp.org/www-project/owasp-amass
-    link_label: OSINT Tooling
-    badge: signal
-    tags:
-      - osint
-      - investigation
-      - tools
+      - patch-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
