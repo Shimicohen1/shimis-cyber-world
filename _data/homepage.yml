@@ -25,45 +25,45 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Emerging OSINT Tools Streamline Investigations
-    text: New browser extensions and online generators are enhancing OSINT capabilities for researchers.
-    detail: Tools like APILEECH and OSINTNova's Google Dorks Generator are emerging, offering advanced functionalities for web analysis and precise information gathering. Professionals should integrate these evolving resources into their workflows to accelerate threat intelligence and investigative processes.
-    link: https://www.owasp.org/www-community/Defensive_Tools
-    link_label: OSINT Tools Overview
+  - title: OSINT Tools Ecosystem Expands Rapidly
+    text: The OSINT tool landscape is growing, with new directories and generators emerging to aid investigations.
+    detail: New tools like APILEECH and OSINTNova are being highlighted, alongside comprehensive directories. Professionals should regularly review updated OSINT tool lists to leverage the latest capabilities for information gathering and analysis, ensuring they are equipped with effective resources. Stay current with emerging OSINT methodologies and tools to maintain an edge in threat intelligence.
+    link: https://www.cisa.gov/news-events/news/leveraging-open-source-intelligence-osint-cybersecurity
+    link_label: CISA OSINT Guidance
     badge: signal
     tags:
       - osint
       - tools
       - threat-intel
-  - title: North Korea Dominates 2025 Crypto Heists
-    text: North Korean state-sponsored actors are responsible for a significant portion of global crypto theft.
-    detail: Reports indicate a substantial surge in cryptocurrency heists attributed to North Korean actors in 2025, accounting for over half of all stolen crypto. Organizations dealing with digital assets should bolster their security measures against sophisticated state-backed threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-132a
-    link_label: North Korea Cyber Activity Advisory
+  - title: North Korea's Crypto Heists Escalate Significantly
+    text: North Korean state-sponsored actors are increasingly targeting cryptocurrency, with a substantial surge in theft reported.
+    detail: Reports indicate a significant increase in crypto theft attributed to North Korean actors, highlighting a growing financial motive for state-sponsored cyber operations. Organizations dealing with digital assets should enhance their security measures against sophisticated phishing and social engineering tactics often employed in these attacks. Monitor threat intelligence for evolving TTPs.
+    link: https://www.fbi.gov/how-we-can-help-you/scams-and-safety/common-scams-and-crimes/cryptocurrency-scams
+    link_label: FBI on Crypto Scams
     badge: signal
     tags:
       - threat-intel
-      - crypto-theft
+      - cryptocurrency
       - nation-state
-  - title: Image-Based Malware Obfuscation on the Rise
-    text: Attackers are embedding malware within image files, evading traditional detection methods.
-    detail: Sophisticated techniques are being used to hide malicious code within seemingly benign image files, challenging standard security solutions. Cybersecurity professionals must implement advanced threat detection and educate users on identifying suspicious files, regardless of their apparent format.
-    link: https://www.mitre.org/capabilities/attack-techniques/T1041
-    link_label: "MITRE ATT&CK: Exfiltration Over C2 Channel"
+  - title: Image Files as a Vector for Malware Delivery
+    text: Malicious actors are increasingly using image files to hide and deliver malware, bypassing traditional defenses.
+    detail: Sophisticated techniques are emerging where malware is embedded within seemingly harmless image files, leveraging how systems process visual data. Defenders must implement advanced threat detection solutions capable of analyzing file content beyond simple signatures. Educate users about the risks of opening or processing untrusted image files.
+    link: https://www.owasp.org/www-community/vulnerabilities/Content_Security_Policy_(CSP)
+    link_label: OWASP on File Upload Security
     badge: signal
     tags:
       - malware
       - threat-intel
-      - detection
-  - title: Supply Chain Attacks Target Widely Used Packages
-    text: Critical supply chain vulnerabilities are being exploited in popular developer packages.
-    detail: The compromise of widely adopted packages like Axios NPM highlights the persistent risk of supply chain attacks. Developers and security teams must prioritize robust dependency management, code scanning, and secure software development practices to mitigate these threats.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
+      - stealth
+  - title: Ransomware Operations Mimic Corporate Structures
+    text: Modern ransomware groups are adopting corporate-like structures, operating as sophisticated, profit-driven entities.
+    detail: The 'Ransomware-as-a-Service' (RaaS) model has professionalized cybercrime, with complex hierarchies and specialized roles. This trend necessitates a shift in defensive strategies, moving beyond purely technical countermeasures to include robust incident response planning and cyber threat intelligence sharing. Understanding these organizational tactics is key to disruption.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-130a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
-      - supply-chain
-      - vulnerability
+      - ransomware
+      - threat-intel
       - malware
 vault_picks:
   - name: OWASP Top 10
