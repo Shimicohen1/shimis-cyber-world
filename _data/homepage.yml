@@ -25,45 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Emerging Threat Groups Demand Proactive Monitoring
-    text: New threat actor groups are rapidly appearing, requiring continuous monitoring and threat intelligence updates.
-    detail: DARKFEED has identified emerging threat groups like 'ALP001' with recent attack activity. Organizations should enhance their threat hunting capabilities and subscribe to emerging threat intelligence feeds to stay ahead of these new actors and their evolving tactics, techniques, and procedures (TTPs).
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/spotlight-emerging-threats
-    link_label: CISA Emerging Threats
+  - title: OSINT Tools Directory Expands for Deeper Investigations
+    text: A comprehensive directory of OSINT tools is now available, streamlining investigations for security professionals.
+    detail: The proliferation of OSINT tools, highlighted by new directories, offers enhanced capabilities for data extraction and web analysis. Professionals should leverage these resources to build robust intelligence gathering workflows, but ensure proper validation of collected data to avoid misinformation.
+    link: https://www.owasp.org/www-community/OSINT
+    link_label: OSINT Best Practices
+    badge: signal
+    tags:
+      - osint
+      - tools
+      - threat-intel
+  - title: North Korea Dominates 2025 Crypto Heists
+    text: North Korean state actors are responsible for a significant surge in cryptocurrency theft in 2025.
+    detail: Recent reports indicate a substantial increase in cryptocurrency stolen by North Korean state-sponsored actors, now accounting for a majority of global crypto theft. This trend underscores the persistent threat of nation-state-backed cybercrime targeting digital assets.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-285a
+    link_label: Advisory on North Korean Cyber Threats
     badge: signal
     tags:
       - threat-intel
-      - emerging-threats
-  - title: Image-Based Malware Obfuscation on the Rise
-    text: Attackers are hiding malware within image files, bypassing traditional security measures.
-    detail: Posts highlight techniques where malicious code is embedded in image files, evading detection. Security teams should implement advanced endpoint detection and response (EDR) solutions capable of analyzing file content beyond simple signatures and educate users on the risks of downloading untrusted image files.
-    link: https://www.owasp.org/www-community/vulnerabilities/Content_Injection
-    link_label: OWASP Content Injection
+      - cryptocurrency
+      - nation-state
+  - title: Image Files Used for Sophisticated Malware Obfuscation
+    text: Attackers are embedding malicious code within image files to evade detection.
+    detail: A new technique involves hiding malware within image files, leveraging how systems process visual data. This 'steganography' method requires advanced detection mechanisms. Security teams should implement stricter file type validation and behavioral analysis for executables.
+    link: https://www.mitre.org/technologies/attack/resources/attack-matrix
+    link_label: MITRE ATT&CK Framework
     badge: signal
     tags:
       - malware
       - threat-intel
-      - obfuscation
-  - title: SQL Injection Vulnerabilities Persist in Web Applications
-    text: Numerous SQL injection vulnerabilities continue to be discovered in various web applications.
-    detail: Multiple CVEs (e.g., CVE-2026-5575, CVE-2026-5553) highlight ongoing SQL injection flaws in popular management systems. Developers must prioritize secure coding practices, implement input validation, and utilize parameterized queries to mitigate these persistent and high-impact vulnerabilities.
-    link: https://owasp.org/www-community/vulnerabilities/SQL_Injection
-    link_label: OWASP SQL Injection
+      - detection
+  - title: Fortinet Patches Actively Exploited Client Vulnerability
+    text: Fortinet has released a patch for an actively exploited vulnerability in FortiClient EMS.
+    detail: CVE-2026-35616 in FortiClient EMS is being actively exploited, posing a significant risk. Organizations using this product must prioritize immediate patching to mitigate potential compromise and data breaches. Continuous monitoring for indicators of compromise is also advised.
+    link: https://www.fortiguard.com/psirt/advisories/FG-VD-26-35616
+    link_label: Fortinet Security Advisory
     badge: signal
     tags:
       - vulnerability
-      - sql-injection
-      - web-security
-  - title: Supply Chain Attacks Target Widely Used Packages
-    text: Critical NPM packages with massive download counts are becoming targets for supply chain attacks.
-    detail: The compromise of the Axios NPM package, used by over 100 million users weekly, underscores the severe risks of supply chain attacks. Organizations must implement robust dependency management, software composition analysis (SCA), and least privilege principles for code repositories.
-    link: https://www.cisa.gov/news-events/advisories/aa21-207a
-    link_label: CISA Supply Chain Guidance
-    badge: signal
-    tags:
-      - supply-chain
       - threat-intel
-      - npm
+      - patch-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
