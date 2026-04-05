@@ -92,6 +92,10 @@
 [data-theme="light"] .post-summary { background: rgba(0,0,0,.03); }
 [data-theme="light"] .post-why-it-matters { background: rgba(0,0,0,.02); border-color: rgba(0,0,0,.08); }
 [data-theme="light"] .post-why-it-matters li { color: var(--white); }
+[data-theme="light"] .post-mitre-attack { background: rgba(100,140,255,.04); border-color: rgba(100,140,255,.15); }
+[data-theme="light"] .mitre-attack__item { background: rgba(100,140,255,.06); border-color: rgba(100,140,255,.12); }
+[data-theme="light"] .mitre-attack__name { color: var(--white); }
+[data-theme="light"] .mitre-attack__tactic { color: var(--dim); }
 [data-theme="light"] .post-iocs__table thead th { color: var(--dim); border-bottom-color: var(--border); }
 [data-theme="light"] .post-iocs__table tbody tr { border-bottom-color: var(--border); }
 [data-theme="light"] .post-iocs__table td { color: var(--white); }
@@ -1676,6 +1680,16 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .post-why-it-matters h2 { font-size: 1rem; margin: 0 0 .75rem 0; color: var(--acid, #39ff14); text-transform: uppercase; letter-spacing: .05em; }
 .post-why-it-matters ul { margin: 0; padding-left: 1.2rem; }
 .post-why-it-matters li { margin-bottom: .4rem; line-height: 1.5; color: rgba(255,255,255,.85); }
+
+/* MITRE ATT&CK Section */
+.post-mitre-attack { margin: 1.5rem 0; padding: 1rem 1.25rem; background: rgba(100,140,255,.04); border-radius: 8px; border: 1px solid rgba(100,140,255,.15); }
+.post-mitre-attack h2 { font-size: 1rem; margin: 0 0 .75rem 0; color: rgba(100,160,255,.9); text-transform: uppercase; letter-spacing: .05em; }
+.mitre-attack__techniques { display: flex; flex-direction: column; gap: .5rem; }
+.mitre-attack__item { display: flex; align-items: center; gap: .75rem; padding: .5rem .75rem; background: rgba(100,140,255,.06); border: 1px solid rgba(100,140,255,.12); border-radius: 6px; text-decoration: none; color: inherit; transition: all .15s; }
+.mitre-attack__item:hover { background: rgba(100,140,255,.12); border-color: rgba(100,160,255,.3); }
+.mitre-attack__id { font-family: var(--f-mono); font-size: .8rem; font-weight: 700; color: rgba(100,160,255,.95); white-space: nowrap; min-width: 5.5rem; }
+.mitre-attack__name { flex: 1; font-size: .85rem; color: rgba(255,255,255,.9); font-weight: 500; }
+.mitre-attack__tactic { font-size: .72rem; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
 
 /* IOC Section */
 .post-iocs { margin: 1.5rem 0; padding: 1rem 1.25rem; background: rgba(255,60,60,.03); border-radius: 8px; border: 1px solid rgba(255,60,60,.15); }
