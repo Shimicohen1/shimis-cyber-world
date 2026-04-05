@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI Infrastructure Migrates to Hostile Nations
-    text: Gaza's AI infrastructure is relocating to Lebanon and Iran, indicating evolving cyber warfare tactics.
-    detail: The migration of AI infrastructure from Gaza to Lebanon and Iran signifies a strategic shift in cyber operations. This move likely aims to enhance operational security and facilitate cross-border cyber activities. Organizations should monitor for increased sophisticated attacks originating from or leveraging these new hubs.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+  - title: Rise of Sophisticated OSINT Tools for Investigations
+    text: New browser extensions and dork generators are empowering advanced open-source intelligence gathering.
+    detail: The cybersecurity landscape is seeing a surge in specialized OSINT tools like APILEECH and OSINTNova. These tools enable deeper web analysis and more precise information retrieval, crucial for threat intelligence and investigations. Professionals should explore and integrate these resources to enhance their reconnaissance capabilities.
+    link: https://www.owasp.org/www-community/OSINT
+    link_label: OSINT Best Practices
+    badge: signal
+    tags:
+      - osint
+      - tools
+      - threat-intel
+  - title: North Korea's Escalating Crypto Heist Operations
+    text: North Korean state actors are significantly increasing cryptocurrency theft, impacting global markets.
+    detail: Reports indicate a substantial rise in crypto heists attributed to North Korean actors, accounting for a significant portion of global digital asset theft. This trend highlights the growing financial threat posed by nation-state sponsored cybercrime. Organizations dealing with cryptocurrency should bolster their defenses against sophisticated APT attacks.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-282a
     link_label: CISA Advisories
     badge: signal
     tags:
-      - threat-intel
-      - ai
-      - geopolitics
-  - title: North Korea's Crypto Heists Skyrocket
-    text: North Korean state-sponsored actors are increasingly targeting cryptocurrency, stealing billions in 2025.
-    detail: A significant surge in North Korean cryptocurrency theft, accounting for a substantial portion of global losses, highlights the growing financial threat posed by these actors. This trend underscores the need for enhanced security measures in the cryptocurrency space and robust monitoring for suspicious transactions.
-    link: https://www.fincen.gov/news-room/remarks/remarks-director-shalanda-young-virtual-event-combating-illicit-finance-and-us
-    link_label: FinCEN on Illicit Finance
-    badge: signal
-    tags:
-      - threat-intel
-      - cryptocurrency
       - nation-state
-  - title: Exploiting Image Files for Malware Delivery
-    text: Attackers are hiding malware within seemingly harmless image files, evading traditional detection methods.
-    detail: The use of image files as a vector for malware delivery presents a sophisticated obfuscation technique. This method exploits how systems process image data, allowing malicious payloads to remain undetected. Defenders must implement advanced threat detection solutions capable of analyzing file content and behavior.
-    link: https://owasp.org/www-community/vulnerabilities/Content_Security_Policy
-    link_label: OWASP Security Best Practices
+      - cryptocurrency
+      - threat-intel
+  - title: Image Files as a New Malware Vector
+    text: Attackers are hiding malicious code within image files to evade detection.
+    detail: Cybersecurity analysts are flagging a concerning trend where malware is concealed within image files, exploiting how systems process visual data. This technique, often referred to as steganography, bypasses traditional signature-based detection. Security teams must enhance their endpoint detection and network monitoring to identify these disguised threats.
+    link: https://attack.mitre.org/techniques/T1027/
+    link_label: "MITRE ATT&CK: Obfuscated Files or Information"
     badge: signal
     tags:
       - malware
       - threat-intel
       - detection
-  - title: Supply Chain Attacks on Popular NPM Packages
-    text: Critical NPM packages like Axios are being compromised, putting millions of projects at risk.
-    detail: The compromise of widely-used NPM packages, such as Axios, represents a significant supply chain risk. This attack vector can inject malicious code into numerous downstream projects, making it imperative for organizations to implement rigorous software supply chain security practices and dependency scanning.
-    link: https://www.nist.gov/itl/applied-cybersecurity/nist-software-supply-chain-practice-guide
-    link_label: NIST Supply Chain Guide
+  - title: Active Exploitation of Fortinet Vulnerabilities
+    text: Fortinet warns of active exploitation for CVE-2026-35616 in FortiClient EMS.
+    detail: Fortinet has issued a critical alert regarding CVE-2026-35616, a vulnerability in FortiClient EMS that is already being actively exploited in the wild. This poses an immediate risk to organizations utilizing the affected product. Prompt patching and rigorous monitoring for signs of compromise are essential to mitigate this threat.
+    link: https://www.fortinet.com/support-and-training/security-advisories/fortinet-product-vulnerability-and-notice-advisories
+    link_label: Fortinet Security Advisories
     badge: signal
     tags:
-      - supply-chain
       - vulnerability
-      - npm
+      - exploitation
+      - iot
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
