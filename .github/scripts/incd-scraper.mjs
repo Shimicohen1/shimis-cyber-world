@@ -451,9 +451,25 @@ async function main() {
       console.log(`[INCD] Scraped ${results.length} publications from DOM`);
     }
 
-    // Filter new entries
-    const newEntries = results.filter((r) => !publishedSet.has(r.url));
-    console.log(`[INCD] New: ${newEntries.length}`);
+    // Filter new entries — only process publications from the last 30 days
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - 30);
+
+    const newEntries = results.filter((r) => {
+      if (publishedSet.has(r.url)) return false;
+
+      // Parse publication date (DD.MM.YYYY)
+      const dateStr = r.tags?.metaData?.["תאריך פרסום"]?.[0]?.title || "";
+      const dp = dateStr.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+      if (dp) {
+        const pubDate = new Date(`${dp[3]}-${dp[2]}-${dp[1]}`);
+        if (pubDate < cutoffDate) {
+          return false; // Skip old publications
+        }
+      }
+      return true;
+    });
+    console.log(`[INCD] New (last 30 days): ${newEntries.length}`);
 
     if (newEntries.length === 0) {
       console.log("[INCD] No new publications. Done.");
