@@ -75,6 +75,6 @@ We may update this privacy policy from time to time. Changes will be posted on t
 
 For privacy-related inquiries:
 
-**Email:** [shimi@shimiscyberworld.com](mailto:shimi@shimiscyberworld.com)
+**Email:** [shimicyberworld@gmail.com](mailto:shimicyberworld@gmail.com)
 
 </div>
