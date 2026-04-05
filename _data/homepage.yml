@@ -25,48 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI's Growing Role in Cybercrime and Defense
-    text: AI is increasingly used by both attackers and defenders, from sophisticated video editing to tracking cybercriminals.
-    detail: AI is rapidly evolving in the cybersecurity landscape. While tools like Netflix's VOID demonstrate AI's potential for video analysis, threat actors are leveraging AI for more complex operations. It's crucial for defenders to stay ahead by understanding AI's dual-use nature and exploring AI-driven defense mechanisms.
-    link: https://www.cisa.gov/news-events/news/artificial-intelligence-and-cybersecurity
-    link_label: CISA on AI & Cybersecurity
-    badge: signal
-    tags:
-      - ai
-      - threat-intel
-      - defense
-  - title: Ransomware Cartels and Enterprise Network Access for Sale
-    text: Modern ransomware operates like businesses, with enterprise network access becoming a readily available commodity on the dark web.
-    detail: The structure of ransomware operations has shifted from lone actors to sophisticated, cartel-like organizations. This industrialization is evident in the rise of 'Access For Sale' listings on dark web marketplaces, directly monetizing compromised enterprise networks. Organizations must prioritize robust network segmentation and access controls to mitigate this growing threat.
-    link: https://www.ncsa.gov.cn/gk/nwjzx/202311/t20231101_175057.html
-    link_label: NCSC Ransomware Guidance
+  - title: Ransomware Cartels Evolve to Corporate Structures
+    text: Ransomware operations are adopting sophisticated, business-like models, moving beyond the lone hacker stereotype.
+    detail: The Ransomware-as-a-Service (RaaS) model is prevalent, indicating a complex, hierarchical ecosystem. Professionals should focus on understanding these evolving organizational structures to better predict and counter attacks. Enhanced threat intelligence and proactive defense strategies are crucial.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-what-you-need-know
+    link_label: Ransomware Guidance
     badge: signal
     tags:
       - ransomware
-      - darkweb
       - threat-intel
-      - access-for-sale
-  - title: OSINT Tools Directory Empowers Investigators
-    text: A comprehensive directory of OSINT tools is now available, streamlining investigations for cybersecurity professionals.
-    detail: Navigating the vast array of Open Source Intelligence (OSINT) tools can be challenging. The emergence of curated directories significantly aids investigators by consolidating hundreds of specialized tools. Utilizing these resources effectively can enhance threat detection, incident response, and overall situational awareness.
-    link: https://www.owasp.org/www-community/OSINT
-    link_label: OWASP OSINT Community
+      - malware
+  - title: AI Infrastructure Migration and Dual-Use Concerns
+    text: AI infrastructure developed in conflict zones is being redeployed across international borders.
+    detail: The migration of AI infrastructure from Gaza to Lebanon and Iran highlights potential dual-use concerns and the rapid evolution of advanced cyber capabilities. Organizations should monitor geopolitical AI developments and their potential impact on global cybersecurity postures.
+    link: https://www.mitre.org/about/news/mitre-engages-ai-policy-makers-and-researchers
+    link_label: AI Policy & Research
+    badge: signal
+    tags:
+      - ai
+      - cloud
+      - geopolitics
+  - title: Exploitable Vulnerabilities in Widely Used Software
+    text: Actively exploited vulnerabilities continue to be discovered in popular enterprise and consumer software.
+    detail: Recent advisories highlight actively exploited CVEs in products like FortiClient EMS and TrueConf Client. Organizations must prioritize patching and threat hunting for known exploited vulnerabilities to mitigate immediate risks.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-321a
+    link_label: Known Exploited Vulnerabilities
+    badge: signal
+    tags:
+      - vulnerability
+      - threat-intel
+      - cve
+  - title: OSINT Tooling Expands for Complex Investigations
+    text: A growing directory of OSINT tools is emerging to support intricate investigations.
+    detail: The increasing complexity of cybercrime necessitates advanced Open Source Intelligence capabilities. Security professionals should explore comprehensive OSINT tool directories to enhance their investigative workflows and data analysis.
+    link: https://www.owasp.org/www-project/owasp-amass
+    link_label: OSINT Tooling
     badge: signal
     tags:
       - osint
-      - tools
       - investigation
-  - title: Third-Party Apps and Browser Extensions Pose Privacy Risks
-    text: Third-party applications and browser extensions, including Telegram clients and LinkedIn's scans, are exhibiting concerning data exfiltration and privacy practices.
-    detail: Security researchers are uncovering significant privacy risks associated with third-party applications and browser extensions. From Telegram clients exfiltrating user phone numbers to LinkedIn scanning browser extensions without clear consent, vigilance is paramount. Users should carefully vet all third-party software and browser add-ons, and organizations should enforce strict policies regarding their use.
-    link: https://developer.chrome.com/docs/extensions/mv3/intro/
-    link_label: Chrome Extension Best Practices
-    badge: signal
-    tags:
-      - privacy
-      - data-leak
-      - browser-extensions
-      - third-party-risk
+      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
