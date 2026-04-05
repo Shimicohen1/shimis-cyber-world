@@ -354,21 +354,94 @@ async function main() {
   const page = await context.newPage();
 
   try {
-    // Navigate to INCD publications page (pass Cloudflare challenge)
+    // Navigate to INCD publications page
     console.log("[INCD] Navigating to gov.il publications page...");
-    await page.goto(INCD_PAGE_URL, { waitUntil: "domcontentloaded", timeout: 30000 });
-    await page.waitForTimeout(5000);
+    await page.goto(INCD_PAGE_URL, { waitUntil: "domcontentloaded", timeout: 60000 });
 
-    // Fetch publications via API from within browser context (bypasses Cloudflare)
-    console.log("[INCD] Fetching API data from browser context...");
-    const apiData = await page.evaluate(async (apiUrl) => {
-      const res = await fetch(apiUrl + "&skip=0&limit=20");
-      if (!res.ok) throw new Error(`API error: ${res.status}`);
-      return await res.json();
-    }, INCD_API_URL);
+    // Wait for Cloudflare challenge to resolve (if any)
+    console.log("[INCD] Waiting for page to fully load...");
+    try {
+      await page.waitForSelector('a[href*="/he/pages/"]', { timeout: 30000 });
+    } catch {
+      // Maybe Cloudflare challenge is showing — wait longer
+      console.log("[INCD] Content not found yet, waiting for Cloudflare challenge...");
+      await page.waitForTimeout(10000);
+      // Check again
+      const hasContent = await page.$('a[href*="/he/pages/"]');
+      if (!hasContent) {
+        const pageContent = await page.content();
+        if (pageContent.includes("Cloudflare") || pageContent.includes("cf-error")) {
+          throw new Error("Blocked by Cloudflare — cannot access gov.il");
+        }
+        throw new Error("Page loaded but no publication links found");
+      }
+    }
+    await page.waitForTimeout(3000);
 
-    const results = apiData.results || [];
-    console.log(`[INCD] API returned ${results.length} publications (total: ${apiData.total})`);
+    // Try the API first (from browser context, may work after Cloudflare challenge)
+    let results = [];
+    try {
+      const apiData = await page.evaluate(async (apiUrl) => {
+        const res = await fetch(apiUrl + "&skip=0&limit=20");
+        if (!res.ok) return null;
+        return await res.json();
+      }, INCD_API_URL);
+
+      if (apiData && apiData.results) {
+        results = apiData.results;
+        console.log(`[INCD] API returned ${results.length} publications (total: ${apiData.total})`);
+      }
+    } catch {
+      console.log("[INCD] API call failed, falling back to DOM scraping");
+    }
+
+    // Fallback: extract publications from the rendered DOM
+    if (results.length === 0) {
+      console.log("[INCD] Scraping publications from DOM...");
+      results = await page.evaluate(() => {
+        const items = [];
+        // Each publication is a link with h3 title + description + metadata
+        const containers = document.querySelectorAll('a[href*="/he/pages/"]');
+        for (const link of containers) {
+          const h3 = link.querySelector("h3");
+          if (!h3) continue;
+
+          const title = h3.innerText.trim();
+          // Get description text (text node after h3)
+          const descParts = [];
+          for (const node of link.childNodes) {
+            if (node.nodeType === 3 && node.textContent.trim()) {
+              descParts.push(node.textContent.trim());
+            }
+          }
+          const description = descParts.join(" ").trim();
+
+          // Extract metadata: type and date from sibling elements
+          const metaContainer = link.nextElementSibling || link.parentElement;
+          const allText = metaContainer ? metaContainer.innerText : "";
+          
+          // Parse date DD.MM.YYYY
+          const dateMatch = allText.match(/(\d{2}\.\d{2}\.\d{4})/);
+          // Parse type
+          let pubType = "unknown";
+          if (allText.includes("התרעות")) pubType = "התרעות";
+          else if (allText.includes("המלצות")) pubType = "המלצות";
+          else if (allText.includes("הנחיות")) pubType = "הנחיות";
+
+          items.push({
+            title,
+            description: description || title,
+            url: new URL(link.href).pathname,
+            tags: {
+              promotedMetaData: { "סוג": [{ title: pubType }] },
+              metaData: { "תאריך פרסום": [{ title: dateMatch ? dateMatch[1] : "" }] },
+            },
+          });
+        }
+        return items;
+      });
+      console.log(`[INCD] Scraped ${results.length} publications from DOM`);
+    }
 
     // Filter new entries
     const newEntries = results.filter((r) => !publishedSet.has(r.url));
