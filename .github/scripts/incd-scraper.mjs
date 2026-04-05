@@ -1,0 +1,462 @@
+/**
+ * INCD Scraper — GitHub Actions script
+ *
+ * Uses Playwright to bypass Cloudflare and fetch publications from
+ * Israel National Cyber Directorate (INCD) via gov.il.
+ * Translates Hebrew → English via Gemini, builds Jekyll posts.
+ *
+ * Run: node .github/scripts/incd-scraper.mjs
+ */
+
+import { chromium } from "playwright";
+import fs from "fs";
+import path from "path";
+
+// ── Constants ────────────────────────────────────────────
+const INCD_PAGE_URL =
+  "https://www.gov.il/he/collectors/publications?officeId=4bcc13f5-fed6-4b8c-b8ee-7bf4a6bc81c8";
+const INCD_API_URL =
+  "https://www.gov.il/CollectorsWebApi/api/DataCollector/GetResults?" +
+  "CollectorType=reports&CollectorType=rfp&CollectorType=drushim&CollectorType=publicsharing" +
+  "&officeId=4bcc13f5-fed6-4b8c-b8ee-7bf4a6bc81c8&culture=he";
+const INCD_BASE_URL = "https://www.gov.il";
+
+const STATE_FILE = path.join(process.cwd(), ".github", "incd-state.json");
+const POSTS_DIR = path.join(process.cwd(), "_posts");
+const MAX_NEW_PER_RUN = 5;
+const CVE_RE = /CVE-\d{4}-\d{4,}/gi;
+
+// ── State Management ────────────────────────────────────
+
+function loadState() {
+  try {
+    if (fs.existsSync(STATE_FILE)) {
+      return JSON.parse(fs.readFileSync(STATE_FILE, "utf-8"));
+    }
+  } catch (err) {
+    console.error(`[STATE] Failed to load: ${err.message}`);
+  }
+  return { publishedUrls: [], lastChecked: null };
+}
+
+function saveState(state) {
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + "\n");
+}
+
+// ── Gemini Translation ──────────────────────────────────
+
+let lastGeminiCall = 0;
+
+async function translateAndRewrite(hebrewTitle, hebrewDescription, sourceUrl, pubType) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.log("[GEMINI] No API key — skipping translation");
+    return null;
+  }
+
+  const model = "gemini-2.5-flash-lite";
+
+  const prompt = `You are the editorial voice of Shimi's Cyber World — a sharp cybersecurity publication.
+
+Translate this Hebrew cybersecurity advisory from the Israel National Cyber Directorate (INCD) into English, and rewrite it as a professional advisory article.
+
+RULES:
+- Output MUST be entirely in English
+- Write from SCW's third-person editorial perspective
+- Attribute findings to "Israel National Cyber Directorate (INCD)"
+- Be concise, precise, and actionable
+- Never invent facts
+- Never use emojis in the body text
+- Keep the title punchy (max 12 words)
+
+HEBREW TITLE: ${hebrewTitle}
+
+HEBREW DESCRIPTION: ${hebrewDescription}
+
+SOURCE TYPE: ${pubType}
+SOURCE URL: ${sourceUrl}
+
+Return ONLY valid JSON:
+{
+  "title": "Short punchy English title (max 12 words)",
+  "body": "The rewritten article body (2-4 paragraphs, markdown allowed)",
+  "why_it_matters": "One specific, actionable recommendation for security professionals"
+}`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+  const requestBody = {
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+    generationConfig: {
+      temperature: 0.5,
+      maxOutputTokens: 4096,
+      responseMimeType: "application/json",
+      thinkingConfig: { thinkingBudget: 0 },
+    },
+  };
+
+  try {
+    // Throttle
+    const elapsed = Date.now() - lastGeminiCall;
+    if (elapsed < 1200) await new Promise((r) => setTimeout(r, 1200 - elapsed));
+    lastGeminiCall = Date.now();
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+
+    if (!response.ok) {
+      console.warn(`[GEMINI] Error ${response.status}`);
+      return null;
+    }
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) return null;
+
+    const parsed = JSON.parse(text);
+    if (!parsed.title || !parsed.body) return null;
+    return parsed;
+  } catch (err) {
+    console.error(`[GEMINI] Translation failed: ${err.message}`);
+    return null;
+  }
+}
+
+// ── IOC Extraction via Gemini ───────────────────────────
+
+async function extractIOCs(text) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || !text || text.length < 50) return [];
+
+  const prompt = `You are a CVE/vulnerability analyst. Extract IOCs from this cybersecurity advisory.
+
+Return ONLY valid JSON:
+{
+  "iocs": [
+    { "id": "CVE-XXXX-XXXXX or advisory-id", "type": "vulnerability category", "indicator": "specific technical indicator" }
+  ]
+}
+
+Rules:
+- "type": RCE, XSS, SQLi, Path Traversal, SSRF, Auth Bypass, Privilege Escalation, DoS, Buffer Overflow, Deserialization, or similar
+- "indicator": affected software, version, CWE, vulnerable component
+- Max 5 entries. Do not guess.
+
+TEXT:
+${text.substring(0, 2000)}`;
+
+  try {
+    const elapsed = Date.now() - lastGeminiCall;
+    if (elapsed < 1200) await new Promise((r) => setTimeout(r, 1200 - elapsed));
+    lastGeminiCall = Date.now();
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.1, maxOutputTokens: 1024, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
+        }),
+      }
+    );
+
+    if (!response.ok) return [];
+    const data = await response.json();
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return (parsed.iocs || []).filter((i) => i.id && i.type && i.indicator);
+  } catch {
+    return [];
+  }
+}
+
+// ── Classification ──────────────────────────────────────
+
+function classifyPublication(title, description, pubType) {
+  const combined = `${title} ${description}`;
+  const cves = combined.match(CVE_RE) || [];
+
+  if (cves.length > 0) {
+    return { section: "vulnerability", score: "HIGH", cves };
+  }
+
+  const vulnKeywords = /פגיעות|פגיעויות|vulnerability|exploit|RCE|zero.?day|עדכון.*אבטחה|security update/i;
+  if (pubType === "התרעות" && vulnKeywords.test(combined)) {
+    return { section: "vulnerability", score: "HIGH", cves: [] };
+  }
+
+  return { section: "advisory", score: "MEDIUM", cves: [] };
+}
+
+// ── Attachment Fetching ─────────────────────────────────
+
+async function fetchAttachments(page, pageUrl) {
+  try {
+    await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 20000 });
+    await page.waitForTimeout(3000);
+
+    return await page.evaluate(() => {
+      return Array.from(document.querySelectorAll("a"))
+        .filter((a) => a.href.includes("BlobFolder"))
+        .map((a) => ({
+          text: a.innerText.trim() || a.href.split(".").pop().toUpperCase(),
+          href: a.href,
+        }));
+    });
+  } catch (err) {
+    console.warn(`[ATTACH] Failed for ${pageUrl}: ${err.message}`);
+    return [];
+  }
+}
+
+// ── Post Builder ────────────────────────────────────────
+
+function yamlSafe(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, " ")
+    .replace(/\r/g, "")
+    .trim();
+}
+
+function buildPostMarkdown(pub, translated, attachments, iocs) {
+  const pubType = pub.tags?.promotedMetaData?.["סוג"]?.[0]?.title || "unknown";
+  const dateStr = pub.tags?.metaData?.["תאריך פרסום"]?.[0]?.title || "";
+  const sourceUrl = INCD_BASE_URL + pub.url;
+
+  // Parse DD.MM.YYYY
+  const dp = dateStr.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+  const pubDate = dp ? new Date(`${dp[3]}-${dp[2]}-${dp[1]}T12:00:00Z`) : new Date();
+  const yyyy = pubDate.getFullYear();
+  const mm = String(pubDate.getMonth() + 1).padStart(2, "0");
+  const dd = String(pubDate.getDate()).padStart(2, "0");
+  const isoDate = pubDate.toISOString().replace("T", " ").replace(/\.\d+Z/, " +0000");
+
+  const title = translated?.title || pub.title;
+  const body = translated?.body || pub.description;
+  const whyItMatters = translated?.why_it_matters || "Review this advisory and assess your organization's exposure.";
+
+  const classification = classifyPublication(pub.title, pub.description || "", pubType);
+  const isVuln = classification.section === "vulnerability";
+
+  // Tags
+  const tags = ["incd", "israel"];
+  if (isVuln) tags.push("vulnerability", "advisory");
+  else tags.push("advisory");
+
+  const typeMap = { "התרעות": "alert", "המלצות": "recommendation", "הנחיות": "guideline", "מדריכים": "guide" };
+  const engType = typeMap[pubType] || "advisory";
+  if (!tags.includes(engType)) tags.push(engType);
+
+  if (classification.cves.length > 0 && !tags.includes("cve")) tags.push("cve");
+
+  // Attachments section
+  let attachmentSection = "";
+  if (attachments.length > 0) {
+    attachmentSection =
+      "\n\n---\n\n**Attached Files:**\n" +
+      attachments.map((a) => `- [${a.text}](${a.href})`).join("\n");
+  }
+
+  const fullBody =
+    body + attachmentSection + `\n\n*Source: [Israel National Cyber Directorate (INCD)](${sourceUrl})*`;
+
+  const slug = pub.url.split("/").pop() || `incd-${Date.now()}`;
+  const msgId = slug.replace(/[^0-9]/g, "") || String(Date.now());
+
+  // IOCs YAML
+  let iocsYaml = "";
+  if (iocs.length > 0) {
+    iocsYaml =
+      "iocs:\n" +
+      iocs
+        .map(
+          (ioc) =>
+            `  - id: "${yamlSafe(ioc.id)}"\n    type: "${yamlSafe(ioc.type)}"\n    indicator: "${yamlSafe(ioc.indicator)}"`
+        )
+        .join("\n") +
+      "\n";
+  }
+
+  // AI image pool (pick random 01-20)
+  const imgNum = String(Math.floor(Math.random() * 20) + 1).padStart(2, "0");
+  const coverImage = isVuln
+    ? "/assets/images/covers/vulnerability.svg"
+    : `/assets/images/ai/cyber-${imgNum}.webp`;
+
+  const markdown = [
+    "---",
+    `title: "${yamlSafe(title)}"`,
+    `date: ${isoDate}`,
+    `source: INCD`,
+    `source_name: "Israel National Cyber Directorate"`,
+    `source_url: "${yamlSafe(sourceUrl)}"`,
+    `channel: "INCD"`,
+    `channel_id: "incd"`,
+    `telegram_message_id: ${msgId}`,
+    `tags: [${tags.join(", ")}]`,
+    `excerpt: "${yamlSafe(title.substring(0, 180))}"`,
+    `summary: "${yamlSafe((title + " — " + (pub.description || "")).substring(0, 300))}"`,
+    `layout: post`,
+    `section: live-feed`,
+    `score: ${classification.score}`,
+    `curated: true`,
+    `featured: false`,
+    `priority: ${isVuln ? 85 : 70}`,
+    `hidden: false`,
+    `cover_image: "${coverImage}"`,
+    `image: "${coverImage}"`,
+    translated ? `ai_rewritten: true` : "",
+    iocsYaml,
+    `why_it_matters:`,
+    `  - "${yamlSafe(whyItMatters)}"`,
+    "---",
+    "",
+    fullBody,
+  ]
+    .filter((l) => l !== "")
+    .join("\n");
+
+  const filename = `${yyyy}-${mm}-${dd}-incd-${slug}.md`;
+  return { markdown, filename, title, slug, classification };
+}
+
+// ── Main ────────────────────────────────────────────────
+
+async function main() {
+  console.log("[INCD] Starting INCD publications scraper...");
+
+  const state = loadState();
+  const publishedSet = new Set(state.publishedUrls || []);
+
+  console.log(`[INCD] State: ${publishedSet.size} previously published`);
+
+  // Launch Playwright browser
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({
+    userAgent:
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    locale: "he-IL",
+  });
+  const page = await context.newPage();
+
+  try {
+    // Navigate to INCD publications page (pass Cloudflare challenge)
+    console.log("[INCD] Navigating to gov.il publications page...");
+    await page.goto(INCD_PAGE_URL, { waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.waitForTimeout(5000);
+
+    // Fetch publications via API from within browser context (bypasses Cloudflare)
+    console.log("[INCD] Fetching API data from browser context...");
+    const apiData = await page.evaluate(async (apiUrl) => {
+      const res = await fetch(apiUrl + "&skip=0&limit=20");
+      if (!res.ok) throw new Error(`API error: ${res.status}`);
+      return await res.json();
+    }, INCD_API_URL);
+
+    const results = apiData.results || [];
+    console.log(`[INCD] API returned ${results.length} publications (total: ${apiData.total})`);
+
+    // Filter new entries
+    const newEntries = results.filter((r) => !publishedSet.has(r.url));
+    console.log(`[INCD] New: ${newEntries.length}`);
+
+    if (newEntries.length === 0) {
+      console.log("[INCD] No new publications. Done.");
+      state.lastChecked = new Date().toISOString();
+      saveState(state);
+      await browser.close();
+      return;
+    }
+
+    const batch = newEntries.slice(0, MAX_NEW_PER_RUN);
+    let published = 0;
+
+    for (const entry of batch) {
+      try {
+        const pubType = entry.tags?.promotedMetaData?.["סוג"]?.[0]?.title || "";
+        const sourceUrl = INCD_BASE_URL + entry.url;
+
+        console.log(`\n[INCD] Processing: ${entry.title.substring(0, 60)}...`);
+
+        // Translate via Gemini
+        const translated = await translateAndRewrite(
+          entry.title,
+          entry.description || "",
+          sourceUrl,
+          pubType
+        );
+
+        if (translated) {
+          console.log(`[INCD] Translated → "${translated.title}"`);
+        } else {
+          console.warn("[INCD] Translation failed, using original Hebrew");
+        }
+
+        // Fetch attachments from individual page
+        const attachments = await fetchAttachments(page, sourceUrl);
+        if (attachments.length > 0) {
+          console.log(`[INCD] Found ${attachments.length} attachments`);
+        }
+
+        // Extract IOCs
+        const combinedText = `${translated?.title || entry.title} ${translated?.body || entry.description}`;
+        const iocs = await extractIOCs(combinedText);
+        if (iocs.length > 0) {
+          console.log(`[INCD] Extracted ${iocs.length} IOCs`);
+        }
+
+        // Build post
+        const post = buildPostMarkdown(entry, translated, attachments, iocs);
+        const filePath = path.join(POSTS_DIR, post.filename);
+
+        // Check if file already exists
+        if (fs.existsSync(filePath)) {
+          console.log(`[INCD] SKIP ${post.filename} — file already exists`);
+          publishedSet.add(entry.url);
+          continue;
+        }
+
+        // Write post file
+        fs.writeFileSync(filePath, post.markdown);
+        console.log(
+          `[INCD] ✅ Created ${post.filename} [${post.classification.section}/${post.classification.score}]`
+        );
+        publishedSet.add(entry.url);
+        published++;
+
+        // Small delay between entries
+        await new Promise((r) => setTimeout(r, 2000));
+      } catch (err) {
+        console.error(`[INCD] ERROR: ${err.message}`);
+      }
+    }
+
+    // Save state
+    state.publishedUrls = [...publishedSet];
+    state.lastChecked = new Date().toISOString();
+    saveState(state);
+
+    console.log(`\n[INCD] Done — published: ${published}`);
+  } catch (err) {
+    console.error(`[INCD] Fatal error: ${err.message}`);
+    process.exitCode = 1;
+  } finally {
+    await browser.close();
+  }
+}
+
+main();

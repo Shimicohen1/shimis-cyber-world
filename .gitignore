@@ -9,6 +9,7 @@ Gemfile.lock
 
 # Scripts (contain local paths)
 scripts/
+!.github/scripts/
 
 # Backups
 _backup/

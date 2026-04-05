@@ -21,7 +21,7 @@ permalink: /vulnerabilities/
 <div class="archive">
   <div class="archive__list" id="vuln-list">
     {% for post in site.posts %}
-    {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" %}
+    {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" %}
     {% if post.score == "HIGH" or post.score == "CRITICAL" %}
     <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}">
           {% include post-card.html %}
@@ -35,7 +35,9 @@ permalink: /vulnerabilities/
   {% assign critical_cve = site.posts | where: "channel", "CVE Notify" | where: "score", "CRITICAL" %}
   {% assign high_kev = site.posts | where: "channel", "CISA KEV" | where: "score", "HIGH" %}
   {% assign critical_kev = site.posts | where: "channel", "CISA KEV" | where: "score", "CRITICAL" %}
-  {% assign cve_total = high_cve.size | plus: critical_cve.size | plus: high_kev.size | plus: critical_kev.size %}
+  {% assign high_incd = site.posts | where: "channel", "INCD" | where: "score", "HIGH" %}
+  {% assign critical_incd = site.posts | where: "channel", "INCD" | where: "score", "CRITICAL" %}
+  {% assign cve_total = high_cve.size | plus: critical_cve.size | plus: high_kev.size | plus: critical_kev.size | plus: high_incd.size | plus: critical_incd.size %}
   {% if cve_total == 0 %}
   <div class="empty-state" style="margin-top: 2rem;">
     <p>No vulnerabilities tracked yet. The CVE feed is warming up.</p>
