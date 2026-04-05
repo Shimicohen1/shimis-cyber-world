@@ -69,7 +69,7 @@
   --cyan: #0891b2;
 }
 [data-theme="light"] ::selection { background: rgba(37,99,235,.2); color: #111118; }
-[data-theme="light"] .site-header { background: rgba(245,245,247,.92); }
+[data-theme="light"] .site-header { background: rgba(235,240,252,.92); }
 [data-theme="light"] .hamburger,
 [data-theme="light"] .hamburger::before,
 [data-theme="light"] .hamburger::after { background: var(--gray); }
@@ -242,10 +242,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   position: sticky;
   top: 0;
   z-index: 200;
-  background: rgba(8,8,12,.92);
+  background: rgba(6,10,28,.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, #2563eb, #7c3aed, #db2777, #2563eb) 1;
 }
 .nav-wrap {
   display: flex;
@@ -263,6 +265,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   width: 30px; height: 30px;
   border-radius: 50%;
   border: 1px solid var(--border-hi);
+  box-shadow: 0 0 8px rgba(37,99,235,.45), 0 0 20px rgba(124,58,237,.2);
 }
 .site-name {
   font-family: var(--f-display);
