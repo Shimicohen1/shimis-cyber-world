@@ -14,6 +14,7 @@ stages:
   - series-b
   - growth
   - public
+  - enterprise
 
 startups:
   - name: "ThreatNova"
