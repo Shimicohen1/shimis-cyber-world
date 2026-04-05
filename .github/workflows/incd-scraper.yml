@@ -1,0 +1,40 @@
+name: INCD Publications Scraper
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:        # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  scrape-incd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        run: npx playwright install chromium --with-deps
+
+      - name: Run INCD Scraper
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node .github/scripts/incd-scraper.mjs
+
+      - name: Commit new posts
+        run: |
+          git config user.name "SCW Feed Bot"
+          git config user.email "shimicyberworld@gmail.com"
+          git add _posts/
+          git add .github/incd-state.json
+          if git diff --cached --quiet; then
+            echo "No new INCD publications"
+          else
+            git commit -m "Add INCD publications [automated]"
+            git push
+          fi
