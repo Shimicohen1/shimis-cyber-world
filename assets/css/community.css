@@ -1,0 +1,89 @@
+/* Community Stage — minimal additions */
+.label--cyan { color: var(--cyan); }
+
+.community-card__tagline {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--cyan);
+  margin-bottom: .2rem;
+}
+.community-card__meta {
+  font-family: var(--f-mono);
+  font-size: .65rem;
+  color: var(--dim);
+  margin-bottom: .6rem;
+  display: flex;
+  align-items: center;
+  gap: .15rem;
+}
+
+/* Submit form */
+.community-form {
+  max-width: 540px;
+}
+.community-form__group {
+  margin-bottom: 1.2rem;
+}
+.community-form__label {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: .7rem;
+  font-weight: 500;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .4rem;
+}
+.community-form__input,
+.community-form__select,
+.community-form__textarea {
+  width: 100%;
+  padding: .7rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--white);
+  font-family: var(--f-body);
+  font-size: .85rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.community-form__input:focus,
+.community-form__select:focus,
+.community-form__textarea:focus {
+  border-color: var(--electric);
+}
+.community-form__input::placeholder,
+.community-form__textarea::placeholder {
+  color: var(--dim);
+}
+.community-form__select {
+  appearance: none;
+  cursor: pointer;
+}
+.community-form__textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.community-form__hint {
+  font-size: .68rem;
+  color: var(--dim);
+  margin-top: .25rem;
+}
+.community-form__success {
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid rgba(132,204,22,.2);
+  border-radius: var(--r);
+  text-align: center;
+}
+.community-form__success h3 {
+  font-family: var(--f-display);
+  font-size: 1rem;
+  color: var(--lime);
+  margin-bottom: .3rem;
+}
+.community-form__success p {
+  font-size: .82rem;
+  color: var(--gray);
+}

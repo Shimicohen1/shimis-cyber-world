@@ -11,7 +11,7 @@
 - label: Premium
   url: /premium/
   badge: true
-- label: Community
-  url: /community-stage.html
+- label: SCW Community
+  url: /community/
 - label: Manifesto
   url: /about/
