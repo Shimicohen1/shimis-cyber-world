@@ -20,8 +20,15 @@
         </div>
       </div>
     </div>
-    <div class="footer__newsletter">
-      {% include newsletter.html variant='inline' %}
+    <div id="newsletter" class="footer__subscribe">
+      <form class="footer__subscribe-form js-newsletter-form" aria-label="Newsletter signup">
+        <label class="footer__subscribe-label">✉ Get cyber alerts in your inbox</label>
+        <div class="footer__subscribe-row">
+          <input type="email" class="newsletter__input" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+          <button type="submit" class="newsletter__btn"><span class="newsletter__btn-text">Subscribe</span><span class="newsletter__btn-loading" hidden>&#8987;</span></button>
+        </div>
+        <div class="newsletter__status" role="alert" aria-live="polite"></div>
+      </form>
     </div>
     <div class="footer__bottom">
       <div class="footer__disclaimer">This site curates and summarizes cybersecurity content for informational purposes. All rights belong to the original sources. <a href="{{ '/terms/' | relative_url }}">Terms&nbsp;of&nbsp;Use</a> · <a href="{{ '/privacy/' | relative_url }}">Privacy&nbsp;Policy</a></div>
