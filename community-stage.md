@@ -1,22 +1,22 @@
 ---
 layout: page
-title: SCW Community Stage
+title: Community Stage
 permalink: /community/
 ---
 
 <div class="page-head">
-  <div class="label label--cyan page-head__label">LAUNCHPAD</div>
+  <div class="label label--cyan page-head__label">COMMUNITY STAGE</div>
   <h1 class="page-head__title">SCW Community Stage</h1>
-  <p class="page-head__desc">A curated space for cybersecurity startups, founders, and innovation from the community.</p>
+  <p class="page-head__desc">The spotlight platform for cybersecurity startups. Get seen by thousands of security professionals, founders, and decision-makers.</p>
 </div>
 
 <!-- Intro -->
 <section class="cs-intro reveal">
-  <p>This is not a generic directory. <strong>SCW Community Stage</strong> is a curated platform for serious cybersecurity innovation &mdash; startups, tools, community-built projects, and early-stage companies that are pushing the field forward.</p>
-  <p>Every entry is reviewed for quality and relevance. Visitors can discover emerging companies, practical tools, and community-driven projects &mdash; all hand-picked by the SCW ecosystem.</p>
+  <p><strong>SCW Community Stage</strong> puts your startup in front of the people who matter. Backed by one of the largest cybersecurity communities online, this is where startups &mdash; from seed to scale &mdash; showcase what they've built to an audience of security professionals, CISOs, investors, and builders.</p>
+  <p>Every listing is curated. Every company is reviewed. If you're here, you earned it &mdash; and thousands of eyes in the cyber industry will see it.</p>
   <div class="cs-intro__actions">
     <a href="#startups" class="btn btn--primary">Explore Startups</a>
-    <a href="{{ '/submit-startup.html' | relative_url }}" class="btn btn--ghost">Submit Your Startup</a>
+    <a href="{{ '/submit-startup.html' | relative_url }}" class="btn btn--ghost">Get Featured</a>
   </div>
 </section>
 
@@ -27,7 +27,7 @@ permalink: /community/
   <div class="feed__header">
     <h2 class="feed__title"><span class="label label--cyan">FEATURED</span> &nbsp;Startups</h2>
   </div>
-  <p class="cs-section__subtitle">Hand-picked by the SCW community for quality and innovation.</p>
+  <p class="cs-section__subtitle">Handpicked by SCW. Trusted by the community.</p>
   <div class="cs-featured__grid">
     {% for startup in site.data.community.startups %}
     {% if startup.featured %}
@@ -44,6 +44,8 @@ permalink: /community/
           <span class="badge badge--partner">growth</span>
         {% elsif startup.stage == "public" %}
           <span class="badge badge--vault">public</span>
+        {% elsif startup.stage == "enterprise" %}
+          <span class="badge badge--live">enterprise</span>
         {% endif %}
       </div>
       <p class="community-card__tagline">{{ startup.tagline }}</p>
@@ -76,7 +78,7 @@ permalink: /community/
   <div class="feed__header">
     <h2 class="feed__title"><span class="label label--cyan">DIRECTORY</span> &nbsp;All Startups</h2>
   </div>
-  <p class="cs-section__subtitle">Explore the full directory of community-curated cybersecurity innovation.</p>
+  <p class="cs-section__subtitle">Browse every startup featured on Community Stage. Curated, not crowded.</p>
 
   <div class="vault-controls">
     <div class="vault-search">
@@ -108,6 +110,8 @@ permalink: /community/
           <span class="badge badge--partner">growth</span>
         {% elsif startup.stage == "public" %}
           <span class="badge badge--vault">public</span>
+        {% elsif startup.stage == "enterprise" %}
+          <span class="badge badge--live">enterprise</span>
         {% endif %}
       </div>
       <p class="community-card__tagline">{{ startup.tagline }}</p>
@@ -132,7 +136,7 @@ permalink: /community/
   </div>
 
   <div class="empty-state" id="communityEmpty" style="display:none; margin-top: 2rem;">
-    <p>No matching startups found. Try adjusting your filters or <a href="{{ '/submit-startup.html' | relative_url }}">submit a startup</a>.</p>
+    <p>No matching startups found. Try adjusting your filters or <a href="{{ '/submit-startup.html' | relative_url }}">get featured</a>.</p>
   </div>
 </section>
 
@@ -143,28 +147,28 @@ permalink: /community/
   <div class="feed__header">
     <h2 class="feed__title"><span class="label label--acid">WHY</span> &nbsp;Community Stage?</h2>
   </div>
-  <p class="cs-section__subtitle">The benefits of being featured in the SCW ecosystem.</p>
+  <p class="cs-section__subtitle">Why startups choose to showcase on SCW.</p>
   <div class="cs-why__grid">
     <div class="tool-card reveal">
       <div class="tool-card__head">
-        <h4>Visibility to the Cyber Community</h4>
+        <h4>Thousands of Eyes, Zero Noise</h4>
         <span class="badge badge--signal">reach</span>
       </div>
-      <p>Get discovered by security professionals, researchers, and decision-makers who actively follow the SCW ecosystem for the latest in cybersecurity.</p>
+      <p>SCW's community includes thousands of security professionals, CISOs, researchers, and investors. Your startup gets seen by the right people &mdash; not lost in a generic directory.</p>
     </div>
     <div class="tool-card reveal">
       <div class="tool-card__head">
-        <h4>Credibility Through Curated Exposure</h4>
+        <h4>Curated Means Credible</h4>
         <span class="badge badge--drop">trust</span>
       </div>
-      <p>Being featured on Community Stage signals quality. Every listing is reviewed &mdash; this isn't a generic ad board, it's a trusted recommendation.</p>
+      <p>Not everyone gets listed. Every startup is reviewed for quality and relevance. Being on Community Stage is a signal &mdash; it tells the industry you're worth paying attention to.</p>
     </div>
     <div class="tool-card reveal">
       <div class="tool-card__head">
-        <h4>Access to Customers, Partners &amp; Talent</h4>
+        <h4>Direct Access to the Ecosystem</h4>
         <span class="badge badge--partner">connect</span>
       </div>
-      <p>Connect with the people who matter &mdash; potential customers, integration partners, and cybersecurity talent looking for innovative teams to join.</p>
+      <p>This isn't a static listing. It's a front door to SCW's active ecosystem &mdash; potential customers, partners, talent, and the kind of exposure money can't always buy.</p>
     </div>
   </div>
 </section>
@@ -183,7 +187,7 @@ permalink: /community/
         <svg class="cs-faq__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="cs-faq__a">
-        <p>Anyone building in the cybersecurity space &mdash; founders, solo builders, open-source maintainers, security teams with internal tools, and community contributors. You don't need to be a funded startup to apply.</p>
+        <p>Any cybersecurity startup &mdash; from pre-seed to growth stage. Whether you're a two-person team with a working prototype or a scaling company with enterprise clients, Community Stage is built for you. We also welcome established companies launching innovative new products.</p>
       </div>
     </div>
     <div class="cs-faq__item">
@@ -192,7 +196,7 @@ permalink: /community/
         <svg class="cs-faq__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="cs-faq__a">
-        <p>No. Community Stage welcomes startups, established companies with innovative products, community-built open-source tools, research projects, and any cyber-relevant initiative that delivers real value.</p>
+        <p>Community Stage is primarily for startups, but we also feature established companies with innovative products and community-built tools that bring real value to the cybersecurity space. If it's worth the community's attention, it belongs here.</p>
       </div>
     </div>
     <div class="cs-faq__item">
@@ -201,7 +205,7 @@ permalink: /community/
         <svg class="cs-faq__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="cs-faq__a">
-        <p>No. Submissions are curated for quality and relevance. Not every submission will be published &mdash; we review each one to ensure it meets the standards of the SCW community. This is what makes Community Stage trustworthy.</p>
+        <p>No. Every submission goes through a review process. We evaluate product quality, relevance, and real-world impact. This selectivity is what makes a Community Stage listing meaningful &mdash; it's a stamp of credibility, not a form submission.</p>
       </div>
     </div>
     <div class="cs-faq__item">
@@ -210,7 +214,7 @@ permalink: /community/
         <svg class="cs-faq__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="cs-faq__a">
-        <p>Click the "Submit Your Startup" button to fill out the submission form. Provide accurate details about your company, tool, or project. Our team will review your submission and get back to you if it's selected.</p>
+        <p>Click "Get Featured" and fill out the submission form. Provide accurate details about your startup &mdash; what you do, why it matters, and where you are in your journey. Our team reviews every submission and will reach out if your startup is selected.</p>
       </div>
     </div>
   </div>
@@ -221,10 +225,10 @@ permalink: /community/
 <!-- CTA -->
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
-    <h2 class="cs-cta__title">Want to be featured on Community Stage?</h2>
-    <p class="cs-cta__text">Whether you're a startup founder, a builder shipping cyber tools, or a community project pushing innovation &mdash; we want to hear from you.</p>
+    <h2 class="cs-cta__title">Your startup deserves to be seen.</h2>
+    <p class="cs-cta__text">Join the startups already showcased in front of SCW's community of thousands &mdash; security leaders, investors, and builders who are actively looking for what's next in cyber.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/submit-startup.html' | relative_url }}" class="btn btn--primary">Submit a Startup</a>
+      <a href="{{ '/submit-startup.html' | relative_url }}" class="btn btn--primary">Get Featured</a>
       <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to SCW</a>
     </div>
   </div>
