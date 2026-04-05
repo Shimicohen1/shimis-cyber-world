@@ -234,6 +234,78 @@ ${text.substring(0, 2000)}`;
   }
 }
 
+// ── MITRE ATT&CK Mapping via Gemini ─────────────────────
+
+async function mapToMitreAttack(text, tags = []) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || !text || text.trim().length < 20) return [];
+
+  const prompt = `You are a MITRE ATT&CK analyst. Given the following cybersecurity advisory description, identify the most relevant MITRE ATT&CK Enterprise techniques.
+
+RULES:
+- Return 1 to 3 techniques maximum — only the most directly relevant
+- Each technique must be a real ATT&CK technique with correct ID (e.g., T1190, T1059.001)
+- Use the correct tactic name (e.g., Initial Access, Execution, Privilege Escalation, etc.)
+- The URL must follow the pattern: https://attack.mitre.org/techniques/TXXXX/ (with /XXX/ for sub-techniques)
+- If no technique clearly applies, return an empty array
+- Do NOT guess or hallucinate technique IDs
+
+DESCRIPTION:
+${text.substring(0, 2000)}
+
+TAGS: ${tags.join(", ")}
+
+Return ONLY valid JSON array:
+[
+  { "id": "T1190", "name": "Exploit Public-Facing Application", "tactic": "Initial Access", "url": "https://attack.mitre.org/techniques/T1190/" }
+]`;
+
+  try {
+    const elapsed = Date.now() - lastGeminiCall;
+    if (elapsed < 1200) await new Promise((r) => setTimeout(r, 1200 - elapsed));
+    lastGeminiCall = Date.now();
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.2, maxOutputTokens: 1024, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
+        }),
+        signal: controller.signal,
+      }
+    );
+    clearTimeout(timer);
+
+    if (!response.ok) return [];
+    const data = await response.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!rawText) return [];
+
+    const parsed = JSON.parse(rawText);
+    if (!Array.isArray(parsed)) return [];
+
+    const TECHNIQUE_RE = /^T\d{4}(\.\d{3})?$/;
+    return parsed
+      .filter((t) => t.id && t.name && t.tactic && TECHNIQUE_RE.test(t.id))
+      .slice(0, 3)
+      .map((t) => {
+        const idParts = t.id.split(".");
+        const url = idParts.length === 2
+          ? `https://attack.mitre.org/techniques/${idParts[0]}/${idParts[1]}/`
+          : `https://attack.mitre.org/techniques/${t.id}/`;
+        return { id: t.id, name: String(t.name).substring(0, 100), tactic: String(t.tactic).substring(0, 50), url };
+      });
+  } catch {
+    return [];
+  }
+}
+
 // ── Classification ──────────────────────────────────────
 
 function classifyPublication(title, description, pubType) {
@@ -285,7 +357,7 @@ function yamlSafe(str) {
     .trim();
 }
 
-function buildPostMarkdown(pub, translated, attachments, iocs) {
+function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
   const pubType = pub.tags?.promotedMetaData?.["סוג"]?.[0]?.title || "unknown";
   const dateStr = pub.tags?.metaData?.["תאריך פרסום"]?.[0]?.title || "";
   const sourceUrl = INCD_BASE_URL + pub.url;
@@ -347,6 +419,20 @@ function buildPostMarkdown(pub, translated, attachments, iocs) {
   // Cover image — pick from Unsplash pool based on tags
   const coverImage = pickCoverImage(tags);
 
+  // MITRE ATT&CK YAML
+  let mitreYaml = "";
+  if (mitreAttack && mitreAttack.length > 0) {
+    mitreYaml =
+      "mitre_attack:\n" +
+      mitreAttack
+        .map(
+          (t) =>
+            `  - id: "${yamlSafe(t.id)}"\n    name: "${yamlSafe(t.name)}"\n    tactic: "${yamlSafe(t.tactic)}"\n    url: "${yamlSafe(t.url)}"`
+        )
+        .join("\n") +
+      "\n";
+  }
+
   const markdown = [
     "---",
     `title: "${yamlSafe(title)}"`,
@@ -371,6 +457,7 @@ function buildPostMarkdown(pub, translated, attachments, iocs) {
     `image: "${coverImage}"`,
     translated ? `ai_rewritten: true` : "",
     iocsYaml,
+    mitreYaml,
     `why_it_matters:`,
     `  - "${yamlSafe(whyItMatters)}"`,
     "---",
@@ -562,8 +649,14 @@ async function main() {
           console.log(`[INCD] Extracted ${iocs.length} IOCs`);
         }
 
+        // Map to MITRE ATT&CK techniques
+        const mitreAttack = await mapToMitreAttack(combinedText, []);
+        if (mitreAttack.length > 0) {
+          console.log(`[INCD] Mapped to ${mitreAttack.length} ATT&CK techniques: ${mitreAttack.map(t => t.id).join(", ")}`);
+        }
+
         // Build post
-        const post = buildPostMarkdown(entry, translated, attachments, iocs);
+        const post = buildPostMarkdown(entry, translated, attachments, iocs, mitreAttack);
         const filePath = path.join(POSTS_DIR, post.filename);
 
         // Check if file already exists
