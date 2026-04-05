@@ -11,5 +11,7 @@
 - label: Premium
   url: /premium/
   badge: true
+- label: Community Stage
+  url: /community-stage.html
 - label: Manifesto
   url: /about/

@@ -1,0 +1,214 @@
+/* =====================================================
+   SUBMIT STARTUP — Shimi's Cyber World
+   Premium dark form styles
+   ===================================================== */
+
+/* Inherit base variables from community-stage.css */
+
+/* ---------- Form Layout ---------- */
+.cs-form-section {
+  padding: var(--cs-space-lg) 0;
+}
+.cs-form-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* ---------- Form ---------- */
+.cs-form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.cs-field { display: flex; flex-direction: column; gap: .35rem; }
+
+.cs-field__label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--cs-white);
+}
+.cs-field__label .cs-field__req {
+  color: var(--cs-pink);
+  margin-left: .2rem;
+}
+.cs-field__hint {
+  font-size: .72rem;
+  color: var(--cs-dim);
+}
+
+.cs-field__input,
+.cs-field__textarea,
+.cs-field__select {
+  font-family: var(--cs-font);
+  font-size: .85rem;
+  color: var(--cs-white);
+  background: var(--cs-surface);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-sm);
+  padding: .65rem 1rem;
+  outline: none;
+  transition: border-color var(--cs-transition), box-shadow var(--cs-transition);
+  width: 100%;
+}
+.cs-field__input:focus,
+.cs-field__textarea:focus,
+.cs-field__select:focus {
+  border-color: var(--cs-electric);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+}
+.cs-field__input::placeholder,
+.cs-field__textarea::placeholder { color: var(--cs-dim); }
+
+.cs-field__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.cs-field__select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 0l6 6 6-6z' fill='%23888898'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+.cs-field__select option { background: var(--cs-surface); }
+
+/* Checkboxes Group */
+.cs-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.cs-checkbox {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  cursor: pointer;
+}
+.cs-checkbox input[type="checkbox"] {
+  appearance: none;
+  width: 18px; height: 18px;
+  border: 1px solid var(--cs-border-hi);
+  border-radius: 3px;
+  background: var(--cs-surface);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--cs-transition);
+  flex-shrink: 0;
+}
+.cs-checkbox input[type="checkbox"]:checked {
+  background: var(--cs-electric);
+  border-color: var(--cs-electric);
+}
+.cs-checkbox input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: .7rem;
+  color: #fff;
+  font-weight: 700;
+}
+.cs-checkbox input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+}
+.cs-checkbox__label {
+  font-size: .8rem;
+  color: var(--cs-gray);
+}
+
+/* Validation Error */
+.cs-field__error {
+  font-size: .72rem;
+  color: var(--cs-pink);
+  display: none;
+}
+.cs-field--error .cs-field__input,
+.cs-field--error .cs-field__textarea,
+.cs-field--error .cs-field__select {
+  border-color: var(--cs-pink);
+}
+.cs-field--error .cs-field__error { display: block; }
+
+/* ---------- Form Divider ---------- */
+.cs-form__divider {
+  border: none;
+  border-top: 1px solid var(--cs-border);
+  margin: .5rem 0;
+}
+.cs-form__section-label {
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--cs-dim);
+  margin-bottom: -.5rem;
+}
+
+/* ---------- Notice Panel ---------- */
+.cs-notice {
+  background: var(--cs-card);
+  border: 1px solid var(--cs-border);
+  border-left: 3px solid var(--cs-electric);
+  border-radius: var(--cs-radius-sm);
+  padding: 1rem 1.25rem;
+  margin-top: .5rem;
+}
+.cs-notice p {
+  font-size: .8rem;
+  color: var(--cs-gray);
+  line-height: 1.55;
+  margin-bottom: .3rem;
+}
+.cs-notice p:last-child { margin-bottom: 0; }
+.cs-notice strong { color: var(--cs-white); }
+
+/* ---------- Form Actions ---------- */
+.cs-form__actions {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  padding-top: .5rem;
+}
+
+/* ---------- Success Panel ---------- */
+.cs-success {
+  text-align: center;
+  padding: var(--cs-space-lg) var(--cs-space-md);
+}
+.cs-success__icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(132,204,22,.1);
+  color: var(--cs-lime);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 1.5rem;
+  border: 1px solid rgba(132,204,22,.2);
+}
+.cs-success__title {
+  font-family: var(--cs-font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+.cs-success__text {
+  font-size: .9rem;
+  color: var(--cs-gray);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+.cs-success__actions {
+  display: flex;
+  gap: .75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  .cs-form-wrap { padding: 0; }
+  .cs-checkbox-group { flex-direction: column; }
+  .cs-form__actions { flex-direction: column; }
+  .cs-success__actions { flex-direction: column; align-items: center; }
+}
