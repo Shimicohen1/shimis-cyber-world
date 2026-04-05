@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Rise of Sophisticated OSINT Tools for Investigations
-    text: New browser extensions and dork generators are empowering advanced open-source intelligence gathering.
-    detail: The cybersecurity landscape is seeing a surge in specialized OSINT tools like APILEECH and OSINTNova. These tools enable deeper web analysis and more precise information retrieval, crucial for threat intelligence and investigations. Professionals should explore and integrate these resources to enhance their reconnaissance capabilities.
-    link: https://www.owasp.org/www-community/OSINT
-    link_label: OSINT Best Practices
+  - title: OSINT Tooling Ecosystem Continues to Expand
+    text: New directories and generators are emerging to aid OSINT investigations.
+    detail: The cybersecurity landscape sees a continuous influx of new OSINT tools and resources, including browser extensions for web analysis and specialized Google Dork generators. Professionals should regularly explore these emerging tools to enhance their reconnaissance capabilities and stay ahead of adversaries. Keep an updated inventory of available OSINT resources.
+    link: https://www.owasp.org/www-community/Defensive_Tools
+    link_label: OSINT Defensive Tools
     badge: signal
     tags:
       - osint
       - tools
       - threat-intel
-  - title: North Korea's Escalating Crypto Heist Operations
-    text: North Korean state actors are significantly increasing cryptocurrency theft, impacting global markets.
-    detail: Reports indicate a substantial rise in crypto heists attributed to North Korean actors, accounting for a significant portion of global digital asset theft. This trend highlights the growing financial threat posed by nation-state sponsored cybercrime. Organizations dealing with cryptocurrency should bolster their defenses against sophisticated APT attacks.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-282a
-    link_label: CISA Advisories
+  - title: Ransomware Operations Mimic Corporate Structures
+    text: Ransomware-as-a-Service (RaaS) models foster sophisticated, industrial-scale cybercrime.
+    detail: Modern ransomware threats are increasingly organized, operating with corporate-like structures and division of labor through RaaS. This trend signifies a professionalization of cybercrime, demanding more robust defensive strategies. Organizations must implement comprehensive security measures, including strong endpoint protection and regular backups, to mitigate these evolving threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-139a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
-      - nation-state
-      - cryptocurrency
+      - ransomware
       - threat-intel
-  - title: Image Files as a New Malware Vector
-    text: Attackers are hiding malicious code within image files to evade detection.
-    detail: Cybersecurity analysts are flagging a concerning trend where malware is concealed within image files, exploiting how systems process visual data. This technique, often referred to as steganography, bypasses traditional signature-based detection. Security teams must enhance their endpoint detection and network monitoring to identify these disguised threats.
-    link: https://attack.mitre.org/techniques/T1027/
-    link_label: "MITRE ATT&CK: Obfuscated Files or Information"
-    badge: signal
-    tags:
       - malware
-      - threat-intel
-      - detection
-  - title: Active Exploitation of Fortinet Vulnerabilities
-    text: Fortinet warns of active exploitation for CVE-2026-35616 in FortiClient EMS.
-    detail: Fortinet has issued a critical alert regarding CVE-2026-35616, a vulnerability in FortiClient EMS that is already being actively exploited in the wild. This poses an immediate risk to organizations utilizing the affected product. Prompt patching and rigorous monitoring for signs of compromise are essential to mitigate this threat.
-    link: https://www.fortinet.com/support-and-training/security-advisories/fortinet-product-vulnerability-and-notice-advisories
-    link_label: Fortinet Security Advisories
+  - title: Exploitation of Software Vulnerabilities Remains Prevalent
+    text: Actively exploited vulnerabilities in widely used software continue to pose significant risks.
+    detail: Recent reports highlight actively exploited CVEs in products like FortiClient EMS, underscoring the persistent threat of unpatched vulnerabilities. Threat actors are quick to weaponize newly disclosed flaws. Prioritize timely patching and vulnerability management for all software, especially critical infrastructure and widely deployed solutions.
+    link: https://www.nist.gov/cyberframework
+    link_label: NIST Cybersecurity Framework
     badge: signal
     tags:
       - vulnerability
-      - exploitation
-      - iot
+      - threat-intel
+      - patch-management
+  - title: Image-Based Malware and Supply Chain Attacks Evolving
+    text: Attackers are using novel methods like steganography and compromising popular packages.
+    detail: Sophisticated techniques are emerging, including hiding malware within image files and compromising widely-used NPM packages like Axios. These methods bypass traditional security controls and target the software development lifecycle. Implement rigorous code review, dependency scanning, and secure coding practices to defend against these advanced threats.
+    link: https://owasp.org/www-project-top-10/
+    link_label: OWASP Top 10
+    badge: signal
+    tags:
+      - malware
+      - supply-chain
+      - threat-intel
+      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
