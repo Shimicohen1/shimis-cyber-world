@@ -1,0 +1,117 @@
+categories:
+  - Endpoint Security
+  - Cloud Security
+  - AI & ML Security
+  - Identity & Access
+  - Threat Intelligence
+  - Application Security
+  - Network Security
+  - DevSecOps
+
+stages:
+  - seed
+  - series-a
+  - series-b
+  - growth
+  - public
+
+startups:
+  - name: "ThreatNova"
+    tagline: "AI-powered threat hunting for SOC teams"
+    description: "Real-time threat detection engine that uses behavioral analysis and ML to surface zero-day patterns before they escalate. Built by ex-Unit 8200 operators."
+    category: "Threat Intelligence"
+    stage: "series-a"
+    tags: [threat-hunting, ML, SOC]
+    url: "https://threatnova.io"
+    founded: 2023
+    location: "Tel Aviv, IL"
+
+  - name: "IdentityForge"
+    tagline: "Zero-trust identity mesh for hybrid clouds"
+    description: "Decentralized identity verification layer that eliminates single points of compromise across multi-cloud environments."
+    category: "Identity & Access"
+    stage: "seed"
+    tags: [zero-trust, IAM, cloud]
+    url: "https://identityforge.dev"
+    founded: 2024
+    location: "Herzliya, IL"
+
+  - name: "CloudVector"
+    tagline: "CSPM meets runtime protection"
+    description: "Cloud security posture management with live runtime enforcement. Catches misconfigurations and blocks exploitation in real time."
+    category: "Cloud Security"
+    stage: "series-b"
+    tags: [CSPM, runtime, AWS]
+    url: "https://cloudvector.io"
+    founded: 2022
+    location: "New York, US"
+
+  - name: "HuntGrid"
+    tagline: "Collaborative threat hunting platform"
+    description: "Shared workspace for threat hunters to collaborate on investigations, share IOCs, and build detection rules together."
+    category: "Threat Intelligence"
+    stage: "seed"
+    tags: [hunting, collaboration, IOC]
+    url: "https://huntgrid.io"
+    founded: 2024
+    location: "Tel Aviv, IL"
+
+  - name: "SignalRoot"
+    tagline: "Supply chain attack surface monitoring"
+    description: "Continuous monitoring of your software supply chain - flags compromised dependencies, typosquatting, and malicious packages."
+    category: "DevSecOps"
+    stage: "series-a"
+    tags: [supply-chain, SBOM, dependencies]
+    url: "https://signalroot.com"
+    founded: 2023
+    location: "Berlin, DE"
+
+  - name: "AppSentri"
+    tagline: "Runtime application self-protection"
+    description: "Embedded security layer for web applications. Detects and blocks injection, SSRF, and business logic attacks at runtime."
+    category: "Application Security"
+    stage: "growth"
+    tags: [RASP, appsec, WAF]
+    url: "https://appsentri.io"
+    founded: 2021
+    location: "London, UK"
+
+  - name: "NodeTrace"
+    tagline: "Endpoint telemetry for incident response"
+    description: "Lightweight agent that captures full endpoint telemetry for forensic analysis without the overhead of traditional EDR."
+    category: "Endpoint Security"
+    stage: "seed"
+    tags: [EDR, forensics, telemetry]
+    url: "https://nodetrace.io"
+    founded: 2024
+    location: "Haifa, IL"
+
+  - name: "PhantomLayer"
+    tagline: "Network deception and honeypot-as-a-service"
+    description: "Deploy deception networks in minutes. Lures attackers into controlled environments while alerting your SOC in real time."
+    category: "Network Security"
+    stage: "series-a"
+    tags: [deception, honeypot, detection]
+    url: "https://phantomlayer.io"
+    founded: 2023
+    location: "San Francisco, US"
+
+  - name: "ZeroDock"
+    tagline: "Container security from build to runtime"
+    description: "Full-lifecycle container security - image scanning, admission control, runtime protection, and drift detection."
+    category: "DevSecOps"
+    stage: "series-b"
+    tags: [containers, kubernetes, scanning]
+    url: "https://zerodock.dev"
+    founded: 2022
+    location: "Austin, US"
+
+  - name: "BlueMesh Labs"
+    tagline: "AI model security testing"
+    description: "Automated red-teaming for AI/ML models. Finds adversarial vulnerabilities, prompt injection risks, and data leakage paths."
+    category: "AI & ML Security"
+    stage: "seed"
+    tags: [AI-security, red-team, LLM]
+    url: "https://bluemesh.ai"
+    founded: 2024
+    location: "Tel Aviv, IL"
