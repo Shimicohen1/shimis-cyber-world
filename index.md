@@ -13,7 +13,7 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
 <section class="identity">
   <div class="container">
     <div class="identity__inner reveal">
-      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="identity__logo">
+      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="identity__logo" width="80" height="80" fetchpriority="high">
       <div class="identity__text">
         <h1 class="identity__title">{{ site.data.homepage.identity.title }}</h1>
         <p class="identity__tagline">{{ site.data.homepage.identity.tagline }}</p>

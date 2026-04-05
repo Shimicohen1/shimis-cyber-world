@@ -33,7 +33,7 @@ layout: default
     {% comment %}── Cover image: own source image OR category fallback ──{% endcomment %}
     {% if page.image %}
     <div class="post-image{% if page.ai_rewritten %} post-image--ai{% endif %}">
-      <img src="{% if page.image contains "://" %}{{ page.image }}{% else %}{{ page.image | relative_url }}{% endif %}" alt="{{ page.title }}" loading="lazy" referrerpolicy="no-referrer">
+      <img src="{% if page.image contains "://" %}{{ page.image }}{% else %}{{ page.image | relative_url }}{% endif %}" alt="{{ page.title }}" loading="eager" fetchpriority="high" referrerpolicy="no-referrer">
       {% unless page.ai_rewritten or page.image_pool_used %}{% assign img_domain = page.image | split: "//" | last | split: "/" | first %}{% if img_domain %}<p class="post-image__credit">Image via <a href="{{ page.source_url | default: page.image }}" target="_blank" rel="noopener noreferrer">{{ img_domain }}</a></p>{% endif %}{% endunless %}
     </div>
     {% elsif page.cover_image %}
