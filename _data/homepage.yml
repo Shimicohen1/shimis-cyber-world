@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Image Files as Stealthy Malware Carriers
-    text: Attackers are hiding malware within seemingly innocent image files, bypassing traditional security.
-    detail: Recent posts highlight sophisticated techniques where malicious code is embedded within image files, posing as legitimate data. This method of obfuscation can evade standard signature-based detection. Organizations should implement advanced threat detection that analyzes file behavior and content, not just file types, to identify these hidden threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/malware-detection-and-prevention
-    link_label: Malware Detection Best Practices
+  - title: Rise of Image-Based Malware Obfuscation
+    text: Malware is increasingly hidden within image files, evading traditional detection methods.
+    detail: Attackers are embedding malicious code into seemingly harmless image files, a technique that can bypass many security solutions. Organizations should implement advanced endpoint detection and response (EDR) solutions and educate users about suspicious file handling, especially when dealing with unexpected image attachments. Threat intelligence feeds are crucial for staying ahead of these evolving obfuscation tactics.
+    link: https://owasp.org/www-community/vulnerabilities/Content_Security_Policy
+    link_label: OWASP Content Security Policy
     badge: signal
     tags:
       - malware
       - threat-intel
-      - detection
-  - title: Sophisticated OSINT Tools Emerge for Deeper Investigations
-    text: New browser extensions and online generators are empowering OSINT investigators.
-    detail: The cybersecurity landscape is seeing a surge in advanced OSINT tools, including browser extensions for real-time web analysis and Google Dork generators for precise information gathering. Professionals should continuously evaluate and integrate these tools to enhance their threat intelligence and incident response capabilities, ensuring they stay ahead of adversaries.
-    link: https://www.owasp.org/www-community/OSINT
-    link_label: OSINT Community Resources
+      - obfuscation
+  - title: North Korea Dominates Crypto Heists
+    text: North Korean state actors are the primary culprits behind a surge in global crypto theft.
+    detail: In 2025, North Korea accounted for 59% of global cryptocurrency stolen, totaling $2.02 billion. This highlights the significant financial motivation and sophistication of nation-state actors in the crypto space. Financial institutions and cryptocurrency exchanges must enhance their transaction monitoring and threat intelligence sharing to combat these persistent threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-129a
+    link_label: CISA Advisories
     badge: signal
     tags:
-      - osint
-      - tools
+      - nation-state
+      - cryptocurrency
       - threat-intel
-  - title: Supply Chain Attacks Target Widely Used Packages
-    text: Critical infrastructure like NPM packages are increasingly targeted by supply chain attacks.
-    detail: The compromise of popular packages such as Axios NPM highlights a significant trend in supply chain attacks. Developers must rigorously vet third-party dependencies, implement software composition analysis (SCA), and maintain strict security policies for code integration to mitigate risks to their software supply chain.
-    link: https://www.cisa.gov/news-events/advisories/aa23-283a
-    link_label: Supply Chain Risk Management
+  - title: Supply Chain Attacks Target Popular NPM Packages
+    text: Widely-used NPM packages are being compromised, posing a significant risk to downstream projects.
+    detail: The recent compromise of the Axios NPM package, with millions of weekly downloads, exemplifies the pervasive threat of supply chain attacks. Developers must implement rigorous dependency management, code scanning, and software bill of materials (SBOM) practices to mitigate risks associated with third-party code. Continuous monitoring for vulnerabilities in dependencies is essential.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP SCA Project
     badge: signal
     tags:
       - supply-chain
-      - threat-intel
+      - npm
       - vulnerability
-  - title: Ransomware Operations Mimic Corporate Structures
-    text: Ransomware groups are adopting sophisticated, corporate-like business models for global operations.
-    detail: Modern ransomware threats are evolving beyond lone actors, functioning as organized, industrial-scale enterprises, often leveraging Ransomware-as-a-Service (RaaS) models. This trend necessitates robust defense strategies, including comprehensive endpoint protection, regular backups, employee security awareness training, and rapid incident response plans to counter these organized criminal entities.
-    link: https://www.mitre.org/mitre-threat-informed-defense
-    link_label: Threat-Informed Defense Principles
+  - title: SQL Injection Vulnerabilities Persist in Web Apps
+    text: Multiple systems continue to be vulnerable to SQL injection flaws, particularly in parameter handling.
+    detail: Recent reports highlight ongoing SQL injection vulnerabilities in various web applications, often stemming from improper handling of user-supplied input in GET requests. Developers must prioritize input validation and parameterized queries to prevent these common but critical attacks. Regular security audits and penetration testing are vital for identifying and remediating such flaws.
+    link: https://owasp.org/www-community/attacks/SQL_Injection
+    link_label: OWASP SQL Injection
     badge: signal
     tags:
-      - ransomware
-      - malware
-      - threat-intel
-      - darkweb
+      - vulnerability
+      - sql-injection
+      - web-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
