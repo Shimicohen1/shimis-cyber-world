@@ -1605,7 +1605,31 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 }
 
 @media (max-width: 1100px) {
-  .share-float { display: none; }
+  /* Convert floating sidebar to fixed bottom bar on mobile */
+  .share-float {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    transform: none;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    padding: 0.4rem 0;
+    z-index: 200;
+  }
+  .share-float__label { display: none; }
+  .share-float__btn {
+    width: 36px;
+    height: 36px;
+    margin: 0 0.35rem;
+  }
+  .share-float__btn svg { width: 16px; height: 16px; }
+  /* Add bottom padding to body so content isn't hidden behind bar */
+  body { padding-bottom: 52px; }
   .post-share--inline {
     display: flex;
     align-items: center;
