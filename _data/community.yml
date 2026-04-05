@@ -25,6 +25,9 @@ startups:
     url: "https://threatnova.io"
     founded: 2023
     location: "Tel Aviv, IL"
+    featured: true
+    insight: "One of the first platforms to combine behavioral ML with SOC-native workflows. Early traction with MSSPs across EMEA."
+    why_it_matters: "Traditional SIEM rules miss novel attack patterns. ThreatNova's approach reduces mean-time-to-detect by surfacing anomalies that rule-based systems can't catch."
 
   - name: "IdentityForge"
     tagline: "Zero-trust identity mesh for hybrid clouds"
@@ -45,6 +48,9 @@ startups:
     url: "https://cloudvector.io"
     founded: 2022
     location: "New York, US"
+    featured: true
+    insight: "Rare combination of posture management and runtime enforcement in a single agent. Strong AWS integration."
+    why_it_matters: "Most CSPM tools only detect misconfigs after the fact. CloudVector blocks exploitation in real time, closing the gap between detection and response."
 
   - name: "HuntGrid"
     tagline: "Collaborative threat hunting platform"
@@ -75,6 +81,9 @@ startups:
     url: "https://appsentri.io"
     founded: 2021
     location: "London, UK"
+    featured: true
+    insight: "Mature RASP solution with production deployments at scale. Low overhead, strong coverage of OWASP Top 10."
+    why_it_matters: "WAFs miss business logic attacks. AppSentri's embedded approach catches what perimeter defenses can't."
 
   - name: "NodeTrace"
     tagline: "Endpoint telemetry for incident response"
