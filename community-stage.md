@@ -1,7 +1,7 @@
 ---
 layout: page
 title: SCW Community Stage
-permalink: /community-v2/
+permalink: /community/
 ---
 
 <div class="page-head">
@@ -258,5 +258,5 @@ permalink: /community-v2/
   </div>
 </div>
 
-<script src="{{ '/assets/js/community-v2.js' | relative_url }}" defer></script>
-<link rel="stylesheet" href="{{ '/assets/css/community-v2.css' | relative_url }}">
+<script src="{{ '/assets/js/community.js' | relative_url }}" defer></script>
+<link rel="stylesheet" href="{{ '/assets/css/community.css' | relative_url }}">
