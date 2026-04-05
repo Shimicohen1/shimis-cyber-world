@@ -28,6 +28,7 @@ permalink: /posts/
     <button class="filter-pill" data-filter="darkweb">Darkweb</button>
     <button class="filter-pill" data-filter="cloud">Cloud</button>
     <button class="filter-pill" data-filter="ai-security">AI Security</button>
+    <button class="filter-pill" data-filter="incd">INCD</button>
   </div>
 </div>
 
