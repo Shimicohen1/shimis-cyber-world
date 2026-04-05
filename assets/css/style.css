@@ -1887,6 +1887,29 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   transition: color .15s;
 }
 .footer__col a:hover { color: var(--white); }
+.footer__subscribe {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.footer__subscribe-label {
+  font-size: 0.8rem;
+  color: var(--gray);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.footer__subscribe-row {
+  display: flex;
+  gap: 0.4rem;
+  max-width: 420px;
+}
+.footer__subscribe-row .newsletter__input {
+  flex: 1;
+  min-width: 0;
+}
+.footer__subscribe-row .newsletter__btn {
+  flex-shrink: 0;
+}
 .footer__bottom {
   margin-top: 2rem;
   padding-top: 1rem;
