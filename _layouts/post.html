@@ -93,12 +93,12 @@ layout: default
     {% endif %}
     {% endunless %}
 
-    {% comment %}── Source link (not for AI posts) ──{% endcomment %}
-    {% unless page.ai_rewritten %}{% if page.source_url and page.source_url != '' %}
+    {% comment %}── Source link (not for AI posts, skip when link preview already shown) ──{% endcomment %}
+    {% unless page.ai_rewritten %}{% unless page.link_preview %}{% if page.source_url and page.source_url != '' %}
     <div class="post-read-original">
       <a href="{{ page.source_url }}" target="_blank" rel="noopener">{{ page.source_url }}</a>
     </div>
-    {% endif %}{% endunless %}
+    {% endif %}{% endunless %}{% endunless %}
 
     {% comment %}── What This Means For You ──{% endcomment %}
     {% if page.why_it_matters.size > 0 %}
