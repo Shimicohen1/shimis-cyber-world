@@ -74,7 +74,21 @@
 {% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap"></noscript>
+{% comment %}── Critical CSS inlined for fast first paint ──{% endcomment %}
+<style>
+:root{--black:#08080c;--deep:#0d0d14;--surface:#121219;--card:#16161f;--border:rgba(255,255,255,.06);--white:#f0f0f5;--gray:#888898;--dim:#555566;--electric:#3b82f6;--acid:#a855f7;--accent:var(--electric);--f-sans:'Inter',system-ui,sans-serif;--f-head:'Space Grotesk',var(--f-sans);--f-mono:'JetBrains Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--f-sans);background:var(--black);color:var(--white);line-height:1.6;-webkit-font-smoothing:antialiased}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(8,8,12,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.6rem 0}
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 1.5rem}
+</style>
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}"></noscript>
 <script src="{{ '/assets/js/theme-init.js' | relative_url }}"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3QRH1ZBFH9"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5567674302137832" crossorigin="anonymous"></script>
+<script>
+if(window.requestIdleCallback){requestIdleCallback(function(){var s=document.createElement('script');s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5567674302137832';s.async=true;s.crossOrigin='anonymous';document.head.appendChild(s);})}else{setTimeout(function(){var s=document.createElement('script');s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5567674302137832';s.async=true;s.crossOrigin='anonymous';document.head.appendChild(s);},3000)}
+</script>
