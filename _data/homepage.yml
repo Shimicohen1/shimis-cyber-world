@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Cartels Adopt Corporate Structures
-    text: Ransomware operations are evolving into sophisticated, business-like entities, shifting away from lone actors.
-    detail: The rise of Ransomware-as-a-Service (RaaS) models indicates a professionalization of cybercrime. This structure involves specialized roles, clear hierarchies, and profit-driven motives, making them more resilient and harder to dismantle. Organizations must prepare for coordinated, large-scale attacks by enhancing their defenses and incident response plans.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-075a
-    link_label: CISA Ransomware Guidance
+  - title: Ransomware Cartels Operate as Sophisticated Businesses
+    text: Ransomware is shifting from lone actors to structured, industrial-scale RaaS operations.
+    detail: The rise of Ransomware-as-a-Service (RaaS) signifies a professionalization of cybercrime, with complex hierarchies and profit-driven models. Organizations must focus on robust defenses, incident response planning, and threat intelligence to counter these evolving business-like threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness
+    link_label: CISA Ransomware Awareness
     badge: signal
     tags:
       - ransomware
-      - malware
       - threat-intel
-  - title: AI Integration Fuels New Cyber Threats
-    text: AI development and deployment are creating new attack vectors and sophisticated malware distribution channels.
-    detail: Recent incidents show AI code leaks being weaponized for malware distribution and AI models exhibiting complex behaviors that could be exploited. As AI becomes more integrated into infrastructure and tools, understanding its security implications, including potential misuse and vulnerabilities, is paramount for defenders.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+      - malware
+  - title: Image-Based Malware and Obfuscation Techniques are Evolving
+    text: Attackers are using image files to hide malicious code, making detection harder.
+    detail: The use of steganography and other obfuscation techniques within seemingly innocuous image files presents a significant challenge for traditional signature-based detection. Security teams should implement advanced threat hunting and behavioral analysis to identify these stealthy threats.
+    link: https://owasp.org/www-community/vulnerabilities/Steganography
+    link_label: OWASP Steganography
     badge: signal
     tags:
-      - ai
       - malware
       - threat-intel
-  - title: OSINT Tools Directory Empowers Investigators
-    text: A comprehensive directory of OSINT tools is now available, streamlining investigations for cybersecurity professionals.
-    detail: Effectively navigating the vast landscape of Open Source Intelligence is crucial for modern security operations. This curated resource offers hundreds of tools, enabling faster and more efficient threat hunting, digital forensics, and intelligence gathering, thereby enhancing overall security posture.
-    link: https://www.mitre.org/capabilities/cybersecurity/overview/attack-matrix
-    link_label: MITRE ATT&CK Framework
+      - detection
+  - title: SQL Injection Vulnerabilities Persist in Web Applications
+    text: Multiple CVEs highlight ongoing SQL injection risks in various web systems.
+    detail: Recent vulnerability disclosures continue to show SQL injection as a prevalent threat, particularly in parameter handling components of web applications. Developers must prioritize secure coding practices, input validation, and parameterized queries to mitigate these risks.
+    link: https://owasp.org/www-community/vulnerabilities/SQL_injection
+    link_label: OWASP SQL Injection
+    badge: signal
+    tags:
+      - vulnerability
+      - cve
+      - web-security
+  - title: OSINT Tools Directory Streamlines Investigations
+    text: A comprehensive directory of OSINT tools empowers investigators and security professionals.
+    detail: The proliferation of OSINT tools can be overwhelming. Centralized directories are invaluable for identifying and leveraging the right resources for open-source intelligence gathering, aiding in tracking, network uncovering, and digital trace analysis.
+    link: https://www.defcon.org/images/defcon-28/DEF%20CON%2028%20Virtual/OSINT%20Virtual/DEFCON-28-Virtual-OSINT-Tools-Resources-and-Techniques-j.pdf
+    link_label: OSINT Tools & Resources
     badge: signal
     tags:
       - osint
       - tools
-      - threat-intel
-  - title: Exploitation of Known Vulnerabilities Continues
-    text: Actively exploited vulnerabilities in widely used software continue to be a primary attack vector.
-    detail: Fortinet and TrueConf Client vulnerabilities are highlighted as actively exploited, underscoring the persistent threat of unpatched systems. Organizations must prioritize timely patching and vulnerability management, especially for software listed in CISA's Known Exploited Vulnerabilities catalog, to mitigate risks.
-    link: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
-    link_label: CISA KEV Catalog
-    badge: signal
-    tags:
-      - vulnerability
-      - threat-intel
-      - patch-management
+      - investigation
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
