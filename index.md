@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Home
+description: "Shimi's Cyber World — A security intelligence hub powered by AI and human expertise. Real-time cyber threat feeds, curated tools, vulnerability alerts, and field-driven insights for the cybersecurity community."
 ---
 
 {% include signal-bar.html %}

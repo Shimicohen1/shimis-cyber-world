@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://shimiscyberworld.com/sitemap.xml
