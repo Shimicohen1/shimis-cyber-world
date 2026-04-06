@@ -61,7 +61,7 @@ permalink: /premium/
 <span class="elite-card__icon">🎯</span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
-<h3>Detection Library</h3>
+<h3>Detection Vault</h3>
 <p>KQL, Sigma, and Splunk detection rules mapped to MITRE ATT&CK. Copy-paste ready.</p>
 <div class="elite-card__meta">
 <span>KQL / Sigma / Splunk</span>
@@ -77,7 +77,7 @@ permalink: /premium/
 <span class="elite-card__icon">📋</span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
-<h3>Incident Playbooks</h3>
+<h3>WarRoom</h3>
 <p>Phase-by-phase response for every major attack type. Detection → containment → recovery.</p>
 <div class="elite-card__meta">
 <span>Step-by-step</span>
@@ -93,8 +93,8 @@ permalink: /premium/
 <span class="elite-card__icon">🔍</span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
-<h3>IOC Scanner</h3>
-<p>Bulk IOC lookup across 15+ threat intel platforms. IPs, domains, hashes, URLs — auto-detected.</p>
+<h3>ThreatLens</h3>
+<p>Bulk IOC lookup across 18 threat intel platforms. IPs, domains, hashes, URLs — auto-detected.</p>
 <div class="elite-card__meta">
 <span>15+ sources</span>
 <span>Auto-detect</span>

@@ -1,12 +1,12 @@
 ---
 layout: page
-title: IOC Scanner
+title: ThreatLens
 permalink: /ioc-scanner/
 ---
 
 <div class="page-head">
   <div class="label label--cyan page-head__label">SCW TOOLS</div>
-  <h1 class="page-head__title">IOC Scanner</h1>
+  <h1 class="page-head__title">ThreatLens</h1>
   <p class="page-head__desc">Paste any indicator — IPs, domains, hashes, URLs, emails — and get instant lookup links across 18 threat intelligence platforms with clear descriptions of what each source checks.</p>
 </div>
 
@@ -106,7 +106,7 @@ permalink: /ioc-scanner/
     <h2 class="cs-cta__title">Built for SOC analysts.</h2>
     <p class="cs-cta__text">Paste IOCs from alerts, threat reports, or incident tickets. Get instant lookup links. No context switching, no API rate limits.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--primary">Incident Playbooks →</a>
+      <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--primary">WarRoom →</a>
       <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools</a>
     </div>
   </div>

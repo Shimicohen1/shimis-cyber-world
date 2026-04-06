@@ -5,9 +5,9 @@ permalink: /tools/
 ---
 
 <div class="page-head">
-  <div class="label label--cyan page-head__label">SCW ELITE</div>
+  <div class="label label--lime page-head__label">FIELD OPERATIONS</div>
   <h1 class="page-head__title">The Toolkit</h1>
-  <p class="page-head__desc">Security tools built by practitioners, for practitioners. No fluff — real commands, real detections, real response procedures.</p>
+  <p class="page-head__desc">Reconnaissance, exploitation, defense, and security tools — battle-tested and operator-approved.</p>
 </div>
 
 {% for category in site.data.tools.categories %}
