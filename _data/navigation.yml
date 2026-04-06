@@ -11,10 +11,6 @@
 - label: Premium
   url: /premium/
   badge: true
-- label: Detections
-  url: /detections/
-- label: Playbooks
-  url: /playbooks/
 - label: SCW Community
   url: /community/
 - label: Manifesto
