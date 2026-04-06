@@ -190,4 +190,4 @@ permalink: /premium/
 </section>
 </div>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=5">
