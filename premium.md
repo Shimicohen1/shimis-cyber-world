@@ -5,164 +5,148 @@ permalink: /premium/
 ---
 
 <div class="container">
-<div class="premium-hero reveal">
-<span class="premium-hero__icon">🛡️</span>
-<h1 class="premium-hero__title"><span>SCW</span> Elite</h1>
-<p class="premium-hero__desc">A curated layer of security tools, playbooks, and real-world guidance built to a higher standard.</p>
-<p class="premium-hero__sub">Built to bring sharper thinking, better execution, and more useful security content into one place.</p>
+
+<!-- ── Hero: tight, punchy ── -->
+<div class="elite-hero reveal">
+<div class="elite-hero__badge">SCW ELITE</div>
+<h1 class="elite-hero__title">Security tools that<br><span>actually work.</span></h1>
+<p class="elite-hero__sub">Built by practitioners. No theory, no filler — just tools you can use right now.</p>
 </div>
 
-<section class="elite-intro reveal">
-<p class="elite-intro__text">SCW Elite brings together practical tools, sharper playbooks, and more useful security guidance in one place — built to feel more refined, more actionable, and more aligned with real-world work.</p>
-</section>
+<!-- ── Stats bar: proof ── -->
+<div class="elite-stats reveal">
+<div class="elite-stat">
+<span class="elite-stat__num">748</span>
+<span class="elite-stat__label">Hardening Checks</span>
+</div>
+<div class="elite-stat">
+<span class="elite-stat__num">11</span>
+<span class="elite-stat__label">Platforms</span>
+</div>
+<div class="elite-stat">
+<span class="elite-stat__num">50+</span>
+<span class="elite-stat__label">Detection Rules</span>
+</div>
+<div class="elite-stat">
+<span class="elite-stat__num">15+</span>
+<span class="elite-stat__label">Threat Intel Sources</span>
+</div>
+</div>
 
-<section class="premium-includes reveal">
-<div class="feed__header">
-<h2 class="feed__title">What You'll Find Inside</h2>
-</div>
-<p class="elite-section-intro">SCW Elite is designed to make security content more useful, more practical, and more valuable — by combining stronger tools with deeper context.</p>
-<div class="premium-includes__grid">
-<div class="premium-include">
-<span class="premium-include__icon">🛠️</span>
-<h4>Curated Tools</h4>
-<p>Focused security utilities built for practical use, not noise.</p>
-</div>
-<div class="premium-include">
-<span class="premium-include__icon">📋</span>
-<h4>Real-World Playbooks</h4>
-<p>Guidance shaped by operational reality, not theory alone.</p>
-</div>
-<div class="premium-include">
-<span class="premium-include__icon">🧠</span>
-<h4>Higher-Standard Context</h4>
-<p>More than recommendations — the thinking, trade-offs, and execution behind them.</p>
-</div>
-<div class="premium-include">
-<span class="premium-include__icon">🔄</span>
-<h4>Ongoing Expansion</h4>
-<p>New tools, workflows, and resources continue to be added over time.</p>
-</div>
-</div>
-</section>
+<!-- ── Live Tools: THE MAIN EVENT ── -->
+<section class="elite-tools reveal">
 
-<section class="premium-tools-live">
-<div class="feed__header">
-<h2 class="feed__title"><span class="label label--cyan">AVAILABLE</span> &nbsp;Inside SCW Elite</h2>
+<a href="/hardening/" class="elite-card elite-card--featured">
+<div class="elite-card__glow"></div>
+<div class="elite-card__content">
+<div class="elite-card__head">
+<span class="elite-card__icon">🛡️</span>
+<span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
-<p class="elite-section-intro">Explore the tools and practical resources already available across the SCW Elite layer.</p>
-<div class="premium-tools__grid">
-
-<a href="/detections/" class="premium-tool-card premium-tool-card--live reveal" style="text-decoration:none;">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">🎯</span>
-<h4>Detection Library</h4>
-<p>Practical detection content built for real-world use. KQL, Sigma, and Splunk — mapped to MITRE ATT&CK.</p>
-<span class="premium-tool-card__tag">Detection</span>
+<h3>Hardening Checklist Generator</h3>
+<p>748 checks across 11 platforms — Linux, Windows, AWS, Azure, GCP, Entra ID, Defender, Intune, Purview, and more. Real commands, progress tracking, export to Markdown.</p>
+<div class="elite-card__meta">
+<span>11 platforms</span>
+<span>748 items</span>
+<span>Copy & export</span>
+</div>
 </div>
 </a>
 
-<a href="/playbooks/" class="premium-tool-card premium-tool-card--live reveal" style="text-decoration:none;">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">📋</span>
-<h4>Incident Playbooks</h4>
-<p>Structured guidance designed for faster execution. Phase-by-phase actions from detection to recovery.</p>
-<span class="premium-tool-card__tag">Incident Response</span>
+<div class="elite-grid">
+<a href="/detections/" class="elite-card">
+<div class="elite-card__glow"></div>
+<div class="elite-card__content">
+<div class="elite-card__head">
+<span class="elite-card__icon">🎯</span>
+<span class="elite-card__status elite-card__status--live">LIVE</span>
+</div>
+<h3>Detection Library</h3>
+<p>KQL, Sigma, and Splunk detection rules mapped to MITRE ATT&CK. Copy-paste ready.</p>
+<div class="elite-card__meta">
+<span>KQL / Sigma / Splunk</span>
+<span>MITRE mapped</span>
+</div>
 </div>
 </a>
 
-<a href="/ioc-scanner/" class="premium-tool-card premium-tool-card--live reveal" style="text-decoration:none;">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">🔍</span>
-<h4>IOC Scanner</h4>
-<p>Useful security workflows without the noise. Bulk IOC lookup across 15+ threat intel platforms.</p>
-<span class="premium-tool-card__tag">Threat Intel</span>
+<a href="/playbooks/" class="elite-card">
+<div class="elite-card__glow"></div>
+<div class="elite-card__content">
+<div class="elite-card__head">
+<span class="elite-card__icon">📋</span>
+<span class="elite-card__status elite-card__status--live">LIVE</span>
+</div>
+<h3>Incident Playbooks</h3>
+<p>Phase-by-phase response for every major attack type. Detection → containment → recovery.</p>
+<div class="elite-card__meta">
+<span>Step-by-step</span>
+<span>All attack types</span>
+</div>
 </div>
 </a>
 
-<a href="/hardening/" class="premium-tool-card premium-tool-card--live reveal" style="text-decoration:none;">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">🛡️</span>
-<h4>Hardening Checklist Generator</h4>
-<p>Real-world hardening guidance with better context. 748 checks across 11 platforms with implementation depth.</p>
-<span class="premium-tool-card__tag">Compliance</span>
+<a href="/ioc-scanner/" class="elite-card">
+<div class="elite-card__glow"></div>
+<div class="elite-card__content">
+<div class="elite-card__head">
+<span class="elite-card__icon">🔍</span>
+<span class="elite-card__status elite-card__status--live">LIVE</span>
+</div>
+<h3>IOC Scanner</h3>
+<p>Bulk IOC lookup across 15+ threat intel platforms. IPs, domains, hashes, URLs — auto-detected.</p>
+<div class="elite-card__meta">
+<span>15+ sources</span>
+<span>Auto-detect</span>
+</div>
 </div>
 </a>
+</div>
 
+</section>
+
+<!-- ── Coming Next: compact ── -->
+<section class="elite-next reveal">
+<h2 class="elite-next__title">In the Pipeline</h2>
+<div class="elite-next__grid">
+<div class="elite-next__item">
+<span>🛡️</span>
+<strong>Recon Suite</strong>
+<span class="elite-next__tag">Automation</span>
+</div>
+<div class="elite-next__item">
+<span>⚡</span>
+<strong>API Scanner</strong>
+<span class="elite-next__tag">Scanner</span>
+</div>
+<div class="elite-next__item">
+<span>🔧</span>
+<strong>Payload Forge</strong>
+<span class="elite-next__tag">Utility</span>
+</div>
+<div class="elite-next__item">
+<span>📊</span>
+<strong>Report Gen</strong>
+<span class="elite-next__tag">Reporting</span>
+</div>
+<div class="elite-next__item">
+<span>🧪</span>
+<strong>SCW Labs</strong>
+<span class="elite-next__tag">Training</span>
+</div>
+<div class="elite-next__item">
+<span>🔍</span>
+<strong>Cloud Auditor</strong>
+<span class="elite-next__tag">Cloud</span>
+</div>
 </div>
 </section>
 
-<section class="premium-tools">
-<div class="feed__header">
-<h2 class="feed__title"><span class="label label--amber">NEXT</span> &nbsp;What's Next</h2>
-</div>
-<p class="elite-section-intro">More additions are being built to extend the SCW Elite layer over time.</p>
-<div class="premium-tools__grid">
-
-<div class="premium-tool-card premium-tool-card--upcoming reveal">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">🛡️</span>
-<h4>SCW Recon Suite</h4>
-<p>Automated recon pipeline — chains subdomain enum, port scanning, tech fingerprinting into one command.</p>
-<span class="premium-tool-card__tag">Automation</span>
-</div>
-</div>
-
-<div class="premium-tool-card premium-tool-card--upcoming reveal">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">⚡</span>
-<h4>API Vuln Scanner</h4>
-<p>Targeted API security scanner — tests auth bypass, IDOR, rate limiting, injection across REST and GraphQL endpoints.</p>
-<span class="premium-tool-card__tag">Scanner</span>
-</div>
-</div>
-
-<div class="premium-tool-card premium-tool-card--upcoming reveal">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">🔧</span>
-<h4>Payload Forge</h4>
-<p>Quick payload builder for XSS, SQLi, SSTI, and command injection — with encoding, obfuscation, and WAF bypass options.</p>
-<span class="premium-tool-card__tag">Utility</span>
-</div>
-</div>
-
-<div class="premium-tool-card premium-tool-card--upcoming reveal">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">📊</span>
-<h4>Report Generator</h4>
-<p>Turn raw findings into professional, client-ready security reports. Markdown in, styled PDF out.</p>
-<span class="premium-tool-card__tag">Reporting</span>
-</div>
-</div>
-
-<div class="premium-tool-card premium-tool-card--upcoming reveal">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">🧪</span>
-<h4>SCW Labs</h4>
-<p>Pre-built vulnerable environments with guided challenges. Practice real attack techniques in a safe sandbox.</p>
-<span class="premium-tool-card__tag">Training</span>
-</div>
-</div>
-
-<div class="premium-tool-card premium-tool-card--upcoming reveal">
-<div class="premium-tool-card__content">
-<span class="premium-tool-card__icon">🔍</span>
-<h4>Cloud Config Auditor</h4>
-<p>Scan AWS, Azure, and GCP configs for misconfigurations, exposed storage, and IAM privilege escalation paths.</p>
-<span class="premium-tool-card__tag">Cloud Security</span>
-</div>
-</div>
-
-</div>
+<!-- ── Newsletter CTA: minimal ── -->
+<section class="elite-footer reveal">
+<a href="#newsletter" class="btn btn--ghost">Get notified on new drops →</a>
 </section>
 
-<section class="premium-cta reveal">
-<div class="premium-cta__box">
-<span class="premium-cta__badge">New Releases</span>
-<h3 class="premium-cta__title">Expanding the toolkit.</h3>
-<p class="premium-cta__text">Get updates on new releases and upcoming additions to SCW Elite.</p>
-<a href="#newsletter" class="btn btn--primary">Follow New Releases</a>
-</div>
-</section>
 </div>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=6">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=7">
