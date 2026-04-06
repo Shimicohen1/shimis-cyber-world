@@ -28,13 +28,22 @@
     url: 'vault', email: 'signal'
   };
 
-  /* Context descriptions per IOC type */
-  var TYPE_CONTEXT = {
-    ip: 'Check this IP across threat intelligence platforms for abuse reports, open ports, reputation, and known malicious activity.',
-    hash: 'Scan this file hash against malware databases, antivirus engines, and sandbox environments to identify threats.',
-    domain: 'Investigate this domain for DNS history, hosting infrastructure, reputation, and associations with malicious activity.',
-    url: 'Analyze this URL for phishing indicators, malware distribution, redirect chains, and browser safety verdicts.',
-    email: 'Check this email address for data breach exposure, reputation score, and association with known threat actors.'
+  /* Risk context per IOC type */
+  var TYPE_RISK = {
+    ip: 'Malicious IPs may indicate C2 servers, compromised hosts, or scanning infrastructure. If this IP appears in your logs, investigate all connections to and from it and check for lateral movement.',
+    hash: 'A file hash matching known malware is a confirmed threat indicator. If this hash was found on your systems, the associated file should be quarantined immediately and incident response initiated.',
+    domain: 'Malicious domains may host phishing pages, deliver malware payloads, or serve as C2 infrastructure. If users accessed this domain, check for downloaded files and credential exposure.',
+    url: 'Malicious URLs deliver payloads, harvest credentials, or redirect to exploit kits. DO NOT visit this URL directly — use the sandboxed analysis tools below to inspect it safely.',
+    email: 'Emails found in breach databases mean credentials may be compromised. Threat actors use leaked emails for credential stuffing, phishing campaigns, and social engineering attacks.'
+  };
+
+  /* Recommended actions per IOC type */
+  var TYPE_ACTIONS = {
+    ip: 'Block at firewall/proxy • Search SIEM for historical connections • Check for lateral movement • Add to watchlist • Notify affected users if internal IP',
+    hash: 'Quarantine the file • Run full endpoint scan • Check for persistence mechanisms (run keys, scheduled tasks) • Search for the hash across all endpoints • Preserve evidence',
+    domain: 'Block in DNS/proxy • Check who accessed it and when • Scan endpoints that connected • Look for downloaded payloads • Review email logs for phishing links to this domain',
+    url: 'Block the URL in proxy/email gateway • Identify users who clicked • Check endpoints for downloads • Review browser history • Reset credentials if it was a phishing page',
+    email: 'Reset passwords for this account • Enable/verify MFA • Check for unauthorized email forwarding rules • Monitor for phishing targeting this address • Audit recent login activity'
   };
 
   /* ── Defang / refang ── */
@@ -143,43 +152,61 @@
     filters.innerHTML = filterHtml;
     filters.style.display = '';
 
-    /* IOC cards */
+    /* IOC cards — rich intelligence layout */
     var html = '';
     parsed.iocs.forEach(function (ioc) {
       var display = shouldDefang ? defang(ioc.raw, ioc.lookup) : ioc.raw;
       var links = buildLinks(ioc);
       var badgeClass = TYPE_BADGE[ioc.lookup] || 'vault';
       var typeLabel = ioc.type.toUpperCase();
-      var typeContext = TYPE_CONTEXT[ioc.lookup] || '';
+      var riskText = TYPE_RISK[ioc.lookup] || '';
+      var actionsText = TYPE_ACTIONS[ioc.lookup] || '';
 
       html += '<div class="ioc-card" data-type="' + ioc.lookup + '">';
 
-      /* Card header — IOC value + type badge */
-      html += '  <div class="ioc-card__header">';
-      html += '    <div class="ioc-card__type-row">';
-      html += '      <span class="ioc-card__type-icon">' + (TYPE_ICONS[ioc.lookup] || '') + '</span>';
-      html += '      <span class="badge badge--' + badgeClass + '">' + typeLabel + '</span>';
-      html += '      <span class="ioc-card__source-count">' + links.length + ' sources</span>';
-      html += '    </div>';
-      html += '    <code class="ioc-card__value">' + escapeHtml(display) + '</code>';
-      html += '    <p class="ioc-card__context">' + escapeHtml(typeContext) + '</p>';
+      /* ── Header: type + value ── */
+      html += '<div class="ioc-card__header">';
+      html += '  <div class="ioc-card__type-row">';
+      html += '    <span class="ioc-card__type-icon">' + (TYPE_ICONS[ioc.lookup] || '') + '</span>';
+      html += '    <span class="badge badge--' + badgeClass + '">' + typeLabel + '</span>';
+      html += '    <span class="ioc-card__label">' + (TYPE_LABELS[ioc.lookup] || ioc.lookup) + '</span>';
+      html += '    <span class="ioc-card__source-count">' + links.length + ' sources</span>';
       html += '  </div>';
+      html += '  <code class="ioc-card__value">' + escapeHtml(display) + '</code>';
+      html += '</div>';
 
-      /* Lookup links with descriptions */
-      html += '  <div class="ioc-card__links">';
+      /* ── Risk context ── */
+      if (riskText) {
+        html += '<div class="ioc-card__risk">';
+        html += '  <div class="ioc-card__risk-title">⚠️ Why this matters</div>';
+        html += '  <p class="ioc-card__risk-text">' + escapeHtml(riskText) + '</p>';
+        html += '</div>';
+      }
+
+      /* ── Source links with descriptions ── */
+      html += '<div class="ioc-card__section-title">🔍 What each source checks</div>';
+      html += '<div class="ioc-card__links">';
       links.forEach(function (l) {
-        html += '    <a href="' + escapeAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
-        html += '      <div class="ioc-link__header">';
-        html += '        <span class="ioc-link__icon">' + l.icon + '</span>';
-        html += '        <span class="ioc-link__name">' + escapeHtml(l.name) + '</span>';
-        html += '        <span class="ioc-link__arrow">↗</span>';
-        html += '      </div>';
+        html += '<a href="' + escapeAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
+        html += '  <div class="ioc-link__header">';
+        html += '    <span class="ioc-link__icon">' + l.icon + '</span>';
+        html += '    <span class="ioc-link__name">' + escapeHtml(l.name) + '</span>';
+        html += '    <span class="ioc-link__arrow">↗</span>';
+        html += '  </div>';
         if (l.desc) {
-          html += '      <p class="ioc-link__desc">' + escapeHtml(l.desc) + '</p>';
+          html += '  <p class="ioc-link__desc">' + escapeHtml(l.desc) + '</p>';
         }
-        html += '    </a>';
+        html += '</a>';
       });
-      html += '  </div>';
+      html += '</div>';
+
+      /* ── Next steps ── */
+      if (actionsText) {
+        html += '<div class="ioc-card__actions">';
+        html += '  <div class="ioc-card__actions-title">💡 Recommended actions</div>';
+        html += '  <p class="ioc-card__actions-text">' + escapeHtml(actionsText) + '</p>';
+        html += '</div>';
+      }
 
       html += '</div>';
     });
