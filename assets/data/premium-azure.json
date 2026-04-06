@@ -1,0 +1,24 @@
+{
+  "az-001": {
+    "attackPerspective": "Without MFA, a single stolen password grants full access to all Azure resources the user can reach. Password spray, credential stuffing, and phishing attacks succeed over 99% of the time when MFA is not enforced. Microsoft reports that MFA blocks 99.9% of automated account compromise attacks.",
+    "implementationNotes": "# Check MFA registration status\nConnect-MgGraph -Scopes 'UserAuthenticationMethod.Read.All','Reports.Read.All'\n\n# Get MFA registration report\nGet-MgReportAuthenticationMethodUserRegistrationDetail -All | Select UserPrincipalName, IsMfaRegistered, MethodsRegistered | Where-Object { $_.IsMfaRegistered -eq $false } | Format-Table\n\n# Create Conditional Access policy requiring MFA for all users\n$params = @{\n  displayName = 'Require MFA for All Users'\n  state = 'enabledForReportingButNotEnforced'  # Start in report-only\n  conditions = @{\n    users = @{ includeUsers = @('All'); excludeUsers = @('<break-glass-id>') }\n    applications = @{ includeApplications = @('All') }\n  }\n  grantControls = @{\n    operator = 'OR'\n    builtInControls = @('mfa')\n  }\n}\nNew-MgIdentityConditionalAccessPolicy @params",
+    "validationNotes": "# Verify CA policy exists and is enabled\nGet-MgIdentityConditionalAccessPolicy | Where-Object { $_.DisplayName -like '*MFA*' } | Select DisplayName, State | Format-Table\n\n# Check MFA registration completion\n$report = Get-MgReportAuthenticationMethodUserRegistrationDetail -All\n$total = $report.Count\n$mfaEnabled = ($report | Where-Object { $_.IsMfaRegistered }).Count\nWrite-Host \"MFA Registered: $mfaEnabled / $total ($([math]::Round($mfaEnabled/$total*100,1))%)\"",
+    "tuningNotes": "Deploy in report-only mode first to identify users who would be blocked. Exclude break-glass accounts but monitor them separately. Use Authentication Strengths to require phishing-resistant MFA (FIDO2/Windows Hello) for admins. Allow 'remember MFA for 14 days' on compliant devices to reduce user friction.",
+    "advancedDetection": "// KQL: Detect sign-ins without MFA\nSigninLogs\n| where TimeGenerated > ago(24h)\n| where AuthenticationRequirement == 'singleFactorAuthentication'\n| where ResultType == 0  // Successful\n| where AppDisplayName !in ('Azure Portal', 'Microsoft Graph')  // Focus on cloud apps\n| summarize Count = count() by UserPrincipalName, AppDisplayName\n| sort by Count desc",
+    "relatedIds": [
+      "az-002",
+      "az-003"
+    ]
+  },
+  "az-005": {
+    "attackPerspective": "Microsoft Defender for Cloud provides the central security posture and threat detection layer for Azure. Without it, there's no unified view of misconfigurations, no vulnerability assessments for VMs, no threat alerts for storage/SQL/Key Vault, and no Secure Score tracking. Attackers specifically target subscriptions without monitoring.",
+    "implementationNotes": "# Check current Defender plans\nConnect-AzAccount\nGet-AzSecurityPricing | Format-Table Name, PricingTier, FreeTrialRemainingTime\n\n# Enable all critical plans\n$plans = @('VirtualMachines','SqlServers','AppServices','StorageAccounts','KeyVaults','Dns','Arm','Containers')\nforeach ($plan in $plans) {\n  Set-AzSecurityPricing -Name $plan -PricingTier 'Standard'\n  Write-Host \"Enabled Defender for $plan\"\n}\n\n# Enable auto-provisioning of Log Analytics agent\nSet-AzSecurityAutoProvisioningSetting -Name 'default' -EnableAutoProvision\n\n# Check Secure Score\nGet-AzSecuritySecureScore | Select DisplayName, CurrentScore, MaxScore, Percentage | Format-Table",
+    "validationNotes": "# Verify all plans are Standard\nGet-AzSecurityPricing | Where-Object { $_.PricingTier -eq 'Free' }\n# Expected: Empty (all should be Standard)\n\n# Check active security alerts\nGet-AzSecurityAlert | Where-Object { $_.Status -eq 'Active' } | Measure-Object\n\n# Verify Secure Score\nGet-AzSecuritySecureScore | Select Percentage",
+    "tuningNotes": "Enable plans incrementally starting with VirtualMachines and StorageAccounts (highest ROI). Review Secure Score recommendations weekly — focus on Quick Wins (high impact, low effort). Suppress false positive alerts using suppression rules rather than disabling plans. Cost optimization: use Defender for Servers P1 ($5/server) for dev/test.",
+    "advancedDetection": "// KQL: Track Defender plan changes (potential tampering)\nAzureActivity\n| where TimeGenerated > ago(7d)\n| where OperationNameValue == 'Microsoft.Security/pricings/write'\n| extend Tier = tostring(parse_json(Properties).resource.properties.pricingTier)\n| extend PlanName = tostring(parse_json(Properties).resource.name)\n| project TimeGenerated, Caller, PlanName, Tier, SubscriptionId\n| where Tier == 'Free'\n| extend AlertSeverity = 'High'",
+    "relatedIds": [
+      "az-001",
+      "az-004"
+    ]
+  }
+}
