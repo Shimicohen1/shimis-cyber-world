@@ -115,8 +115,7 @@
         html += '</div>';
       }
       html += '<div class="harden-premium__locked-cta">';
-      html += '<p>🔒 Unlock full guidance: attack perspective, implementation steps, validation commands, tuning notes' + (p.advancedDetection ? ', and detection logic' : '') + '.</p>';
-      html += '<a href="/auth/signin/" class="btn btn--ghost btn--sm">Unlock Full Playbook</a>';
+      html += '<p>🔒 Full guidance — attack perspective, implementation steps, validation commands, tuning notes' + (p.advancedDetection ? ', and detection logic' : '') + ' — coming soon.</p>';
       html += '</div>';
     }
 

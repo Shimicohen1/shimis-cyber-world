@@ -124,9 +124,9 @@ permalink: /hardening/
     <span class="harden-auth-banner__icon">🔐</span>
     <div class="harden-auth-banner__text">
       <strong>Advanced Guidance Available</strong>
-      <span>Unlock attack perspectives, validation steps, detection logic, and tuning notes for hardening items.</span>
+      <span>Some items include attack perspectives, validation steps, detection logic, and tuning notes. Full access coming soon.</span>
     </div>
-    <a href="/auth/signin/" class="btn btn--ghost btn--sm harden-auth-banner__btn">Sign In</a>
+    <span class="btn btn--ghost btn--sm harden-auth-banner__btn" style="opacity:.6;cursor:default;">Coming Soon</span>
   </div>
 </div>
 
