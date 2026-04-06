@@ -1134,11 +1134,45 @@
 .ioc-card__domain-note-icon { font-size: 1rem; flex-shrink: 0; }
 .ioc-card__domain-note strong { color: var(--cyan); }
 
+/* Breach database grid */
+.ioc-card__breach-note {
+  font-size: .75rem;
+  color: var(--dim);
+  margin: .3rem 0 .6rem;
+  line-height: 1.5;
+}
+.ioc-card__breach-note strong { color: var(--cyan); }
+.ioc-card__breach-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .5rem;
+}
+.ioc-breach-item {
+  background: rgba(239,68,68,.04);
+  border: 1px solid rgba(239,68,68,.1);
+  border-radius: var(--r-sm, 4px);
+  padding: .55rem .7rem;
+}
+.ioc-breach-item__header {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  margin-bottom: .25rem;
+  flex-wrap: wrap;
+}
+.ioc-breach-item__icon { font-size: .85rem; }
+.ioc-breach-item__name { color: var(--white); font-size: .78rem; }
+.ioc-breach-item__meta { font-size: .65rem; color: var(--dim); margin-left: auto; white-space: nowrap; }
+.ioc-breach-item__data { font-size: .68rem; color: var(--gray); line-height: 1.45; }
+
 /* Light theme additions */
 [data-theme="light"] .ioc-exposure-item { background: rgba(239,68,68,.04); border-color: rgba(239,68,68,.1); }
 [data-theme="light"] .ioc-exposure-item__text strong { color: #1a1a2e; }
 [data-theme="light"] .ioc-card__domain-note { background: rgba(59,130,246,.04); border-color: rgba(59,130,246,.12); }
 [data-theme="light"] .ioc-card__domain-note strong { color: #0891b2; }
+[data-theme="light"] .ioc-breach-item { background: rgba(239,68,68,.04); border-color: rgba(239,68,68,.1); }
+[data-theme="light"] .ioc-breach-item__name { color: #1a1a2e; }
+[data-theme="light"] .ioc-card__breach-note strong { color: #0891b2; }
 
 /* Recommended actions section */
 .ioc-card__actions {
@@ -1261,11 +1295,13 @@
   .ioc-card { padding: 1rem 1.1rem; }
   .ioc-card__links { grid-template-columns: 1fr; }
   .ioc-card__exposure-grid { grid-template-columns: 1fr 1fr; }
+  .ioc-card__breach-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
   .ioc-card__header { flex-direction: column; }
   .ioc-card__links { grid-template-columns: 1fr; }
   .ioc-card__exposure-grid { grid-template-columns: 1fr; }
+  .ioc-card__breach-grid { grid-template-columns: 1fr; }
   .ioc-link { padding: .5rem .6rem; }
   .ioc-input-actions { flex-direction: column; align-items: flex-start; }
 }

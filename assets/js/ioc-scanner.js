@@ -58,6 +58,26 @@
     { icon: '🔗', label: 'Connected accounts', desc: 'Other services linked via this email (OAuth, SSO)' }
   ];
 
+  /* Known major breach databases — shown for email type to give context */
+  var KNOWN_BREACHES = [
+    { name: 'LinkedIn', year: 2021, records: '700M', data: 'Email, name, phone, job title, employer, location, profile URL', icon: '💼' },
+    { name: 'Facebook', year: 2021, records: '533M', data: 'Email, phone, name, DOB, location, relationship status', icon: '📘' },
+    { name: 'Twitter / X', year: 2023, records: '200M', data: 'Email, name, username, phone, profile data, followers', icon: '🐦' },
+    { name: 'Adobe', year: 2013, records: '153M', data: 'Email, encrypted passwords, password hints, usernames', icon: '🎨' },
+    { name: 'Canva', year: 2019, records: '137M', data: 'Email, username, name, city, country, bcrypt password hash', icon: '🖼️' },
+    { name: 'Dropbox', year: 2012, records: '68M', data: 'Email, bcrypt/SHA-1 password hashes', icon: '📦' },
+    { name: 'Telegram', year: 2024, records: '41M', data: 'Phone numbers, usernames, user IDs', icon: '✈️' },
+    { name: 'Deezer', year: 2019, records: '229M', data: 'Email, name, DOB, gender, city, country, IP', icon: '🎵' },
+    { name: 'MyFitnessPal', year: 2018, records: '144M', data: 'Email, username, IP, SHA-1 password hashes', icon: '💪' },
+    { name: 'Dubsmash', year: 2018, records: '162M', data: 'Email, username, bcrypt password hash, phone, DOB', icon: '🎤' },
+    { name: 'Wattpad', year: 2020, records: '271M', data: 'Email, username, name, DOB, bcrypt password hash, IP', icon: '📖' },
+    { name: 'Zynga', year: 2019, records: '173M', data: 'Email, username, phone, SHA-1 password hashes', icon: '🎮' },
+    { name: 'MGM Resorts', year: 2020, records: '142M', data: 'Name, email, phone, DOB, home address, driver license', icon: '🏨' },
+    { name: 'Exactis', year: 2018, records: '340M', data: 'Name, email, phone, address, interests, family details, habits', icon: '📊' },
+    { name: 'Collection #1-5', year: 2019, records: '2.2B', data: 'Email + password combos aggregated from thousands of breaches', icon: '📁' },
+    { name: 'COMB', year: 2021, records: '3.2B', data: 'Largest credential compilation — email + plaintext passwords from many breaches', icon: '💀' }
+  ];
+
   /* ── Defang / refang ── */
   function defang(val, type) {
     if (type === 'ip' || type === 'domain') {
@@ -221,6 +241,22 @@
           html += 'Check if other employees or personal accounts use the same domain.</span>';
           html += '</div>';
         }
+
+        /* Known breach databases */
+        html += '<div class="ioc-card__section-title">🗄️ Known major breaches (check if this email appears)</div>';
+        html += '<div class="ioc-card__breach-note">These are the largest known data breaches. Use <strong>Have I Been Pwned</strong> above to check exactly which ones contain this email.</div>';
+        html += '<div class="ioc-card__breach-grid">';
+        KNOWN_BREACHES.forEach(function (b) {
+          html += '<div class="ioc-breach-item">';
+          html += '  <div class="ioc-breach-item__header">';
+          html += '    <span class="ioc-breach-item__icon">' + b.icon + '</span>';
+          html += '    <strong class="ioc-breach-item__name">' + escapeHtml(b.name) + '</strong>';
+          html += '    <span class="ioc-breach-item__meta">' + b.year + ' · ' + b.records + ' records</span>';
+          html += '  </div>';
+          html += '  <div class="ioc-breach-item__data">Leaked: ' + escapeHtml(b.data) + '</div>';
+          html += '</div>';
+        });
+        html += '</div>';
       }
 
       /* ── Source links with descriptions ── */
@@ -343,16 +379,21 @@
       render(parsed);
     });
 
-    clearBtn.addEventListener('click', function () {
-      input.value = '';
-      document.getElementById('iocResults').innerHTML = '';
-      document.getElementById('iocStats').style.display = 'none';
-      document.getElementById('iocFilters').style.display = 'none';
-      document.getElementById('iocExport').style.display = 'none';
-    });
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        document.getElementById('iocResults').innerHTML = '';
+        document.getElementById('iocStats').style.display = 'none';
+        document.getElementById('iocFilters').style.display = 'none';
+        document.getElementById('iocExport').style.display = 'none';
+        input.focus();
+      });
+    }
 
+    /* Enter = scan immediately (Shift+Enter = newline) */
     input.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
         scanBtn.click();
       }
     });
