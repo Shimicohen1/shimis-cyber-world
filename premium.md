@@ -43,8 +43,8 @@ permalink: /premium/
 <span class="elite-card__icon">🛡️</span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
-<h3>Hardening Checklist Generator</h3>
-<p>748 checks across 11 platforms — Linux, Windows, AWS, Azure, GCP, Entra ID, Defender, Intune, Purview, and more. Real commands, progress tracking, export to Markdown.</p>
+<h3>LockDown</h3>
+<p>748 security hardening checks. 11 platforms. Real commands you copy-paste, not theory you read. Track progress, export everything.</p>
 <div class="elite-card__meta">
 <span>11 platforms</span>
 <span>748 items</span>

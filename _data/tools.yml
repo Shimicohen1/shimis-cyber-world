@@ -158,8 +158,8 @@ categories:
         tags: [threat-intel, automation]
         status: Live
         button: Launch Tool
-      - title: "Hardening Checklist Generator"
-        description: "CIS-aligned security hardening checklists for Linux, Windows, AWS, Azure, and GCP with real commands."
+      - title: "LockDown"
+        description: "748 hardening checks across 11 platforms. Real commands, progress tracking, full export."
         url: "/hardening/"
         tags: [defense, compliance]
         status: Live
