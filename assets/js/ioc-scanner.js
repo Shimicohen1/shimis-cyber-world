@@ -143,6 +143,8 @@
       if (src.types.indexOf(ioc.lookup) === -1) return;
       var template = src.urls[ioc.lookup];
       if (!template) return;
+      /* Email: use raw value for path-based URLs (e.g. emailrep.io/user@x.com).
+         The email regex already blocks dangerous chars (", <, >, spaces). */
       var encoded = ioc.lookup === 'email' ? ioc.raw : encodeURIComponent(ioc.raw);
       var href = template.replace('{value}', encoded);
       var desc = (src.descs && src.descs[ioc.lookup]) || '';
@@ -307,6 +309,16 @@
     });
   }
 
+  /* ── CSV Escape (prevent formula injection) ── */
+  function csvEscape(val) {
+    if (!val) return '';
+    var s = String(val);
+    if (/[,"\n\r]/.test(s) || /^[=+\-@\t\r]/.test(s)) {
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+  }
+
   /* ── Export ── */
   function exportCsv() {
     if (!window._iocParsed) return;
@@ -314,7 +326,7 @@
     window._iocParsed.iocs.forEach(function (ioc) {
       var links = buildLinks(ioc);
       var sourceNames = links.map(function(l) { return l.name; }).join('; ');
-      rows.push(ioc.lookup + ',' + ioc.type + ',' + ioc.raw + ',' + defang(ioc.raw, ioc.lookup) + ',"' + sourceNames + '"');
+      rows.push([csvEscape(ioc.lookup), csvEscape(ioc.type), csvEscape(ioc.raw), csvEscape(defang(ioc.raw, ioc.lookup)), csvEscape(sourceNames)].join(','));
     });
     downloadFile(rows.join('\n'), 'ioc-scan-results.csv', 'text/csv');
   }

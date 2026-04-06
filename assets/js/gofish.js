@@ -389,6 +389,13 @@
     return d.innerHTML;
   }
 
+  /* ── Escape for HTML attributes (prevents attribute injection) ── */
+  function escapeAttr(s) {
+    if (!s) return '';
+    return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   function sevBadge(sev) {
     if (sev === 'critical') return 'live';
     if (sev === 'high') return 'signal';
@@ -474,7 +481,7 @@
       html += '  <div class="gofish-verify-title">🔍 Verify with external scanners</div>';
       html += '  <div class="gofish-verify-links">';
       verifyLinks.forEach(function (l) {
-        html += '<a href="' + esc(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
+        html += '<a href="' + escapeAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
         html += '  <div class="ioc-link__header">';
         html += '    <span class="ioc-link__icon">' + l.icon + '</span>';
         html += '    <span class="ioc-link__name">' + esc(l.name) + '</span>';

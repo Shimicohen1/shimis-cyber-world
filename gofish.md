@@ -87,4 +87,4 @@ permalink: /gofish/
 </section>
 
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=8">
-<script src="/assets/js/gofish.js?v=3" defer></script>
+<script src="/assets/js/gofish.js?v=4" defer></script>
