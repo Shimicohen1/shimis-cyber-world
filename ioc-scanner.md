@@ -17,7 +17,6 @@ permalink: /ioc-scanner/
     <div class="ioc-step"><span class="ioc-step__num">3</span><span class="ioc-step__text">Get direct links to relevant platforms with context on what to look for</span></div>
   </div>
   <div class="cs-intro__actions">
-    <a href="#scanner" class="btn btn--primary">Start Scanning</a>
     <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools →</a>
   </div>
 </section>
