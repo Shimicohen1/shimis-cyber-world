@@ -1,0 +1,39 @@
+{
+  "win-001": {
+    "attackPerspective": "The built-in Administrator (RID 500) account has special properties: it cannot be locked out and bypasses UAC. Attackers specifically target it with pass-the-hash. Tools like CrackMapExec and Mimikatz prioritize RID 500 for lateral movement.",
+    "implementationNotes": "1. Create new admin account first: New-LocalUser -Name 'secadmin'\n2. Add to Administrators: Add-LocalGroupMember -Group 'Administrators' -Member 'secadmin'\n3. Verify new account works with admin privileges\n4. Rename: Rename-LocalUser -Name 'Administrator' -NewName 'scw_disabled'\n5. Disable: Disable-LocalUser -Name 'scw_disabled'",
+    "validationNotes": "# Verify Administrator is disabled\nGet-LocalUser | Where-Object {$_.SID -like '*-500'} | Select Name,Enabled\n\n# Check no services run as the old account\nGet-WmiObject Win32_Service | Where-Object {$_.StartName -like '*Administrator*'}",
+    "tuningNotes": "Some third-party backup and monitoring agents hardcode 'Administrator' as the account name. Audit all scheduled tasks and services before renaming. Use: Get-ScheduledTask | Where-Object {$_.Principal.UserId -like '*admin*'}",
+    "advancedDetection": "# Detect RID 500 logon attempts (Event ID 4624/4625)\nindex=windows EventCode IN (4624,4625) TargetUserSid=\"*-500\"\n| stats count by EventCode, SourceNetworkAddress\n| sort -count",
+    "relatedIds": [
+      "win-002",
+      "win-004",
+      "win-012"
+    ],
+    "commandFull": "# Full Administrator account hardening script\n# Step 1: Create replacement admin\n$securePass = Read-Host -AsSecureString -Prompt 'Enter password for new admin'\nNew-LocalUser -Name 'scw_secadmin' -Password $securePass -Description 'SCW Security Admin'\nAdd-LocalGroupMember -Group 'Administrators' -Member 'scw_secadmin'\n\n# Step 2: Verify new admin works (test in separate session first!)\n\n# Step 3: Rename built-in Administrator\nRename-LocalUser -Name 'Administrator' -NewName 'scw_legacy_disabled'\n\n# Step 4: Disable it\nDisable-LocalUser -Name 'scw_legacy_disabled'\n\n# Step 5: Verify\nGet-LocalUser | Where-Object { $_.SID -like '*-500' } | Select Name, Enabled, LastLogon\n\n# Step 6: Check no services depend on it\nGet-WmiObject Win32_Service | Where-Object { $_.StartName -like '*Administrator*' } | Select Name, StartName\nGet-ScheduledTask | Where-Object { $_.Principal.UserId -like '*Administrator*' } | Select TaskName"
+  },
+  "win-005": {
+    "attackPerspective": "SMBv1 is the protocol behind EternalBlue (MS17-010), used by WannaCry, NotPetya, and countless ransomware campaigns. Even patched systems remain at risk from new zero-days targeting SMBv1. It's an obsolete protocol with no legitimate modern use case.",
+    "implementationNotes": "1. Check current SMB status: Get-SmbServerConfiguration | Select EnableSMB1Protocol\n2. Disable server: Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force\n3. Disable client feature: Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart\n4. Schedule reboot during maintenance window\n5. Monitor for 30 days for any compatibility issues",
+    "validationNotes": "# Verify SMBv1 is off\nGet-SmbServerConfiguration | Select EnableSMB1Protocol\n# Expected: False\n\n# Check Windows Feature status\nGet-WindowsOptionalFeature -Online -FeatureName SMB1Protocol\n# Expected: State = Disabled\n\n# Scan for SMBv1 connections in logs\nGet-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-SMBServer/Audit'} -MaxEvents 100",
+    "tuningNotes": "Legacy printers, scanners, and NAS devices from pre-2017 may require SMBv1. Inventory these devices first. Use SMB1 audit logging for 30 days before disabling: Set-SmbServerConfiguration -AuditSmb1Access $true",
+    "advancedDetection": "",
+    "relatedIds": [
+      "win-004",
+      "win-015",
+      "win-025"
+    ]
+  },
+  "win-006": {
+    "attackPerspective": "Without PowerShell logging, attackers can execute encoded commands, download payloads, and extract data with no trace. Tools like PowerSploit, Empire, and Cobalt Strike heavily abuse PowerShell. Script Block Logging captures the DECODED content, exposing obfuscation.",
+    "implementationNotes": "1. Open Group Policy Editor: gpedit.msc\n2. Navigate: Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell\n3. Enable 'Turn on PowerShell Script Block Logging'\n4. Enable 'Turn on PowerShell Transcription' (optional but recommended)\n5. Set transcript directory to a protected location\n6. Deploy via GPO to all servers and workstations",
+    "validationNotes": "# Check if logging is enabled via registry\nGet-ItemProperty 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging'\n# EnableScriptBlockLogging should be 1\n\n# Test: run a suspicious command\nInvoke-Expression 'whoami'\n\n# Check for the log entry\nGet-WinEvent -LogName 'Microsoft-Windows-PowerShell/Operational' -MaxEvents 5",
+    "tuningNotes": "",
+    "advancedDetection": "# SIEM query for suspicious PowerShell (encoded commands)\nindex=windows source=WinEventLog:Microsoft-Windows-PowerShell/Operational EventCode=4104\n| search ScriptBlockText=\"*-enc*\" OR ScriptBlockText=\"*EncodedCommand*\" OR ScriptBlockText=\"*Net.WebClient*\" OR ScriptBlockText=\"*DownloadString*\"\n| table _time, ComputerName, ScriptBlockText",
+    "relatedIds": [
+      "win-007",
+      "win-018",
+      "win-023"
+    ]
+  }
+}

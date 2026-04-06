@@ -1,0 +1,26 @@
+{
+  "m365-001": {
+    "attackPerspective": "Safe Links provides time-of-click URL verification — the critical defense against delayed-detonation phishing. Attackers increasingly use URLs that are clean at delivery time but redirect to malicious payloads hours later, after email gateway scanning. Without Safe Links, these attacks bypass all initial scanning.",
+    "implementationNotes": "1. Navigate to Microsoft Defender portal → Policies → Threat policies → Safe Links\n2. Create or edit the default policy\n3. Enable: 'On - URLs will be rewritten and checked against a list of known malicious links when user clicks'\n4. Enable for: Email messages AND Microsoft Teams\n5. Apply to: All users in the organization\n6. Enable real-time URL scanning and wait for URL scanning to complete",
+    "validationNotes": "# PowerShell verification\nConnect-ExchangeOnline\nGet-SafeLinksPolicy | Select Name, IsEnabled, ScanUrls, EnableForInternalSenders\n\n# Test with EICAR equivalent URL (use Defender testing tools)\n# Check policy application\nGet-SafeLinksRule | Select Name, State, Priority, SentTo",
+    "tuningNotes": "Some organizations exclude specific domains from rewriting (internal portals, trusted SaaS). Use the 'Do not rewrite URLs' list sparingly — each exclusion is a potential bypass. Audit the exclusion list quarterly.",
+    "advancedDetection": "",
+    "relatedIds": [
+      "m365-002",
+      "m365-004",
+      "m365-005"
+    ]
+  },
+  "m365-015": {
+    "attackPerspective": "Conditional Access is the backbone of Zero Trust in Entra ID. Without it, any valid credential grants full access from ANY device, ANY location. After the 2024 Midnight Blizzard attack on Microsoft, Conditional Access policies became the #1 recommended defense against token theft and credential replay.",
+    "implementationNotes": "1. Entra ID → Security → Conditional Access → Create new policy\n2. Policy 1 — Require MFA: All users → All cloud apps → Grant: Require MFA\n3. Policy 2 — Block legacy auth: All users → Conditions: Client apps (Legacy) → Block\n4. Policy 3 — Require compliant device: All users → All cloud apps → Grant: Require device compliance\n5. Use Report-only mode for 7 days before enforcing\n6. Exclude break-glass accounts from ALL policies",
+    "validationNotes": "# Check policies via Graph API\nConnect-MgGraph -Scopes 'Policy.Read.All'\nGet-MgIdentityConditionalAccessPolicy | Select DisplayName, State, Conditions, GrantControls\n\n# Check sign-in logs for policy hits\n# Entra ID → Sign-in logs → Conditional Access tab",
+    "tuningNotes": "Always create 2 break-glass accounts (cloud-only, no MFA, excluded from CA policies) with complex 128-char passwords. Store credentials in a physical safe. Monitor these accounts with alerts for any sign-in activity.",
+    "advancedDetection": "# Detect CA policy bypass attempts\nSigninLogs\n| where ConditionalAccessStatus == 'notApplied' or ConditionalAccessStatus == 'failure'\n| where UserPrincipalName !in ('breakglass1@domain.com', 'breakglass2@domain.com')\n| summarize count() by UserPrincipalName, ConditionalAccessStatus, AppDisplayName\n| sort by count_ desc",
+    "relatedIds": [
+      "m365-016",
+      "m365-017",
+      "m365-014"
+    ]
+  }
+}

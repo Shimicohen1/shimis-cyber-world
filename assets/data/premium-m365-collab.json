@@ -1,0 +1,25 @@
+{
+  "m365-022": {
+    "attackPerspective": "Attackers who compromise a mailbox often create mail transport rules or inbox rules that auto-forward all email to an external address — this is one of the most common persistence and data exfiltration techniques in BEC (Business Email Compromise) attacks. A single forwarding rule can silently exfiltrate months of sensitive communications.",
+    "implementationNotes": "# Connect to Exchange Online\nConnect-ExchangeOnline\n\n# Find transport rules that forward externally\nGet-TransportRule | Where-Object {\n  $_.RedirectMessageTo -or $_.BlindCopyTo -or $_.CopyTo\n} | Select-Object Name, State, Priority, RedirectMessageTo, BlindCopyTo | Format-List\n\n# Find user-level inbox rules forwarding externally\n$mailboxes = Get-EXOMailbox -ResultSize Unlimited -PropertySets Minimum\nforeach ($mbx in $mailboxes) {\n  $rules = Get-InboxRule -Mailbox $mbx.UserPrincipalName -ErrorAction SilentlyContinue\n  $fwd = $rules | Where-Object { $_.ForwardTo -or $_.ForwardAsAttachmentTo -or $_.RedirectTo }\n  if ($fwd) {\n    Write-Warning \"$($mbx.UserPrincipalName) has forwarding rules:\"\n    $fwd | Select-Object Name, ForwardTo, RedirectTo | Format-Table\n  }\n}\n\n# Block auto-forwarding to external domains\nNew-TransportRule -Name 'Block External Auto-Forward' \\\n  -FromScope InOrganization \\\n  -SentToScope NotInOrganization \\\n  -MessageTypeMatches AutoForward \\\n  -RejectMessageReasonText 'External mail forwarding is blocked per security policy'",
+    "validationNotes": "# Verify transport rule blocks forwarding\nGet-TransportRule -Identity 'Block External Auto-Forward' | Select State, Priority\n\n# Test by setting a forwarding rule and sending a test email\n# The message should be rejected\n\n# Check Remote Domains\nGet-RemoteDomain | Select DomainName, AutoForwardEnabled\n# AutoForwardEnabled should be $false for Default (*)",
+    "tuningNotes": "Allow specific forwarding for business-critical integrations (e.g., CRM, ticketing) by adding exceptions to the transport rule. Monitor for users trying to set forwarding via Outlook client or OWA — these attempts will appear in audit logs even if blocked.",
+    "advancedDetection": "// KQL: Detect new inbox rules with forwarding\nOfficeActivity\n| where TimeGenerated > ago(24h)\n| where Operation in ('New-InboxRule', 'Set-InboxRule', 'Enable-InboxRule')\n| where Parameters has_any ('ForwardTo', 'ForwardAsAttachmentTo', 'RedirectTo')\n| project TimeGenerated, UserId, Operation, Parameters\n| extend ForwardTarget = extract('\"Value\":\"([^\"]+)\"', 1, tostring(Parameters))\n| where ForwardTarget !endswith 'yourdomain.com'",
+    "relatedIds": [
+      "m365-023",
+      "m365-025"
+    ]
+  },
+  "m365-023": {
+    "attackPerspective": "If auditing is disabled, there is no forensic trail of mailbox access, permission changes, or data exfiltration. Attackers who gain initial access will often check audit status and disable it if possible — making their subsequent actions invisible to incident responders.",
+    "implementationNotes": "# Check organization-wide audit status\nGet-OrganizationConfig | Select-Object AuditDisabled\n# Must be False\n\n# Enable if disabled\nSet-OrganizationConfig -AuditDisabled $false\n\n# Verify per-mailbox auditing\nGet-EXOMailbox -ResultSize Unlimited -PropertySets Audit | Where-Object { $_.AuditEnabled -eq $false } | Select UserPrincipalName\n\n# Enable on all mailboxes\nGet-EXOMailbox -ResultSize Unlimited | Set-Mailbox -AuditEnabled $true",
+    "validationNotes": "# Verify global audit\n(Get-OrganizationConfig).AuditDisabled\n# Expected: False\n\n# Verify sample mailboxes\nGet-EXOMailbox -Identity admin@domain.com -PropertySets Audit | Select AuditEnabled, AuditLogAgeLimit\n# Expected: AuditEnabled = True, AuditLogAgeLimit = 90+ days",
+    "tuningNotes": "Default audit log retention is 90 days (E3) or 1 year (E5). For compliance requirements beyond that, configure Microsoft Purview audit log retention policies. Focus on high-value mailboxes (executives, finance) for extended retention.",
+    "advancedDetection": "// KQL: Detect audit being disabled\nOfficeActivity\n| where Operation == 'Set-OrganizationConfig'\n| where Parameters has 'AuditDisabled'\n| where Parameters has 'True'\n| project TimeGenerated, UserId, Operation, ClientIP\n| extend AlertSeverity = 'Critical'",
+    "relatedIds": [
+      "m365-022",
+      "m365-024",
+      "m365-025"
+    ]
+  }
+}

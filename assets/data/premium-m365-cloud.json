@@ -1,0 +1,35 @@
+{
+  "m365-243": {
+    "attackPerspective": "Without Defender for Cloud, there is no centralized visibility into misconfigurations, vulnerabilities, or active threats across Azure subscriptions. Attackers deliberately target subscriptions without security monitoring — they can deploy crypto miners, exfiltrate data, or establish persistence without triggering alerts.",
+    "implementationNotes": "# Check Defender for Cloud status across all subscriptions\nConnect-AzAccount\n$subs = Get-AzSubscription\nforeach ($sub in $subs) {\n  Set-AzContext -SubscriptionId $sub.Id | Out-Null\n  $pricings = Get-AzSecurityPricing\n  $free = $pricings | Where-Object { $_.PricingTier -eq 'Free' }\n  $standard = $pricings | Where-Object { $_.PricingTier -eq 'Standard' }\n  Write-Host \"`n=== $($sub.Name) ===\"\n  Write-Host \"  Standard: $($standard.Count) plans, Free: $($free.Count) plans\"\n  $free | ForEach-Object { Write-Warning \"  NOT ENABLED: $($_.Name)\" }\n}\n\n# Enable Defender on a subscription\n# Set-AzSecurityPricing -Name 'VirtualMachines' -PricingTier 'Standard'",
+    "validationNotes": "# Validate all plans are enabled\nGet-AzSecurityPricing | Format-Table Name, PricingTier, FreeTrialRemainingTime\n# Expected: All PricingTier = 'Standard'\n\n# Check Secure Score\nGet-AzSecuritySecureScore | Select-Object DisplayName, CurrentScore, MaxScore, Percentage",
+    "tuningNotes": "Start with Defender for Servers Plan 2 and Defender for Storage as they cover the most common attack vectors. Enable plans incrementally per workload to manage cost. Use resource-level exclusions rather than disabling entire plans when dealing with false positives.",
+    "advancedDetection": "// KQL: Monitor Defender for Cloud plan changes\nAzureActivity\n| where TimeGenerated > ago(7d)\n| where OperationNameValue == 'Microsoft.Security/pricings/write'\n| project TimeGenerated, Caller, Properties, SubscriptionId\n| extend PlanName = tostring(parse_json(Properties).resource.name)\n| extend NewTier = tostring(parse_json(Properties).resource.properties.pricingTier)\n| where NewTier == 'Free'\n| project TimeGenerated, Caller, PlanName, NewTier, SubscriptionId",
+    "relatedIds": [
+      "m365-244",
+      "m365-245"
+    ]
+  },
+  "m365-244": {
+    "attackPerspective": "Defender for Servers Plan 2 provides EDR (via Defender for Endpoint), vulnerability assessment, just-in-time VM access, adaptive application controls, and file integrity monitoring. Without it, VMs are blind spots — attackers can move laterally from a compromised VM without detection, deploy rootkits, or abuse unpatched vulnerabilities.",
+    "implementationNotes": "# Enable Defender for Servers Plan 2\nSet-AzSecurityPricing -Name 'VirtualMachines' -PricingTier 'Standard' -SubPlan 'P2'\n\n# Verify MDE agent deployment on VMs\nGet-AzVM | ForEach-Object {\n  $ext = Get-AzVMExtension -ResourceGroupName $_.ResourceGroupName -VMName $_.Name -Name 'MDE.Windows' -ErrorAction SilentlyContinue\n  [PSCustomObject]@{\n    VM = $_.Name\n    RG = $_.ResourceGroupName\n    MDEInstalled = [bool]$ext\n    ProvisioningState = $ext.ProvisioningState\n  }\n} | Format-Table\n\n# Enable JIT access\n$jitPolicy = @{\n  kind = 'Basic'\n  properties = @{\n    virtualMachines = @(@{\n      id = '/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/virtualMachines/<vm>'\n      ports = @(@{ number = 22; protocol = '*'; allowedSourceAddressPrefix = '*'; maxRequestAccessDuration = 'PT3H' })\n    })\n  }\n}",
+    "validationNotes": "# Verify Plan 2 is active\n(Get-AzSecurityPricing -Name 'VirtualMachines').PricingTier\n# Expected: 'Standard'\n\n# Check MDE onboarding status\nGet-AzSecuritySetting -SettingName 'MCAS' # Should show integration status",
+    "tuningNotes": "Plan 2 costs ~$15/server/month. For dev/test VMs, consider Plan 1 ($5/server/month) which still includes CSPM. Exclude ephemeral build agents and short-lived containers from billing using resource tags. JIT access duration should be max 3 hours for SSH/RDP.",
+    "advancedDetection": "// KQL: Detect VMs without Defender for Endpoint agent\nSecurityResources\n| where type == 'microsoft.security/assessments'\n| where properties.displayName has 'endpoint protection'\n| where properties.status.code == 'Unhealthy'\n| project ResourceName = properties.resourceDetails.Id, Status = properties.status.code, Recommendation = properties.displayName",
+    "relatedIds": [
+      "m365-243",
+      "m365-245"
+    ]
+  },
+  "m365-245": {
+    "attackPerspective": "Container environments are prime targets for supply-chain attacks via malicious images, crypto-mining through exposed Kubernetes APIs, and lateral movement between pods. Without Defender for Containers, there's no runtime threat detection, no vulnerability scanning of container images, and no Kubernetes audit log analysis.",
+    "implementationNotes": "# Enable Defender for Containers\naz security pricing create --name Containers --tier Standard\n\n# Verify AKS clusters have Defender profile\naz aks list --query '[].{Name:name, RG:resourceGroup, DefenderProfile:securityProfile.defender.securityMonitoring.enabled}' -o table\n\n# Enable on existing AKS cluster\naz aks update --name <cluster> --resource-group <rg> --enable-defender\n\n# Check ACR vulnerability scanning\naz acr list --query '[].{Name:name, RG:resourceGroup}' -o table\naz security sub-assessment list --assessed-resource-id /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ContainerRegistry/registries/<acr> --assessment-name <id> --query '[].{Image:resourceDetails.id, Severity:status.severity, CVE:displayName}' -o table",
+    "validationNotes": "# Verify Containers plan is Standard\naz security pricing show --name Containers --query pricingTier -o tsv\n# Expected: Standard\n\n# Check Defender sensor on AKS\nkubectl get pods -n kube-system | grep microsoft-defender",
+    "tuningNotes": "Image scanning generates the most alerts initially — triage by focusing on Critical/High CVEs in running containers first. Runtime protection may flag legitimate admin kubectl operations; create suppression rules for known CI/CD service accounts.",
+    "advancedDetection": "// KQL: Suspicious Kubernetes operations\nMicrosoft Defender for Cloud alerts:\n  - 'Exposed Kubernetes dashboard'\n  - 'New container in kube-system namespace'\n  - 'Privileged container detected'\n  - 'Crypto mining activity'\n\n// Custom detection for privileged pods\nAzureDiagnostics\n| where Category == 'kube-audit'\n| where log_s has '\"privileged\":true'\n| project TimeGenerated, log_s\n| extend PodName = extract('\"name\":\"([^\"]+)\"', 1, log_s)\n| extend Namespace = extract('\"namespace\":\"([^\"]+)\"', 1, log_s)",
+    "relatedIds": [
+      "m365-243",
+      "m365-244"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "m365-084": {
+    "attackPerspective": "Sensitivity labels with encryption are the last line of defense — even if an attacker exfiltrates a document, they cannot read it without the decryption key tied to Azure RMS. Without enforced encryption on sensitive content, a single compromised mailbox or OneDrive can lead to massive data breach exposure.",
+    "implementationNotes": "# Connect to Security & Compliance\nConnect-IPPSSession\n\n# List existing sensitivity labels\nGet-Label | Select DisplayName, Priority, ContentType, Disabled | Format-Table\n\n# Create an encryption-enforced label\nNew-Label -DisplayName 'Confidential - Encrypted' \\\n  -Tooltip 'Apply to sensitive documents requiring encryption' \\\n  -EncryptionEnabled $true \\\n  -EncryptionProtectionType Template \\\n  -EncryptionDoNotForward $false \\\n  -ContentType 'File, Email'\n\n# Publish label policy\nNew-LabelPolicy -Name 'SCW-Label-Policy' \\\n  -Labels 'Confidential - Encrypted' \\\n  -ExchangeLocation All \\\n  -ModernGroupLocation All",
+    "validationNotes": "# Verify labels are published\nGet-LabelPolicy | Select Name, Enabled, Labels | Format-Table\n\n# Check encryption settings on label\nGet-Label -Identity 'Confidential - Encrypted' | Select EncryptionEnabled, EncryptionProtectionType",
+    "tuningNotes": "Start with a 'Confidential' label that recommends (not mandates) encryption. Gradually move to mandatory labeling once users are trained. Focus on auto-labeling for high-confidence patterns (credit cards, SSNs) before expanding. Monitor label usage in Content Explorer to understand classification patterns.",
+    "advancedDetection": "// KQL: Track sensitivity label application\nInformationProtectionEvents_CL\n| where TimeGenerated > ago(7d)\n| summarize LabelCount = count() by LabelName_s, Application_s, UserId_s\n| sort by LabelCount desc\n\n// Detect label downgrades (potential data leak attempt)\nMicrosoftPurviewInformationProtection\n| where Activity == 'SensitivityLabelChanged'\n| where OldSensitivityLabelId > NewSensitivityLabelId\n| project TimeGenerated, UserId, FileName, OldLabel, NewLabel",
+    "relatedIds": [
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-086": {
+    "attackPerspective": "Without retention policies, deleted evidence during a breach investigation is gone permanently. Attackers who gain access often delete emails, Teams messages, and files to cover their tracks. Retention policies ensure that even 'deleted' content is preserved for forensics and legal hold.",
+    "implementationNotes": "# Connect to Security & Compliance Center\nConnect-IPPSSession\n\n# Create baseline retention policy for Exchange\nNew-RetentionCompliancePolicy -Name 'SCW-Exchange-Retention-1Y' \\\n  -ExchangeLocation All \\\n  -Enabled $true\n\nNew-RetentionComplianceRule -Policy 'SCW-Exchange-Retention-1Y' \\\n  -RetentionDuration 365 \\\n  -RetentionComplianceAction Keep \\\n  -ExpirationDateOption ModificationAgeInDays\n\n# Create retention for SharePoint/OneDrive\nNew-RetentionCompliancePolicy -Name 'SCW-SPO-Retention-1Y' \\\n  -SharePointLocation All \\\n  -OneDriveLocation All \\\n  -Enabled $true\n\nNew-RetentionComplianceRule -Policy 'SCW-SPO-Retention-1Y' \\\n  -RetentionDuration 365 \\\n  -RetentionComplianceAction Keep\n\n# Create litigation hold for executives\n$execs = @('ceo@domain.com','cfo@domain.com','ciso@domain.com')\n$execs | ForEach-Object { Set-Mailbox -Identity $_ -LitigationHoldEnabled $true -LitigationHoldDuration 730 }",
+    "validationNotes": "# Verify retention policies\nGet-RetentionCompliancePolicy | Select Name, Enabled, Type, Workload | Format-Table\nGet-RetentionComplianceRule | Select Name, RetentionDuration, RetentionComplianceAction | Format-Table\n\n# Verify litigation hold\nGet-Mailbox -Identity ceo@domain.com | Select LitigationHoldEnabled, LitigationHoldDuration",
+    "tuningNotes": "Start with a 1-year keep-everything policy for all workloads as a baseline. Layer specific retention labels for regulated content (PCI: 1 year, HIPAA: 6 years, SOX: 7 years). Retention policies can conflict — the longest retention and 'keep' always wins over 'delete'. Test with a pilot group first.",
+    "advancedDetection": "// KQL: Detect bulk deletion that retention preserved\nOfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation in ('SoftDelete', 'HardDelete', 'MoveToDeletedItems')\n| summarize DeleteCount = count() by UserId, bin(TimeGenerated, 1h)\n| where DeleteCount > 50\n| project TimeGenerated, UserId, DeleteCount",
+    "relatedIds": [
+      "m365-084",
+      "m365-087"
+    ]
+  }
+}
