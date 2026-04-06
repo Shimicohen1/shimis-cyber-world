@@ -88,6 +88,7 @@
     var subs = JSON.parse(localStorage.getItem("scw_newsletter") || "[]");
     if (subs.indexOf(email) === -1) subs.push(email);
     localStorage.setItem("scw_newsletter", JSON.stringify(subs));
+    localStorage.setItem("scw_newsletter_subscribed", "true");
   }
 
   function showStatus(el, msg, type) {

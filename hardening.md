@@ -135,24 +135,24 @@ permalink: /hardening/
 window.HARDEN_ITEMS = [
 {% for item in site.data.hardening.items %}
   {
-    id: {{ item.id | jsonify }},
+    id: {{ item.id | jsonify | replace: "</", "<\\/" }},
     platform: {{ item.platform | jsonify }},
     category: {{ item.category | jsonify }},
     severity: {{ item.severity | jsonify }},
-    title: {{ item.title | jsonify }},
-    description: {{ item.description | jsonify }},
-    reference: {{ item.reference | jsonify }},
-    command: {{ item.command | jsonify }},
-    commandFull: {{ item.commandFull | jsonify }},
+    title: {{ item.title | jsonify | replace: "</", "<\\/" }},
+    description: {{ item.description | jsonify | replace: "</", "<\\/" }},
+    reference: {{ item.reference | jsonify | replace: "</", "<\\/" }},
+    command: {{ item.command | jsonify | replace: "</", "<\\/" }},
+    commandFull: {{ item.commandFull | jsonify | replace: "</", "<\\/" }},
     commandLanguage: {{ item.commandLanguage | jsonify | default: '"bash"' }},
     tags: {{ item.tags | jsonify | default: '[]' }},
     hasPremium: {% if item.premium %}true{% else %}false{% endif %}{% if item.premium %},
     premium: {
-      attackPerspective: {{ item.premium.attackPerspective | jsonify }},
-      implementationNotes: {{ item.premium.implementationNotes | jsonify }},
-      validationNotes: {{ item.premium.validationNotes | jsonify }},
-      tuningNotes: {{ item.premium.tuningNotes | jsonify }},
-      advancedDetection: {{ item.premium.advancedDetection | jsonify }},
+      attackPerspective: {{ item.premium.attackPerspective | jsonify | replace: "</", "<\\/" }},
+      implementationNotes: {{ item.premium.implementationNotes | jsonify | replace: "</", "<\\/" }},
+      validationNotes: {{ item.premium.validationNotes | jsonify | replace: "</", "<\\/" }},
+      tuningNotes: {{ item.premium.tuningNotes | jsonify | replace: "</", "<\\/" }},
+      advancedDetection: {{ item.premium.advancedDetection | jsonify | replace: "</", "<\\/" }},
       relatedIds: {{ item.premium.relatedIds | jsonify }}
     }{% endif %}
   }{% unless forloop.last %},{% endunless %}
