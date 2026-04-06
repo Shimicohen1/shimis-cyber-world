@@ -111,7 +111,8 @@
       if (src.types.indexOf(ioc.lookup) === -1) return;
       var template = src.urls[ioc.lookup];
       if (!template) return;
-      var href = template.replace('{value}', encodeURIComponent(ioc.raw));
+      var encoded = ioc.lookup === 'email' ? ioc.raw : encodeURIComponent(ioc.raw);
+      var href = template.replace('{value}', encoded);
       var desc = (src.descs && src.descs[ioc.lookup]) || '';
       links.push({ name: src.name, icon: src.icon, href: href, desc: desc });
     });
