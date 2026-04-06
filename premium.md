@@ -172,4 +172,4 @@ permalink: /premium/
 </section>
 </div>
 
-<link rel="stylesheet" href="{{ '/assets/css/premium-tools.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/premium-tools.css?v=2' | relative_url }}">
