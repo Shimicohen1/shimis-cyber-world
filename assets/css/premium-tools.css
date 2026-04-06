@@ -970,6 +970,36 @@
   .harden-item__code { margin-left: 0; }
 }
 
+/* ── Tags on items ── */
+.harden-item__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  margin: .4rem 0 0 1.6rem;
+}
+.harden-item__tag {
+  font-family: var(--f-mono);
+  font-size: .6rem;
+  color: var(--dim);
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  padding: .1rem .5rem;
+  border-radius: 3px;
+}
+/* Full command label */
+.harden-item__code--full {
+  border-left: 2px solid rgba(168,85,247,.3);
+}
+.harden-item__code-label {
+  font-family: var(--f-mono);
+  font-size: .6rem;
+  color: #c084fc;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  display: block;
+  margin-bottom: .2rem;
+}
+
 /* ── Hero stats ── */
 .harden-hero-stats {
   display: flex;
