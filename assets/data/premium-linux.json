@@ -1,0 +1,52 @@
+{
+  "lin-001": {
+    "attackPerspective": "Attackers who gain initial access via SSH brute-force or leaked credentials will attempt to escalate to root. If root login is permitted, a single compromised password gives full system control. In the 2021 Codecov supply chain attack, SSH keys were the pivot point for lateral movement.",
+    "implementationNotes": "1. Edit /etc/ssh/sshd_config and set PermitRootLogin no\n2. Ensure at least one sudo-capable user exists before disabling\n3. Test SSH access with the sudo user in a SEPARATE session before restarting sshd\n4. For break-glass: configure a local console-only root password via passwd",
+    "validationNotes": "# Verify root login is disabled\nsudo sshd -T | grep permitrootlogin\n# Expected: permitrootlogin no\n\n# Test from another machine\nssh root@<server> # Should be rejected\n\n# Check auth log for attempts\nsudo grep 'root' /var/log/auth.log | tail -20",
+    "tuningNotes": "On some legacy systems, automated backup tools or config management agents (Ansible, Puppet) may connect as root. Before disabling, audit authorized_keys on root and migrate those to a dedicated service account with limited sudo.",
+    "advancedDetection": "# Detect root login attempts in SIEM\nindex=linux sourcetype=syslog \"Failed password for root\"\n| stats count by src_ip\n| where count > 5\n| sort -count",
+    "relatedIds": [
+      "lin-002",
+      "lin-010",
+      "lin-016"
+    ],
+    "commandFull": "# Full hardening script for SSH root login\n# Step 1: Backup current config\nsudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak.$(date +%Y%m%d)\n\n# Step 2: Disable root login\nsudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config\n\n# Step 3: Verify the change\ngrep '^PermitRootLogin' /etc/ssh/sshd_config\n\n# Step 4: Test config before restart\nsudo sshd -t\n\n# Step 5: Restart (only if test passes)\nsudo systemctl restart sshd\n\n# Step 6: Verify from another session\nssh root@localhost 2>&1 | grep -i 'denied\\|refused'\n\n# Step 7: Check auth log for confirmation\nsudo tail -5 /var/log/auth.log"
+  },
+  "lin-002": {
+    "attackPerspective": "Password-based SSH is the #1 vector for automated attacks. Botnets like Mirai scan millions of IPs for SSH password auth. After the 2024 XZ Utils backdoor attempt (CVE-2024-3094), key-based auth became even more critical as a defense-in-depth layer.",
+    "implementationNotes": "1. Generate ED25519 key pair: ssh-keygen -t ed25519 -C 'admin@org'\n2. Copy public key: ssh-copy-id -i ~/.ssh/id_ed25519.pub user@host\n3. Test key-based login in a NEW terminal session\n4. Only after confirming key login works: set PasswordAuthentication no\n5. Restart sshd: sudo systemctl restart sshd",
+    "validationNotes": "# Verify password auth is off\nsudo sshd -T | grep passwordauthentication\n# Expected: passwordauthentication no\n\n# Attempt password login (should fail)\nssh -o PreferredAuthentications=password user@<host>",
+    "tuningNotes": "If you use SFTP for automated transfers, ensure those accounts also use key-based auth or are in a Match block with forced-commands.",
+    "advancedDetection": "",
+    "relatedIds": [
+      "lin-001",
+      "lin-016",
+      "lin-025"
+    ]
+  },
+  "lin-006": {
+    "attackPerspective": "An open firewall means every listening service is directly attackable from the network. In the Capital One breach (2019), a misconfigured WAF combined with open ports enabled SSRF exploitation. Defense-in-depth starts at the network layer.",
+    "implementationNotes": "1. Inventory all required ports: ss -tlnp\n2. Set default deny: sudo ufw default deny incoming\n3. Allow only required ports: sudo ufw allow 22/tcp; sudo ufw allow 443/tcp\n4. Enable: sudo ufw enable\n5. For iptables: use iptables-persistent to survive reboots",
+    "validationNotes": "# Check firewall status\nsudo ufw status verbose\n\n# Port scan yourself\nnmap -sS -p 1-65535 localhost\n\n# From external machine\nnmap -sS -Pn <target_ip>",
+    "tuningNotes": "For containerized workloads, remember that Docker modifies iptables directly and may bypass UFW rules. Use --iptables=false in Docker daemon config and manage container networking through the firewall.",
+    "advancedDetection": "",
+    "relatedIds": [
+      "lin-007",
+      "lin-008",
+      "lin-021"
+    ],
+    "commandFull": "# Complete firewall hardening script (UFW)\n# Step 1: Reset to defaults\nsudo ufw --force reset\n\n# Step 2: Set default policies\nsudo ufw default deny incoming\nsudo ufw default allow outgoing\n\n# Step 3: Allow required services\nsudo ufw allow 22/tcp comment 'SSH'\nsudo ufw allow 443/tcp comment 'HTTPS'\n# Add more as needed:\n# sudo ufw allow from 10.0.0.0/8 to any port 5432 comment 'Postgres internal'\n\n# Step 4: Enable logging\nsudo ufw logging on\n\n# Step 5: Enable firewall\nsudo ufw --force enable\n\n# Step 6: Verify\nsudo ufw status verbose\nsudo ufw status numbered"
+  },
+  "lin-009": {
+    "attackPerspective": "Without auditd, attackers operate blind to defenders. Post-exploitation tools like LinPEAS check if auditd is running and adjust their evasion accordingly. In the SolarWinds attack, the lack of comprehensive audit logging on some endpoints delayed detection by months.",
+    "implementationNotes": "1. Install: sudo apt install auditd audispd-plugins\n2. Enable and start: sudo systemctl enable --now auditd\n3. Add rules to /etc/audit/rules.d/audit.rules\n4. Load rules: sudo augenrules --load\n5. Set audit log rotation in /etc/audit/auditd.conf",
+    "validationNotes": "# Check auditd is running\nsudo systemctl status auditd\n\n# Verify rules are loaded\nsudo auditctl -l\n\n# Test: modify /etc/passwd and check\nsudo ausearch -k identity -ts recent",
+    "tuningNotes": "",
+    "advancedDetection": "# Key auditd rules for SOC visibility\n-a always,exit -F arch=b64 -S execve -k exec_commands\n-w /etc/passwd -p wa -k identity\n-w /etc/shadow -p wa -k identity\n-a always,exit -F arch=b64 -S connect -k network_connect\n-w /usr/bin/wget -p x -k download_tools\n-w /usr/bin/curl -p x -k download_tools",
+    "relatedIds": [
+      "lin-010",
+      "lin-027",
+      "lin-028"
+    ]
+  }
+}

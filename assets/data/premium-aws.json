@@ -1,0 +1,51 @@
+{
+  "aws-001": {
+    "attackPerspective": "The AWS root account has UNRESTRICTED access to all resources and billing — it cannot be limited by IAM policies. If compromised, an attacker can delete all resources, exfiltrate data, create new admin users, and run up massive bills. Root account compromise was central to several high-profile cloud breaches.",
+    "implementationNotes": "1. Log into the root account via AWS Console\n2. Go to IAM → Security credentials → Multi-factor authentication (MFA)\n3. Choose hardware MFA device (YubiKey preferred) or virtual authenticator\n4. Register the MFA device and test authentication\n5. Store MFA recovery codes in a physical safe or secure vault\n6. Immediately after: delete any root access keys if they exist",
+    "validationNotes": "# Check root MFA via CLI (requires org-level access)\naws iam get-account-summary --query 'SummaryMap.AccountMFAEnabled'\n# Expected: 1\n\n# Check for root access keys (should be none)\naws iam get-account-summary --query 'SummaryMap.AccountAccessKeysPresent'\n# Expected: 0",
+    "tuningNotes": "For organizations with multiple accounts, use AWS Organizations SCP to deny root usage entirely: {\n  \"Effect\": \"Deny\",\n  \"Action\": \"*\",\n  \"Resource\": \"*\",\n  \"Condition\": {\n    \"StringLike\": {\"aws:PrincipalArn\": \"arn:aws:iam::*:root\"}\n  }\n}",
+    "advancedDetection": "",
+    "relatedIds": [
+      "aws-002",
+      "aws-003",
+      "aws-015"
+    ]
+  },
+  "aws-005": {
+    "attackPerspective": "Open security groups are the cloud equivalent of an open firewall. Automated scanners constantly probe AWS IP ranges for exposed services. The Capital One breach (2019) leveraged a misconfigured security group that allowed SSRF to the metadata service, leading to 100M+ records exposed.",
+    "implementationNotes": "1. Run the audit command to find open SGs\n2. For each open SG: identify the associated resources (EC2, RDS, etc.)\n3. Determine the minimum required CIDR ranges\n4. Replace 0.0.0.0/0 with specific CIDRs or prefix lists\n5. For admin access: use VPN CIDR or AWS SSM Session Manager instead\n6. Test connectivity after changes",
+    "validationNotes": "# Re-run the audit\naws ec2 describe-security-groups --query \\\n  'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]]' --output table\n# Should return empty\n\n# For IPv6\naws ec2 describe-security-groups --query \\\n  'SecurityGroups[?IpPermissions[?Ipv6Ranges[?CidrIpv6==`::/0`]]]' --output table",
+    "tuningNotes": "ALBs and CloudFront distributions legitimately need 0.0.0.0/0 on ports 80/443. Focus on removing open access to SSH (22), RDP (3389), databases (3306, 5432, 1433), and admin ports.",
+    "advancedDetection": "",
+    "relatedIds": [
+      "aws-004",
+      "aws-019",
+      "aws-020"
+    ],
+    "commandFull": "# Complete SG audit and remediation script\n#!/bin/bash\necho \"=== Security Groups with 0.0.0.0/0 inbound ===\"\naws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]].[GroupId,GroupName,Description]' \\\n  --output table\n\necho \"\"\necho \"=== Details of open rules ===\"\nfor sg in $(aws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]].GroupId' \\\n  --output text); do\n  echo \"--- $sg ---\"\n  aws ec2 describe-security-groups --group-ids \"$sg\" \\\n    --query 'SecurityGroups[].IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]].{From:FromPort,To:ToPort,Proto:IpProtocol}' \\\n    --output table\ndone\n\necho \"\"\necho \"=== IPv6 check (open ::/0) ===\"\naws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?Ipv6Ranges[?CidrIpv6==`::/0`]]].[GroupId,GroupName]' \\\n  --output table"
+  },
+  "aws-006": {
+    "attackPerspective": "CloudTrail is the audit trail attackers try to disable first. Sophisticated threat actors will attempt to stop trails, delete logs, or modify S3 bucket policies to prevent logging. Without multi-region trails, attackers can spin up resources in unmonitored regions for crypto mining or data staging.",
+    "implementationNotes": "1. Check existing trails: aws cloudtrail describe-trails\n2. If no multi-region trail exists, create one\n3. Configure S3 bucket with versioning, MFA delete, and lifecycle rules\n4. Enable log file validation for tamper detection\n5. Enable CloudTrail Insights for anomaly detection\n6. Set up CloudWatch alarms for trail modifications",
+    "validationNotes": "# Verify trail configuration\naws cloudtrail get-trail-status --name <trail-name>\n# TrailStatus.IsLogging should be true\n\n# Verify multi-region\naws cloudtrail describe-trails --query 'trailList[].{Name:Name,MultiRegion:IsMultiRegionTrail,Validation:LogFileValidationEnabled}'\n\n# Check for recent events\naws cloudtrail lookup-events --max-results 5",
+    "tuningNotes": "",
+    "advancedDetection": "# Detect CloudTrail tampering\nindex=aws sourcetype=aws:cloudtrail\n  eventName IN (\"StopLogging\", \"DeleteTrail\", \"UpdateTrail\", \"PutEventSelectors\")\n| table _time, sourceIPAddress, userIdentity.arn, eventName, errorCode\n| sort _time",
+    "relatedIds": [
+      "aws-007",
+      "aws-025",
+      "aws-026"
+    ]
+  },
+  "aws-008": {
+    "attackPerspective": "Unencrypted S3 buckets are a recurring theme in data breaches. In 2017 alone, Accenture, Verizon, and the US DoD all suffered breaches from exposed S3 data. Even 'private' buckets without encryption are at risk if an attacker gains any AWS access — at-rest encryption adds a mandatory key-access layer.",
+    "implementationNotes": "1. Enable default encryption on each bucket: aws s3api put-bucket-encryption\n2. Use SSE-S3 (AES-256) as the minimum, SSE-KMS for sensitive data\n3. For SSE-KMS: create a customer-managed key with rotation enabled\n4. Update bucket policies to deny unencrypted uploads:\n   Condition: {\"StringNotEquals\": {\"s3:x-amz-server-side-encryption\": \"aws:kms\"}}",
+    "validationNotes": "# Check all buckets\nfor bucket in $(aws s3api list-buckets --query 'Buckets[].Name' --output text); do\n  enc=$(aws s3api get-bucket-encryption --bucket \"$bucket\" 2>&1)\n  if echo \"$enc\" | grep -q 'ServerSideEncryptionConfigurationNotFoundError'; then\n    echo \"UNENCRYPTED: $bucket\"\n  else\n    echo \"OK: $bucket\"\n  fi\ndone",
+    "tuningNotes": "",
+    "advancedDetection": "",
+    "relatedIds": [
+      "aws-009",
+      "aws-033",
+      "aws-034"
+    ]
+  }
+}

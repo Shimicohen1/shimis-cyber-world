@@ -15,7 +15,7 @@ permalink: /hardening/
   <div class="harden-hero-stats">
     <div class="harden-hero-stat"><span class="harden-hero-stat__num">748</span><span class="harden-hero-stat__label">Checks</span></div>
     <div class="harden-hero-stat"><span class="harden-hero-stat__num">11</span><span class="harden-hero-stat__label">Platforms</span></div>
-    <div class="harden-hero-stat"><span class="harden-hero-stat__num">6</span><span class="harden-hero-stat__label">Categories</span></div>
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">7</span><span class="harden-hero-stat__label">Categories</span></div>
   </div>
   <div class="cs-intro__actions">
     <a href="#generator" class="btn btn--primary">Generate Checklist</a>
@@ -130,7 +130,7 @@ permalink: /hardening/
   </div>
 </div>
 
-<!-- Checklist data for JS -->
+<!-- Checklist data for JS (base data only — premium loaded lazily) -->
 <script>
 window.HARDEN_ITEMS = [
 {% for item in site.data.hardening.items %}
@@ -143,20 +143,11 @@ window.HARDEN_ITEMS = [
     description: {{ item.description | jsonify | replace: "</", "<\\/" }},
     reference: {{ item.reference | jsonify | replace: "</", "<\\/" }},
     command: {{ item.command | jsonify | replace: "</", "<\\/" }},
-    commandFull: {{ item.commandFull | jsonify | replace: "</", "<\\/" }},
     commandLanguage: {{ item.commandLanguage | jsonify | default: '"bash"' }},
     tags: {{ item.tags | jsonify | default: '[]' }},
-    hasPremium: {% if item.premium %}true{% else %}false{% endif %}{% if item.premium %},
-    premium: {
-      attackPerspective: {{ item.premium.attackPerspective | jsonify | replace: "</", "<\\/" }},
-      implementationNotes: {{ item.premium.implementationNotes | jsonify | replace: "</", "<\\/" }},
-      validationNotes: {{ item.premium.validationNotes | jsonify | replace: "</", "<\\/" }},
-      tuningNotes: {{ item.premium.tuningNotes | jsonify | replace: "</", "<\\/" }},
-      advancedDetection: {{ item.premium.advancedDetection | jsonify | replace: "</", "<\\/" }},
-      relatedIds: {{ item.premium.relatedIds | jsonify }}
-    }{% endif %}
+    hasPremium: {% if item.premium %}true{% else %}false{% endif %}
   }{% unless forloop.last %},{% endunless %}
 {% endfor %}
 ];
 </script>
-<script src="/assets/js/hardening.js?v=5" defer></script>
+<script src="/assets/js/hardening.js?v=6" defer></script>

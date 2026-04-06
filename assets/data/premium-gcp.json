@@ -1,0 +1,26 @@
+{
+  "gcp-001": {
+    "attackPerspective": "Google accounts without 2-Step Verification are vulnerable to phishing, credential stuffing, and session hijacking. In the 2023 attack on Mandiant's X account, lack of MFA on a key account was the root cause. For cloud admin accounts, MFA is the single most important control.",
+    "implementationNotes": "1. Admin Console → Security → Authentication → 2-Step Verification\n2. Allow users to turn on 2-Step Verification: ON\n3. Enforcement: ON for all organizational units\n4. New user enrollment period: 1 week\n5. Methods: Allow security keys and authenticator app; disable SMS\n6. For admin OUs: require security keys only",
+    "validationNotes": "# Check enrollment status via Admin SDK\n# Admin Console → Reporting → User Reports → Security\n# Filter: 2-Step Verification enrollment = Not enrolled\n\n# Via gcloud directory API\ngcloud identity groups memberships list --group-email=<group> --format='table(preferredMemberKey.id)'",
+    "tuningNotes": "Allow a 1-week grace period for new employees. After that, enforce hard lock. For break-glass admin accounts, use hardware backup codes stored in a physical safe.",
+    "advancedDetection": "",
+    "relatedIds": [
+      "gcp-002",
+      "gcp-008",
+      "gcp-011"
+    ]
+  },
+  "gcp-003": {
+    "attackPerspective": "Overly permissive VPC firewall rules are the cloud network equivalent of leaving the front door open. In one notable GCP incident, an open SSH rule on a development VPC allowed attackers to pivot from a compromised developer machine to production workloads. Google's threat intelligence shows constant scanning of GCP IP ranges.",
+    "implementationNotes": "1. Audit current rules: gcloud compute firewall-rules list\n2. Identify rules with sourceRanges: 0.0.0.0/0\n3. Replace with specific CIDR blocks or service account-based rules\n4. Use hierarchical firewall policies for org-wide defaults\n5. Enable firewall rule logging for denied traffic\n6. Delete or disable the 'default-allow-ssh' and 'default-allow-rdp' rules",
+    "validationNotes": "# Verify no open rules remain\ngcloud compute firewall-rules list \\\n  --filter='sourceRanges:0.0.0.0/0 AND direction=INGRESS AND disabled=false' \\\n  --format='table(name,allowed,sourceRanges)'\n\n# Should return empty or only load balancer health check rules\n\n# Test with nmap from external\nnmap -sS -Pn <external_ip>",
+    "tuningNotes": "GCP health checks require 0.0.0.0/0 from Google probe ranges (35.191.0.0/16, 130.211.0.0/22). Don't remove these. Also, GKE master authorized networks should use a specific CIDR, not 0.0.0.0/0.",
+    "advancedDetection": "",
+    "relatedIds": [
+      "gcp-010",
+      "gcp-011",
+      "gcp-014"
+    ]
+  }
+}

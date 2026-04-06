@@ -51,6 +51,9 @@ categories:
 - id: patching
   name: Patching & Updates
   icon: 🔄
+- id: ai-security
+  name: AI Security
+  icon: 🤖
 items:
 - id: lin-001
   platform: linux
@@ -1422,6 +1425,35 @@ items:
   reference: CIS GCP Foundations Benchmark 1.4
   command: "# List all service account keys\ngcloud iam service-accounts list --format=\"table(email)\" | while read sa; do\n  gcloud iam service-accounts keys list --iam-account=\"$sa\" \\\n    --filter=\"\
     keyType=USER_MANAGED\" --format=\"table(name,validAfterTime)\"\ndone\n"
+  premium:
+    attackPerspective: 'Service account keys are the #1 target in GCP compromises. Unlike user credentials that require MFA, a leaked JSON key file provides immediate, persistent access with no additional
+      authentication. Keys found in Git repos, CI/CD configs, or developer workstations give attackers the exact permissions of the service account — often project-level Editor. Google''s Threat Horizons
+      reports confirm SA key theft is the most common initial access vector in GCP incidents.'
+    implementationNotes: "# Organization Policy to block SA key creation\ngcloud resource-manager org-policies set-policy \\\n  --organization=ORG_ID policy.yaml\n\n# policy.yaml content:\n# constraint:\
+      \ constraints/iam.disableServiceAccountKeyCreation\n# booleanPolicy:\n#   enforced: true\n\n# For exceptions (specific projects that need keys):\ngcloud resource-manager org-policies set-policy \\\
+      \n  --project=EXCEPTION_PROJECT exception-policy.yaml\n# Set enforced: false only for the exception project\n\n# Migrate existing key users to Workload Identity Federation:\n# 1. Create a workload\
+      \ identity pool\ngcloud iam workload-identity-pools create github-pool \\\n  --location=global \\\n  --display-name='GitHub Actions Pool'\n\n# 2. Create a provider (e.g., for GitHub Actions)\ngcloud\
+      \ iam workload-identity-pools providers create-oidc github-provider \\\n  --workload-identity-pool=github-pool \\\n  --location=global \\\n  --issuer-uri='https://token.actions.githubusercontent.com'\
+      \ \\\n  --attribute-mapping='google.subject=assertion.sub'\n\n# 3. Grant the SA impersonation to the external identity\ngcloud iam service-accounts add-iam-policy-binding SA@PROJECT.iam.gserviceaccount.com\
+      \ \\\n  --role='roles/iam.workloadIdentityUser' \\\n  --member='principalSet://iam.googleapis.com/projects/PROJECT_NUM/locations/global/workloadIdentityPools/github-pool/attribute.repository/OWNER/REPO'"
+    validationNotes: "# List all SA keys across org\nfor project in $(gcloud projects list --format='value(projectId)'); do\n  echo \"=== $project ===\"\n  for sa in $(gcloud iam service-accounts list --project=$project\
+      \ --format='value(email)'); do\n    keys=$(gcloud iam service-accounts keys list --iam-account=$sa --managed-by=user --format='value(name)' 2>/dev/null)\n    if [ -n \"$keys\" ]; then\n      echo\
+      \ \"  SA: $sa\"\n      echo \"  Keys: $(echo \"$keys\" | wc -l)\"\n    fi\n  done\ndone\n\n# Verify org policy is enforced\ngcloud resource-manager org-policies describe \\\n  constraints/iam.disableServiceAccountKeyCreation\
+      \ \\\n  --organization=ORG_ID"
+    tuningNotes: Key elimination is a journey. Start by inventorying all keys, identifying their consumers (CI/CD, on-prem apps, partners), and creating a migration plan. Workload Identity Federation covers
+      GitHub Actions, GitLab CI, AWS, Azure, and OIDC providers. For on-prem apps, use the GCE metadata server or Workload Identity Federation with SAML. Set a 90-day deadline and track weekly.
+    advancedDetection: "-- BigQuery: Detect SA key creation events\nSELECT\n  timestamp, protopayload_auditlog.authenticationInfo.principalEmail AS actor,\n  protopayload_auditlog.resourceName AS service_account,\n\
+      \  protopayload_auditlog.methodName\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName = 'google.iam.admin.v1.CreateServiceAccountKey'\nAND timestamp\
+      \ > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\nORDER BY timestamp DESC\n\n-- Alert on key creation from unusual IPs\nSELECT timestamp, protopayload_auditlog.authenticationInfo.principalEmail,\n\
+      \  protopayload_auditlog.requestMetadata.callerIp\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName = 'google.iam.admin.v1.CreateServiceAccountKey'\n\
+      AND protopayload_auditlog.requestMetadata.callerIp NOT IN ('known-ip-1', 'known-ip-2')"
+    relatedIds:
+    - gcp-007
+    - gcp-008
+    - gcp-011
+  tags:
+  - gcp
+  - identity
 - id: gcp-003
   platform: gcp
   category: network
@@ -1481,6 +1513,69 @@ items:
     #   "auditLogConfigs": [{"logType": "DATA_READ"}, {"logType": "DATA_WRITE"}] }]
 
     '
+  premium:
+    attackPerspective: Without Cloud Audit Logs, attackers operate in complete darkness. They can create resources, modify IAM policies, exfiltrate data, and delete evidence without any record. GCP does
+      enable Admin Activity logs by default, but Data Access logs (which record who read what data) are disabled by default — meaning data exfiltration from BigQuery, GCS, or Spanner leaves no trace.
+    implementationNotes: '# Enable Data Access logs at org level (Admin Activity is on by default)
+
+      gcloud logging org-policies describe --organization=ORG_ID
+
+
+      # Enable for all services via org-level audit config:
+
+      gcloud organizations set-iam-policy ORG_ID policy.json
+
+
+      # policy.json should include:
+
+      # "auditConfigs": [
+
+      #   {
+
+      #     "service": "allServices",
+
+      #     "auditLogConfigs": [
+
+      #       {"logType": "ADMIN_READ"},
+
+      #       {"logType": "DATA_READ"},
+
+      #       {"logType": "DATA_WRITE"}
+
+      #     ]
+
+      #   }
+
+      # ]
+
+
+      # Per-project alternative:
+
+      gcloud projects get-iam-policy PROJECT_ID --format=json > policy.json
+
+      # Add auditConfigs section, then:
+
+      gcloud projects set-iam-policy PROJECT_ID policy.json
+
+
+      # Exclude high-volume exempt accounts if needed:
+
+      # "exemptedMembers": ["serviceAccount:bigquery-reader@project.iam.gserviceaccount.com"]'
+    validationNotes: "# Verify audit config at org level\ngcloud organizations get-iam-policy ORG_ID --format=json | jq '.auditConfigs'\n\n# Check per-project audit config\nfor project in $(gcloud projects\
+      \ list --format='value(projectId)'); do\n  echo \"=== $project ===\"\n  gcloud projects get-iam-policy $project --format=json | jq '.auditConfigs // \"NOT CONFIGURED\"'\ndone\n\n# Test by querying\
+      \ BigQuery and checking logs\nbq query 'SELECT 1'\n# Wait 5 minutes, then:\ngcloud logging read 'protoPayload.methodName=\"jobservice.query\"' --limit=5"
+    tuningNotes: Data Access logs can generate massive volume, especially for BigQuery and GCS. Start with DATA_WRITE for all services, add DATA_READ selectively. Exempt high-frequency service accounts
+      (e.g., monitoring pipelines) using exemptedMembers. Budget 10-30% increase in logging costs. Use log routing to send only security-relevant logs to SIEM and archive the rest in cold storage.
+    advancedDetection: "-- BigQuery: Verify audit log completeness\nSELECT\n  protopayload_auditlog.serviceName,\n  protopayload_auditlog.methodName,\n  COUNT(*) as event_count\nFROM `project.dataset.cloudaudit_googleapis_com_data_access`\n\
+      WHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)\nGROUP BY 1, 2\nORDER BY event_count DESC\n\n-- Alert on audit log deletion attempts\nSELECT timestamp, protopayload_auditlog.authenticationInfo.principalEmail\n\
+      FROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName LIKE '%DeleteLog%'\nOR protopayload_auditlog.methodName LIKE '%DeleteSink%'"
+    relatedIds:
+    - gcp-021
+    - gcp-022
+    - gcp-023
+  tags:
+  - gcp
+  - logging
 - id: gcp-005
   platform: gcp
   category: encryption
@@ -1490,6 +1585,31 @@ items:
   reference: CIS GCP Foundations Benchmark 2.2
   command: "# Create KMS key\ngcloud kms keyrings create scw-keyring --location=global\ngcloud kms keys create scw-encrypt-key --keyring=scw-keyring \\\n  --location=global --purpose=encryption\n# Apply\
     \ to GCS bucket\ngsutil kms encryption -k projects/<proj>/locations/global/keyRings/scw-keyring/cryptoKeys/scw-encrypt-key gs://<bucket>\n"
+  premium:
+    attackPerspective: Google-managed encryption keys protect data at rest but Google controls the key lifecycle. With CMEK, your organization holds the encryption keys in Cloud KMS. If you detect a breach,
+      you can disable or destroy the key to render all encrypted data permanently unreadable — a nuclear option that Google-managed keys don't provide. This 'crypto-shredding' capability is critical for
+      incident response.
+    implementationNotes: "# 1. Create a KMS keyring and key\ngcloud kms keyrings create my-keyring --location=us-central1\ngcloud kms keys create my-key \\\n  --keyring=my-keyring \\\n  --location=us-central1\
+      \ \\\n  --purpose=encryption \\\n  --rotation-period=90d \\\n  --next-rotation-time=$(date -u -d '+90 days' +%Y-%m-%dT%H:%M:%SZ)\n\n# 2. Grant the service agent access to the key\n# For GCS:\ngcloud\
+      \ kms keys add-iam-policy-binding my-key \\\n  --keyring=my-keyring --location=us-central1 \\\n  --member='serviceAccount:service-PROJECT_NUM@gs-project-accounts.iam.gserviceaccount.com' \\\n  --role='roles/cloudkms.cryptoKeyEncrypterDecrypter'\n\
+      \n# 3. Create bucket with CMEK\ngsutil mb -l us-central1 -k projects/PROJECT/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key gs://my-secure-bucket\n\n# Organization Policy to require CMEK:\n\
+      # constraints/gcp.restrictNonCmekServices → deny list of services that must use CMEK"
+    validationNotes: "# Verify CMEK on GCS buckets\nfor bucket in $(gsutil ls); do\n  enc=$(gsutil kms encryption $bucket 2>/dev/null)\n  echo \"$bucket: $enc\"\ndone\n\n# Verify CMEK on BigQuery datasets\n\
+      bq ls --format=json | jq '.[] | {datasetId: .datasetReference.datasetId, defaultEncryptionConfiguration}'\n\n# Verify org policy\ngcloud resource-manager org-policies describe \\\n  constraints/gcp.restrictNonCmekServices\
+      \ \\\n  --organization=ORG_ID"
+    tuningNotes: 'CMEK adds operational complexity — if you lose access to the key, your data is permanently lost. Implement key rotation (90 days), and never delete key versions immediately (set a 30-day
+      scheduled destruction window). Grant minimal KMS roles: separate key admins from key users. For disaster recovery, consider CMEK with Cloud External Key Manager (Cloud EKM) for the highest sensitivity
+      data.'
+    advancedDetection: "-- Monitor KMS key usage anomalies\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.methodName,\n  protopayload_auditlog.resourceName\n\
+      FROM `project.dataset.cloudaudit_googleapis_com_data_access`\nWHERE protopayload_auditlog.serviceName = 'cloudkms.googleapis.com'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n\
+      ORDER BY timestamp DESC\n\n-- Alert on key disable/destroy\nSELECT timestamp, protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\n\
+      WHERE protopayload_auditlog.methodName IN (\n  'DisableCryptoKeyVersion', 'DestroyCryptoKeyVersion', 'UpdateCryptoKeyPrimaryVersion')"
+    relatedIds:
+    - gcp-027
+    - gcp-030
+  tags:
+  - gcp
+  - encryption
 - id: gcp-006
   platform: gcp
   category: services
@@ -1506,6 +1626,59 @@ items:
     gcloud services disable <service-name>.googleapis.com
 
     '
+  premium:
+    attackPerspective: Every enabled API is an attack surface. Unused APIs like Compute Engine, Cloud Functions, or Deployment Manager may sit dormant with default service accounts and permissive IAM. An
+      attacker who gains project-level access exploits these enabled-but-unmonitored APIs to create VMs for cryptomining, deploy malicious functions, or establish persistence — all in services nobody is
+      watching.
+    implementationNotes: '# List all enabled APIs in a project
+
+      gcloud services list --enabled --project=PROJECT_ID
+
+
+      # List all available APIs (to compare)
+
+      gcloud services list --available --project=PROJECT_ID | wc -l
+
+
+      # Disable unused APIs
+
+      gcloud services disable compute.googleapis.com --project=PROJECT_ID
+
+      gcloud services disable deploymentmanager.googleapis.com --project=PROJECT_ID
+
+      gcloud services disable cloudfunctions.googleapis.com --project=PROJECT_ID
+
+
+      # Common APIs safe to disable if unused:
+
+      # - deploymentmanager.googleapis.com (legacy)
+
+      # - appengine.googleapis.com (if not using App Engine)
+
+      # - genomics.googleapis.com (specialized)
+
+      # - ml.googleapis.com (if not using AI Platform)
+
+      # - sourcerepo.googleapis.com (if using GitHub/GitLab)
+
+
+      # Organization Policy to restrict allowed APIs:
+
+      # constraints/serviceuser.services → allowedValues list'
+    validationNotes: "# Audit API usage to find truly unused APIs\n# Check API dashboard for last 30 days of traffic:\ngcloud services list --enabled --format='table(config.name)' --project=PROJECT_ID\n\
+      \n# Use recommender to find unused APIs:\ngcloud recommender recommendations list \\\n  --recommender=google.iam.policy.Recommender \\\n  --project=PROJECT_ID \\\n  --location=global \\\n  --format='table(content.overview.resource,content.overview.removedRole)'\n\
+      \n# Check API activity in audit logs:\ngcloud logging read 'protoPayload.serviceName=\"compute.googleapis.com\"' \\\n  --project=PROJECT_ID --freshness=30d --limit=1"
+    tuningNotes: Don't disable APIs blindly — some have non-obvious dependencies. Compute Engine API is required by GKE, Cloud Functions needs Cloud Build, etc. Check API dependencies before disabling.
+      Start with clearly unused APIs (genomics, dataproc if not used) and work toward less obvious ones. Use the API dashboard's traffic view to confirm zero usage over 90 days before disabling.
+    advancedDetection: "-- BigQuery: Find newly enabled APIs (potential attacker staging)\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail AS enabler,\n  protopayload_auditlog.resourceName\
+      \ AS api_name\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName = 'google.api.serviceusage.v1.ServiceUsage.EnableService'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(),\
+      \ INTERVAL 7 DAY)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-015
+    - gcp-037
+  tags:
+  - gcp
+  - services
 - id: lin-016
   platform: linux
   category: identity
@@ -3211,6 +3384,30 @@ items:
   description: Limit who can impersonate service accounts to prevent privilege escalation.
   reference: CIS GCP Foundations Benchmark 1.6
   command: "# List SA impersonation permissions\ngcloud projects get-iam-policy <project> \\\n  --flatten='bindings[].members' \\\n  --filter='bindings.role:roles/iam.serviceAccountTokenCreator' \\\n  --format='table(bindings.members)'\n"
+  premium:
+    attackPerspective: Service account impersonation allows a user or service to act as another service account, inheriting its permissions. If unrestricted, an attacker who compromises any account with
+      the iam.serviceAccounts.getAccessToken permission can impersonate high-privilege SAs — effectively privilege escalation from a low-privilege entry point to project Owner in a single API call.
+    implementationNotes: "# Organization Policy to restrict SA impersonation\ngcloud resource-manager org-policies set-policy \\\n  --organization=ORG_ID impersonation-policy.yaml\n\n# policy.yaml:\n# constraint:\
+      \ constraints/iam.allowServiceAccountCredentialLifetimeExtension\n# booleanPolicy:\n#   enforced: false  # Don't allow extended token lifetimes\n\n# Restrict who can impersonate each SA:\ngcloud iam\
+      \ service-accounts get-iam-policy SA@PROJECT.iam.gserviceaccount.com\n\n# Remove overly broad impersonation grants:\ngcloud iam service-accounts remove-iam-policy-binding SA@PROJECT.iam.gserviceaccount.com\
+      \ \\\n  --member='user:developer@company.com' \\\n  --role='roles/iam.serviceAccountTokenCreator'\n\n# Grant impersonation only where needed:\ngcloud iam service-accounts add-iam-policy-binding SA@PROJECT.iam.gserviceaccount.com\
+      \ \\\n  --member='serviceAccount:cicd@PROJECT.iam.gserviceaccount.com' \\\n  --role='roles/iam.serviceAccountTokenCreator' \\\n  --condition='expression=request.time < timestamp(\"2025-12-31T00:00:00Z\"\
+      ),title=temp-access'"
+    validationNotes: "# Find all principals that can impersonate service accounts\nfor project in $(gcloud projects list --format='value(projectId)'); do\n  for sa in $(gcloud iam service-accounts list\
+      \ --project=$project --format='value(email)'); do\n    bindings=$(gcloud iam service-accounts get-iam-policy $sa --format=json 2>/dev/null | jq -r '.bindings[]? | select(.role | contains(\"TokenCreator\"\
+      ) or contains(\"AccountUser\")) | .members[]')\n    if [ -n \"$bindings\" ]; then\n      echo \"SA: $sa\"\n      echo \"  Can be impersonated by: $bindings\"\n    fi\n  done\ndone"
+    tuningNotes: Impersonation is a legitimate pattern for least-privilege — users impersonate short-lived SA tokens instead of having permanent broad roles. The key is restricting WHO can impersonate WHICH
+      SA. Use IAM conditions (time-based, resource-based) to further limit impersonation grants. Never grant serviceAccountTokenCreator at the project level.
+    advancedDetection: "-- BigQuery: Detect SA impersonation events\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail AS impersonator,\n  protopayload_auditlog.authenticationInfo.serviceAccountDelegationInfo\
+      \ AS delegation_chain,\n  protopayload_auditlog.methodName\nFROM `project.dataset.cloudaudit_googleapis_com_data_access`\nWHERE protopayload_auditlog.authenticationInfo.serviceAccountDelegationInfo\
+      \ IS NOT NULL\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-002
+    - gcp-008
+    - gcp-011
+  tags:
+  - gcp
+  - identity
 - id: gcp-008
   platform: gcp
   category: identity
@@ -3223,6 +3420,30 @@ items:
     gcloud compute instances list --format=''table(name,serviceAccounts[].email)'' | grep ''compute@developer''
 
     '
+  premium:
+    attackPerspective: The default Compute Engine service account (PROJECT_NUM-compute@developer.gserviceaccount.com) is auto-created with Editor role on the project. Every VM that launches without specifying
+      a custom SA inherits Editor — permission to read/write almost everything in the project. An attacker who gets shell access to any such VM immediately has Editor-level access to the entire project
+      through the metadata server.
+    implementationNotes: "# Organization Policy to disable automatic SA grant\ngcloud resource-manager org-policies set-policy \\\n  --organization=ORG_ID disable-default-sa.yaml\n\n# policy.yaml:\n# constraint:\
+      \ constraints/iam.automaticIamGrantsForDefaultServiceAccounts\n# booleanPolicy:\n#   enforced: true\n\n# This prevents the default SA from getting Editor role on new projects\n# For existing projects,\
+      \ manually remove the Editor binding:\ngcloud projects remove-iam-policy-binding PROJECT_ID \\\n  --member='serviceAccount:PROJECT_NUM-compute@developer.gserviceaccount.com' \\\n  --role='roles/editor'\n\
+      \n# Create dedicated SAs for each workload:\ngcloud iam service-accounts create vm-web-app \\\n  --display-name='Web App VM SA' \\\n  --project=PROJECT_ID\n\n# Grant only needed roles:\ngcloud projects\
+      \ add-iam-policy-binding PROJECT_ID \\\n  --member='serviceAccount:vm-web-app@PROJECT_ID.iam.gserviceaccount.com' \\\n  --role='roles/storage.objectViewer'\n\n# Launch VM with custom SA:\ngcloud compute\
+      \ instances create my-vm \\\n  --service-account=vm-web-app@PROJECT_ID.iam.gserviceaccount.com \\\n  --scopes=cloud-platform"
+    validationNotes: "# Find VMs using the default SA\nfor project in $(gcloud projects list --format='value(projectId)'); do\n  gcloud compute instances list --project=$project \\\n    --format='table(name,zone,serviceAccounts[0].email)'\
+      \ \\\n    --filter='serviceAccounts.email:*-compute@developer.gserviceaccount.com' 2>/dev/null\ndone\n\n# Check if default SA has Editor role\ngcloud projects get-iam-policy PROJECT_ID --format=json\
+      \ | \\\n  jq '.bindings[] | select(.role==\"roles/editor\") | .members[] | select(contains(\"compute@developer\"))'"
+    tuningNotes: Migrating existing VMs off the default SA requires careful planning. Inventory what each VM accesses (GCS buckets, BigQuery datasets, Pub/Sub topics), create a custom SA with those specific
+      roles, update the VM's service account, and verify. Do this project by project, starting with production workloads.
+    advancedDetection: "-- Alert on VMs launched with default SA\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail AS creator,\n  resource.labels.instance_id,\n  JSON_EXTRACT_SCALAR(protopayload_auditlog.request,\
+      \ '$.serviceAccounts[0].email') AS vm_sa\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName = 'v1.compute.instances.insert'\nAND JSON_EXTRACT_SCALAR(protopayload_auditlog.request,\
+      \ '$.serviceAccounts[0].email') LIKE '%-compute@developer.gserviceaccount.com'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)"
+    relatedIds:
+    - gcp-002
+    - gcp-011
+  tags:
+  - gcp
+  - identity
 - id: gcp-009
   platform: gcp
   category: identity
@@ -3233,6 +3454,28 @@ items:
   command: 'gcloud resource-manager org-policies describe constraints/iam.allowedPolicyMemberDomains --organization=<org_id>
 
     '
+  premium:
+    attackPerspective: Without domain-restricted sharing, any user can share GCP resources (projects, buckets, datasets) with external Gmail accounts or other Google Workspace domains. An attacker who compromises
+      an internal account can grant their personal Gmail access to critical projects, creating a persistent backdoor that survives the internal account's password reset or deactivation.
+    implementationNotes: "# Organization Policy: Restrict domain sharing\ngcloud resource-manager org-policies set-policy \\\n  --organization=ORG_ID domain-restrict.yaml\n\n# domain-restrict.yaml:\n# constraint:\
+      \ constraints/iam.allowedPolicyMemberDomains\n# listPolicy:\n#   allowedValues:\n#     - 'C0xxxxxxx'   # Your Cloud Identity/Workspace customer ID\n#     - 'C0yyyyyyy'   # Partner domain customer\
+      \ ID (if needed)\n\n# Find your customer ID:\ngcloud organizations list --format='table(displayName,directoryCustomerId)'\n\n# Apply to entire organization:\ngcloud resource-manager org-policies set-policy\
+      \ \\\n  --organization=ORG_ID domain-restrict.yaml\n\n# For exceptions (specific projects that need external access):\n# Use tag-based exceptions in the org policy"
+    validationNotes: "# Verify the org policy is active\ngcloud resource-manager org-policies describe \\\n  constraints/iam.allowedPolicyMemberDomains \\\n  --organization=ORG_ID\n\n# Find existing external\
+      \ IAM bindings\nfor project in $(gcloud projects list --format='value(projectId)'); do\n  external=$(gcloud projects get-iam-policy $project --format=json | \\\n    jq -r '.bindings[].members[]' |\
+      \ grep -v \"@$YOUR_DOMAIN\" | grep -v 'gserviceaccount.com' | grep -v 'group:')\n  if [ -n \"$external\" ]; then\n    echo \"=== $project ===\"\n    echo \"$external\"\n  fi\ndone"
+    tuningNotes: 'The allowedPolicyMemberDomains constraint is the single most impactful security policy in GCP. Enable it organization-wide first, then handle exceptions. Common exceptions: projects that
+      use Workload Identity Federation (external identities need access), sandbox projects for partner collaboration. Use project-level overrides sparingly and audit them monthly.'
+    advancedDetection: "-- BigQuery: Detect IAM grants to external identities (pre-policy)\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail AS granter,\n  JSON_EXTRACT_SCALAR(binding,\
+      \ '$.member') AS grantee,\n  JSON_EXTRACT_SCALAR(binding, '$.role') AS role_granted\nFROM `project.dataset.cloudaudit_googleapis_com_activity`,\n  UNNEST(JSON_EXTRACT_ARRAY(protopayload_auditlog.request.policy,\
+      \ '$.bindings')) AS binding\nWHERE protopayload_auditlog.methodName LIKE '%SetIamPolicy%'\nAND JSON_EXTRACT_SCALAR(binding, '$.member') NOT LIKE '%@yourdomain.com'\nAND JSON_EXTRACT_SCALAR(binding,\
+      \ '$.member') NOT LIKE '%gserviceaccount.com'"
+    relatedIds:
+    - gcp-010
+    - gcp-013
+  tags:
+  - gcp
+  - identity
 - id: gcp-010
   platform: gcp
   category: identity
@@ -3245,6 +3488,54 @@ items:
     # Set: Security key only for Admin OU
 
     '
+  premium:
+    attackPerspective: Admin accounts are the crown jewels. Phishing attacks against GCP Organization Admins, Billing Admins, or Project Owners can bypass SMS-based 2FA via SIM swapping or real-time phishing
+      proxies (EvilGinx). Physical security keys (FIDO2/U2F) are phishing-resistant — the browser verifies the origin before signing the challenge, making proxy attacks impossible. Without security key
+      enforcement for admins, a single phished admin password compromises the entire GCP organization.
+    implementationNotes: '# Google Workspace Admin → Security → Authentication → 2-Step Verification
+
+      # 1. Enforce 2SV for the entire organization
+
+      # 2. Under ''Allowed methods'': Select ''Security key only'' for admin OUs
+
+
+      # Google Cloud Identity (if not using Workspace):
+
+      # Admin Console → Security → 2-Step Verification → Enforcement
+
+
+      # Create an admin OU with security key requirement:
+
+      # Admin Console → Directory → OUs → Create ''GCP-Admins''
+
+      # Move all admin accounts to this OU
+
+      # Security → 2-Step Verification → Apply to ''GCP-Admins'' OU
+
+      # Methods: Security key only (disable phone, SMS, TOTP)
+
+
+      # For BeyondCorp/Context-Aware Access:
+
+      # Google Cloud → Security → Access Context Manager
+
+      # Create access level requiring security key
+
+      # Apply to all admin-level API calls'
+    validationNotes: "# List admins and their 2FA status (via Admin SDK)\n# Use Google Workspace Admin Console → Reports → User reports → Security\n\n# Via gcloud (limited):\ngcloud identity groups memberships\
+      \ list --group-email=gcp-admins@company.com\n\n# Check org admin bindings:\ngcloud organizations get-iam-policy ORG_ID --format=json | \\\n  jq '.bindings[] | select(.role | contains(\"admin\") or\
+      \ contains(\"owner\")) | .members[]'\n\n# Verify each admin has security key enrolled:\n# Admin Console → Directory → Users → Select user → Security → 2-SV"
+    tuningNotes: Distribute at least 2 security keys per admin (primary + backup). Use Google's Titan Security Keys or YubiKeys with FIDO2 support. Store backup keys in a secure physical location (safe/lockbox).
+      If an admin loses both keys, the recovery process should require in-person identity verification by another admin.
+    advancedDetection: "-- Alert on admin sign-ins without security key\n-- (via Google Workspace audit logs exported to BigQuery)\nSELECT\n  timestamp,\n  actor.email,\n  event.name,\n  JSON_EXTRACT_SCALAR(event.parameters,\
+      \ '$.login_type') as login_type\nFROM `project.dataset.login_audit`\nWHERE actor.email IN (SELECT email FROM admin_users_table)\nAND JSON_EXTRACT_SCALAR(event.parameters, '$.login_type') != 'security_key'\n\
+      AND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)"
+    relatedIds:
+    - gcp-009
+    - gcp-014
+  tags:
+  - gcp
+  - identity
 - id: gcp-011
   platform: gcp
   category: identity
@@ -3254,6 +3545,32 @@ items:
   reference: CIS GCP Foundations Benchmark 1.5
   command: "# Find primitive role bindings\ngcloud projects get-iam-policy <project> \\\n  --flatten='bindings[].members' \\\n  --filter='bindings.role:(roles/owner OR roles/editor)' \\\n  --format='table(bindings.role,\
     \ bindings.members)'\n"
+  premium:
+    attackPerspective: Primitive roles (Owner, Editor, Viewer) are overly broad — Editor grants write access to virtually every service in the project. Service accounts with Editor role can modify firewall
+      rules, create VMs, read secrets, and write to any bucket. When an SA with Editor is compromised, the blast radius is the entire project. Predefined roles (roles/storage.objectAdmin, roles/bigquery.dataViewer)
+      limit damage to specific services.
+    implementationNotes: "# Find SAs with primitive roles\ngcloud projects get-iam-policy PROJECT_ID --format=json | \\\n  jq -r '.bindings[] | select(.role | test(\"roles/(owner|editor|viewer)\")) | {role:\
+      \ .role, members: [.members[] | select(contains(\"serviceAccount\"))]}'\n\n# Replace Editor with specific predefined roles:\n# Step 1: Identify what the SA actually accesses\ngcloud recommender recommendations\
+      \ list \\\n  --recommender=google.iam.policy.Recommender \\\n  --project=PROJECT_ID --location=global \\\n  --format=json | jq '.[] | select(.content.overview.member | contains(\"serviceAccount\"\
+      ))'\n\n# Step 2: Remove primitive role\ngcloud projects remove-iam-policy-binding PROJECT_ID \\\n  --member='serviceAccount:SA@PROJECT.iam.gserviceaccount.com' \\\n  --role='roles/editor'\n\n# Step\
+      \ 3: Add specific roles\ngcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member='serviceAccount:SA@PROJECT.iam.gserviceaccount.com' \\\n  --role='roles/storage.objectAdmin'\ngcloud projects\
+      \ add-iam-policy-binding PROJECT_ID \\\n  --member='serviceAccount:SA@PROJECT.iam.gserviceaccount.com' \\\n  --role='roles/bigquery.dataEditor'"
+    validationNotes: "# Audit all primitive role bindings across org\nfor project in $(gcloud projects list --format='value(projectId)'); do\n  primitives=$(gcloud projects get-iam-policy $project --format=json\
+      \ 2>/dev/null | \\\n    jq -r '.bindings[] | select(.role | test(\"roles/(owner|editor)\")) | .members[] | select(contains(\"serviceAccount\"))')\n  if [ -n \"$primitives\" ]; then\n    echo \"===\
+      \ $project ===\"\n    echo \"$primitives\"\n  fi\ndone\n\n# Use IAM Recommender for right-sizing suggestions:\ngcloud recommender recommendations list \\\n  --recommender=google.iam.policy.Recommender\
+      \ \\\n  --project=PROJECT_ID --location=global"
+    tuningNotes: Use the IAM Recommender's suggestions as a starting point but validate against actual application requirements. Some workloads have intermittent access patterns that the recommender may
+      miss. Test in a staging environment first. The google.iam.policy.Recommender analyzes 90 days of activity, so wait at least 90 days after project creation before right-sizing.
+    advancedDetection: "-- BigQuery: Track primitive role grants\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail AS granter,\n  JSON_EXTRACT_SCALAR(binding, '$.role') AS\
+      \ role_granted,\n  JSON_EXTRACT_SCALAR(binding, '$.member') AS grantee\nFROM `project.dataset.cloudaudit_googleapis_com_activity`,\n  UNNEST(JSON_EXTRACT_ARRAY(protopayload_auditlog.request.policy,\
+      \ '$.bindings')) AS binding\nWHERE protopayload_auditlog.methodName LIKE '%SetIamPolicy%'\nAND JSON_EXTRACT_SCALAR(binding, '$.role') IN ('roles/owner', 'roles/editor')"
+    relatedIds:
+    - gcp-002
+    - gcp-008
+    - gcp-013
+  tags:
+  - gcp
+  - identity
 - id: gcp-012
   platform: gcp
   category: identity
@@ -3270,6 +3587,48 @@ items:
     gcloud iap web enable --resource-type=backend-services --service=<service>
 
     '
+  premium:
+    attackPerspective: Cloud IAP provides context-aware access control (identity, device, location) in front of web applications and VMs. Without IAP, applications must implement their own authentication
+      — often poorly. Attackers target apps behind plain load balancers because a single auth bypass (SSRF, path traversal) gives direct access. IAP adds a Google-managed authentication layer that's significantly
+      harder to bypass.
+    implementationNotes: "# Enable IAP for a backend service (HTTP Load Balancer)\ngcloud compute backend-services update BACKEND_SVC \\\n  --iap=enabled --global\n\n# Configure OAuth consent screen (required):\n\
+      # Google Cloud Console → APIs & Services → OAuth consent screen\n# Set to 'Internal' for organization-only access\n\n# Grant IAP access to specific users/groups:\ngcloud iap web add-iam-policy-binding\
+      \ \\\n  --resource-type=backend-services \\\n  --service=BACKEND_SVC \\\n  --member='group:engineering@company.com' \\\n  --role='roles/iap.httpsResourceAccessor'\n\n# For SSH/TCP tunneling via IAP\
+      \ (replace SSH bastion hosts):\ngcloud compute instances add-iam-policy-binding VM_NAME \\\n  --zone=us-central1-a \\\n  --member='group:devops@company.com' \\\n  --role='roles/iap.tunnelResourceAccessor'\n\
+      \n# Connect via IAP tunnel:\ngcloud compute ssh VM_NAME --zone=us-central1-a --tunnel-through-iap"
+    validationNotes: '# Verify IAP is enabled on backend services
+
+      gcloud compute backend-services list --global --format=''table(name, iap.enabled)''
+
+
+      # List IAP access policies
+
+      gcloud iap web get-iam-policy --resource-type=backend-services --service=BACKEND_SVC
+
+
+      # Test IAP by accessing the app URL:
+
+      # Should redirect to Google sign-in, then verify identity
+
+      curl -v https://your-app.company.com  # Should get 302 to accounts.google.com
+
+
+      # Check for bypass routes (direct IP access):
+
+      # Ensure firewall rules block direct access; only allow from IAP ranges:
+
+      # 35.235.240.0/20 (IAP TCP forwarding)'
+    tuningNotes: IAP is not a replacement for application-level authorization — it handles authentication. Your app should still check the X-Goog-IAP-JWT-Assertion header and validate the JWT to prevent
+      header injection. For sensitive apps, combine IAP with Access Context Manager to require managed devices, specific IP ranges, or risk scores.
+    advancedDetection: "-- Monitor IAP access denials (potential brute force)\nSELECT\n  timestamp,\n  httpRequest.remoteIp,\n  httpRequest.requestUrl,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n\
+      \  protopayload_auditlog.status.code\nFROM `project.dataset.cloudaudit_googleapis_com_data_access`\nWHERE protopayload_auditlog.serviceName = 'iap.googleapis.com'\nAND protopayload_auditlog.status.code\
+      \ != 0\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-014
+    - gcp-019
+  tags:
+  - gcp
+  - identity
 - id: gcp-013
   platform: gcp
   category: identity
@@ -3279,6 +3638,28 @@ items:
   reference: Google Cloud Security Best Practices
   command: "gcloud recommender recommendations list \\\n  --recommender=google.iam.policy.Recommender \\\n  --project=<project> --location=global \\\n  --format='table(content.operationGroups[0].operations[0].path,\
     \ priority, stateInfo.state)'\n"
+  premium:
+    attackPerspective: IAM Recommender analyzes 90 days of actual API usage and suggests removing unused permissions. Ignoring these recommendations means accounts retain permissions they never use — exactly
+      the permissions an attacker will use. The delta between 'permissions granted' and 'permissions used' is your attack surface. Every unused permission is a capability an attacker gets for free.
+    implementationNotes: "# List all IAM recommendations for a project\ngcloud recommender recommendations list \\\n  --recommender=google.iam.policy.Recommender \\\n  --project=PROJECT_ID \\\n  --location=global\
+      \ \\\n  --format='table(name,content.overview.member,content.overview.removedRole,content.overview.addedRoles,stateInfo.state)'\n\n# Apply a recommendation:\ngcloud recommender recommendations mark-claimed\
+      \ \\\n  --recommender=google.iam.policy.Recommender \\\n  --project=PROJECT_ID \\\n  --location=global \\\n  --recommendation=RECOMMENDATION_ID \\\n  --etag=ETAG \\\n  --state-metadata=reviewer=security-team\n\
+      \n# Automate review with Policy Intelligence API:\n# Set up weekly export of recommendations to BigQuery\n# Create a dashboard tracking recommendation age and priority\n\n# Review and apply insights\
+      \ too:\ngcloud recommender insights list \\\n  --insight-type=google.iam.policy.Insight \\\n  --project=PROJECT_ID \\\n  --location=global"
+    validationNotes: "# Count pending recommendations\ngcloud recommender recommendations list \\\n  --recommender=google.iam.policy.Recommender \\\n  --project=PROJECT_ID --location=global \\\n  --filter='stateInfo.state=ACTIVE'\
+      \ --format=json | jq 'length'\n\n# Track recommendation age (stale recommendations indicate governance gap)\ngcloud recommender recommendations list \\\n  --recommender=google.iam.policy.Recommender\
+      \ \\\n  --project=PROJECT_ID --location=global \\\n  --format='table(name,lastRefreshTime,stateInfo.state)' | sort"
+    tuningNotes: Not all recommendations should be applied blindly — some workloads have seasonal access patterns (quarterly reporting, annual audits). Cross-reference recommendations with the team before
+      applying. Set up a weekly review cadence where the security team triages recommendations. Apply low-risk ones (remove unused viewer roles) immediately, and escalate high-impact ones (role changes
+      on production SAs) for team review.
+    advancedDetection: "-- Track recommendation application rate\nSELECT\n  DATE(timestamp) as date,\n  COUNT(*) as recommendations_applied\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE\
+      \ protopayload_auditlog.methodName LIKE '%recommender%mark%'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 90 DAY)\nGROUP BY date\nORDER BY date DESC"
+    relatedIds:
+    - gcp-011
+    - gcp-009
+  tags:
+  - gcp
+  - identity
 - id: gcp-014
   platform: gcp
   category: identity
@@ -3291,6 +3672,42 @@ items:
     # Set: Session duration = 8 hours or less
 
     '
+  premium:
+    attackPerspective: Long-lived Cloud Console sessions allow an attacker who steals a browser cookie or session token to maintain access for hours or days. Without session limits, a compromised session
+      from a shared computer, stolen cookie, or XSS attack remains valid indefinitely. Shorter session lengths force re-authentication, limiting the window for session hijacking attacks.
+    implementationNotes: "# Google Workspace Admin Console → Security → Google Cloud session control\n# Set session length to 1-4 hours for regular users\n# Set to 1 hour for admin accounts\n\n# Via Google\
+      \ Cloud CLI context (for individual sessions):\ngcloud config set auth/token_host https://oauth2.googleapis.com\n# Token lifetime is controlled by the org policy\n\n# For programmatic access, use\
+      \ short-lived credentials:\ngcloud auth application-default login --lifetime=3600\n\n# Access Context Manager for additional session controls:\n# Create an access level with session requirements\n\
+      gcloud access-context-manager levels create strict-session \\\n  --title='Strict Session' \\\n  --basic-level-spec=spec.yaml\n\n# spec.yaml:\n# conditions:\n#   - devicePolicy:\n#       requireScreenlock:\
+      \ true\n#     regions:\n#       - US\n#       - IL"
+    validationNotes: '# Verify session length setting
+
+      # Google Workspace Admin Console → Security → Google Cloud session control
+
+      # Expected: 1-4 hours
+
+
+      # Check via API (Admin SDK):
+
+      # GET https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains
+
+      # Look for sessionDuration field
+
+
+      # Test: Log into Cloud Console, wait past session duration
+
+      # Should be prompted to re-authenticate'
+    tuningNotes: Balance security with productivity. A 1-hour session for developers running long deployments will cause frustration. Set 4 hours for regular users, 1 hour for admins. For CI/CD service
+      accounts, use short-lived tokens (1 hour) via Workload Identity Federation rather than long-lived keys. Consider location-based session policies — shorter sessions from untrusted networks.
+    advancedDetection: "-- Monitor long sessions and unusual re-authentication patterns\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.requestMetadata.callerIp,\n\
+      \  protopayload_auditlog.requestMetadata.callerSuppliedUserAgent\nFROM `project.dataset.cloudaudit_googleapis_com_data_access`\nWHERE protopayload_auditlog.authenticationInfo.principalEmail IS NOT\
+      \ NULL\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)\nORDER BY protopayload_auditlog.authenticationInfo.principalEmail, timestamp"
+    relatedIds:
+    - gcp-010
+    - gcp-012
+  tags:
+  - gcp
+  - identity
 - id: gcp-015
   platform: gcp
   category: network
@@ -3307,6 +3724,31 @@ items:
     gcloud compute networks subnets update <subnet> --region=<region> --enable-private-ip-google-access
 
     '
+  premium:
+    attackPerspective: Without Private Google Access, VMs in private subnets must go through a NAT gateway or have external IPs to reach Google APIs (GCS, BigQuery, Pub/Sub). This creates unnecessary external
+      exposure. If NAT is misconfigured, GCP API traffic traverses the public internet, exposing it to interception. Private Google Access keeps all Google API traffic within Google's network — eliminating
+      this entire attack surface.
+    implementationNotes: "# Enable Private Google Access for a subnet\ngcloud compute networks subnets update SUBNET_NAME \\\n  --region=REGION \\\n  --enable-private-ip-google-access\n\n# Enable for ALL\
+      \ subnets in a VPC:\nfor subnet in $(gcloud compute networks subnets list --network=VPC_NAME --format='value(name,region)'); do\n  name=$(echo $subnet | cut -f1)\n  region=$(echo $subnet | cut -f2)\n\
+      \  gcloud compute networks subnets update $name --region=$region --enable-private-ip-google-access\ndone\n\n# For private access to more Google services, configure Private Service Connect:\ngcloud\
+      \ compute addresses create psc-endpoint \\\n  --region=REGION \\\n  --subnet=SUBNET_NAME \\\n  --addresses=10.0.0.100\n\ngcloud compute forwarding-rules create psc-endpoint \\\n  --region=REGION \\\
+      \n  --network=VPC_NAME \\\n  --address=psc-endpoint \\\n  --target-google-apis-bundle=all-apis\n\n# DNS: Route Google API domains to private endpoints\ngcloud dns managed-zones create google-apis\
+      \ \\\n  --dns-name=googleapis.com \\\n  --visibility=private \\\n  --networks=VPC_NAME"
+    validationNotes: "# Verify Private Google Access on all subnets\ngcloud compute networks subnets list \\\n  --format='table(name,region,privateIpGoogleAccess)' \\\n  --filter='privateIpGoogleAccess=false'\n\
+      # Should return empty (all should be true)\n\n# Test from a VM without external IP:\ngcloud compute ssh --internal-ip VM_NAME --zone=ZONE -- 'curl -s https://storage.googleapis.com'\n# Should succeed\
+      \ if Private Google Access is enabled"
+    tuningNotes: Private Google Access should be enabled on every subnet by default — there's no downside. For maximum isolation, add Private Service Connect endpoints and custom DNS zones to route all
+      Google API traffic through your VPC. This also enables you to apply firewall rules and VPC Service Controls to Google API traffic.
+    advancedDetection: "-- Monitor for VMs accessing Google APIs via external IPs (indicating PGA is not working)\nSELECT\n  timestamp,\n  jsonPayload.connection.src_ip,\n  jsonPayload.connection.dest_ip,\n\
+      \  jsonPayload.connection.dest_port,\n  resource.labels.subnetwork_name\nFROM `project.dataset.compute_googleapis_com_vpc_flows`\nWHERE jsonPayload.connection.dest_ip LIKE '142.250.%' OR jsonPayload.connection.dest_ip\
+      \ LIKE '172.217.%'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)"
+    relatedIds:
+    - gcp-016
+    - gcp-019
+    - gcp-020
+  tags:
+  - gcp
+  - network
 - id: gcp-016
   platform: gcp
   category: network
@@ -3325,6 +3767,29 @@ items:
     gcloud compute networks delete default --quiet
 
     '
+  premium:
+    attackPerspective: 'The default VPC network is auto-created with permissive firewall rules: allow-internal (all internal traffic), allow-ssh (0.0.0.0/0:22), allow-rdp (0.0.0.0/0:3389), and allow-icmp.
+      These rules make every VM in the default network accessible from the internet on SSH and RDP ports. Attackers scan GCP IP ranges for open port 22/3389 and brute-force credentials. Many breaches start
+      with a VM accidentally deployed in the default network.'
+    implementationNotes: "# Delete default network (cannot be deleted if resources exist in it)\ngcloud compute networks delete default --project=PROJECT_ID\n\n# Organization Policy to prevent default network\
+      \ creation:\ngcloud resource-manager org-policies set-policy \\\n  --organization=ORG_ID no-default-network.yaml\n\n# no-default-network.yaml:\n# constraint: constraints/compute.skipDefaultNetworkCreation\n\
+      # booleanPolicy:\n#   enforced: true\n\n# Create a custom VPC with proper security:\ngcloud compute networks create production-vpc \\\n  --subnet-mode=custom \\\n  --bgp-routing-mode=regional\n\n\
+      gcloud compute networks subnets create prod-subnet \\\n  --network=production-vpc \\\n  --region=us-central1 \\\n  --range=10.0.0.0/20 \\\n  --enable-private-ip-google-access \\\n  --enable-flow-logs"
+    validationNotes: "# Check if default network exists\ngcloud compute networks list --format='table(name,autoCreateSubnetworks)' --filter='name=default'\n# Should return empty\n\n# Verify org policy blocks\
+      \ new default networks\ngcloud resource-manager org-policies describe \\\n  constraints/compute.skipDefaultNetworkCreation \\\n  --organization=ORG_ID\n\n# Check for default network in all projects\n\
+      for project in $(gcloud projects list --format='value(projectId)'); do\n  has_default=$(gcloud compute networks list --project=$project --format='value(name)' --filter='name=default' 2>/dev/null)\n\
+      \  if [ -n \"$has_default\" ]; then\n    echo \"WARNING: $project has default network\"\n  fi\ndone"
+    tuningNotes: Before deleting the default network, migrate any resources to a custom VPC. Use Shared VPCs for multi-project environments to centralize network management. The org policy should be applied
+      first to prevent new projects from getting a default network, then clean up existing ones project by project.
+    advancedDetection: "-- Alert on resources deployed in default network\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName,\n  JSON_EXTRACT_SCALAR(protopayload_auditlog.request,\
+      \ '$.networkInterfaces[0].network') as network\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName = 'v1.compute.instances.insert'\nAND JSON_EXTRACT_SCALAR(protopayload_auditlog.request,\
+      \ '$.networkInterfaces[0].network') LIKE '%/default'"
+    relatedIds:
+    - gcp-018
+    - gcp-015
+  tags:
+  - gcp
+  - network
 - id: gcp-017
   platform: gcp
   category: network
@@ -3341,6 +3806,30 @@ items:
     gcloud compute security-policies rules create 1000 --security-policy=scw-policy --action=throttle --rate-limit-threshold-count=100 --rate-limit-threshold-interval-sec=60
 
     '
+  premium:
+    attackPerspective: Cloud Armor provides L7 DDoS protection, WAF rules, and bot management for HTTP(S) load balancers. Without it, your applications are directly exposed to volumetric attacks, application-layer
+      floods, and web exploits. GCP's default DDoS protection handles L3/L4 floods, but application-layer attacks (SlowLoris, HTTP floods, SQL injection payloads) pass through unimpeded.
+    implementationNotes: "# Create a Cloud Armor security policy\ngcloud compute security-policies create web-policy \\\n  --description='Web application protection'\n\n# Add preconfigured WAF rules (OWASP\
+      \ Top 10):\ngcloud compute security-policies rules create 1000 \\\n  --security-policy=web-policy \\\n  --expression='evaluatePreconfiguredExpr(\"sqli-v33-stable\")' \\\n  --action=deny-403 \\\n \
+      \ --description='Block SQL injection'\n\ngcloud compute security-policies rules create 1001 \\\n  --security-policy=web-policy \\\n  --expression='evaluatePreconfiguredExpr(\"xss-v33-stable\")' \\\
+      \n  --action=deny-403 \\\n  --description='Block XSS'\n\ngcloud compute security-policies rules create 1002 \\\n  --security-policy=web-policy \\\n  --expression='evaluatePreconfiguredExpr(\"rce-v33-stable\"\
+      )' \\\n  --action=deny-403 \\\n  --description='Block RCE attempts'\n\n# Rate limiting:\ngcloud compute security-policies rules create 2000 \\\n  --security-policy=web-policy \\\n  --expression='true'\
+      \ \\\n  --action=rate-based-ban \\\n  --rate-limit-threshold-count=100 \\\n  --rate-limit-threshold-interval-sec=60 \\\n  --ban-duration-sec=300\n\n# Attach to backend service:\ngcloud compute backend-services\
+      \ update BACKEND_SVC \\\n  --security-policy=web-policy --global"
+    validationNotes: "# Verify policy is attached\ngcloud compute backend-services describe BACKEND_SVC --global \\\n  --format='value(securityPolicy)'\n\n# List all rules in the policy\ngcloud compute\
+      \ security-policies rules list --security-policy=web-policy\n\n# Check Cloud Armor logs for blocked requests\ngcloud logging read 'resource.type=\"http_load_balancer\" AND jsonPayload.enforcedSecurityPolicy.outcome=\"\
+      DENY\"' \\\n  --limit=20 --format=json"
+    tuningNotes: Start with preconfigured rules in 'preview' mode (log but don't block) for 2 weeks, then review false positives before switching to deny. Tune rate limits based on your application's normal
+      traffic patterns — API endpoints may need higher thresholds than web pages. Use adaptive protection for automatic DDoS response at scale.
+    advancedDetection: "-- Cloud Armor event analysis\nSELECT\n  timestamp,\n  httpRequest.remoteIp,\n  jsonPayload.enforcedSecurityPolicy.name as policy,\n  jsonPayload.enforcedSecurityPolicy.outcome,\n\
+      \  jsonPayload.enforcedSecurityPolicy.matchedFieldType,\n  httpRequest.requestUrl\nFROM `project.dataset.requests`\nWHERE jsonPayload.enforcedSecurityPolicy.outcome = 'DENY'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(),\
+      \ INTERVAL 24 HOUR)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-018
+    - gcp-012
+  tags:
+  - gcp
+  - network
 - id: gcp-018
   platform: gcp
   category: network
@@ -3351,6 +3840,29 @@ items:
   command: 'gcloud compute firewall-rules list --filter=''sourceRanges:0.0.0.0/0 AND direction=INGRESS AND disabled=false'' --format=''table(name,allowed[].map().firewall_rule().list(),sourceRanges)''
 
     '
+  premium:
+    attackPerspective: Firewall rules with source range 0.0.0.0/0 allow the entire internet to reach your VMs. This is the most common misconfiguration in cloud environments. Attackers automate scanning
+      of GCP IP ranges (35.0.0.0/8, etc.) for open ports. A single VM with 0.0.0.0/0 on port 22 will receive thousands of brute-force attempts within hours of deployment.
+    implementationNotes: "# Find overly permissive firewall rules\ngcloud compute firewall-rules list \\\n  --format='table(name,network,direction,sourceRanges.list():label=SRC,allowed[].map().firewall_rule().list():label=ALLOW)'\
+      \ \\\n  --filter='sourceRanges.list():\"0.0.0.0/0\"'\n\n# Replace with specific source ranges:\ngcloud compute firewall-rules update RULE_NAME \\\n  --source-ranges='10.0.0.0/8,172.16.0.0/12,YOUR_OFFICE_IP/32'\n\
+      \n# Better: Use IAP for SSH/RDP instead of firewall rules:\ngcloud compute firewall-rules create allow-iap-ssh \\\n  --network=production-vpc \\\n  --allow=tcp:22 \\\n  --source-ranges=35.235.240.0/20\
+      \ \\\n  --target-tags=allow-iap\n\n# Organization Policy to restrict firewall rules:\n# Use Hierarchical Firewall Policies at the org level\ngcloud compute firewall-policies create \\\n  --organization=ORG_ID\
+      \ \\\n  --short-name=org-baseline\n\ngcloud compute firewall-policies rules create 1000 \\\n  --firewall-policy=org-baseline \\\n  --direction=INGRESS \\\n  --action=deny \\\n  --src-ip-ranges=0.0.0.0/0\
+      \ \\\n  --layer4-configs=tcp:22,tcp:3389 \\\n  --description='Block direct SSH/RDP from internet'"
+    validationNotes: "# Audit all 0.0.0.0/0 rules across org\nfor project in $(gcloud projects list --format='value(projectId)'); do\n  rules=$(gcloud compute firewall-rules list --project=$project \\\n\
+      \    --filter='sourceRanges.list():\"0.0.0.0/0\" AND direction=INGRESS' \\\n    --format='value(name)' 2>/dev/null)\n  if [ -n \"$rules\" ]; then\n    echo \"=== $project ===\"\n    echo \"$rules\"\
+      \n  fi\ndone"
+    tuningNotes: For web applications behind a load balancer, the LB handles internet traffic — VMs should only accept traffic from the LB IP ranges and health check ranges (35.191.0.0/16, 130.211.0.0/22).
+      Use network tags and service accounts for firewall targeting instead of IP ranges for internal traffic.
+    advancedDetection: "-- Alert on new permissive firewall rules\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName,\n  JSON_EXTRACT_SCALAR(protopayload_auditlog.request,\
+      \ '$.sourceRanges') as source_ranges\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName IN ('v1.compute.firewalls.insert', 'v1.compute.firewalls.update')\n\
+      AND JSON_EXTRACT_SCALAR(protopayload_auditlog.request, '$.sourceRanges') LIKE '%0.0.0.0/0%'"
+    relatedIds:
+    - gcp-016
+    - gcp-020
+  tags:
+  - gcp
+  - network
 - id: gcp-019
   platform: gcp
   category: network
@@ -3367,6 +3879,29 @@ items:
     gcloud access-context-manager perimeters list --policy=<policy_id>
 
     '
+  premium:
+    attackPerspective: VPC Service Controls create a security perimeter around GCP services, preventing data exfiltration even by authorized users. Without them, a compromised SA in Project A can copy data
+      to an attacker-controlled Project B in seconds. VPC-SC blocks this by restricting API calls to only allowed projects and networks — even with valid IAM permissions, data cannot leave the perimeter.
+    implementationNotes: "# Create a VPC Service Controls perimeter\ngcloud access-context-manager perimeters create production-perimeter \\\n  --title='Production Data Perimeter' \\\n  --resources='projects/PROJECT_NUM_1,projects/PROJECT_NUM_2'\
+      \ \\\n  --restricted-services='bigquery.googleapis.com,storage.googleapis.com,secretmanager.googleapis.com' \\\n  --access-levels=admin-access \\\n  --policy=ACCESS_POLICY_ID\n\n# Create in dry-run\
+      \ mode first (logs violations without blocking):\ngcloud access-context-manager perimeters dry-run create production-perimeter \\\n  --title='Production Data Perimeter' \\\n  --resources='projects/PROJECT_NUM_1'\
+      \ \\\n  --restricted-services='storage.googleapis.com,bigquery.googleapis.com'\n\n# Common restricted services to include:\n# storage.googleapis.com, bigquery.googleapis.com\n# secretmanager.googleapis.com,\
+      \ cloudkms.googleapis.com\n# spanner.googleapis.com, bigtable.googleapis.com\n# pubsub.googleapis.com, dataflow.googleapis.com\n\n# Create ingress/egress rules for controlled exceptions:\ngcloud access-context-manager\
+      \ perimeters update production-perimeter \\\n  --set-ingress-policies=ingress.yaml \\\n  --set-egress-policies=egress.yaml"
+    validationNotes: "# List perimeters and their status\ngcloud access-context-manager perimeters list --policy=ACCESS_POLICY_ID \\\n  --format='table(name,title,status.resources,status.restrictedServices)'\n\
+      \n# Check for violations in dry-run mode\ngcloud logging read 'protoPayload.metadata.@type=\"type.googleapis.com/google.cloud.audit.VpcServiceControlAuditMetadata\" AND protoPayload.metadata.violationReason!=\"\
+      \"' \\\n  --limit=50 --format=json\n\n# Test: Try to copy data out of the perimeter\n# gsutil cp gs://protected-bucket/file gs://external-bucket/  # Should fail"
+    tuningNotes: Always start with dry-run mode for at least 2 weeks. VPC-SC violations can break legitimate workflows (CI/CD pipelines, partner integrations, cross-project queries). Analyze dry-run logs
+      to create precise ingress/egress rules before enforcing. Use access levels to allow specific users from specific networks to cross the perimeter.
+    advancedDetection: "-- VPC Service Controls violation monitoring\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.metadata.violationReason,\n\
+      \  protopayload_auditlog.metadata.resourceNames,\n  protopayload_auditlog.methodName\nFROM `project.dataset.cloudaudit_googleapis_com_policy`\nWHERE protopayload_auditlog.metadata.violationReason\
+      \ IS NOT NULL\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-015
+    - gcp-028
+  tags:
+  - gcp
+  - network
 - id: gcp-020
   platform: gcp
   category: network
@@ -3385,6 +3920,27 @@ items:
     gcloud compute routers nats create scw-nat --router=scw-router --region=<region> --auto-allocate-nat-external-ips --nat-all-subnet-ip-ranges
 
     '
+  premium:
+    attackPerspective: External IPs on VMs create bidirectional internet exposure — the VM can be reached from the internet AND can establish outbound connections to attacker infrastructure for C2 communication
+      and data exfiltration. Cloud NAT provides outbound-only internet access without an external IP, eliminating inbound attack surface while preserving the ability to reach external APIs and package repositories.
+    implementationNotes: "# Create a Cloud NAT gateway\ngcloud compute routers create nat-router \\\n  --network=production-vpc \\\n  --region=us-central1\n\ngcloud compute routers nats create nat-gateway\
+      \ \\\n  --router=nat-router \\\n  --region=us-central1 \\\n  --nat-all-subnet-ip-ranges \\\n  --auto-allocate-nat-external-ips \\\n  --enable-logging\n\n# Remove external IPs from existing VMs:\n\
+      gcloud compute instances delete-access-config VM_NAME \\\n  --zone=us-central1-a \\\n  --access-config-name='External NAT'\n\n# Organization Policy to block external IPs:\ngcloud resource-manager\
+      \ org-policies set-policy \\\n  --organization=ORG_ID no-external-ip.yaml\n\n# no-external-ip.yaml:\n# constraint: constraints/compute.vmExternalIpAccess\n# listPolicy:\n#   allValues: DENY"
+    validationNotes: "# Find VMs with external IPs\ngcloud compute instances list \\\n  --format='table(name,zone,networkInterfaces[0].accessConfigs[0].natIP)' \\\n  --filter='networkInterfaces[0].accessConfigs[0].natIP:*'\n\
+      \n# Verify Cloud NAT is working\ngcloud compute routers nats describe nat-gateway \\\n  --router=nat-router --region=us-central1\n\n# Test outbound connectivity from a VM without external IP:\ngcloud\
+      \ compute ssh VM_NAME --internal-ip --tunnel-through-iap -- 'curl -s ifconfig.me'\n# Should return a NAT IP"
+    tuningNotes: Some workloads genuinely need external IPs — load balancers, NAT gateways, bastion hosts (though IAP is preferred). Use the org policy constraint with an allow list for specific VMs/projects.
+      Cloud NAT supports custom port allocation and endpoint-independent mapping for workloads that need consistent outbound IPs.
+    advancedDetection: "-- Alert on VMs created with external IPs\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName,\n  JSON_EXTRACT_SCALAR(protopayload_auditlog.request,\
+      \ '$.networkInterfaces[0].accessConfigs[0].natIP') as external_ip\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName = 'v1.compute.instances.insert'\n\
+      AND JSON_EXTRACT(protopayload_auditlog.request, '$.networkInterfaces[0].accessConfigs') IS NOT NULL"
+    relatedIds:
+    - gcp-015
+    - gcp-018
+  tags:
+  - gcp
+  - network
 - id: gcp-021
   platform: gcp
   category: logging
@@ -3403,6 +3959,78 @@ items:
     gcloud projects set-iam-policy <project> policy.json
 
     '
+  premium:
+    attackPerspective: Admin Activity logs capture who changed what (IAM, firewall, VM creation) but Data Access logs capture who READ what (BigQuery queries, GCS downloads, Secret Manager access). Without
+      Data Access logs, an attacker who exfiltrates your entire BigQuery data warehouse or downloads all secrets from Secret Manager leaves zero forensic evidence. You'll know they got in but never know
+      what they took.
+    implementationNotes: '# Enable Data Access logs for all services at project level:
+
+      gcloud projects get-iam-policy PROJECT_ID --format=json > policy.json
+
+
+      # Add to policy.json:
+
+      # "auditConfigs": [{
+
+      #   "service": "allServices",
+
+      #   "auditLogConfigs": [
+
+      #     {"logType": "ADMIN_READ"},
+
+      #     {"logType": "DATA_READ"},
+
+      #     {"logType": "DATA_WRITE"}
+
+      #   ]
+
+      # }]
+
+
+      gcloud projects set-iam-policy PROJECT_ID policy.json
+
+
+      # For high-priority services, ensure explicitly:
+
+      # BigQuery, Cloud Storage, Secret Manager, Cloud SQL, Spanner,
+
+      # Datastore, Bigtable, Pub/Sub, Cloud KMS
+
+
+      # Exempt high-volume service accounts to control costs:
+
+      # "exemptedMembers": ["serviceAccount:monitoring@project.iam.gserviceaccount.com"]'
+    validationNotes: '# Verify audit config
+
+      gcloud projects get-iam-policy PROJECT_ID --format=json | jq ''.auditConfigs''
+
+
+      # Test: Access a GCS object and verify log appears
+
+      gsutil cat gs://test-bucket/test.txt
+
+      # Wait 5-10 minutes
+
+      gcloud logging read ''protoPayload.methodName="storage.objects.get" AND protoPayload.resourceName:"test.txt"'' --limit=5
+
+
+      # Verify for BigQuery:
+
+      bq query --nouse_legacy_sql ''SELECT 1''
+
+      gcloud logging read ''protoPayload.serviceName="bigquery.googleapis.com" AND protoPayload.methodName="jobservice.query"'' --limit=5'
+    tuningNotes: Data Access logs for BigQuery can be extremely high-volume (every query generates logs). Consider exempting read-heavy service accounts for cost control while keeping DATA_WRITE logs for
+      all principals. For GCS, DATA_READ on object-level access can also be voluminous — consider logging at bucket-level only for non-sensitive buckets.
+    advancedDetection: "-- BigQuery: Detect large data reads (potential exfiltration)\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.methodName,\n\
+      \  protopayload_auditlog.resourceName,\n  JSON_EXTRACT_SCALAR(protopayload_auditlog.response, '$.totalBytesProcessed') as bytes_read\nFROM `project.dataset.cloudaudit_googleapis_com_data_access`\n\
+      WHERE protopayload_auditlog.serviceName = 'bigquery.googleapis.com'\nAND SAFE_CAST(JSON_EXTRACT_SCALAR(protopayload_auditlog.response, '$.totalBytesProcessed') AS INT64) > 10737418240  -- 10GB\nAND\
+      \ timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)"
+    relatedIds:
+    - gcp-004
+    - gcp-022
+  tags:
+  - gcp
+  - logging
 - id: gcp-022
   platform: gcp
   category: logging
@@ -3412,6 +4040,29 @@ items:
   reference: CIS GCP Foundations Benchmark 2.2
   command: "# Create BigQuery sink\ngcloud logging sinks create audit-to-bq \\\n  bigquery.googleapis.com/projects/<project>/datasets/audit_logs \\\n  --log-filter='logName:\"cloudaudit.googleapis.com\"\
     '\n"
+  premium:
+    attackPerspective: Cloud Logging retains logs for 30 days (activity) and 400 days maximum. An attacker who maintains persistence for months may have their initial access logs age out before the breach
+      is discovered. Exporting to BigQuery or Cloud Storage provides cost-effective long-term retention, enables complex analytics (cross-log correlation, trend analysis), and creates tamper-resistant copies
+      that survive even if the attacker gains logging admin access.
+    implementationNotes: "# Create a log sink to BigQuery (for analytics):\ngcloud logging sinks create security-bigquery \\\n  bigquery.googleapis.com/projects/PROJECT_ID/datasets/security_logs \\\n  --log-filter='protoPayload.@type=\"\
+      type.googleapis.com/google.cloud.audit.AuditLog\"' \\\n  --organization=ORG_ID \\\n  --include-children\n\n# Create a log sink to GCS (for archival):\ngcloud logging sinks create audit-archive \\\n\
+      \  storage.googleapis.com/audit-log-archive-bucket \\\n  --log-filter='logName:\"cloudaudit.googleapis.com\"' \\\n  --organization=ORG_ID \\\n  --include-children\n\n# Grant the sink SA write access:\n\
+      # Get the SA email from sink description\ngcloud logging sinks describe security-bigquery --organization=ORG_ID --format='value(writerIdentity)'\n# Grant: roles/bigquery.dataEditor on the dataset\n\
+      \n# Set lifecycle on GCS archive (cost control):\ngsutil lifecycle set lifecycle.json gs://audit-log-archive-bucket\n# lifecycle.json: transition to COLDLINE after 90 days, delete after 365 days"
+    validationNotes: "# Verify sinks exist and are active\ngcloud logging sinks list --organization=ORG_ID --format='table(name,destination,filter)'\n\n# Check for sink errors:\ngcloud logging sinks describe\
+      \ security-bigquery --organization=ORG_ID\n\n# Verify data is flowing to BigQuery:\nbq query --nouse_legacy_sql '\n  SELECT COUNT(*) as log_count, DATE(timestamp) as log_date\n  FROM `project.security_logs.cloudaudit_googleapis_com_activity`\n\
+      \  WHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n  GROUP BY log_date ORDER BY log_date DESC'"
+    tuningNotes: Use aggregated sinks at the organization level with --include-children to capture all projects. Filter exports to reduce costs — export all activity logs but only security-relevant data
+      access logs (exclude high-volume read operations from monitoring accounts). Partition BigQuery tables by day for query performance and cost control.
+    advancedDetection: "-- Verify export completeness (no gaps)\nSELECT\n  DATE(timestamp) as log_date,\n  COUNT(*) as events,\n  COUNT(DISTINCT resource.labels.project_id) as projects\nFROM `project.security_logs.cloudaudit_googleapis_com_activity`\n\
+      WHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\nGROUP BY log_date\nORDER BY log_date DESC"
+    relatedIds:
+    - gcp-004
+    - gcp-021
+    - gcp-023
+  tags:
+  - gcp
+  - logging
 - id: gcp-023
   platform: gcp
   category: logging
@@ -3426,6 +4077,39 @@ items:
     # Enable via Console → Security → Security Command Center
 
     '
+  premium:
+    attackPerspective: 'Security Command Center (SCC) is GCP''s native CSPM and threat detection platform. Without it, you''re flying blind — no automated detection of misconfigurations, no vulnerability
+      scanning, no threat intelligence integration. SCC Premium detects active threats: cryptomining, data exfiltration, malicious scripts, and credential theft. The free tier only covers basic misconfiguration
+      scanning.'
+    implementationNotes: "# Enable SCC at the organization level (requires Org Admin):\ngcloud scc organizations update ORG_ID --enable-asset-discovery\n\n# Enable SCC Premium tier (via Console):\n# Security\
+      \ → Security Command Center → Settings → Tier → Premium\n\n# Enable all built-in detectors:\n# Security Health Analytics (misconfigurations)\n# Event Threat Detection (active threats)\n# Container\
+      \ Threat Detection (GKE/container threats)\n# Virtual Machine Threat Detection (VM-level threats)\n# Web Security Scanner (web app vulnerabilities)\n\n# Configure notification channels:\ngcloud scc\
+      \ notifications create critical-findings \\\n  --organization=ORG_ID \\\n  --pubsub-topic=projects/PROJECT/topics/scc-findings \\\n  --filter='severity=\"CRITICAL\" OR severity=\"HIGH\"'\n\n# Export\
+      \ findings to SIEM via Pub/Sub → Dataflow → Splunk/Chronicle"
+    validationNotes: '# Verify SCC is enabled and scanning
+
+      gcloud scc findings list ORG_ID --source=''-'' --limit=10 --format=''table(finding.category,finding.state,finding.severity)''
+
+
+      # Check asset inventory is populated
+
+      gcloud scc assets list ORG_ID --limit=10 --format=''table(asset.name,asset.securityCenterProperties.resourceType)''
+
+
+      # Verify all detectors are active
+
+      gcloud scc settings describe --organization=ORG_ID'
+    tuningNotes: SCC Premium findings can be noisy initially. Focus on CRITICAL and HIGH severity first. Mute findings for known exceptions (dev sandboxes, intentionally public buckets) using mute rules
+      rather than ignoring them. Set up a weekly cadence to review and triage new findings. Integrate with your ticketing system (Jira, ServiceNow) for tracking remediation.
+    advancedDetection: "-- SCC Finding analytics in BigQuery (if exported)\nSELECT\n  finding.category,\n  finding.severity,\n  COUNT(*) as finding_count,\n  COUNT(DISTINCT resource.projectDisplayName)\
+      \ as affected_projects\nFROM `project.dataset.scc_findings`\nWHERE finding.state = 'ACTIVE'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\nGROUP BY finding.category, finding.severity\n\
+      ORDER BY finding_count DESC"
+    relatedIds:
+    - gcp-024
+    - gcp-036
+  tags:
+  - gcp
+  - logging
 - id: gcp-024
   platform: gcp
   category: logging
@@ -3435,6 +4119,30 @@ items:
   reference: CIS GCP Foundations Benchmark 2.4-2.11
   command: "# Create alert for firewall rule changes\ngcloud alpha monitoring policies create \\\n  --notification-channels=<channel-id> \\\n  --condition-filter='resource.type=\"gce_firewall_rule\" AND\
     \ protoPayload.methodName=\"v1.compute.firewalls.insert\"'\n"
+  premium:
+    attackPerspective: Without alerting policies, security events go unnoticed until the damage is done. An attacker triggers audit log entries, IAM changes, and resource modifications — all logged but
+      never reviewed. Alerting transforms passive logging into active defense by notifying your team within minutes of suspicious activity, drastically reducing dwell time from months to hours.
+    implementationNotes: "# Create alerting policies via gcloud:\n\n# Alert on IAM policy changes:\ngcloud alpha monitoring policies create \\\n  --display-name='IAM Policy Change Alert' \\\n  --condition-display-name='IAM\
+      \ Changes' \\\n  --condition-filter='resource.type=\"audited_resource\" AND protoPayload.methodName:\"SetIamPolicy\"' \\\n  --notification-channels=CHANNEL_ID\n\n# Alert on firewall rule changes:\n\
+      gcloud alpha monitoring policies create \\\n  --display-name='Firewall Change Alert' \\\n  --condition-display-name='Firewall Modified' \\\n  --condition-filter='resource.type=\"gce_firewall_rule\"\
+      \ AND protoPayload.methodName:(\"compute.firewalls.insert\" OR \"compute.firewalls.update\" OR \"compute.firewalls.delete\")'\n\n# Create notification channel (email):\ngcloud alpha monitoring channels\
+      \ create \\\n  --display-name='Security Team' \\\n  --type=email \\\n  --channel-labels=email_address=security@company.com\n\n# For PagerDuty/Slack integration:\n# Use Pub/Sub notification channel\
+      \ → Cloud Function → Webhook"
+    validationNotes: "# List all alerting policies\ngcloud alpha monitoring policies list --format='table(displayName,enabled,conditions[0].displayName)'\n\n# Verify notification channels are active\ngcloud\
+      \ alpha monitoring channels list --format='table(displayName,type,verificationStatus)'\n\n# Test: Make an IAM change and verify alert fires\ngcloud projects add-iam-policy-binding PROJECT_ID \\\n\
+      \  --member='user:test@company.com' --role='roles/viewer'\n# Check for alert within 5 minutes"
+    tuningNotes: 'Start with high-signal, low-noise alerts: IAM changes, firewall modifications, SA key creation, project deletion. Avoid alerting on read operations initially. Use log-based metrics with
+      aggregation windows (e.g., >5 events in 10 minutes) to prevent alert storms. Integrate with an on-call rotation tool to ensure alerts are acknowledged.'
+    advancedDetection: "-- Example log-based metric for monitoring\n-- Create via gcloud:\n-- gcloud logging metrics create iam_changes \\\n--   --description='IAM policy changes' \\\n--   --log-filter='protoPayload.methodName:\"\
+      SetIamPolicy\"'\n-- Then create an alerting policy on this metric\n\n-- BigQuery: Aggregate security events for dashboard\nSELECT\n  DATE(timestamp) as event_date,\n  COUNTIF(protopayload_auditlog.methodName\
+      \ LIKE '%SetIamPolicy%') as iam_changes,\n  COUNTIF(protopayload_auditlog.methodName LIKE '%firewalls%') as firewall_changes,\n  COUNTIF(protopayload_auditlog.methodName LIKE '%CreateServiceAccountKey%')\
+      \ as sa_key_creations\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\nGROUP BY event_date ORDER BY event_date DESC"
+    relatedIds:
+    - gcp-023
+    - gcp-025
+  tags:
+  - gcp
+  - logging
 - id: gcp-025
   platform: gcp
   category: logging
@@ -3447,6 +4155,28 @@ items:
     gcloud logging read ''protoPayload.methodName="google.iam.admin.v1.CreateServiceAccountKey"'' --limit=50 --format=''table(timestamp,protoPayload.authenticationInfo.principalEmail,protoPayload.request.name)''
 
     '
+  premium:
+    attackPerspective: Service account key creation is one of the most critical events in GCP security. An attacker who creates a new key for an existing high-privilege SA gains persistent, credential-based
+      access that survives password resets and access revocations. This is a top persistence technique in GCP attacks. Without monitoring, the attacker creates a key, downloads it, and the breach continues
+      unnoticed.
+    implementationNotes: "# Create a log-based alert for SA key creation:\ngcloud logging metrics create sa_key_creation \\\n  --description='Service account key creation events' \\\n  --log-filter='protoPayload.methodName=\"\
+      google.iam.admin.v1.CreateServiceAccountKey\"'\n\n# Create alerting policy on the metric:\ngcloud alpha monitoring policies create \\\n  --display-name='SA Key Creation Alert' \\\n  --condition-display-name='SA\
+      \ Key Created' \\\n  --condition-filter='metric.type=\"logging.googleapis.com/user/sa_key_creation\"' \\\n  --condition-threshold-value=0 \\\n  --condition-threshold-comparison=COMPARISON_GT \\\n\
+      \  --notification-channels=CHANNEL_ID\n\n# Organization Policy (if not already set):\n# constraints/iam.disableServiceAccountKeyCreation = enforced\n# This prevents key creation entirely (preferred\
+      \ approach)\n\n# If keys must be allowed for specific projects:\n# Monitor and alert on every creation event"
+    validationNotes: "# Verify alert metric exists\ngcloud logging metrics describe sa_key_creation\n\n# Verify alerting policy is active\ngcloud alpha monitoring policies list --filter='displayName:\"\
+      SA Key\"'\n\n# Check recent key creation events\ngcloud logging read 'protoPayload.methodName=\"google.iam.admin.v1.CreateServiceAccountKey\"' \\\n  --limit=20 --format='table(timestamp,protoPayload.authenticationInfo.principalEmail,protoPayload.resourceName)'"
+    tuningNotes: Ideally, block key creation entirely via org policy (gcp-002) and treat any alert as a policy violation. If keys are needed for specific exemptions, require tickets and approvals before
+      creation. Any unexpected key creation should trigger an immediate investigation and key revocation.
+    advancedDetection: "-- BigQuery: SA key lifecycle analysis\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail AS creator,\n  protopayload_auditlog.resourceName AS service_account,\n\
+      \  protopayload_auditlog.requestMetadata.callerIp,\n  protopayload_auditlog.requestMetadata.callerSuppliedUserAgent\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName\
+      \ = 'google.iam.admin.v1.CreateServiceAccountKey'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-002
+    - gcp-007
+  tags:
+  - gcp
+  - logging
 - id: gcp-026
   platform: gcp
   category: logging
@@ -3463,6 +4193,28 @@ items:
     gcloud compute networks subnets update <subnet> --region=<region> --enable-flow-logs
 
     '
+  premium:
+    attackPerspective: VPC Flow Logs capture metadata about every network connection — source/destination IPs, ports, bytes transferred, and protocols. Without flow logs, network-based attacks (lateral
+      movement, C2 communication, data exfiltration over non-standard ports) leave no evidence. Flow logs are the equivalent of NetFlow for your cloud network — essential for detecting abnormal communication
+      patterns.
+    implementationNotes: "# Enable VPC Flow Logs for a subnet:\ngcloud compute networks subnets update SUBNET_NAME \\\n  --region=REGION \\\n  --enable-flow-logs \\\n  --logging-aggregation-interval=INTERVAL_5_SEC\
+      \ \\\n  --logging-flow-sampling=0.5 \\\n  --logging-metadata=include-all\n\n# Enable for ALL subnets:\nfor subnet_info in $(gcloud compute networks subnets list --format='csv[no-heading](name,region)');\
+      \ do\n  name=$(echo $subnet_info | cut -d',' -f1)\n  region=$(echo $subnet_info | cut -d',' -f2)\n  gcloud compute networks subnets update $name --region=$region \\\n    --enable-flow-logs --logging-aggregation-interval=INTERVAL_5_SEC\
+      \ \\\n    --logging-flow-sampling=0.5 --logging-metadata=include-all\ndone\n\n# Export flow logs to BigQuery for analysis:\ngcloud logging sinks create flow-logs-bq \\\n  bigquery.googleapis.com/projects/PROJECT/datasets/flow_logs\
+      \ \\\n  --log-filter='resource.type=\"gce_subnetwork\" AND log_id(\"compute.googleapis.com/vpc_flows\")'"
+    validationNotes: "# Verify flow logs are enabled on all subnets\ngcloud compute networks subnets list \\\n  --format='table(name,region,enableFlowLogs)' \\\n  --filter='enableFlowLogs!=true'\n# Should\
+      \ return empty\n\n# Check logs are flowing\ngcloud logging read 'resource.type=\"gce_subnetwork\" AND log_id(\"compute.googleapis.com/vpc_flows\")' \\\n  --limit=5 --format=json"
+    tuningNotes: Flow logs at 100% sampling generate significant volume and cost. Start with 50% sampling (statistically representative) and 5-second aggregation. For sensitive subnets (databases, secrets
+      management), use 100% sampling. For non-sensitive subnets (dev/test), 25% may suffice. Monitor logging costs weekly and adjust.
+    advancedDetection: "-- BigQuery: Detect unusual outbound data transfers\nSELECT\n  jsonPayload.connection.src_ip,\n  jsonPayload.connection.dest_ip,\n  jsonPayload.connection.dest_port,\n  SUM(CAST(jsonPayload.bytes_sent\
+      \ AS INT64)) as total_bytes\nFROM `project.flow_logs.compute_googleapis_com_vpc_flows`\nWHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)\nAND jsonPayload.reporter = 'SRC'\nAND\
+      \ jsonPayload.connection.dest_ip NOT LIKE '10.%' AND jsonPayload.connection.dest_ip NOT LIKE '172.16.%'\nGROUP BY 1,2,3\nHAVING total_bytes > 1073741824  -- 1GB\nORDER BY total_bytes DESC"
+    relatedIds:
+    - gcp-019
+    - gcp-015
+  tags:
+  - gcp
+  - logging
 - id: gcp-027
   platform: gcp
   category: encryption
@@ -3475,6 +4227,38 @@ items:
     bq show --format=prettyjson <project>:<dataset> | jq ''.defaultEncryptionConfiguration''
 
     '
+  premium:
+    attackPerspective: BigQuery datasets contain some of the most valuable data in any organization — customer records, financial data, analytics. Default Google-managed encryption protects against physical
+      theft of hard drives but not against compromised accounts or insider threats. CMEK gives you the ability to revoke access by disabling the key, perform crypto-shredding by destroying the key, and
+      audit every decrypt operation through Cloud KMS audit logs.
+    implementationNotes: "# Create a KMS key for BigQuery:\ngcloud kms keys create bq-key \\\n  --keyring=data-keyring \\\n  --location=US \\\n  --purpose=encryption \\\n  --rotation-period=90d\n\n# Grant\
+      \ BigQuery SA access to the key:\ngcloud kms keys add-iam-policy-binding bq-key \\\n  --keyring=data-keyring --location=US \\\n  --member='serviceAccount:bq-PROJECT_NUM@bigquery-encryption.iam.gserviceaccount.com'\
+      \ \\\n  --role='roles/cloudkms.cryptoKeyEncrypterDecrypter'\n\n# Set CMEK on a dataset:\nbq update --default_kms_key=projects/PROJECT/locations/US/keyRings/data-keyring/cryptoKeys/bq-key PROJECT:dataset_name\n\
+      \n# For new datasets:\nbq mk --default_kms_key=projects/PROJECT/locations/US/keyRings/data-keyring/cryptoKeys/bq-key PROJECT:new_dataset\n\n# Tables inherit dataset CMEK or can specify their own"
+    validationNotes: '# Verify CMEK on datasets:
+
+      bq ls --format=json | jq ''.[] | {datasetId: .datasetReference.datasetId, cmek: .defaultEncryptionConfiguration}''
+
+
+      # Verify CMEK on specific tables:
+
+      bq show --format=json PROJECT:dataset.table | jq ''.encryptionConfiguration''
+
+
+      # Monitor key usage:
+
+      gcloud logging read ''protoPayload.serviceName="cloudkms.googleapis.com" AND protoPayload.methodName:"Decrypt"'' --limit=10'
+    tuningNotes: CMEK keys must be in the same region as the BigQuery dataset (or multi-region for multi-region datasets). Plan key hierarchy carefully — one key per sensitivity level, not per dataset.
+      Rotation creates new key versions automatically; old versions remain for decryption. Never destroy key versions without confirming all data encrypted with them is no longer needed.
+    advancedDetection: "-- Monitor BigQuery decryption operations (data access patterns)\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName\
+      \ AS key_used,\n  protopayload_auditlog.requestMetadata.callerIp\nFROM `project.dataset.cloudaudit_googleapis_com_data_access`\nWHERE protopayload_auditlog.serviceName = 'cloudkms.googleapis.com'\n\
+      AND protopayload_auditlog.methodName = 'Decrypt'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-005
+    - gcp-030
+  tags:
+  - gcp
+  - encryption
 - id: gcp-028
   platform: gcp
   category: encryption
@@ -3483,6 +4267,28 @@ items:
   description: Disable ACLs and use IAM-only access control for Cloud Storage buckets.
   reference: CIS GCP Foundations Benchmark 5.2
   command: "# Find buckets not using uniform access\ngsutil ls -p <project> | while read bucket; do\n  gsutil uniformbucketlevelaccess get $bucket\ndone\n"
+  premium:
+    attackPerspective: Legacy ACL-based access on GCS buckets creates a parallel authorization system alongside IAM, making it nearly impossible to audit who has access. An attacker can use ACLs to grant
+      allUsers or allAuthenticatedUsers read access — making the bucket public without touching IAM policies. Security scanners that only check IAM will miss these ACL-based exposures. Uniform bucket-level
+      access forces all authorization through IAM, eliminating this blind spot.
+    implementationNotes: "# Enable uniform bucket-level access:\ngsutil uniformbucketlevelaccess set on gs://BUCKET_NAME\n\n# For all buckets in a project:\nfor bucket in $(gsutil ls -p PROJECT_ID); do\n\
+      \  gsutil uniformbucketlevelaccess set on $bucket 2>/dev/null\n  echo \"Enabled: $bucket\"\ndone\n\n# Organization Policy to enforce for new buckets:\ngcloud resource-manager org-policies set-policy\
+      \ \\\n  --organization=ORG_ID uniform-access.yaml\n\n# uniform-access.yaml:\n# constraint: constraints/storage.uniformBucketLevelAccess\n# booleanPolicy:\n#   enforced: true\n\n# Note: Enabling is\
+      \ irreversible after 90 days\n# During the 90-day window, you can revert if needed"
+    validationNotes: "# Check all buckets for uniform access\nfor bucket in $(gsutil ls); do\n  status=$(gsutil uniformbucketlevelaccess get $bucket 2>/dev/null | grep Enabled)\n  echo \"$bucket: $status\"\
+      \ndone\n\n# Verify org policy\ngcloud resource-manager org-policies describe \\\n  constraints/storage.uniformBucketLevelAccess \\\n  --organization=ORG_ID\n\n# Find public buckets (pre-migration\
+      \ audit):\nfor bucket in $(gsutil ls); do\n  gsutil iam get $bucket 2>/dev/null | grep -q 'allUsers\\|allAuthenticatedUsers' && echo \"PUBLIC: $bucket\"\ndone"
+    tuningNotes: Before enabling uniform access, audit existing ACLs. Some legacy apps may depend on object-level ACLs for per-file access control. These need to be migrated to IAM conditions or signed
+      URLs. The 90-day grace period allows reverting, but plan for migration to be permanent.
+    advancedDetection: "-- Alert on buckets without uniform access\nSELECT\n  timestamp,\n  protopayload_auditlog.resourceName AS bucket,\n  protopayload_auditlog.authenticationInfo.principalEmail\nFROM\
+      \ `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName = 'storage.buckets.create'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n-- Cross-reference\
+      \ with bucket metadata to check uniform access"
+    relatedIds:
+    - gcp-005
+    - gcp-019
+  tags:
+  - gcp
+  - encryption
 - id: gcp-029
   platform: gcp
   category: encryption
@@ -3491,6 +4297,28 @@ items:
   description: Use Confidential VMs with AMD SEV for encryption-in-use of memory.
   reference: Google Cloud Security Best Practices
   command: "# Create confidential VM\ngcloud compute instances create confidential-vm \\\n  --machine-type=n2d-standard-2 \\\n  --confidential-compute --maintenance-policy=TERMINATE\n"
+  premium:
+    attackPerspective: Standard VMs decrypt memory contents when the hypervisor reads memory — meaning a compromised hypervisor or memory forensics attack can read all data in VM memory, including encryption
+      keys, credentials, and sensitive data being processed. Confidential Computing encrypts VM memory with a per-VM key that even Google's infrastructure cannot access. This protects against physical attacks,
+      rogue insiders at the cloud provider, and hypervisor-level exploits.
+    implementationNotes: "# Create a Confidential VM:\ngcloud compute instances create confidential-vm \\\n  --machine-type=n2d-standard-4 \\\n  --zone=us-central1-a \\\n  --confidential-compute \\\n  --maintenance-policy=TERMINATE\
+      \ \\\n  --image-family=ubuntu-2204-lts \\\n  --image-project=ubuntu-os-cloud\n\n# Note: Confidential VMs require:\n# - N2D or C2D machine types (AMD EPYC with SEV)\n# - Maintenance policy must be\
+      \ TERMINATE (no live migration)\n# - Slightly higher cost (~5-10% premium)\n\n# For GKE with Confidential Nodes:\ngcloud container node-pools create confidential-pool \\\n  --cluster=CLUSTER_NAME\
+      \ \\\n  --machine-type=n2d-standard-4 \\\n  --enable-confidential-nodes \\\n  --zone=us-central1-a"
+    validationNotes: "# Verify Confidential Computing is enabled:\ngcloud compute instances describe VM_NAME --zone=ZONE \\\n  --format='value(confidentialInstanceConfig.enableConfidentialCompute)'\n# Should\
+      \ return: True\n\n# Check AMD SEV attestation (from within the VM):\n# dmesg | grep -i sev\n# Should show: AMD SEV enabled\n\n# List all Confidential VMs:\ngcloud compute instances list \\\n  --filter='confidentialInstanceConfig.enableConfidentialCompute=true'\
+      \ \\\n  --format='table(name,zone,machineType)'"
+    tuningNotes: Confidential Computing is not needed for all workloads. Prioritize it for VMs processing PII, financial data, healthcare records, or cryptographic material. The ~5-10% performance overhead
+      and TERMINATE maintenance policy (brief downtime during host maintenance) are acceptable trade-offs for sensitive data. N2D machines have good price/performance ratios.
+    advancedDetection: "-- Audit Confidential VM creation/modification\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName,\n  JSON_EXTRACT_SCALAR(protopayload_auditlog.request,\
+      \ '$.confidentialInstanceConfig.enableConfidentialCompute') as confidential\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName = 'v1.compute.instances.insert'\n\
+      AND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)"
+    relatedIds:
+    - gcp-005
+    - gcp-035
+  tags:
+  - gcp
+  - encryption
 - id: gcp-030
   platform: gcp
   category: encryption
@@ -3499,6 +4327,27 @@ items:
   description: Configure automatic rotation for Cloud KMS encryption keys.
   reference: CIS GCP Foundations Benchmark 1.10
   command: "# Set rotation schedule (90 days)\ngcloud kms keys update <key> --keyring=<keyring> --location=global \\\n  --rotation-period=90d --next-rotation-time=$(date -u +%Y-%m-%dT%H:%M:%SZ -d '+1 day')\n"
+  premium:
+    attackPerspective: Encryption keys that never rotate accumulate risk over time. The longer a key exists, the more data it protects and the more opportunities for compromise. If a key is eventually compromised,
+      all data ever encrypted with it is exposed. Regular rotation limits the exposure window — compromised key versions only decrypt data from their active period, not all historical data.
+    implementationNotes: "# Set automatic rotation on an existing key:\ngcloud kms keys update KEY_NAME \\\n  --keyring=KEYRING \\\n  --location=LOCATION \\\n  --rotation-period=90d \\\n  --next-rotation-time=$(date\
+      \ -u -d '+90 days' +%Y-%m-%dT%H:%M:%SZ)\n\n# Create a new key with rotation:\ngcloud kms keys create new-key \\\n  --keyring=KEYRING \\\n  --location=LOCATION \\\n  --purpose=encryption \\\n  --rotation-period=90d\n\
+      \n# List keys and their rotation status:\ngcloud kms keys list --keyring=KEYRING --location=LOCATION \\\n  --format='table(name,rotationPeriod,nextRotationTime)'\n\n# Manually rotate a key (for emergency\
+      \ rotation):\ngcloud kms keys versions create --key=KEY_NAME \\\n  --keyring=KEYRING --location=LOCATION"
+    validationNotes: "# Find keys without rotation set:\nfor keyring in $(gcloud kms keyrings list --location=global --format='value(name)'); do\n  gcloud kms keys list --keyring=$keyring --location=global\
+      \ \\\n    --format='table(name,rotationPeriod)' \\\n    --filter='rotationPeriod=\"\"'\ndone\n\n# Verify key versions (old versions should exist from rotations):\ngcloud kms keys versions list --key=KEY_NAME\
+      \ \\\n  --keyring=KEYRING --location=LOCATION \\\n  --format='table(name,state,createTime)'"
+    tuningNotes: 90-day rotation is a good baseline for most keys. For high-sensitivity keys (PII encryption, financial data), consider 30-day rotation. Old key versions remain in ENABLED state for decryption
+      — do not disable or destroy old versions unless migrating data to new keys. Cloud KMS handles re-wrapping automatically for GCP services using the key.
+    advancedDetection: "-- Monitor key rotation events\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName,\n  protopayload_auditlog.methodName\n\
+      FROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName IN ('CreateCryptoKeyVersion', 'UpdateCryptoKeyPrimaryVersion')\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(),\
+      \ INTERVAL 90 DAY)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-005
+    - gcp-027
+  tags:
+  - gcp
+  - encryption
 - id: gcp-031
   platform: gcp
   category: encryption
@@ -3515,6 +4364,28 @@ items:
     gcloud privateca subordinates create scw-sub-ca --location=<location> --issuer-pool=<pool>
 
     '
+  premium:
+    attackPerspective: Without a managed CA service, teams use self-signed certificates or manually managed CAs for internal TLS. Self-signed certs are trivially spoofable by MITM attacks, and manually
+      managed CAs suffer from key compromise, missed renewals, and no revocation capability. Certificate Authority Service provides audited, policy-enforced certificate issuance with automatic rotation
+      and CRL/OCSP revocation.
+    implementationNotes: "# Create a Certificate Authority:\ngcloud privateca roots create my-root-ca \\\n  --pool=my-ca-pool \\\n  --location=us-central1 \\\n  --subject='CN=My Organization Root CA,O=My\
+      \ Org,C=US' \\\n  --key-algorithm=ec-p256-sha256 \\\n  --max-chain-length=1\n\n# Create a subordinate CA for issuing:\ngcloud privateca subordinates create issuing-ca \\\n  --pool=my-ca-pool \\\n\
+      \  --location=us-central1 \\\n  --issuer-pool=my-ca-pool \\\n  --issuer-ca=my-root-ca \\\n  --subject='CN=My Org Issuing CA,O=My Org,C=US' \\\n  --key-algorithm=ec-p256-sha256\n\n# Issue a certificate:\n\
+      gcloud privateca certificates create \\\n  --issuer-pool=my-ca-pool \\\n  --issuer-location=us-central1 \\\n  --subject='CN=api.internal.company.com' \\\n  --dns-san='api.internal.company.com' \\\n\
+      \  --validity=P365D \\\n  --cert-output-file=cert.pem \\\n  --key-output-file=key.pem"
+    validationNotes: "# List CAs and their status:\ngcloud privateca pools list --location=us-central1 \\\n  --format='table(name,tier,issuancePolicy)'\n\ngcloud privateca roots list --pool=my-ca-pool --location=us-central1\
+      \ \\\n  --format='table(name,state,expireTime)'\n\n# Verify certificate issuance policy:\ngcloud privateca pools describe my-ca-pool --location=us-central1"
+    tuningNotes: 'Use a two-tier CA hierarchy: offline root CA + online issuing CA. The root CA should be disabled after initial subordinate CA creation and only enabled for CA rotation. Set certificate
+      policies to enforce minimum key sizes, allowed SANs, and maximum validity periods. Integrate with GKE via cert-manager for automatic certificate lifecycle management.'
+    advancedDetection: "-- Monitor certificate issuance patterns\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName,\n  protopayload_auditlog.methodName\n\
+      FROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.serviceName = 'privateca.googleapis.com'\nAND protopayload_auditlog.methodName LIKE '%CreateCertificate%'\nAND\
+      \ timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-005
+    - gcp-029
+  tags:
+  - gcp
+  - encryption
 - id: gcp-032
   platform: gcp
   category: services
@@ -3531,6 +4402,30 @@ items:
     gcloud container clusters update <cluster> --enable-binauthz
 
     '
+  premium:
+    attackPerspective: Binary Authorization ensures only trusted, signed container images run in GKE. Without it, an attacker who compromises your CI/CD pipeline or container registry can push malicious
+      images that get deployed to production. Even with image scanning, a compromised build pipeline can inject backdoors that pass vulnerability scans. Binary Authorization provides cryptographic attestation
+      that the image was built by your pipeline and passed your security gates.
+    implementationNotes: "# Enable Binary Authorization on a GKE cluster:\ngcloud container clusters update CLUSTER_NAME \\\n  --zone=ZONE \\\n  --enable-binauthz\n\n# Create a Binary Authorization policy:\n\
+      gcloud container binauthz policy export > policy.yaml\n\n# Edit policy.yaml:\n# defaultAdmissionRule:\n#   enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG\n#   evaluationMode: REQUIRE_ATTESTATION\n\
+      #   requireAttestationsBy:\n#     - projects/PROJECT/attestors/build-attestor\n\n# Import the policy:\ngcloud container binauthz policy import policy.yaml\n\n# Create an attestor:\ngcloud container\
+      \ binauthz attestors create build-attestor \\\n  --attestation-authority-note=build-note \\\n  --attestation-authority-note-project=PROJECT\n\n# Create attestation (in CI/CD pipeline after successful\
+      \ build+scan):\ngcloud container binauthz attestations sign-and-create \\\n  --artifact-url=gcr.io/PROJECT/image@sha256:DIGEST \\\n  --attestor=build-attestor \\\n  --keyversion=projects/PROJECT/locations/global/keyRings/KEYRING/cryptoKeys/KEY/cryptoKeyVersions/1"
+    validationNotes: "# Verify Binary Authorization is enabled:\ngcloud container clusters describe CLUSTER_NAME --zone=ZONE \\\n  --format='value(binaryAuthorization.enabled)'\n\n# Check policy:\ngcloud\
+      \ container binauthz policy export\n\n# Test: Try deploying an unsigned image (should fail):\nkubectl run test --image=nginx:latest  # Should be blocked\n\n# Check attestation audit logs:\ngcloud\
+      \ logging read 'resource.type=\"k8s_cluster\" AND protoPayload.methodName:\"deployments.create\"' --limit=10"
+    tuningNotes: Start in DRYRUN_AUDIT_LOG_ONLY mode to observe which deployments would be blocked. Exempt specific namespaces (kube-system, istio-system) from enforcement since system components need to
+      deploy without custom attestations. Integrate attestation creation into your CI/CD pipeline as the final step after build, test, and vulnerability scan pass.
+    advancedDetection: "-- Monitor Binary Authorization violations\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  resource.labels.cluster_name,\n  jsonPayload.reason,\n\
+      \  jsonPayload.pod\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE resource.type = 'k8s_cluster'\nAND jsonPayload.reason = 'BinaryAuthorizationDenied'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(),\
+      \ INTERVAL 7 DAY)"
+    relatedIds:
+    - gcp-033
+    - gcp-035
+    - gcp-036
+  tags:
+  - gcp
+  - services
 - id: gcp-033
   platform: gcp
   category: services
@@ -3547,6 +4442,29 @@ items:
     gcloud container clusters update <cluster> --workload-pool=<project>.svc.id.goog
 
     '
+  premium:
+    attackPerspective: Without Workload Identity, GKE pods authenticate to Google APIs using node-level service accounts — every pod on a node shares the same SA credentials. An attacker who compromises
+      any pod on the node can access the GCP credentials of all other workloads on that node via the metadata server (169.254.169.254). Workload Identity provides per-pod identity, mapping Kubernetes service
+      accounts to GCP service accounts with granular permissions.
+    implementationNotes: "# Enable Workload Identity on cluster:\ngcloud container clusters update CLUSTER_NAME \\\n  --zone=ZONE \\\n  --workload-pool=PROJECT_ID.svc.id.goog\n\n# Enable on existing node\
+      \ pool:\ngcloud container node-pools update NODE_POOL \\\n  --cluster=CLUSTER_NAME --zone=ZONE \\\n  --workload-metadata=GKE_METADATA\n\n# Create a GCP SA for the workload:\ngcloud iam service-accounts\
+      \ create my-app-sa \\\n  --display-name='My App SA'\n\n# Create a Kubernetes service account:\nkubectl create serviceaccount my-app-ksa --namespace=my-namespace\n\n# Bind Kubernetes SA to GCP SA:\n\
+      gcloud iam service-accounts add-iam-policy-binding \\\n  my-app-sa@PROJECT.iam.gserviceaccount.com \\\n  --role=roles/iam.workloadIdentityUser \\\n  --member='serviceAccount:PROJECT.svc.id.goog[my-namespace/my-app-ksa]'\n\
+      \n# Annotate the Kubernetes SA:\nkubectl annotate serviceaccount my-app-ksa \\\n  --namespace=my-namespace \\\n  iam.gke.io/gcp-service-account=my-app-sa@PROJECT.iam.gserviceaccount.com"
+    validationNotes: "# Verify Workload Identity is enabled:\ngcloud container clusters describe CLUSTER_NAME --zone=ZONE \\\n  --format='value(workloadIdentityConfig.workloadPool)'\n\n# Check node pool\
+      \ metadata server:\ngcloud container node-pools describe NODE_POOL \\\n  --cluster=CLUSTER_NAME --zone=ZONE \\\n  --format='value(config.workloadMetadataConfig.mode)'\n# Should be: GKE_METADATA\n\n\
+      # Test from within a pod:\nkubectl run test --image=google/cloud-sdk:slim --serviceaccount=my-app-ksa -it --rm -- gcloud auth list\n# Should show the GCP SA email"
+    tuningNotes: Migrate workloads one at a time, starting with the least critical. After enabling Workload Identity, pods without an annotated Kubernetes SA lose access to the node's SA — which is the
+      desired behavior. Map each application to its own GCP SA with minimal permissions. Monitor for pods failing after migration (indicates they were relying on node SA access).
+    advancedDetection: "-- Detect pods accessing metadata server directly (bypassing Workload Identity)\n-- From VPC Flow Logs:\nSELECT\n  jsonPayload.connection.src_ip AS pod_ip,\n  jsonPayload.connection.dest_ip,\n\
+      \  resource.labels.subnetwork_name\nFROM `project.flow_logs.compute_googleapis_com_vpc_flows`\nWHERE jsonPayload.connection.dest_ip = '169.254.169.254'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(),\
+      \ INTERVAL 24 HOUR)"
+    relatedIds:
+    - gcp-032
+    - gcp-035
+  tags:
+  - gcp
+  - services
 - id: gcp-034
   platform: gcp
   category: services
@@ -3559,6 +4477,26 @@ items:
     gcloud sql instances list --format=''table(name,ipAddresses[].type,settings.ipConfiguration.authorizedNetworks[].value)''
 
     '
+  premium:
+    attackPerspective: Cloud SQL instances with public IPs are directly reachable from the internet. Even with SSL and strong passwords, they're exposed to brute-force attacks, zero-day exploits in the
+      database engine, and DDoS. A public Cloud SQL IP combined with a weak password or an unpatched vulnerability is a trivial target. The Shodan search engine actively indexes GCP Cloud SQL instances.
+    implementationNotes: "# Remove public IP from existing instance:\ngcloud sql instances patch INSTANCE_NAME --no-assign-ip\n\n# Create instance with private IP only:\ngcloud sql instances create my-db\
+      \ \\\n  --network=production-vpc \\\n  --no-assign-ip \\\n  --database-version=POSTGRES_15 \\\n  --tier=db-custom-4-16384 \\\n  --region=us-central1\n\n# For apps outside GCP that need access, use\
+      \ Cloud SQL Auth Proxy:\n# Download: https://cloud.google.com/sql/docs/postgres/sql-proxy\n./cloud-sql-proxy PROJECT:REGION:INSTANCE --private-ip\n\n# Or use Private Service Connect for cross-VPC\
+      \ access:\ngcloud sql instances patch INSTANCE_NAME \\\n  --enable-private-service-connect \\\n  --allowed-psc-projects=PROJECT_ID"
+    validationNotes: "# Find Cloud SQL instances with public IPs:\nfor project in $(gcloud projects list --format='value(projectId)'); do\n  gcloud sql instances list --project=$project \\\n    --format='table(name,ipAddresses[].type,ipAddresses[].ipAddress)'\
+      \ \\\n    --filter='ipAddresses.type:PRIMARY' 2>/dev/null\ndone\n\n# Verify SSL is required (if public IP must remain):\ngcloud sql instances describe INSTANCE_NAME --format='value(settings.ipConfiguration.requireSsl)'"
+    tuningNotes: Remove public IPs as the primary mitigation. If external access is absolutely needed (legacy apps, partner connections), use Cloud SQL Auth Proxy with IAM authentication instead of direct
+      public IP access. The proxy handles encryption, authentication, and authorization without exposing the database port directly.
+    advancedDetection: "-- Monitor Cloud SQL connection patterns\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.requestMetadata.callerIp,\n  protopayload_auditlog.resourceName\n\
+      FROM `project.dataset.cloudaudit_googleapis_com_data_access`\nWHERE protopayload_auditlog.serviceName = 'cloudsql.googleapis.com'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n\
+      ORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-015
+    - gcp-020
+  tags:
+  - gcp
+  - services
 - id: gcp-035
   platform: gcp
   category: services
@@ -3573,6 +4511,26 @@ items:
     gcloud container clusters update <cluster> --enable-shielded-nodes
 
     '
+  premium:
+    attackPerspective: GKE Shielded Nodes use Secure Boot and vTPM to create a verified boot chain from firmware to OS. Without Shielded Nodes, an attacker who gains root on a node can modify the boot loader
+      or kernel to install rootkits that persist across reboots and are invisible to container-level security tools. Shielded Nodes detect these modifications and refuse to boot a tampered node.
+    implementationNotes: "# Enable Shielded Nodes on a new cluster:\ngcloud container clusters create CLUSTER_NAME \\\n  --zone=ZONE \\\n  --enable-shielded-nodes \\\n  --shielded-secure-boot \\\n  --shielded-integrity-monitoring\n\
+      \n# Enable on existing cluster:\ngcloud container clusters update CLUSTER_NAME \\\n  --zone=ZONE \\\n  --enable-shielded-nodes\n\n# For existing node pools:\ngcloud container node-pools update NODE_POOL\
+      \ \\\n  --cluster=CLUSTER_NAME --zone=ZONE \\\n  --shielded-secure-boot \\\n  --shielded-integrity-monitoring"
+    validationNotes: "# Verify Shielded Nodes:\ngcloud container clusters describe CLUSTER_NAME --zone=ZONE \\\n  --format='value(shieldedNodes.enabled)'\n\n# Check node pool settings:\ngcloud container\
+      \ node-pools describe NODE_POOL \\\n  --cluster=CLUSTER_NAME --zone=ZONE \\\n  --format='table(config.shieldedInstanceConfig.enableSecureBoot,config.shieldedInstanceConfig.enableIntegrityMonitoring)'\n\
+      \n# Monitor integrity validation:\ngcloud logging read 'resource.type=\"gce_instance\" AND jsonPayload.@type=\"type.googleapis.com/compute.IntegrityReport\"' --limit=10"
+    tuningNotes: Shielded Nodes have no performance overhead and should be enabled for all GKE clusters. The only consideration is that custom boot images must be signed to work with Secure Boot. Standard
+      GKE node images (COS, Ubuntu) are pre-signed. Integrity monitoring failures should trigger immediate investigation as they indicate potential node tampering.
+    advancedDetection: "-- Alert on Shielded Node integrity failures\nSELECT\n  timestamp,\n  resource.labels.instance_id,\n  jsonPayload.earlyBootReportEvent.policyEvaluationPassed,\n  jsonPayload.lateBootReportEvent.policyEvaluationPassed\n\
+      FROM `project.dataset.compute_googleapis_com_shielded_vm_integrity`\nWHERE jsonPayload.earlyBootReportEvent.policyEvaluationPassed = false\nOR jsonPayload.lateBootReportEvent.policyEvaluationPassed\
+      \ = false"
+    relatedIds:
+    - gcp-032
+    - gcp-033
+  tags:
+  - gcp
+  - services
 - id: gcp-036
   platform: gcp
   category: services
@@ -3589,6 +4547,28 @@ items:
     gcloud scc settings update --organization=<org_id> --enable-service=CONTAINER_THREAT_DETECTION
 
     '
+  premium:
+    attackPerspective: 'Container Threat Detection (CTD) monitors GKE containers for runtime threats: reverse shells, cryptomining binaries, privilege escalation, malicious libraries, and suspicious binary
+      execution. Without it, a compromised container can establish C2 channels, move laterally, and exfiltrate data while your security team only sees normal Kubernetes API events. CTD operates at the kernel
+      level, detecting behaviors that application-level monitoring misses entirely.'
+    implementationNotes: "# Container Threat Detection is part of SCC Premium\n# Enable SCC Premium first (gcp-023), then CTD is auto-enabled\n\n# Verify CTD is active:\ngcloud scc settings describe --organization=ORG_ID\n\
+      \n# CTD detects:\n# - Added Binary Executed (unknown binary in container)\n# - Added Library Loaded (unknown library loaded)\n# - Reverse Shell (outbound shell connection)\n# - Privilege Escalation\
+      \ (setuid, capabilities abuse)\n# - Malicious Script Executed\n# - Cryptocurrency Mining (known mining binaries/pools)\n\n# Configure notification for CTD findings:\ngcloud scc notifications create\
+      \ ctd-alerts \\\n  --organization=ORG_ID \\\n  --pubsub-topic=projects/PROJECT/topics/scc-findings \\\n  --filter='category:\"CONTAINER_THREAT_DETECTION\"'"
+    validationNotes: "# Check for CTD findings:\ngcloud scc findings list ORG_ID \\\n  --source='-' \\\n  --filter='category:\"CONTAINER_THREAT_DETECTION\"' \\\n  --format='table(finding.category,finding.severity,finding.state,finding.eventTime)'\n\
+      \n# Verify CTD is scanning your clusters:\ngcloud scc assets list ORG_ID \\\n  --filter='securityCenterProperties.resourceType=\"google.container.Cluster\"' \\\n  --format='table(asset.name,asset.securityCenterProperties.resourceType)'"
+    tuningNotes: CTD may flag legitimate operations — DevOps tools that install binaries in containers, debugging sessions that use exec, monitoring agents that load libraries. Mark these as legitimate
+      in SCC mute rules rather than disabling detection. For sensitive namespaces, set up immediate PagerDuty alerts on any CTD finding.
+    advancedDetection: "-- Aggregate CTD findings for operational dashboard\nSELECT\n  finding.category,\n  finding.severity,\n  resource.projectDisplayName,\n  COUNT(*) as finding_count\nFROM `project.dataset.scc_findings`\n\
+      WHERE finding.category LIKE 'CONTAINER_THREAT_DETECTION%'\nAND finding.state = 'ACTIVE'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\nGROUP BY 1,2,3\nORDER BY finding_count\
+      \ DESC"
+    relatedIds:
+    - gcp-023
+    - gcp-032
+    - gcp-039
+  tags:
+  - gcp
+  - services
 - id: gcp-037
   platform: gcp
   category: services
@@ -3605,6 +4585,25 @@ items:
     gcloud compute instances add-metadata <vm> --metadata serial-port-enable=false
 
     '
+  premium:
+    attackPerspective: Serial port access allows interactive console access to a VM, bypassing network-level security controls, firewalls, and IAP. If enabled, an attacker with compute.instances.getSerialPortOutput
+      permission can read serial console output (which may contain boot credentials, application logs, and error messages) without any network connectivity to the VM.
+    implementationNotes: "# Disable serial port access via org policy:\ngcloud resource-manager org-policies set-policy \\\n  --organization=ORG_ID no-serial-port.yaml\n\n# no-serial-port.yaml:\n# constraint:\
+      \ constraints/compute.disableSerialPortAccess\n# booleanPolicy:\n#   enforced: true\n\n# Disable on individual VMs:\ngcloud compute instances add-metadata VM_NAME \\\n  --zone=ZONE \\\n  --metadata=serial-port-enable=false\n\
+      \n# Verify interactive serial port is disabled:\ngcloud compute instances describe VM_NAME --zone=ZONE \\\n  --format='value(metadata.items[serial-port-enable])'"
+    validationNotes: "# Verify org policy\ngcloud resource-manager org-policies describe \\\n  constraints/compute.disableSerialPortAccess \\\n  --organization=ORG_ID\n\n# Find VMs with serial port enabled:\n\
+      for project in $(gcloud projects list --format='value(projectId)'); do\n  gcloud compute instances list --project=$project \\\n    --format='table(name,zone)' \\\n    --filter='metadata.items.key=serial-port-enable\
+      \ AND metadata.items.value=true' 2>/dev/null\ndone"
+    tuningNotes: 'Serial port access is occasionally needed for debugging boot failures on VMs that can''t be reached via SSH. Keep the org policy enforced and create a break-glass procedure: temporarily
+      disable the policy on a specific project, debug, and re-enable. Log the exception with a ticket number.'
+    advancedDetection: "-- Alert on serial port access attempts\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  protopayload_auditlog.resourceName,\n  protopayload_auditlog.methodName\n\
+      FROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName LIKE '%serialPort%'\nOR protopayload_auditlog.methodName LIKE '%getSerialPort%'"
+    relatedIds:
+    - gcp-008
+    - gcp-016
+  tags:
+  - gcp
+  - services
 - id: gcp-038
   platform: gcp
   category: patching
@@ -3621,6 +4620,26 @@ items:
     gcloud compute os-config patch-jobs execute --instance-filter-all --duration=3600s
 
     '
+  premium:
+    attackPerspective: Unpatched VMs are the easiest target. Known CVEs in the OS and installed packages are exploitable with publicly available exploit code — often within days of disclosure. GCP OS Patch
+      Management automates patch deployment, reducing the window between vulnerability disclosure and remediation from weeks/months to hours/days. Without it, patches are applied manually (if at all), leaving
+      critical vulns open indefinitely.
+    implementationNotes: "# Enable OS Config agent (required for patch management):\ngcloud compute project-info add-metadata \\\n  --metadata=enable-osconfig=TRUE\n\n# Create a patch deployment (weekly\
+      \ security patches):\ngcloud compute os-config patch-deployments create weekly-security-patches \\\n  --instance-filter-all \\\n  --recurring-schedule-frequency=weekly \\\n  --recurring-schedule-time-zone=America/New_York\
+      \ \\\n  --recurring-schedule-time-of-day=02:00 \\\n  --apt-type=upgrade \\\n  --yum-security \\\n  --windows-classifications=CRITICAL,SECURITY\n\n# Create an on-demand patch job (emergency):\ngcloud\
+      \ compute os-config patch-jobs execute \\\n  --instance-filter-all \\\n  --async\n\n# View patch compliance:\ngcloud compute os-config patch-deployments describe weekly-security-patches"
+    validationNotes: "# Check OS Config agent status on VMs:\ngcloud compute instances os-inventory list-instances --format='table(name,zone,osInfo.shortName,osInfo.version)'\n\n# View patch job results:\n\
+      gcloud compute os-config patch-jobs list --format='table(name,state,instanceDetailsSummary)'\n\n# Check patch compliance:\ngcloud compute os-config vulnerability-reports list \\\n  --format='table(name,vulnerabilities[].details.cve)'"
+    tuningNotes: Schedule patches during maintenance windows to avoid production impact. Use instance groups and rolling updates for zero-downtime patching. Test patches on a canary group (dev instances)
+      before rolling out to production. For critical CVEs (CVSS 9+), use on-demand patch jobs with faster deployment.
+    advancedDetection: "-- Monitor patch compliance over time\nSELECT\n  timestamp,\n  resource.labels.instance_id,\n  jsonPayload.patchState,\n  jsonPayload.patchJobId\nFROM `project.dataset.osconfig_googleapis_com_patch_jobs`\n\
+      WHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\nORDER BY timestamp DESC"
+    relatedIds:
+    - gcp-039
+    - gcp-040
+  tags:
+  - gcp
+  - patching
 - id: gcp-039
   platform: gcp
   category: patching
@@ -3637,6 +4656,29 @@ items:
     gcloud artifacts docker images scan <image-url>
 
     '
+  premium:
+    attackPerspective: Container images in Artifact Registry may contain vulnerable OS packages, application libraries, or even known malware. Without Container Analysis, you deploy images blindly — discovering
+      vulnerabilities only when they're exploited in production. Container Analysis scans images on push and continuously rescans for newly discovered CVEs, providing a pre-deployment security gate.
+    implementationNotes: "# Enable Container Analysis API:\ngcloud services enable containeranalysis.googleapis.com --project=PROJECT_ID\n\n# Enable Artifact Analysis (automatic scanning):\ngcloud services\
+      \ enable artifactanalysis.googleapis.com --project=PROJECT_ID\n\n# Configure Artifact Registry with scanning:\ngcloud artifacts repositories create docker-repo \\\n  --repository-format=docker \\\n\
+      \  --location=us-central1 \\\n  --description='Docker images with scanning'\n\n# Scanning is automatic for images pushed to Artifact Registry\n# View vulnerabilities:\ngcloud artifacts docker images\
+      \ list us-central1-docker.pkg.dev/PROJECT/docker-repo \\\n  --show-occurrences \\\n  --format='table(package,version,vulnerability.effectiveSeverity)'\n\n# Integrate with Binary Authorization:\n#\
+      \ Only attest images with no CRITICAL vulnerabilities"
+    validationNotes: "# Check scanning is enabled:\ngcloud artifacts repositories describe docker-repo \\\n  --location=us-central1 --format='value(cleanupPolicies)'\n\n# List vulnerabilities for a specific\
+      \ image:\ngcloud artifacts docker images describe \\\n  us-central1-docker.pkg.dev/PROJECT/docker-repo/image:tag \\\n  --show-all-metadata\n\n# Count critical vulnerabilities across all images:\n\
+      gcloud artifacts docker images list us-central1-docker.pkg.dev/PROJECT/docker-repo \\\n  --show-occurrences --occurrence-filter='kind=\"VULNERABILITY\" AND vulnerability.effectiveSeverity=\"CRITICAL\"\
+      '"
+    tuningNotes: Set up a policy that blocks deployment of images with CRITICAL vulnerabilities (via Binary Authorization). For HIGH vulnerabilities, allow deployment but create a Jira ticket for remediation
+      within 7 days. Use base image recommendations from Container Analysis to keep base images updated. Rescan images weekly even after initial push, as new CVEs are continuously discovered.
+    advancedDetection: "-- Track vulnerability trends over time\nSELECT\n  DATE(timestamp) as scan_date,\n  COUNTIF(vulnerability.effectiveSeverity = 'CRITICAL') as critical,\n  COUNTIF(vulnerability.effectiveSeverity\
+      \ = 'HIGH') as high,\n  COUNTIF(vulnerability.effectiveSeverity = 'MEDIUM') as medium\nFROM `project.dataset.container_analysis_occurrences`\nWHERE kind = 'VULNERABILITY'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(),\
+      \ INTERVAL 90 DAY)\nGROUP BY scan_date ORDER BY scan_date DESC"
+    relatedIds:
+    - gcp-032
+    - gcp-036
+  tags:
+  - gcp
+  - patching
 - id: gcp-040
   platform: gcp
   category: patching
@@ -3653,6 +4695,29 @@ items:
     gcloud container get-server-config --zone=<zone> --format=''value(validMasterVersions[0:3])''
 
     '
+  premium:
+    attackPerspective: Outdated GKE cluster versions contain known Kubernetes CVEs that are actively exploited. Each Kubernetes release fixes security vulnerabilities, and exploit code for older versions
+      is publicly available. An attacker targeting a cluster running Kubernetes 1.25 when 1.29 is current has access to multiple exploitation paths — from API server bypasses to container escapes. GKE's
+      managed cluster model makes upgrading straightforward, but many teams defer upgrades until their clusters fall dangerously behind.
+    implementationNotes: "# Enable auto-upgrade for the cluster control plane:\ngcloud container clusters update CLUSTER_NAME \\\n  --zone=ZONE \\\n  --enable-master-authorized-networks\n\n# Enable auto-upgrade\
+      \ for node pools:\ngcloud container node-pools update NODE_POOL \\\n  --cluster=CLUSTER_NAME --zone=ZONE \\\n  --enable-autoupgrade\n\n# Set maintenance window:\ngcloud container clusters update CLUSTER_NAME\
+      \ \\\n  --zone=ZONE \\\n  --maintenance-window-start=2025-01-01T02:00:00Z \\\n  --maintenance-window-end=2025-01-01T06:00:00Z \\\n  --maintenance-window-recurrence='FREQ=WEEKLY;BYDAY=SA'\n\n# Check\
+      \ available versions:\ngcloud container get-server-config --zone=ZONE \\\n  --format='table(channels.channel,channels.validVersions[0])'\n\n# Use Release Channels for managed upgrades:\ngcloud container\
+      \ clusters update CLUSTER_NAME \\\n  --zone=ZONE \\\n  --release-channel=regular"
+    validationNotes: "# Check current cluster version:\ngcloud container clusters list \\\n  --format='table(name,currentMasterVersion,currentNodeVersion,releaseChannel.channel)'\n\n# Find clusters on unsupported\
+      \ versions:\ngcloud container clusters list --format=json | jq '.[] | select(.currentMasterVersion < \"1.28\") | {name, version: .currentMasterVersion}'\n\n# Check node pool auto-upgrade status:\n\
+      gcloud container node-pools describe NODE_POOL \\\n  --cluster=CLUSTER_NAME --zone=ZONE \\\n  --format='value(management.autoUpgrade)'"
+    tuningNotes: Use the 'Regular' release channel for production — it provides a good balance of stability and security. 'Rapid' is too aggressive for production; 'Stable' is too slow for security patches.
+      Set maintenance windows during off-peak hours. Test workload compatibility on a staging cluster enrolled in the 'Rapid' channel before production upgrades roll out.
+    advancedDetection: "-- Monitor GKE upgrade events\nSELECT\n  timestamp,\n  protopayload_auditlog.authenticationInfo.principalEmail,\n  resource.labels.cluster_name,\n  protopayload_auditlog.methodName,\n\
+      \  JSON_EXTRACT_SCALAR(protopayload_auditlog.request, '$.update.desiredMasterVersion') as target_version\nFROM `project.dataset.cloudaudit_googleapis_com_activity`\nWHERE protopayload_auditlog.methodName\
+      \ = 'google.container.v1.ClusterManager.UpdateCluster'\nAND timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)"
+    relatedIds:
+    - gcp-032
+    - gcp-038
+  tags:
+  - gcp
+  - patching
 - id: m365-001
   platform: m365-defender
   category: services
@@ -4487,6 +5552,66 @@ items:
   description: Check Power BI Admin Portal → Tenant settings → Export and sharing.
   reference: CIS.9.1.1 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings → Export and sharing'
+  premium:
+    attackPerspective: Guest users with unrestricted Power BI access can view dashboards, datasets, and dataflows containing sensitive business intelligence. Attackers who compromise a guest account can
+      exfiltrate financial forecasts, customer analytics, and operational metrics — data that enables competitive intelligence, insider trading, or targeted social engineering against executives.
+    implementationNotes: '# Power BI Admin Portal → Tenant Settings → Export and sharing settings
+
+      # Navigate to: admin.powerbi.com → Tenant settings
+
+
+      # Via PowerShell (Power BI Management Module):
+
+      Install-Module -Name MicrosoftPowerBIMgmt -Force
+
+      Connect-PowerBIServiceAccount
+
+
+      # Get current tenant settings
+
+      Get-PowerBITenantSetting | Where-Object { $_.SettingName -like ''*guest*'' }
+
+
+      # Restrict guest access to specific security groups only
+
+      # Admin Portal → Guest user access → Specific security groups
+
+      # Create a dedicated ''PowerBI-External-Viewers'' group
+
+      # Apply: Enabled for specific security groups → Select group'
+    validationNotes: '# Verify guest restrictions are active
+
+      Get-PowerBITenantSetting | Where-Object { $_.SettingName -eq ''AllowGuestLookup'' }
+
+      Get-PowerBITenantSetting | Where-Object { $_.SettingName -eq ''AllowGuestAccess'' }
+
+
+      # Test with a guest account (ensure they cannot browse workspaces)
+
+      # Check audit logs for guest access attempts:
+
+      Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) -RecordType PowerBIAudit -ResultSize 1000 | Where-Object { $_.Operations -like ''*Guest*'' }'
+    tuningNotes: Some organizations need external consultants to view specific Power BI reports. Create a dedicated security group for vetted external users rather than opening guest access broadly. Review
+      membership quarterly. Use Row-Level Security (RLS) on datasets shared with guests to limit data exposure to only their relevant scope.
+    advancedDetection: '// KQL: Detect guest users accessing Power BI content
+
+      PowerBIActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where UserId contains ''#EXT#'' or UserType == ''Guest''
+
+      | summarize AccessCount=count() by UserId, Activity, WorkspaceName
+
+      | where AccessCount > 10
+
+      | sort by AccessCount desc'
+    relatedIds:
+    - m365-071
+    - m365-072
+  tags:
+  - power-platform
+  - governance
 - id: m365-071
   platform: m365-power
   category: services
@@ -4495,6 +5620,71 @@ items:
   description: Check Power BI Admin Portal → Tenant settings.
   reference: CIS.9.1.2 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings'
+  premium:
+    attackPerspective: Unrestricted external invitations in Power Platform allow any internal user to share Power Apps, Flows, and BI content with outsiders. An attacker with a single compromised internal
+      account can silently invite their own external identity, creating a persistent backdoor that survives password resets of the compromised account.
+    implementationNotes: '# Azure AD → External Identities → External collaboration settings
+
+      # Set ''Guest invite restrictions'' to: Only users assigned to specific admin roles can invite guest users
+
+
+      # Via Microsoft Graph PowerShell:
+
+      Connect-MgGraph -Scopes ''Policy.ReadWrite.Authorization''
+
+
+      # Get current authorization policy
+
+      $policy = Get-MgPolicyAuthorizationPolicy
+
+      $policy.AllowInvitesFrom   # Should be ''adminsAndGuestInviters'' or ''none''
+
+
+      # Restrict to admins only:
+
+      Update-MgPolicyAuthorizationPolicy -AllowInvitesFrom ''adminsAndGuestInviters''
+
+
+      # For Power BI specifically:
+
+      # Admin Portal → Tenant settings → Invite external users to your organization → Disabled'
+    validationNotes: '# Verify invitation policy
+
+      $policy = Get-MgPolicyAuthorizationPolicy
+
+      Write-Host "AllowInvitesFrom: $($policy.AllowInvitesFrom)"
+
+      # Expected: ''adminsAndGuestInviters'' or ''none''
+
+
+      # Check for recent external invitations
+
+      Get-MgAuditLogDirectoryAudit -Filter "activityDisplayName eq ''Invite external user''" -Top 50 | Select ActivityDateTime, InitiatedBy, TargetResources | Format-Table'
+    tuningNotes: If business teams frequently need to invite partners, consider creating a self-service request workflow via Power Automate that routes through an approval process rather than granting broad
+      invitation rights. This maintains velocity while adding an audit checkpoint.
+    advancedDetection: '// KQL: Monitor external invitation patterns
+
+      AuditLogs
+
+      | where TimeGenerated > ago(30d)
+
+      | where OperationName == ''Invite external user''
+
+      | extend Inviter = tostring(InitiatedBy.user.userPrincipalName)
+
+      | extend InvitedEmail = tostring(TargetResources[0].userPrincipalName)
+
+      | summarize InviteCount=count(), Invitees=make_set(InvitedEmail) by Inviter
+
+      | where InviteCount > 5
+
+      | sort by InviteCount desc'
+    relatedIds:
+    - m365-070
+    - m365-072
+  tags:
+  - power-platform
+  - governance
 - id: m365-072
   platform: m365-power
   category: services
@@ -4503,6 +5693,26 @@ items:
   description: Check Power BI Admin Portal → Tenant settings.
   reference: CIS.9.1.3 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings'
+  premium:
+    attackPerspective: When guest users can freely browse organizational content in Power BI, they gain visibility into workspace structures, dataset names, and report titles — even before opening them.
+      This metadata alone reveals project codenames, M&A targets, and internal tooling. An adversary performing reconnaissance can map your entire BI landscape from a single guest account.
+    implementationNotes: "# Power BI Admin Portal → Tenant settings → Export and sharing settings\n\n# Restrict content access for guest users:\n# 1. Navigate to admin.powerbi.com\n# 2. Tenant settings\
+      \ → 'Guest users can browse and access Power BI content' → Disabled\n# 3. Or limit to specific security groups\n\n# Alternatively, use workspace-level permissions:\n# Each workspace → Access → Add\
+      \ guest only to specific workspaces they need\n# Never add guests to 'Member' or 'Admin' roles — use 'Viewer' only\n\n# PowerShell verification:\nGet-PowerBIWorkspace -All | ForEach-Object {\n   \
+      \ $ws = $_\n    Get-PowerBIWorkspaceUser -Id $ws.Id | Where-Object { $_.UserPrincipalName -like '*#EXT#*' } | Select @{N='Workspace';E={$ws.Name}}, UserPrincipalName, AccessRight\n}"
+    validationNotes: "# List all workspaces with guest access\n$workspaces = Get-PowerBIWorkspace -Scope Organization -All\nforeach ($ws in $workspaces) {\n    $guests = Get-PowerBIWorkspaceUser -Id $ws.Id\
+      \ | Where-Object { $_.AccessRight -ne 'None' -and $_.UserPrincipalName -like '*#EXT#*' }\n    if ($guests) {\n        Write-Host \"Workspace: $($ws.Name)\"\n        $guests | Format-Table UserPrincipalName,\
+      \ AccessRight\n    }\n}"
+    tuningNotes: For legitimate external collaboration, use Power BI Embedded or publish-to-web with row-level security rather than granting direct guest workspace access. If guest access is required, implement
+      sensitivity labels on datasets to prevent downloads of classified data.
+    advancedDetection: "// KQL: Track guest content access patterns  \nPowerBIActivity\n| where TimeGenerated > ago(14d)\n| where UserId contains '#EXT#'\n| where Activity in ('ViewReport', 'ViewDashboard',\
+      \ 'ExportReport', 'GetDatasources')\n| summarize Operations=make_set(Activity), Count=count() by UserId, WorkspaceName\n| where Count > 20"
+    relatedIds:
+    - m365-070
+    - m365-073
+  tags:
+  - power-platform
+  - governance
 - id: m365-073
   platform: m365-power
   category: services
@@ -4511,6 +5721,67 @@ items:
   description: Check Power BI Admin Portal → Tenant settings → Export and sharing.
   reference: CIS.9.1.4 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings → Export and sharing'
+  premium:
+    attackPerspective: The 'Publish to web' feature creates a publicly accessible embed code for any Power BI report — no authentication required. A single click by an unaware user can expose dashboards
+      containing revenue numbers, customer PII, or security metrics to the entire internet. Attackers actively scan for exposed Power BI embed URLs using search engine dorks.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → Export and sharing settings
+
+      # ''Publish to web'' → Disabled (or restrict to specific security groups)
+
+
+      # Check existing publish-to-web embed codes:
+
+      Connect-PowerBIServiceAccount
+
+      # Via REST API (no direct PowerShell cmdlet):
+
+      $headers = Get-PowerBIAccessToken
+
+      $uri = ''https://api.powerbi.com/v1.0/myorg/admin/widelySharedArtifacts/publishedToWeb''
+
+      $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+
+      $response.value | Select reportId, reportName, artifactId | Format-Table
+
+
+      # Revoke all existing publish-to-web codes via Admin Portal:
+
+      # Admin Portal → Embed codes → Delete each code'
+    validationNotes: '# Verify ''Publish to web'' is disabled
+
+      Get-PowerBITenantSetting | Where-Object { $_.SettingName -eq ''PublishToWeb'' }
+
+
+      # Scan for existing publicly embedded reports:
+
+      $token = Get-PowerBIAccessToken
+
+      $uri = ''https://api.powerbi.com/v1.0/myorg/admin/widelySharedArtifacts/publishedToWeb''
+
+      $result = Invoke-RestMethod -Uri $uri -Headers $token
+
+      Write-Host "Found $($result.value.Count) public embed codes"
+
+      $result.value | Format-Table'
+    tuningNotes: If specific teams (e.g., marketing) need public dashboards, create a dedicated workspace with only non-sensitive, pre-approved reports and enable publish-to-web only for that workspace's
+      security group. Monitor embed code creation with alerts. Consider Power BI Embedded with anonymous access as a more controlled alternative.
+    advancedDetection: '// KQL: Detect publish-to-web actions
+
+      PowerBIActivity
+
+      | where TimeGenerated > ago(30d)
+
+      | where Activity in (''PublishToWebReport'', ''CreatePublicEmbedCode'')
+
+      | project TimeGenerated, UserId, Activity, ReportName, WorkspaceName
+
+      | sort by TimeGenerated desc'
+    relatedIds:
+    - m365-074
+    - m365-076
+  tags:
+  - power-platform
+  - governance
 - id: m365-074
   platform: m365-power
   category: services
@@ -4519,6 +5790,52 @@ items:
   description: Check Power BI Admin Portal → Tenant settings → R and Python visuals.
   reference: CIS.9.1.5 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings → R and Python visuals'
+  premium:
+    attackPerspective: R and Python visuals in Power BI execute arbitrary code on the viewer's machine or the Power BI service. An attacker who can modify a shared report can embed malicious R/Python code
+      that exfiltrates data, performs SSRF against internal networks, or establishes reverse shells — all disguised as a harmless data visualization.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → R and Python visuals settings
+
+      # ''Interact with and share R and Python visuals'' → Disabled
+
+
+      # This blocks:
+
+      # 1. R visuals that execute R scripts
+
+      # 2. Python visuals that execute Python scripts
+
+      # 3. Sharing of reports containing these visuals
+
+
+      # For organizations that need R/Python analytics:
+
+      # Enable only for a ''DataScience-PowerBI'' security group
+
+      # Ensure these users have dedicated, sandboxed workspaces
+
+      # Monitor execution logs for unusual patterns'
+    validationNotes: "# Verify R/Python visuals are disabled\nGet-PowerBITenantSetting | Where-Object { $_.SettingName -like '*Python*' -or $_.SettingName -like '*RVisual*' }\n\n# Search for reports using\
+      \ R/Python visuals:\n# Use Power BI REST API to scan report definitions\n$workspaces = Get-PowerBIWorkspace -Scope Organization -All\nforeach ($ws in $workspaces) {\n    $reports = Get-PowerBIReport\
+      \ -WorkspaceId $ws.Id\n    # Reports using custom visuals are flagged in metadata\n}"
+    tuningNotes: If data science teams require R/Python visuals, isolate them in dedicated Premium workspaces with enhanced logging. Use Power BI dataflows for heavy computation instead of in-visual code
+      execution. Consider Azure Machine Learning integration as a safer alternative for complex analytics.
+    advancedDetection: '// KQL: Monitor R/Python visual usage
+
+      PowerBIActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where Activity has_any (''RVisual'', ''PythonVisual'', ''CustomVisual'')
+
+      | summarize Count=count() by UserId, Activity, ReportName
+
+      | sort by Count desc'
+    relatedIds:
+    - m365-073
+    - m365-075
+  tags:
+  - power-platform
+  - governance
 - id: m365-075
   platform: m365-power
   category: services
@@ -4527,6 +5844,66 @@ items:
   description: Check Power BI Admin Portal → Tenant settings → Information protection.
   reference: CIS.9.1.6 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings → Information protection'
+  premium:
+    attackPerspective: Without sensitivity labels on Power BI content, there is no persistent classification that follows the data. Exported reports, downloaded datasets, and shared dashboards lose all
+      context about their sensitivity level. An attacker who exfiltrates unlabeled data faces no DRM restrictions, no watermarks, and no policy enforcement — the data is completely unprotected once it leaves
+      Power BI.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → Information protection
+
+      # ''Allow users to apply sensitivity labels for content'' → Enabled
+
+
+      # Prerequisites:
+
+      # 1. Sensitivity labels must be published in Microsoft Purview
+
+      # 2. Azure Information Protection P1 or P2 license required
+
+      # 3. Labels must include Power BI as a scope
+
+
+      # Auto-labeling for Power BI (requires E5 or equivalent):
+
+      # Purview → Information protection → Auto-labeling policies
+
+      # Create policy → Scope: Power BI → Conditions → Apply label
+
+
+      # Set default label for new Power BI content:
+
+      # Admin Portal → Information protection → ''Apply a default sensitivity label to unapplied Power BI content'' → Select label'
+    validationNotes: "# Verify sensitivity labeling is enabled\nGet-PowerBITenantSetting | Where-Object { $_.SettingName -like '*sensitivity*' -or $_.SettingName -like '*information*protection*' }\n\n#\
+      \ Check label adoption rate:\n$workspaces = Get-PowerBIWorkspace -Scope Organization -All\n$labeledCount = 0; $totalCount = 0\nforeach ($ws in $workspaces) {\n    $datasets = Get-PowerBIDataset -WorkspaceId\
+      \ $ws.Id\n    $totalCount += $datasets.Count\n    $labeledCount += ($datasets | Where-Object { $_.SensitivityLabel }).Count\n}\nWrite-Host \"Label coverage: $labeledCount / $totalCount ($([math]::Round($labeledCount/$totalCount*100,1))%)\"\
+      \  "
+    tuningNotes: Begin with recommended (not mandatory) labeling to let users adjust. Set a default label of 'General' or 'Internal' for all new content so nothing is unlabeled by default. Graduate to mandatory
+      labeling after 30 days. Track adoption metrics weekly and follow up with teams that have low label coverage.
+    advancedDetection: '// KQL: Track sensitivity label usage in Power BI
+
+      InformationProtectionLogs_CL
+
+      | where TimeGenerated > ago(14d)
+
+      | where Application_s == ''PowerBI''
+
+      | summarize LabelActions=count() by LabelName_s, Activity_s, UserId_s
+
+      | sort by LabelActions desc
+
+
+      // Alert on label downgrades
+
+      InformationProtectionLogs_CL
+
+      | where Activity_s == ''SensitivityLabelDowngraded''
+
+      | project TimeGenerated, UserId_s, OldLabel=OldLabelName_s, NewLabel=LabelName_s, ItemName_s'
+    relatedIds:
+    - m365-082
+    - m365-084
+  tags:
+  - power-platform
+  - governance
 - id: m365-076
   platform: m365-power
   category: services
@@ -4535,6 +5912,60 @@ items:
   description: Check Power BI Admin Portal → Tenant settings.
   reference: CIS.9.1.7 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings'
+  premium:
+    attackPerspective: Unrestricted shareable links in Power BI create 'anyone with the link' access — exactly like a public URL but harder to discover. Attackers target link-sharing culture because a single
+      forwarded email or leaked Slack message grants full report access. Unlike workspace permissions, these links are invisible to most governance tools and survive user deprovisioning.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → Export and sharing settings
+
+      # ''Allow shareable links to grant access to everyone in your organization'' → Disabled
+
+      # ''Allow specific users to turn on external data sharing'' → Disabled or restricted
+
+
+      # Better approach — use direct access sharing:
+
+      # Workspace → Report → Share → Enter specific email addresses
+
+      # This creates auditable, revocable permissions
+
+
+      # For external sharing, use B2B + workspace permissions:
+
+      # Add guest user → Assign to workspace as Viewer
+
+      # This provides named, trackable access'
+    validationNotes: '# Verify shareable link settings
+
+      Get-PowerBITenantSetting | Where-Object { $_.SettingName -like ''*share*link*'' }
+
+
+      # Audit existing shares:
+
+      Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-30) -EndDate (Get-Date) -Operations ''ShareReport'' -RecordType PowerBIAudit | Select-Object -ExpandProperty AuditData | ConvertFrom-Json | Select
+      UserId, ItemName, SharingAction | Format-Table'
+    tuningNotes: If broad sharing is needed for specific reports (e.g., company-wide HR dashboards), use Power BI apps instead of direct links. Apps provide a curated, governed portal experience with built-in
+      access management and usage analytics.
+    advancedDetection: '// KQL: Monitor sharing activity for oversharing patterns
+
+      PowerBIActivity
+
+      | where TimeGenerated > ago(14d)
+
+      | where Activity in (''ShareReport'', ''ShareDashboard'', ''CreateLink'')
+
+      | extend ShareTarget = tostring(parse_json(tostring(SharingInformation)).recipientEmail)
+
+      | summarize ShareCount=count(), UniqueTargets=dcount(ShareTarget) by UserId
+
+      | where ShareCount > 20 or UniqueTargets > 10
+
+      | sort by ShareCount desc'
+    relatedIds:
+    - m365-077
+    - m365-073
+  tags:
+  - power-platform
+  - governance
 - id: m365-077
   platform: m365-power
   category: services
@@ -4543,6 +5974,56 @@ items:
   description: Check Power BI Admin Portal → Tenant settings.
   reference: CIS.9.1.8 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings'
+  premium:
+    attackPerspective: External data sharing in Power BI allows datasets and reports to be shared with users outside the organization. If unrestricted, an attacker who compromises an external partner's
+      account gains access to your organization's BI content. The shared data can include live connections to on-premises databases, effectively bridging air-gapped networks through the cloud.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → Export and sharing settings
+
+      # ''Allow Azure Active Directory guest users to access Power BI'' → Specific security groups
+
+      # ''Allow specific users to turn on external data sharing'' → Disabled or restricted
+
+
+      # For controlled external sharing:
+
+      # 1. Create dedicated ''External-BI-Sharing'' security group
+
+      # 2. Only add users who have completed data handling training
+
+      # 3. Enable external sharing only for this group
+
+      # 4. Apply sensitivity labels to all externally shared content
+
+
+      # Block external sharing for sensitive workspaces:
+
+      # Workspace → Settings → License → Premium → Block external sharing'
+    validationNotes: "# Verify external sharing settings\nGet-PowerBITenantSetting | Where-Object { $_.SettingName -like '*external*' }\n\n# List externally shared content:\nSearch-UnifiedAuditLog -StartDate\
+      \ (Get-Date).AddDays(-30) -EndDate (Get-Date) -RecordType PowerBIAudit -Operations 'ShareReport' | ForEach-Object {\n    $data = $_.AuditData | ConvertFrom-Json\n    if ($data.SharingInformation.recipientEmail\
+      \ -like '*#EXT#*') { $data }\n} | Format-Table UserId, ItemName"
+    tuningNotes: External sharing should be treated as data export. Apply the same controls you would for file downloads — sensitivity label requirements, manager approval for confidential data, and automatic
+      expiration of shared access after 90 days.
+    advancedDetection: '// KQL: Track external data sharing
+
+      PowerBIActivity
+
+      | where TimeGenerated > ago(30d)
+
+      | where Activity has ''Share'' or Activity has ''ExternalSharing''
+
+      | extend RecipientDomain = tostring(split(tostring(parse_json(tostring(SharingInformation)).recipientEmail), ''@'')[1])
+
+      | where RecipientDomain != '''' and RecipientDomain !has ''yourdomain.com''
+
+      | summarize ExternalShares=count() by UserId, RecipientDomain
+
+      | sort by ExternalShares desc'
+    relatedIds:
+    - m365-076
+    - m365-070
+  tags:
+  - power-platform
+  - governance
 - id: m365-078
   platform: m365-power
   category: services
@@ -4551,6 +6032,53 @@ items:
   description: Check Power BI Admin Portal → Tenant settings → Developer settings.
   reference: CIS.9.1.9 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings → Developer settings'
+  premium:
+    attackPerspective: ResourceKey authentication allows anonymous, key-based access to Power BI resources without Azure AD authentication. If enabled, anyone with the resource key URL can access the associated
+      content — no identity, no MFA, no conditional access. Attackers who discover these keys (via URL scanning, leaked code repos, or network interception) gain persistent, untraceable access.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → Developer settings
+
+      # ''Block ResourceKey Authentication'' → Enabled
+
+
+      # This disables the legacy authentication method that uses resource keys
+
+      # instead of Azure AD tokens. All access must go through proper identity authentication.
+
+
+      # Check for existing resources using ResourceKey auth:
+
+      # Admin Portal → Usage metrics → Look for anonymous access patterns
+
+      # These indicate resources still relying on ResourceKey auth
+
+
+      # After enabling, monitor for broken integrations:
+
+      # Some legacy embedded reports may use ResourceKey
+
+      # Migrate these to service principal or user identity authentication'
+    validationNotes: "# Verify ResourceKey Authentication is blocked\nGet-PowerBITenantSetting | Where-Object { $_.SettingName -eq 'BlockResourceKeyAuthentication' }\n\n# Search audit logs for ResourceKey\
+      \ usage before blocking:\nSearch-UnifiedAuditLog -StartDate (Get-Date).AddDays(-14) -EndDate (Get-Date) -RecordType PowerBIAudit | Where-Object {\n    $_.AuditData -like '*ResourceKey*'\n} | Select-Object\
+      \ CreationDate, UserIds, Operations"
+    tuningNotes: Before enabling this setting, inventory all embedded reports and third-party integrations. Some legacy BI portals may rely on ResourceKey auth. Plan a migration window of 2-4 weeks where
+      you notify integration owners and help them switch to service principal authentication.
+    advancedDetection: '// KQL: Detect ResourceKey authentication attempts
+
+      PowerBIActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where AuthenticationMethod has ''ResourceKey'' or Activity has ''ResourceKey''
+
+      | project TimeGenerated, Activity, UserId, ClientIP, UserAgent
+
+      | sort by TimeGenerated desc'
+    relatedIds:
+    - m365-079
+    - m365-080
+  tags:
+  - power-platform
+  - governance
 - id: m365-079
   platform: m365-power
   category: services
@@ -4559,6 +6087,44 @@ items:
   description: Check Power BI Admin Portal → Tenant settings → Developer settings.
   reference: CIS.9.1.10 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings → Developer settings'
+  premium:
+    attackPerspective: Unrestricted API access for service principals means any registered Azure AD application can programmatically query Power BI datasets, export reports, and modify workspaces. An attacker
+      who compromises or creates a rogue app registration gains full API access to your entire BI estate — extracting data at scale without triggering user-based alerts.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → Developer settings
+
+      # ''Allow service principals to use Power BI APIs'' → Specific security groups only
+
+
+      # Create a dedicated security group:
+
+      New-MgGroup -DisplayName ''PowerBI-API-ServicePrincipals'' -SecurityEnabled:$true -MailEnabled:$false -MailNickname ''pbi-api-sp''
+
+
+      # Add only approved service principals:
+
+      $sp = Get-MgServicePrincipal -Filter "displayName eq ''YourApprovedApp''"
+
+      New-MgGroupMember -GroupId $groupId -DirectoryObjectId $sp.Id
+
+
+      # In Power BI Admin:
+
+      # Allow service principals to use Power BI APIs → Specific security groups → Select ''PowerBI-API-ServicePrincipals'''
+    validationNotes: "# Verify API access is restricted\nGet-PowerBITenantSetting | Where-Object { $_.SettingName -like '*ServicePrincipal*API*' }\n\n# List all service principals with Power BI API permissions:\n\
+      Get-MgServicePrincipal -All | ForEach-Object {\n    $sp = $_\n    $perms = Get-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $sp.Id | Where-Object { $_.ResourceDisplayName -like '*Power\
+      \ BI*' }\n    if ($perms) { [PSCustomObject]@{ Name=$sp.DisplayName; AppId=$sp.AppId; Perms=$perms.Count } }\n} | Format-Table"
+    tuningNotes: Review the service principals in the allowed group quarterly. Remove any that are no longer actively used. Implement API usage monitoring to detect dormant service principals that suddenly
+      become active — a strong indicator of credential compromise.
+    advancedDetection: "// KQL: Monitor Service Principal API activity\nPowerBIActivity\n| where TimeGenerated > ago(7d)\n| where Identity has 'ServicePrincipal' or UserType == 'ServicePrincipal'\n| summarize\
+      \ ApiCalls=count(), Operations=make_set(Activity) by UserId\n| sort by ApiCalls desc\n\n// Alert on new service principals accessing Power BI\nPowerBIActivity\n| where TimeGenerated > ago(24h)\n|\
+      \ where UserType == 'ServicePrincipal'\n| join kind=leftanti (\n    PowerBIActivity\n    | where TimeGenerated between(ago(30d) .. ago(24h))\n    | where UserType == 'ServicePrincipal'\n    | distinct\
+      \ UserId\n) on UserId"
+    relatedIds:
+    - m365-080
+    - m365-081
+  tags:
+  - power-platform
+  - governance
 - id: m365-080
   platform: m365-power
   category: services
@@ -4567,6 +6133,58 @@ items:
   description: Check Power BI Admin Portal → Tenant settings.
   reference: CIS.9.1.11 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings'
+  premium:
+    attackPerspective: Service principal profiles allow apps to impersonate different identities when accessing Power BI, creating multiple 'virtual users' from a single credential. If unrestricted, a compromised
+      service principal can create profiles to access data across workspace boundaries, evading per-principal access controls and making forensic attribution nearly impossible.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → Developer settings
+
+      # ''Service principals can create and use profiles'' → Disabled
+
+
+      # Service principal profiles are a multi-tenancy feature for ISVs
+
+      # Most organizations should disable this unless building SaaS on Power BI
+
+
+      # If needed for ISV scenarios:
+
+      # Enable only for a specific security group containing ISV app registrations
+
+      # Monitor profile creation and usage through audit logs
+
+
+      # Alternative for multi-tenancy:
+
+      # Use separate service principals per tenant/customer
+
+      # This provides better isolation and auditability'
+    validationNotes: '# Verify service principal profiles are disabled
+
+      Get-PowerBITenantSetting | Where-Object { $_.SettingName -like ''*profile*'' }
+
+
+      # Check if any profiles exist:
+
+      Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-90) -EndDate (Get-Date) -RecordType PowerBIAudit -Operations ''CreateServicePrincipalProfile'' | Format-Table CreationDate, UserIds'
+    tuningNotes: This setting is primarily relevant for ISV scenarios where Power BI Embedded is used for multi-tenant applications. If your organization is not building SaaS products on Power BI, disable
+      this without impact. If you are an ISV, restrict to the specific app registrations that need it.
+    advancedDetection: '// KQL: Monitor service principal profile operations
+
+      PowerBIActivity
+
+      | where TimeGenerated > ago(30d)
+
+      | where Activity has ''Profile'' and Activity has ''ServicePrincipal''
+
+      | project TimeGenerated, UserId, Activity, ItemName
+
+      | sort by TimeGenerated desc'
+    relatedIds:
+    - m365-079
+    - m365-081
+  tags:
+  - power-platform
+  - governance
 - id: m365-081
   platform: m365-power
   category: services
@@ -4575,6 +6193,57 @@ items:
   description: Check Power BI Admin Portal → Tenant settings.
   reference: CIS.9.1.12 — CIS M365 / Microsoft Secure Score — Power BI
   command: '# Portal → Tenant settings'
+  premium:
+    attackPerspective: When service principals can create workspaces, connections, and deployment pipelines, an attacker with a compromised app registration can build an entire shadow BI infrastructure.
+      They can create workspaces to stage exfiltrated data, establish connections to on-premises data gateways, and set up pipelines that promote malicious content to production — all without human interaction.
+    implementationNotes: '# Power BI Admin Portal → Tenant settings → Workspace settings
+
+      # ''Service principals can create workspaces'' → Disabled or specific groups only
+
+
+      # Developer settings:
+
+      # ''Allow service principals to create and manage workspace connections'' → Disabled
+
+      # ''Allow service principals to create deployment pipelines'' → Disabled
+
+
+      # For CI/CD scenarios that need automated deployments:
+
+      # Create a dedicated ''PowerBI-CICD'' security group
+
+      # Add only the deployment service principal
+
+      # Enable workspace creation and pipeline management only for this group
+
+
+      # Use Managed Identity instead of app registrations where possible:
+
+      # Managed identities are tied to Azure resources and don''t have extractable credentials'
+    validationNotes: "# Verify service principal workspace/pipeline restrictions\nGet-PowerBITenantSetting | Where-Object { \n    $_.SettingName -like '*ServicePrincipal*workspace*' -or \n    $_.SettingName\
+      \ -like '*ServicePrincipal*pipeline*' -or \n    $_.SettingName -like '*ServicePrincipal*connection*' \n}\n\n# List workspaces created by service principals:\nSearch-UnifiedAuditLog -StartDate (Get-Date).AddDays(-90)\
+      \ -EndDate (Get-Date) -RecordType PowerBIAudit -Operations 'CreateFolder' | Where-Object {\n    ($_.AuditData | ConvertFrom-Json).UserType -eq 'ServicePrincipal'\n} | Format-Table CreationDate, UserIds"
+    tuningNotes: In mature DevOps organizations, one or two service principals legitimately need these capabilities for CI/CD. Document these exceptions, use Managed Identities where possible, and ensure
+      the service principal credentials are stored in Azure Key Vault with automatic rotation.
+    advancedDetection: '// KQL: Detect service principal infrastructure creation
+
+      PowerBIActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where UserType == ''ServicePrincipal''
+
+      | where Activity in (''CreateFolder'', ''CreateDeploymentPipeline'', ''CreateConnection'', ''CreateGatewayCluster'')
+
+      | project TimeGenerated, UserId, Activity, ItemName
+
+      | sort by TimeGenerated desc'
+    relatedIds:
+    - m365-079
+    - m365-080
+  tags:
+  - power-platform
+  - governance
 - id: m365-082
   platform: m365-power
   category: encryption
@@ -4583,6 +6252,79 @@ items:
   description: 'PP DLP API requires Power Platform admin role. Org-wide DLP policies exist: False. Verify in Power Platform Admin Center → Data policies.'
   reference: MS.POWERPLATFORM.1.1v1 — CIS M365 / Microsoft Secure Score — Power Platform
   command: '# Power Platform Admin Center → Data policies'
+  premium:
+    attackPerspective: Without DLP policies on Power Platform, users can build Power Apps and Power Automate flows that bridge security boundaries — sending SharePoint data to personal Gmail, copying Dataverse
+      records to USB-connected Excel, or routing Teams messages to external webhooks. Power Platform becomes the ultimate data exfiltration tool because users can build these pipelines without writing code.
+    implementationNotes: '# Power Platform Admin Center → Data policies → New policy
+
+      # https://admin.powerplatform.microsoft.com/dlp
+
+
+      # Step 1: Create a DLP policy for the default environment
+
+      # Name: ''Default Environment DLP - Restrict Connectors''
+
+
+      # Step 2: Classify connectors into groups:
+
+      # Business group (allowed together): Office 365, SharePoint, Dataverse, Teams
+
+      # Non-business group: Twitter, Gmail, Dropbox, HTTP connector, Custom connectors
+
+      # Blocked group: Any high-risk connectors
+
+
+      # Step 3: Apply to all environments or specific ones
+
+
+      # PowerShell (Power Apps Admin module):
+
+      Install-Module -Name Microsoft.PowerApps.Administration.PowerShell -Force
+
+      Add-PowerAppsAccount
+
+
+      # Create DLP policy:
+
+      New-DlpPolicy -DisplayName ''Production DLP'' -EnvironmentType ''AllEnvironments'' -DefaultConnectorClassification ''Blocked''
+
+
+      # Add business connectors:
+
+      Add-ConnectorToBusinessGroup -PolicyName ''Production DLP'' -ConnectorId ''/providers/Microsoft.PowerApps/apis/shared_sharepointonline'''
+    validationNotes: "# List all DLP policies\nGet-DlpPolicy | Select DisplayName, CreatedTime, EnvironmentType | Format-Table\n\n# Verify connector classifications:\n$policies = Get-DlpPolicy\nforeach\
+      \ ($p in $policies) {\n    Write-Host \"Policy: $($p.DisplayName)\"\n    $p.ConnectorGroups | ForEach-Object {\n        Write-Host \"  Group: $($_.Classification) - Connectors: $($_.Connectors.Count)\"\
+      \n    }\n}\n\n# Check for environments without DLP coverage:\n$envs = Get-AdminPowerAppEnvironment\n$policies = Get-DlpPolicy\n# Cross-reference to find gaps"
+    tuningNotes: Start with a restrictive policy for the default environment (which all users can access) and gradually relax policies for dedicated team environments. The HTTP connector and custom connectors
+      are the most dangerous — they allow arbitrary external communication. Block them by default and allow only in developer environments with approval.
+    advancedDetection: '// KQL: Monitor DLP policy violations in Power Platform
+
+      PowerPlatformDlpActivity_CL
+
+      | where TimeGenerated > ago(7d)
+
+      | where Result_s == ''Blocked''
+
+      | summarize Violations=count() by UserId_s, ConnectorName_s, EnvironmentName_s
+
+      | sort by Violations desc
+
+
+      // Track flows using blocked/risky connectors
+
+      PowerPlatformConnectorActivity_CL
+
+      | where TimeGenerated > ago(7d)
+
+      | where ConnectorClassification_s == ''Blocked''
+
+      | project TimeGenerated, UserId_s, FlowName_s, ConnectorName_s'
+    relatedIds:
+    - m365-083
+    - m365-075
+  tags:
+  - power-platform
+  - governance
 - id: m365-083
   platform: m365-power
   category: encryption
@@ -4591,6 +6333,79 @@ items:
   description: Verify in PP Admin Center → Settings → Environment creation.
   reference: MS.POWERPLATFORM.1.2v1 — CIS M365 / Microsoft Secure Score — Power Platform
   command: '# PP Admin Center → Settings → Environment creation'
+  premium:
+    attackPerspective: When any user can create Power Platform environments, they can establish isolated spaces outside IT governance. These shadow environments bypass DLP policies (if policies aren't scoped
+      to 'all environments'), lack monitoring, and can host data stores (Dataverse) with no backup or retention policy. An attacker creates an environment, moves sensitive data there, and operates completely
+      undetected.
+    implementationNotes: '# Power Platform Admin Center → Settings → Governance
+
+      # ''Who can create production and sandbox environments'' → Only specific admins
+
+
+      # PowerShell:
+
+      $settings = Get-TenantSettings
+
+      $settings.powerPlatform.environments.disableEnvironmentCreationByNonAdminUsers = $true
+
+      Set-TenantSettings -RequestBody $settings
+
+
+      # For developer environments specifically:
+
+      # These are harder to restrict — consider monitoring instead of blocking
+
+      # Developers get one personal environment by default
+
+
+      # Create managed environments for teams:
+
+      # Admin Center → Environments → New → Set admin as creator
+
+      # Apply DLP policy → Add team members with appropriate roles'
+    validationNotes: '# Verify environment creation is restricted
+
+      $settings = Get-TenantSettings
+
+      Write-Host "Non-admin env creation disabled: $($settings.powerPlatform.environments.disableEnvironmentCreationByNonAdminUsers)"
+
+
+      # List all environments and their creators:
+
+      Get-AdminPowerAppEnvironment | Select DisplayName, EnvironmentType, CreatedBy, CreatedTime | Sort-Object CreatedTime -Descending | Format-Table
+
+
+      # Check for recently created environments:
+
+      Get-AdminPowerAppEnvironment | Where-Object { $_.CreatedTime -gt (Get-Date).AddDays(-30) } | Format-Table DisplayName, CreatedBy, EnvironmentType'
+    tuningNotes: Developer environments are auto-provisioned and harder to restrict without blocking the Developer plan entirely. Focus governance on production and sandbox environments. For developer environments,
+      apply a restrictive DLP policy that prevents business data connectors, so they can only work with test data.
+    advancedDetection: '// KQL: Monitor environment creation
+
+      PowerPlatformAdminActivity_CL
+
+      | where TimeGenerated > ago(30d)
+
+      | where Operation_s == ''CreateEnvironment''
+
+      | project TimeGenerated, UserId_s, EnvironmentName_s, EnvironmentType_s
+
+      | sort by TimeGenerated desc
+
+
+      // Alert on non-admin environment creation
+
+      PowerPlatformAdminActivity_CL
+
+      | where Operation_s == ''CreateEnvironment''
+
+      | where UserRole_s != ''Admin'' and UserRole_s != ''GlobalAdmin'''
+    relatedIds:
+    - m365-082
+    - m365-079
+  tags:
+  - power-platform
+  - governance
 - id: m365-084
   platform: m365-purview
   category: encryption
@@ -4757,7 +6572,7 @@ items:
   reference: MS.PURVIEW.9.2v1 — CIS M365 / Microsoft Secure Score — Purview
 - id: m365-094
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: critical
   title: AI interaction data must be governed by Purview DSPM for AI.
   description: 'Sensitivity labels exist: False. DSPM for AI configuration requires manual review. Verify in Purview → DSPM for AI.'
@@ -4765,28 +6580,28 @@ items:
   command: '# Purview → DSPM for AI'
 - id: m365-095
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: critical
   title: Sensitivity labels must be enforced for content accessed by Copilot.
   description: 'Sensitivity labels published: False. Copilot respects sensitivity labels applied to documents and emails.'
   reference: MS.PURVIEW.10.2v1 — CIS M365 / Microsoft Secure Score — Purview
 - id: m365-096
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: critical
   title: Oversharing controls must be reviewed before Copilot deployment.
   description: 'SharePoint sharing: externalUserAndGuestSharing. Wide sharing increases Copilot data exposure risk.'
   reference: MS.PURVIEW.10.3v1 — CIS M365 / Microsoft Secure Score — Purview
 - id: m365-097
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: high
   title: DLP policies should include Copilot interactions as a monitored location.
   description: 'DLP policies exist: False. No DLP policies found. Configure DLP before enabling Copilot.'
   reference: MS.PURVIEW.10.4v1 — CIS M365 / Microsoft Secure Score — Purview
 - id: m365-098
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: high
   title: Copilot Studio agents should be restricted to approved connectors and data sources.
   description: 'Power Platform DLP policies: not detected — PP DLP API requires Power Platform admin role. Verify in Power Platform Admin Center → Data policies..'
@@ -4794,14 +6609,14 @@ items:
   command: '# Power Platform Admin Center → Data policies'
 - id: m365-099
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: high
   title: AI compliance policies should address AI ethics, bias detection, and regulatory requirements.
   description: 'Labels: False, DLP: False. Foundation controls are not in place for AI governance.'
   reference: MS.PURVIEW.10.6v1 — CIS M365 / Microsoft Secure Score — Purview
 - id: m365-100
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: high
   title: Insider Risk Management should monitor for risky AI usage patterns.
   description: 'Insider Risk policies: not detected — IRM API requires E5 Insider Risk license. Verify in Purview → Insider Risk Management.'
@@ -4809,7 +6624,7 @@ items:
   command: '# Purview → Insider Risk Management'
 - id: m365-101
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: critical
   title: Grounding data access for AI agents must be scoped with least-privilege permissions.
   description: Grounding data access for AI agents must be scoped with least-privilege permissions.
@@ -5061,28 +6876,28 @@ items:
   reference: ZT.35027 — CIS M365 / Zero Trust — Purview
 - id: m365-136
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: medium
   title: DSPM for AI is configured
   description: '[Zero Trust] Data | Risk: Medium | Cost: Medium | How-to: Configure DSPM for AI in Purview.'
   reference: ZT.35033 — CIS M365 / Zero Trust — Purview
 - id: m365-137
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: medium
   title: AI interaction monitoring is enabled
   description: '[Zero Trust] Data | Risk: Medium | Cost: Low | How-to: Enable AI interaction monitoring in Purview.'
   reference: ZT.35034 — CIS M365 / Zero Trust — Purview
 - id: m365-138
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: medium
   title: Copilot experiences retention is configured
   description: '[Zero Trust] Data | Risk: Medium | Cost: Low | How-to: Configure retention for Copilot experiences.'
   reference: ZT.35035 — CIS M365 / Zero Trust — Purview
 - id: m365-139
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: medium
   title: DLP policies cover Copilot interactions
   description: '[Zero Trust] Data | Risk: Medium | Cost: Medium | How-to: Extend DLP policies to Copilot interactions.'
@@ -5096,7 +6911,7 @@ items:
   reference: ZT.35037 — CIS M365 / Zero Trust — Purview
 - id: m365-141
   platform: m365-purview
-  category: encryption
+  category: ai-security
   severity: medium
   title: AI regulatory compliance templates are deployed
   description: '[Zero Trust] Data | Risk: Medium | Cost: Medium | How-to: Deploy AI regulatory compliance templates.'
@@ -6399,7 +8214,7 @@ items:
     # Portal → Microsoft Sentinel → Data connectors → ''Microsoft Defender for Cloud'' → Connect subscriptions'
 - id: m365-283
   platform: m365-cloud
-  category: services
+  category: ai-security
   severity: high
   title: Defender for AI workloads should be enabled to protect Azure AI services.
   description: Defender for AI workloads should be enabled to protect Azure AI services.
@@ -6407,7 +8222,7 @@ items:
   command: '# Portal → Defender for Cloud → Environment settings → Select subscription → Defender plans'
 - id: m365-284
   platform: m365-cloud
-  category: services
+  category: ai-security
   severity: high
   title: AI-related security recommendations should be reviewed and remediated.
   description: AI-related security recommendations should be reviewed and remediated.
@@ -6415,7 +8230,7 @@ items:
   command: '# Portal → Defender for Cloud → Recommendations → Filter by resource type: ''Cognitive Services accounts'', ''Azu'
 - id: m365-285
   platform: m365-cloud
-  category: services
+  category: ai-security
   severity: high
   title: Azure AI services should restrict network access and use private endpoints.
   description: Azure AI services should restrict network access and use private endpoints.
@@ -6423,7 +8238,7 @@ items:
   command: '# Portal → select AI service resource (e'
 - id: m365-286
   platform: m365-cloud
-  category: services
+  category: ai-security
   severity: high
   title: Managed identities should be used for Azure AI service authentication instead of API keys.
   description: Managed identities should be used for Azure AI service authentication instead of API keys.
