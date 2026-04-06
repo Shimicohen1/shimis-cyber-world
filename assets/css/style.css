@@ -319,6 +319,24 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .nav-toggle.open .hamburger::before { transform: translateY(6px) rotate(45deg); }
 .nav-toggle.open .hamburger::after { transform: translateY(-6px) rotate(-45deg); }
 
+.nav-telegram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: .75rem;
+  width: 30px;
+  height: 30px;
+  background: #26a5e4;
+  color: #fff;
+  border-radius: var(--r-sm);
+  transition: background .15s, transform .15s;
+}
+.nav-telegram:hover {
+  background: #1e8dc8;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .nav-subscribe {
   display: inline-flex;
   align-items: center;
@@ -2415,6 +2433,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   .nav-links { flex-direction: column; gap: 0; }
   .nav-links li a { display: block; padding: .6rem 1.2rem; border-radius: 0; }
   .nav-subscribe { margin: .4rem 1.2rem .4rem; display: inline-flex; }
+  .nav-telegram { margin: .4rem 0 .4rem 1.2rem; }
   .theme-toggle { margin: .2rem 1.2rem .4rem; }
 
   .identity__inner { flex-direction: column; text-align: center; }
