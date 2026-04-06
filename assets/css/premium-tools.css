@@ -290,3 +290,347 @@
   .dl-stat { padding: .8rem .4rem; }
   .dl-stat__number { font-size: 1.15rem; }
 }
+
+/* ══════════════════════════════════════════════════════════ */
+/* RUNBOOK CARDS — Operational Playbook Styling              */
+/* ══════════════════════════════════════════════════════════ */
+
+.rb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Card */
+.rb-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+/* Card header */
+.rb-card__header {
+  padding: 1.4rem 1.6rem 1rem;
+}
+.rb-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .3rem;
+}
+.rb-card__title {
+  font-family: var(--f-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+}
+.rb-card__desc {
+  font-size: .82rem;
+  color: var(--gray);
+  line-height: 1.6;
+  margin: .3rem 0 .6rem;
+}
+.rb-card__meta {
+  display: flex;
+  gap: .3rem;
+  flex-wrap: wrap;
+  margin-bottom: .4rem;
+}
+
+/* Accordion sections */
+.rb-section {
+  border-top: 1px solid var(--border);
+}
+.rb-section__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .7rem 1.2rem;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-family: var(--f-display);
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s;
+}
+.rb-section__toggle:hover { background: rgba(255,255,255,.03); }
+.rb-section__icon { font-size: .9rem; flex-shrink: 0; }
+.rb-section__name { flex: 1; }
+.rb-section__count {
+  font-family: var(--f-mono);
+  font-size: .65rem;
+  color: var(--dim);
+  font-weight: 400;
+}
+.rb-section__arrow {
+  color: var(--dim);
+  font-size: .7rem;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.rb-section.open .rb-section__arrow {
+  transform: rotate(90deg);
+}
+
+/* Section content */
+.rb-section__content {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .4s ease;
+}
+.rb-section__content[hidden] {
+  display: block;
+  max-height: 0;
+}
+.rb-section.open .rb-section__content {
+  max-height: 3000px;
+}
+
+/* Steps */
+.rb-steps {
+  padding: .4rem 1.2rem 1rem;
+}
+.rb-step {
+  font-size: .78rem;
+  color: var(--gray);
+  line-height: 1.6;
+  padding: .2rem 0;
+  border-bottom: 1px solid rgba(255,255,255,.02);
+}
+.rb-step--cmd {
+  padding: .3rem 0;
+}
+.rb-step--cmd code {
+  font-family: var(--f-mono);
+  font-size: .72rem;
+  color: var(--cyan);
+  background: var(--deep, #0a0a0f);
+  padding: .2rem .5rem;
+  border-radius: var(--r-sm, 4px);
+  display: block;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* Key-value grid (escalation, metrics) */
+.rb-kv-grid {
+  padding: .6rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+.rb-kv {
+  display: flex;
+  gap: .5rem;
+  align-items: baseline;
+  padding: .3rem 0;
+  border-bottom: 1px solid rgba(255,255,255,.03);
+}
+.rb-kv:last-child { border-bottom: none; }
+.rb-kv__key {
+  font-family: var(--f-mono);
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  min-width: 140px;
+  flex-shrink: 0;
+}
+.rb-kv__val {
+  font-size: .78rem;
+  color: var(--gray);
+  line-height: 1.5;
+}
+.rb-kv__val code {
+  font-family: var(--f-mono);
+  font-size: .72rem;
+  color: var(--cyan);
+}
+.rb-kv--highlight {
+  background: rgba(6,182,212,.05);
+  border-radius: var(--r-sm, 4px);
+  padding: .5rem .6rem;
+  margin: 0 -.3rem;
+}
+
+/* Labels */
+.rb-label {
+  font-family: var(--f-mono);
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: .4rem 1.2rem .2rem;
+  margin: 0;
+}
+
+/* Lists */
+.rb-list-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  padding: .2rem 1.2rem .6rem;
+  margin: 0;
+  list-style: none;
+}
+.rb-list-inline li {
+  font-size: .75rem;
+  color: var(--gray);
+  background: var(--deep, #0a0a0f);
+  padding: .2rem .5rem;
+  border-radius: var(--r-sm, 4px);
+  border: 1px solid var(--border);
+}
+.rb-list-plain {
+  padding: .2rem 1.2rem .6rem 2rem;
+  margin: 0;
+}
+.rb-list-plain li {
+  font-size: .75rem;
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+/* Decision tree */
+.rb-decision-tree {
+  padding: .4rem 1.2rem 1rem;
+  border-top: 1px dashed var(--border);
+  margin-top: .4rem;
+}
+.rb-decision {
+  background: var(--deep, #0a0a0f);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: .6rem .8rem;
+  margin-bottom: .4rem;
+}
+.rb-decision__if {
+  font-size: .75rem;
+  color: #f59e0b;
+  font-weight: 600;
+  margin-bottom: .2rem;
+  line-height: 1.5;
+}
+.rb-decision__if strong { color: #f59e0b; }
+.rb-decision__then {
+  font-size: .75rem;
+  color: var(--lime);
+  line-height: 1.5;
+}
+.rb-decision__then strong { color: var(--lime); }
+
+/* Evidence checklist */
+.rb-checklist {
+  padding: .4rem 1.2rem .8rem;
+  margin: 0;
+  list-style: none;
+}
+.rb-checklist li {
+  padding: .25rem 0;
+  border-bottom: 1px solid rgba(255,255,255,.02);
+}
+.rb-checklist li:last-child { border-bottom: none; }
+.rb-checklist label {
+  font-size: .78rem;
+  color: var(--gray);
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: .4rem;
+}
+.rb-checklist input[type="checkbox"] {
+  accent-color: var(--cyan);
+  flex-shrink: 0;
+}
+
+/* Communication templates */
+.rb-comms__block {
+  padding: 0 1.2rem .8rem;
+}
+.rb-template {
+  position: relative;
+  background: var(--deep, #0a0a0f);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.rb-template pre {
+  margin: 0;
+  padding: .8rem 1rem;
+  overflow-x: auto;
+}
+.rb-template code {
+  font-family: var(--f-mono);
+  font-size: .72rem;
+  line-height: 1.6;
+  color: var(--gray);
+  white-space: pre-wrap;
+}
+
+/* Section type colors */
+.rb-escalation .rb-section__toggle { }
+.rb-escalation .rb-section__icon { color: #ef4444; }
+.rb-metrics .rb-section__icon { color: var(--cyan); }
+.rb-evidence .rb-section__icon { color: #a78bfa; }
+.rb-comms .rb-section__icon { color: #34d399; }
+.rb-phase .rb-section__toggle { background: rgba(255,255,255,.015); }
+
+/* ── Runbook light theme ── */
+[data-theme="light"] .rb-card {
+  background: var(--card);
+  border-color: rgba(0,0,0,.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+[data-theme="light"] .rb-card__title { color: var(--white); }
+[data-theme="light"] .rb-section { border-color: rgba(0,0,0,.08); }
+[data-theme="light"] .rb-section__toggle { color: var(--white); }
+[data-theme="light"] .rb-section__toggle:hover { background: rgba(0,0,0,.03); }
+[data-theme="light"] .rb-step { border-color: rgba(0,0,0,.04); }
+[data-theme="light"] .rb-step--cmd code {
+  background: #f4f4f8;
+  color: #0891b2;
+}
+[data-theme="light"] .rb-kv { border-color: rgba(0,0,0,.06); }
+[data-theme="light"] .rb-list-inline li {
+  background: #f4f4f8;
+  border-color: rgba(0,0,0,.08);
+}
+[data-theme="light"] .rb-decision {
+  background: #f9f9fb;
+  border-color: rgba(0,0,0,.1);
+}
+[data-theme="light"] .rb-decision__if { color: #d97706; }
+[data-theme="light"] .rb-decision__then { color: #059669; }
+[data-theme="light"] .rb-template {
+  background: #f4f4f8;
+  border-color: rgba(0,0,0,.1);
+}
+[data-theme="light"] .rb-template code { color: #334155; }
+[data-theme="light"] .rb-checklist li { border-color: rgba(0,0,0,.04); }
+[data-theme="light"] .rb-kv--highlight { background: rgba(8,145,178,.06); }
+[data-theme="light"] .rb-phase .rb-section__toggle { background: rgba(0,0,0,.02); }
+
+/* ── Runbook responsive ── */
+@media (max-width: 600px) {
+  .rb-card__header { padding: 1rem; }
+  .rb-section__toggle { padding: .6rem .8rem; font-size: .78rem; }
+  .rb-steps { padding: .3rem .8rem .8rem; }
+  .rb-kv-grid { padding: .4rem .8rem; }
+  .rb-kv { flex-direction: column; gap: .1rem; }
+  .rb-kv__key { min-width: auto; }
+  .rb-label { padding: .3rem .8rem .1rem; }
+  .rb-list-inline { padding: .2rem .8rem .5rem; }
+  .rb-checklist { padding: .3rem .8rem .6rem; }
+  .rb-comms__block { padding: 0 .8rem .6rem; }
+  .rb-decision-tree { padding: .3rem .8rem .8rem; }
+}

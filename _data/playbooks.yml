@@ -14,333 +14,864 @@ severity_levels:
   - medium
 
 playbooks:
-  # ── FREE PLAYBOOKS ──
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 1 — RANSOMWARE INCIDENT RESPONSE
+  # ══════════════════════════════════════════════════════════
   - name: "Ransomware Incident Response"
-    description: "Step-by-step response for active ransomware attacks — from detection through containment, eradication, and recovery."
+    description: "Operational runbook for active ransomware attacks — real tool commands, decision trees, and escalation procedures."
     category: "Ransomware"
-    mitre: "T1486"
+    mitre: "T1486 — Data Encrypted for Impact"
     severity: "critical"
     premium: false
     estimated_time: "2-8 hours"
-    roles: ["SOC Analyst", "Incident Commander", "IT Ops", "Legal"]
-    tags: [ransomware, encryption, business-continuity]
+    roles: ["Incident Commander", "SOC Analyst L2/L3", "IT Ops / Sysadmin", "Legal Counsel", "Communications Lead"]
+    tags: [ransomware, encryption, business-continuity, extortion]
+    escalation:
+      p1_sla: "15 minutes to Incident Commander"
+      p1_notify: ["CISO", "VP Engineering", "Legal", "CEO (if data exfil confirmed)"]
+      war_room: "Create dedicated Slack/Teams channel: #inc-ransomware-YYYYMMDD"
+      external: ["Cyber insurance carrier hotline", "External IR retainer (if contracted)", "Law enforcement (FBI IC3 / local CERT)"]
+    metrics:
+      mttd: "< 30 minutes (from first encryption to confirmed alert)"
+      mttc: "< 2 hours (from alert to full network isolation of affected hosts)"
+      mttr: "< 48 hours (to restore critical business operations)"
+      benchmark: "Industry median MTTC for ransomware: 4.5 hours (IBM X-Force 2025)"
     phases:
-      - phase: "Detect"
+      - name: "Detect"
         steps:
-          - "Confirm ransomware indicators: mass file renames, ransom notes, encrypted extensions"
-          - "Identify patient zero — first infected host via EDR timeline"
-          - "Determine ransomware variant using ransom note or encrypted file samples"
-          - "Check scope — how many hosts show encryption activity"
-      - phase: "Contain"
+          - "Confirm ransomware indicators — check for: mass file renames (.encrypted, .locked, .crypt), ransom notes (README.txt, DECRYPT_FILES.html), process killing (vssadmin, bcdedit, wbadmin)"
+          - "Identify patient zero and blast radius:"
+          - "  CrowdStrike: Go to Investigate > Host Search > sort by 'First Seen' encryption IOC"
+          - "  Sentinel KQL: `DeviceFileEvents | where FileName endswith '.encrypted' | summarize count() by DeviceName | sort by count_ desc`"
+          - "  Splunk: `index=edr sourcetype=file_events (file_extension=encrypted OR file_extension=locked) | stats count by host | sort -count`"
+          - "Determine the variant — upload ransom note or encrypted sample to id-ransomware.malwarehunterteam.com"
+          - "Check if decryptor exists: nomoreransom.org/en/decryption-tools"
+        decision_tree:
+          - condition: "Encryption is actively spreading"
+            action: "SKIP to Contain → Emergency Isolation immediately. Do NOT wait for full scoping."
+          - condition: "Encryption stopped / single host only"
+            action: "Proceed with methodical scoping before containment."
+          - condition: "Threat actor is in chat / making demands"
+            action: "Do NOT engage. Notify Legal + Insurance immediately. They will handle negotiation if needed."
+      - name: "Contain"
         steps:
-          - "Immediately isolate infected hosts from the network (EDR network isolation or switch port disable)"
-          - "Disable compromised accounts in Active Directory"
-          - "Block C2 IPs/domains at firewall level"
-          - "Suspend automated backups to prevent encryption of backup data"
-          - "Preserve evidence — do NOT reboot infected machines"
-      - phase: "Eradicate"
+          - "Network-isolate all confirmed infected hosts:"
+          - "  CrowdStrike: Host > Actions > Contain Host (or API: `containment-action v2 POST /devices/entities/devices-actions/v2?action_name=contain`)"
+          - "  Defender for Endpoint: Device page > 'Isolate device' (allows Defender comms only)"
+          - "  Manual: Disable switch port — `interface gi1/0/X` → `shutdown` / or disable Wi-Fi via MDM"
+          - "Disable compromised accounts in AD:"
+          - "  PowerShell: `Get-ADUser -Filter {Name -like '*compromised_user*'} | Disable-ADAccount`"
+          - "  Azure AD: `Set-AzureADUser -ObjectId user@domain.com -AccountEnabled $false`"
+          - "Block C2 at perimeter:"
+          - "  Palo Alto: `set security profiles anti-spyware block-ip` / Objects > External Dynamic Lists > add C2 IPs"
+          - "  Sentinel: Create TI indicator — Threat Intelligence > Add indicator > type: IP / domain"
+          - "Suspend automated backups to prevent encryption of backup storage"
+          - "Preserve evidence — do NOT reboot or wipe infected machines. Memory forensics first."
+        decision_tree:
+          - condition: "Domain admin account is compromised"
+            action: "Initiate emergency KRBTGT reset — double reset 12h apart: `krbtgt` password reset via AD Users & Computers (replication will take up to 10h per reset)"
+          - condition: "Backup infrastructure is accessible from compromised network"
+            action: "Air-gap backups immediately — disconnect backup server NIC or disable backup agent service"
+      - name: "Eradicate"
         steps:
-          - "Identify initial access vector (phishing email, RDP, VPN exploit)"
-          - "Remove persistence mechanisms (scheduled tasks, services, registry keys)"
-          - "Scan all hosts for dormant payloads using IOCs from the variant"
-          - "Reset all potentially compromised credentials (prioritize service accounts)"
-          - "Patch the vulnerability used for initial access"
-      - phase: "Recover"
+          - "Identify initial access vector — common entry points to check:"
+          - "  1. Email: Search email gateway for attachments/links delivered in last 7 days to patient zero"
+          - "  2. RDP: `DeviceLogonEvents | where LogonType == 'RemoteInteractive' | where AccountName == '<compromised>' | sort by Timestamp asc`"
+          - "  3. VPN: Check VPN logs for unusual geo/time patterns pre-incident"
+          - "  4. Vulnerable edge device: Check Shodan/Censys for exposed services on your IP range"
+          - "Remove persistence mechanisms on every host in attack path:"
+          - "  Scheduled tasks: `schtasks /query /fo LIST /v | findstr /i '<suspicious>'` → `schtasks /delete /tn <name> /f`"
+          - "  Services: `Get-Service | Where-Object {$_.StartType -eq 'Automatic' -and $_.Status -eq 'Running'} | fl Name,DisplayName,BinaryPathName`"
+          - "  Registry Run keys: `reg query HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run`"
+          - "  WMI subscriptions: `Get-WMIObject -Namespace root\\subscription -Class __EventFilter`"
+          - "Scan all hosts for dormant payloads using variant-specific IOCs"
+          - "Reset ALL potentially compromised credentials (prioritize: service accounts > admin accounts > user accounts)"
+          - "Patch the vulnerability used for initial access before bringing systems back online"
+      - name: "Recover"
         steps:
-          - "Restore from clean backups (verify backup integrity before restoring)"
-          - "Rebuild compromised hosts from golden images"
-          - "Re-enable network connectivity in stages, monitoring for re-infection"
-          - "Conduct full credential rotation for affected scope"
-          - "Resume normal backup operations"
-      - phase: "Post-Incident"
+          - "Verify backup integrity BEFORE restoring:"
+          - "  Mount backup in isolated environment → check for ransom notes / encrypted files → scan with AV"
+          - "Restore from clean backups or rebuild from golden images"
+          - "Re-enable network connectivity in stages — start with monitoring/security infrastructure first:"
+          - "  Stage 1: SIEM, EDR, network monitoring"
+          - "  Stage 2: Domain controllers, DNS, DHCP"
+          - "  Stage 3: Critical business applications"
+          - "  Stage 4: User workstations (batches of 10-20, monitor between batches)"
+          - "Full credential rotation for affected scope — force password change at next logon for all users in affected OUs"
+          - "Resume backup operations — verify backup jobs complete successfully for 48h"
+        decision_tree:
+          - condition: "No clean backup available"
+            action: "Rebuild from scratch using golden images. DO NOT pay ransom without Legal + Insurance + Law Enforcement guidance."
+          - condition: "Recovery time exceeds business tolerance"
+            action: "Activate business continuity plan — switch to manual/paper processes for critical operations."
+      - name: "Post-Incident"
         steps:
-          - "Document full timeline from initial access to containment"
-          - "Conduct lessons-learned meeting within 48 hours"
-          - "Update detection rules based on findings"
-          - "Report to relevant authorities (CISA, law enforcement, regulators)"
-          - "Communicate with affected stakeholders (customers, partners)"
+          - "Document full timeline: initial access → lateral movement → encryption → detection → containment → recovery"
+          - "Conduct lessons-learned meeting within 48h — ALL responders must attend"
+          - "Update detection rules in SIEM based on IOCs and TTPs discovered"
+          - "Report to authorities:"
+          - "  US: FBI IC3 (ic3.gov), CISA (cisa.gov/report)"
+          - "  EU: National CERT + data protection authority within 72h (GDPR Art. 33)"
+          - "  Publicly traded: SEC notification requirements (4 business days)"
+          - "File cyber insurance claim with full incident timeline"
+    evidence_checklist:
+      - "Memory dump of patient zero (before reboot) — use WinPMEM or Magnet RAM Capture"
+      - "Disk image of patient zero — use FTK Imager or dd"
+      - "Network capture during active encryption (if available) — from span port / tap"
+      - "EDR telemetry export for all affected hosts (full timeline)"
+      - "Email gateway logs for initial access email"
+      - "Firewall/proxy logs covering C2 communication period"
+      - "Active Directory logs (Security event log, replication logs)"
+      - "Ransom note screenshot + cryptocurrency wallet address"
+      - "Sample of encrypted file + original (for potential decryption)"
+    comms_templates:
+      internal: |
+        SUBJECT: [CRITICAL] Active Security Incident — Ransomware
+        
+        Team — We are responding to an active ransomware incident affecting [X] systems.
+        
+        Current status: [Detecting / Containing / Eradicating / Recovering]
+        War room: #inc-ransomware-YYYYMMDD
+        Incident Commander: [Name]
+        
+        DO:
+        - Report any unusual file activity to the war room immediately
+        - Continue using approved devices only
+        
+        DO NOT:
+        - Attempt to open encrypted files or ransom notes
+        - Connect personal devices to the corporate network
+        - Discuss the incident on social media or with external parties
+        
+        Next update: [time]
+      external: |
+        SUBJECT: Security Incident Notification
+        
+        Dear [Customer/Partner],
+        
+        We are writing to inform you that [Company] experienced a security incident on [date]. 
+        We detected the incident promptly and our security team contained it within [X hours].
+        
+        What happened: [Brief factual description — reviewed by Legal]
+        What data was affected: [Specific data types — reviewed by Legal]
+        What we're doing: [Remediation steps taken]
+        What you should do: [Specific guidance for the recipient]
+        
+        We will provide updates as our investigation progresses. For questions, contact [security contact].
 
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 2 — PHISHING RESPONSE
+  # ══════════════════════════════════════════════════════════
   - name: "Phishing Response"
-    description: "Handle reported phishing emails — from triage through user remediation and organization-wide protection."
+    description: "Full operational runbook for phishing triage — from email analysis through org-wide purge and user remediation."
     category: "Phishing"
-    mitre: "T1566"
+    mitre: "T1566 — Phishing"
     severity: "high"
     premium: false
     estimated_time: "30-90 minutes"
-    roles: ["SOC Analyst", "Email Admin"]
-    tags: [phishing, email, social-engineering]
+    roles: ["SOC Analyst L1/L2", "Email Admin", "Security Awareness Lead"]
+    tags: [phishing, email, social-engineering, credential-theft]
+    escalation:
+      p2_sla: "30 minutes to SOC Lead"
+      p2_notify: ["SOC Manager", "Email Admin"]
+      escalate_to_p1: "If credentials were entered AND MFA was bypassed → escalate to Account Compromise runbook"
+      external: ["Anti-Phishing Working Group (APWG) — reportphishing@apwg.org"]
+    metrics:
+      mttd: "< 5 minutes (from user report to analyst triage)"
+      mttc: "< 30 minutes (from triage to org-wide email purge)"
+      mttr: "< 60 minutes (for credential-entry cases: password reset + session revoke)"
+      benchmark: "Target < 10% click rate on phishing simulations"
     phases:
-      - phase: "Detect"
+      - name: "Detect"
         steps:
-          - "Receive and triage phishing report (user report, email gateway alert, or automated detection)"
-          - "Analyze email headers — check sender, SPF/DKIM/DMARC, reply-to mismatch"
-          - "Inspect URLs without clicking (use sandbox like urlscan.io or ANY.RUN)"
-          - "Check attachments in sandbox environment"
-          - "Determine if email is phishing, spam, or legitimate"
-      - phase: "Contain"
+          - "Triage the phishing report — check source: user report, SEG alert, or automated detection"
+          - "Analyze email headers (extract from .eml or message trace):"
+          - "  Check sender: SPF pass/fail, DKIM signature, DMARC alignment"
+          - "  Look for reply-to mismatch (sender ≠ reply-to is a strong phishing indicator)"
+          - "  Check X-Originating-IP against threat intel"
+          - "Inspect URLs WITHOUT clicking:"
+          - "  urlscan.io: submit URL → check redirects, final domain, screenshots"
+          - "  VirusTotal: submit URL → check detection ratio"
+          - "  ANY.RUN: submit in sandbox → see full execution chain"
+          - "Inspect attachments in sandbox:"
+          - "  Hybrid Analysis (hybrid-analysis.com) or Joe Sandbox for file detonation"
+          - "  Check file hash on VirusTotal before opening anything"
+        decision_tree:
+          - condition: "Confirmed phishing — no user clicked"
+            action: "Proceed to Contain (purge email). Skip Eradicate."
+          - condition: "User clicked link but did NOT enter credentials"
+            action: "Contain + check endpoint for drive-by download. Run EDR scan on user device."
+          - condition: "User entered credentials"
+            action: "URGENT: Contain + Eradicate immediately. Reset password + revoke sessions within 15 min."
+          - condition: "User entered credentials AND MFA token was intercepted (AiTM/EvilProxy)"
+            action: "ESCALATE to P1. Treat as full account compromise. Switch to Account Compromise runbook."
+      - name: "Contain"
         steps:
-          - "Search email gateway for same message delivered to other users"
-          - "Purge/quarantine the email from all mailboxes (Exchange: Purge-Content / O365: Threat Explorer)"
-          - "Block sender domain and malicious URLs at email gateway"
-          - "If any user clicked — isolate their endpoint and force password reset"
-      - phase: "Eradicate"
+          - "Find all recipients of the same email:"
+          - "  Exchange Online: `Get-MessageTrace -SenderAddress '<phishing_sender>' -StartDate '<date>' -EndDate '<date>'`"
+          - "  O365 Threat Explorer: Email & collaboration > Explorer > Sender = '<address>' → Select all → Purge"
+          - "  Google Workspace: Admin Console > Investigation Tool > Gmail log events > sender = '<address>'"
+          - "Purge/quarantine from all mailboxes:"
+          - "  O365: Threat Explorer > Select messages > Move to: Soft Delete / Hard Delete"
+          - "  Exchange: `New-ComplianceSearch -Name 'PhishPurge' -ExchangeLocation All -ContentMatchQuery 'subject:<subject> AND from:<sender>'`"
+          - "  Then: `New-ComplianceSearchAction -SearchName 'PhishPurge' -Purge -PurgeType SoftDelete`"
+          - "  Google: Admin > Investigation > Select emails > Delete"
+          - "Block sender domain and malicious URLs:"
+          - "  O365: Email & collaboration > Policies > Anti-phishing > Block sender/domain"
+          - "  SEG (Proofpoint/Mimecast): Add sender/domain to block list"
+          - "  Web proxy: Block phishing URL/domain at proxy level"
+          - "If user clicked — isolate endpoint for scanning:"
+          - "  CrowdStrike: Contain Host"
+          - "  Defender: Isolate Device"
+      - name: "Eradicate"
         steps:
-          - "Check if malicious payload was downloaded or executed"
-          - "If credentials were submitted — immediately reset passwords and revoke sessions"
-          - "Revoke any OAuth tokens if consent-grant phishing"
-          - "Add malicious domains/IPs to blocklists"
-      - phase: "Recover"
+          - "If credentials were submitted:"
+          - "  Azure AD: `Revoke-AzureADUserAllRefreshToken -ObjectId <user>` + `Set-AzureADUser -ObjectId <user> -PasswordProfile @{Password='Temp@' + (Get-Random); ForceChangePasswordNextLogin=$true}`"
+          - "  Google: Admin > Users > Reset password + check 'Require password change'"
+          - "  Check and remove OAuth app consent grants: `Get-AzureADAuditSignInLogs | where AppDisplayName eq '<suspicious app>'`"
+          - "If attachment was opened — check for malware execution:"
+          - "  Run full EDR scan on affected endpoint"
+          - "  Check process tree in EDR for child processes of Office/PDF apps"
+          - "  Sentinel: `DeviceProcessEvents | where InitiatingProcessFileName in ('WINWORD.EXE','EXCEL.EXE','POWERPNT.EXE','AcroRd32.exe') | where Timestamp > ago(2h) | where DeviceName == '<host>'`"
+          - "Add IOCs to blocklists — sender domain, phishing URL, file hash, C2 domain"
+      - name: "Recover"
         steps:
-          - "Confirm all instances of the email are removed"
-          - "Verify affected users have reset credentials"
-          - "Send awareness notification to organization about the campaign"
+          - "Confirm all instances of the phishing email are purged (re-run search to verify zero results)"
+          - "Verify affected users have reset credentials and MFA is active"
+          - "If malware was found — rebuild endpoint from clean image"
           - "Update email filtering rules with new indicators"
-      - phase: "Post-Incident"
+          - "Send org-wide awareness notification about this specific campaign"
+      - name: "Post-Incident"
         steps:
-          - "Log the incident with IOCs and timeline"
-          - "Share indicators with industry ISACs if applicable"
-          - "Consider targeted phishing training for users who clicked"
+          - "Log incident with IOCs: sender address, reply-to, subject line, URLs, file hashes, C2 domains"
+          - "Share indicators with ISACs (FS-ISAC, H-ISAC, etc.) if applicable"
+          - "Submit to APWG: reportphishing@apwg.org"
+          - "Schedule targeted phishing simulation for users who clicked (within 2 weeks)"
+          - "Review email gateway rules — could this have been caught automatically?"
+    evidence_checklist:
+      - "Original email (.eml file with full headers)"
+      - "Screenshot of phishing page (if URL was active)"
+      - "List of all recipients and who clicked"
+      - "Sandbox analysis report (urlscan.io / ANY.RUN output)"
+      - "EDR logs from affected endpoints"
+      - "Email gateway logs showing delivery"
 
-  # ── PREMIUM PLAYBOOKS ──
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 3 — BUSINESS EMAIL COMPROMISE (BEC)
+  # ══════════════════════════════════════════════════════════
   - name: "Business Email Compromise (BEC)"
-    description: "Respond to BEC attacks where an attacker compromises or impersonates an executive to redirect payments or steal data."
+    description: "Operational runbook for BEC attacks — account compromise, wire fraud prevention, and evidence preservation for law enforcement."
     category: "Business Email Compromise"
-    mitre: "T1534"
+    mitre: "T1534 — Internal Spearphishing"
     severity: "critical"
-    premium: true
+    premium: false
     estimated_time: "2-6 hours"
-    roles: ["SOC Analyst", "Incident Commander", "Finance", "Legal"]
-    tags: [bec, email, fraud, financial]
+    roles: ["Incident Commander", "SOC Analyst L2/L3", "Finance Controller", "Legal Counsel"]
+    tags: [bec, email, fraud, financial, wire-transfer]
+    escalation:
+      p1_sla: "15 minutes — BEC with active wire transfer is ALWAYS P1"
+      p1_notify: ["CFO", "CISO", "Legal", "Bank fraud department"]
+      war_room: "#inc-bec-YYYYMMDD"
+      external: ["FBI IC3 (ic3.gov) — file within 48h for wire recall", "Bank fraud department — call within 30 min of discovery"]
+    metrics:
+      mttd: "< 1 hour (from first fraudulent email to detection)"
+      mttc: "< 30 minutes (from detection to account disable + bank notification)"
+      mttr: "Wire recall success rate drops 50% after 24h — speed is everything"
+      benchmark: "FBI IC3 Recovery Asset Team recovered $538M in BEC losses in 2024 — but only when reported within 48h"
     phases:
-      - phase: "Detect"
+      - name: "Detect"
         steps:
-          - "Identify BEC indicators: wire transfer request from executive, urgency language, reply-to mismatch"
-          - "Verify with the alleged sender via out-of-band communication (phone call, in-person)"
-          - "Check Azure AD / O365 sign-in logs for the compromised account"
-          - "Look for mailbox rules created (auto-forward, auto-delete) hiding attacker activity"
-      - phase: "Contain"
+          - "Identify BEC indicators:"
+          - "  - Wire transfer / payment request from executive with unusual urgency"
+          - "  - Reply-to address differs from sender display name"
+          - "  - Mailbox rules created to hide replies (auto-forward, auto-delete)"
+          - "  - Login from unusual location / impossible travel"
+          - "Verify with the alleged sender via OUT-OF-BAND communication:"
+          - "  Call them directly (phone number from contacts, NOT from the email)"
+          - "  Walk to their desk if same office"
+          - "  DO NOT reply to the email or use chat — attacker may control those"
+          - "Check Azure AD / O365 sign-in logs for compromised account:"
+          - "  Sentinel: `SigninLogs | where UserPrincipalName == '<user>' | where TimeGenerated > ago(30d) | summarize by IPAddress, Location, AppDisplayName | sort by TimeGenerated desc`"
+          - "  Azure Portal: Azure AD > Users > <user> > Sign-in logs > Look for: unusual IP, new device, risky sign-in"
+          - "Check for malicious inbox rules:"
+          - "  PowerShell: `Get-InboxRule -Mailbox <user> | where {$_.ForwardTo -or $_.ForwardAsAttachmentTo -or $_.DeleteMessage -eq $true} | fl Name,ForwardTo,DeleteMessage,MoveToFolder`"
+          - "  O365 Admin: Exchange Admin > Mailboxes > <user> > Manage email apps > Check mail flow rules"
+        decision_tree:
+          - condition: "Wire transfer has been initiated but NOT yet completed"
+            action: "IMMEDIATE: Call bank fraud department to halt transfer. Time is critical — every minute counts."
+          - condition: "Wire transfer completed"
+            action: "File FBI IC3 complaint immediately (ic3.gov). Contact bank for recall attempt. Success rate drops rapidly after 24h."
+          - condition: "Email compromise confirmed but no financial impact yet"
+            action: "Disable account, proceed with standard containment."
+      - name: "Contain"
         steps:
-          - "Immediately disable the compromised account"
-          - "Revoke all active sessions and OAuth tokens"
-          - "Contact bank/finance to halt any pending wire transfers"
-          - "Search for all emails sent from the compromised account during attacker's access window"
-          - "Remove malicious inbox rules (forwarding, deletion rules)"
-      - phase: "Eradicate"
+          - "Disable the compromised account immediately:"
+          - "  Azure AD: `Set-AzureADUser -ObjectId <user> -AccountEnabled $false`"
+          - "  Revoke ALL sessions: `Revoke-AzureADUserAllRefreshToken -ObjectId <user>`"
+          - "  Google: Admin > Users > Suspend user"
+          - "Contact bank/finance to halt pending wire transfers — use phone, not email"
+          - "Search for ALL emails sent from the compromised account during attacker's access window:"
+          - "  `Get-MessageTrace -SenderAddress '<compromised>' -StartDate '<attacker_first_access>' -EndDate (Get-Date)`"
+          - "Remove malicious inbox rules:"
+          - "  `Get-InboxRule -Mailbox <user> | where {$_.ForwardTo -or $_.ForwardAsAttachmentTo} | Remove-InboxRule -Confirm:$false`"
+          - "Remove delegates and connected apps:"
+          - "  `Get-MailboxPermission -Identity <user> | where {$_.IsInherited -eq $false} | Remove-MailboxPermission`"
+          - "  Azure AD > Enterprise apps > User consent > Revoke suspicious app permissions"
+      - name: "Eradicate"
         steps:
-          - "Determine initial compromise method (password spray, phishing, token theft)"
-          - "Reset password and enforce MFA enrollment"
-          - "Audit all inbox rules, delegates, and connected applications"
-          - "Check for data exfiltration (mail forwarding to external addresses)"
-      - phase: "Recover"
+          - "Determine initial compromise method:"
+          - "  Password spray: Check Azure AD > Risky sign-ins for multiple failed attempts before success"
+          - "  Phishing/AiTM: Check email for credential harvesting link clicked before compromise date"
+          - "  Token theft: Check for suspicious OAuth app grants in Azure AD > Enterprise applications"
+          - "Reset password with strong random + enforce MFA re-enrollment:"
+          - "  `Set-AzureADUserPassword -ObjectId <user> -Password (ConvertTo-SecureString '<random>' -AsPlainText -Force) -ForceChangePasswordNextLogin $true`"
+          - "  Require MFA re-registration: Azure AD > Users > Authentication methods > Require re-register"
+          - "Audit ALL inbox rules, delegates, mail forwarding, and connected applications"
+          - "Check for data exfiltration: mail forwarding to external addresses, large attachment sends"
+      - name: "Recover"
         steps:
-          - "Re-enable account with new credentials and MFA"
-          - "Notify recipients of fraudulent emails sent during compromise"
-          - "Work with finance/legal on any completed fraudulent transactions"
-          - "File reports with FBI IC3, local law enforcement"
-      - phase: "Post-Incident"
+          - "Re-enable account with new credentials + enforced MFA"
+          - "Notify ALL recipients of fraudulent emails sent during compromise"
+          - "Provide Finance with list of any payment instructions sent from compromised account"
+          - "Work with Legal on any completed fraudulent transactions"
+          - "File FBI IC3 report (ic3.gov) — include: wire details, bank info, email headers, timeline"
+      - name: "Post-Incident"
         steps:
-          - "Implement conditional access policies (location, device compliance)"
-          - "Enable risky sign-in detection in Azure AD Identity Protection"
-          - "Conduct executive-targeted security awareness training"
+          - "Implement conditional access policies:"
+          - "  Location-based: Block sign-ins from non-business countries"
+          - "  Device-based: Require compliant/managed device"
+          - "  Risk-based: Block high-risk sign-ins automatically"
+          - "Enable Azure AD Identity Protection risky sign-in policies"
+          - "Deploy anti-phishing banner on external emails ('This email was sent from outside your organization')"
+          - "Implement dual-approval process for wire transfers above $X threshold"
+          - "Conduct executive-targeted security awareness training within 2 weeks"
+    evidence_checklist:
+      - "Fraudulent email(s) with full headers (.eml)"
+      - "Azure AD sign-in logs for compromised account (full compromise window)"
+      - "Inbox rules created by attacker (export before deletion)"
+      - "List of emails sent by attacker from compromised account"
+      - "Wire transfer details (amount, destination bank, account, SWIFT/BIC)"
+      - "Bank correspondence regarding recall attempt"
+      - "FBI IC3 complaint number"
+    comms_templates:
+      internal: |
+        SUBJECT: [URGENT] Business Email Compromise — Wire Fraud Alert
+        
+        Finance/Accounting teams:
+        
+        We have confirmed that [executive name]'s email account was compromised.
+        Any payment or wire transfer instructions received from this account 
+        between [date] and [date] should be treated as FRAUDULENT.
+        
+        Action required:
+        - HALT all pending payments requested by this account
+        - Verify any completed transfers from this period with the requestor by PHONE
+        - Report any suspicious payment requests to [security contact]
+        
+        DO NOT respond to any existing email threads with this account.
 
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 4 — ACTIVE LATERAL MOVEMENT
+  # ══════════════════════════════════════════════════════════
   - name: "Active Lateral Movement"
-    description: "Respond when an attacker is actively moving between systems in your network — time-critical containment."
+    description: "Time-critical runbook for containing an attacker moving between systems — real-time hunt and containment procedures."
     category: "Lateral Movement"
-    mitre: "T1021"
+    mitre: "T1021 — Remote Services"
     severity: "critical"
-    premium: true
+    premium: false
     estimated_time: "1-4 hours"
-    roles: ["SOC Analyst", "Incident Commander", "Network Team"]
-    tags: [lateral-movement, network, containment]
+    roles: ["Incident Commander", "SOC Analyst L3 / Threat Hunter", "Network Team", "AD Admin"]
+    tags: [lateral-movement, network, containment, active-threat]
+    escalation:
+      p1_sla: "Immediate — active lateral movement is always P1"
+      p1_notify: ["CISO", "Network Team Lead", "AD Admin"]
+      war_room: "#inc-lateral-YYYYMMDD"
+      external: ["External IR retainer (if attacker has domain admin)"]
+    metrics:
+      mttd: "< 15 minutes (from first lateral movement event to analyst alert)"
+      mttc: "< 1 hour (from alert to full containment of attack path)"
+      mttr: "< 24 hours (rebuild compromised hosts + credential rotation)"
+      benchmark: "Median attacker breakout time (initial access to lateral movement): 62 minutes (CrowdStrike 2025)"
     phases:
-      - phase: "Detect"
+      - name: "Detect"
         steps:
-          - "Identify lateral movement indicators: unusual RDP, PsExec, WMI, or SMB connections"
-          - "Map the attack path — which hosts have been accessed and in what order"
-          - "Identify the compromised credentials being used"
-          - "Determine the attacker's objective (domain admin, database, file server)"
-      - phase: "Contain"
+          - "Identify lateral movement technique in use:"
+          - "  RDP: `DeviceLogonEvents | where LogonType == 'RemoteInteractive' | where Timestamp > ago(1h) | where AccountName !in ('<known_admins>') | summarize by DeviceName, AccountName, RemoteIP`"
+          - "  PsExec/SMB: `DeviceProcessEvents | where FileName == 'PSEXESVC.exe' or ProcessCommandLine has 'psexec' | where Timestamp > ago(1h)`"
+          - "  WMI: `DeviceProcessEvents | where ProcessCommandLine has 'wmic' and ProcessCommandLine has '/node:' | where Timestamp > ago(1h)`"
+          - "  WinRM: `DeviceProcessEvents | where FileName == 'wsmprovhost.exe' | where Timestamp > ago(1h)`"
+          - "Map the full attack path — which hosts and in what order:"
+          - "  Build timeline: `DeviceLogonEvents | where AccountName == '<compromised_account>' | where Timestamp > ago(24h) | project Timestamp, DeviceName, RemoteIP, LogonType | sort by Timestamp asc`"
+          - "Identify the compromised credentials being used (check: service accounts, admin accounts, cached creds)"
+          - "Determine attacker objective — what are they moving toward? (DC, database server, file server, backup)"
+        decision_tree:
+          - condition: "Attacker has reached a domain controller"
+            action: "CRITICAL ESCALATION. Assume full domain compromise. Prepare for KRBTGT double-reset + full AD recovery."
+          - condition: "Attacker has domain admin credentials"
+            action: "They can access anything. Focus on containing exfiltration channels (block outbound). Prepare for full credential rotation."
+          - condition: "Movement is limited to user-level credentials"
+            action: "Contain affected hosts + disable compromised account. Attack path is limited."
+      - name: "Contain"
         steps:
-          - "Isolate all confirmed compromised hosts via EDR network isolation"
-          - "Disable compromised accounts immediately"
-          - "Block attacker's known IPs/tools at network level"
-          - "If domain admin is compromised — activate KRBTGT reset procedure"
-          - "Segment critical assets (VLAN isolation for crown jewels)"
-      - phase: "Eradicate"
+          - "Network-isolate ALL confirmed compromised hosts (every host in the attack path):"
+          - "  CrowdStrike: Bulk contain — Host Management > select hosts > Actions > Contain"
+          - "  Defender: Device page > Isolate device (for each host)"
+          - "  Network: ACL block at switch level — `ip access-list extended INCIDENT_BLOCK` → `deny ip host <ip> any` → apply to interface"
+          - "Disable ALL compromised accounts:"
+          - "  `Get-ADUser -Filter {SamAccountName -like '<account>'} | Disable-ADAccount`"
+          - "  If service account: identify dependent systems first, but disable if attacker has it"
+          - "If domain admin is compromised — KRBTGT reset:"
+          - "  Reset 1: `Set-ADUser krbtgt -ChangePasswordAtLogon $true` (or use AD Users & Computers)"
+          - "  Wait 12 hours (for replication across all DCs)"
+          - "  Reset 2: Repeat"
+          - "  WARNING: This invalidates ALL Kerberos tickets — all users will need to re-authenticate"
+          - "Segment critical assets — emergency VLAN isolation for crown jewels:"
+          - "  Move critical servers to isolated VLAN via switch config"
+          - "  Block all traffic to critical VLAN except from known management IPs"
+      - name: "Eradicate"
         steps:
-          - "Remove attacker tooling from all accessed hosts (Cobalt Strike, Mimikatz, etc.)"
-          - "Hunt for persistence on every host in the attack path"
-          - "Reset credentials for all accounts used during lateral movement"
-          - "Patch the initial access vulnerability"
-      - phase: "Recover"
+          - "Remove attacker tooling from every host in the attack path:"
+          - "  Common tools to hunt for: Cobalt Strike (beacons), Mimikatz, PsExec, BloodHound, SharpHound, Rubeus, Impacket"
+          - "  Check: `DeviceFileEvents | where FileName in~ ('mimikatz.exe','beacon.exe','psexec.exe','sharphound.exe','rubeus.exe') | where Timestamp > ago(7d)`"
+          - "  Check process injection: `DeviceProcessEvents | where ActionType == 'CreateRemoteThreadApiCall' | where Timestamp > ago(7d)`"
+          - "Hunt for persistence on EVERY host in the attack path:"
+          - "  Autoruns: Run Sysinternals Autoruns on each host — compare against known-good baseline"
+          - "  Scheduled tasks: `schtasks /query /fo CSV /v | ConvertFrom-Csv | where {$_.TaskName -notlike '\\Microsoft*'} | fl TaskName,TaskToRun,Author`"
+          - "  Services: `Get-WmiObject win32_service | where {$_.PathName -notlike '*Windows*' -and $_.StartMode -eq 'Auto'} | fl Name,PathName`"
+          - "Credential rotation — reset in this order:"
+          - "  1. KRBTGT (if domain admin was compromised — see Contain phase)"
+          - "  2. All admin accounts used in the attack path"
+          - "  3. All service accounts on compromised hosts"
+          - "  4. Machine accounts of compromised hosts (`Reset-ComputerMachinePassword`)"
+          - "Patch the initial access vulnerability before bringing anything back online"
+      - name: "Recover"
         steps:
-          - "Rebuild compromised hosts from clean images"
-          - "Restore network connectivity in monitored stages"
-          - "Implement network segmentation improvements"
-          - "Deploy additional detection on previously unmonitored paths"
-      - phase: "Post-Incident"
+          - "Rebuild all compromised hosts from golden images (do NOT trust remediated live systems)"
+          - "Restore network connectivity in monitored stages — security infra first, then DCs, then servers, then workstations"
+          - "Implement network segmentation improvements based on the attack path that was used"
+          - "Deploy detection for the specific lateral movement technique on previously unmonitored network paths"
+      - name: "Post-Incident"
         steps:
-          - "Map full attack chain to MITRE ATT&CK"
-          - "Conduct adversary simulation on the same path to verify fixes"
-          - "Update firewall rules and network segmentation policies"
+          - "Map the full attack chain to MITRE ATT&CK — document every technique observed"
+          - "Conduct purple team exercise: replay the exact attack path to verify detection and containment"
+          - "Review and tighten firewall rules between network segments"
+          - "Implement tiered admin model if not already in place (Tier 0: DC, Tier 1: Servers, Tier 2: Workstations)"
+          - "Deploy LAPS (Local Administrator Password Solution) to prevent credential reuse across hosts"
+    evidence_checklist:
+      - "EDR telemetry from every host in the attack path (process trees, network connections, file events)"
+      - "AD logon event logs — Security Event ID 4624, 4625, 4768, 4769, 4776"
+      - "Network flow data between compromised hosts"
+      - "Memory dumps from compromised hosts (for process injection analysis)"
+      - "List of attacker tools found with file hashes"
+      - "Attack path diagram with timestamps"
 
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 5 — CLOUD ACCOUNT COMPROMISE
+  # ══════════════════════════════════════════════════════════
   - name: "Cloud Account Compromise"
-    description: "Respond to compromised cloud accounts (AWS, Azure, GCP) — from initial detection through full remediation."
+    description: "Runbook for compromised AWS/Azure/GCP identities — IAM lockdown, resource audit, and cost containment."
     category: "Cloud Compromise"
-    mitre: "T1078.004"
+    mitre: "T1078.004 — Valid Accounts: Cloud Accounts"
     severity: "critical"
-    premium: true
+    premium: false
     estimated_time: "2-6 hours"
-    roles: ["SOC Analyst", "Cloud Security Engineer", "DevOps"]
-    tags: [cloud, aws, azure, gcp, account-compromise]
+    roles: ["SOC Analyst L2/L3", "Cloud Security Engineer", "DevOps / Platform Team", "FinOps"]
+    tags: [cloud, aws, azure, gcp, iam, access-keys]
+    escalation:
+      p1_sla: "30 minutes to Cloud Security Lead"
+      p1_notify: ["Cloud Security Lead", "DevOps TL", "FinOps (for cost anomalies)"]
+      escalate_to_p1: "If attacker created new IAM users/roles or modified security groups on production → immediate P1"
+      external: ["AWS Support (Enterprise)", "Azure Support (if tenant-level compromise)", "GCP Support"]
+    metrics:
+      mttd: "< 15 minutes (from anomalous API call to alert)"
+      mttc: "< 30 minutes (from alert to credential rotation + deny policy)"
+      mttr: "< 4 hours (full resource audit + unauthorized resource cleanup)"
+      benchmark: "Average cloud breach cost: $5.17M (IBM 2025). Crypto-mining costs can reach $10K/day."
     phases:
-      - phase: "Detect"
+      - name: "Detect"
         steps:
-          - "Identify suspicious cloud activity: unusual API calls, new regions, resource creation"
-          - "Check CloudTrail/Activity Log for the compromised identity"
-          - "Identify if access keys, tokens, or console access was compromised"
-          - "Determine scope — which resources were accessed or modified"
-      - phase: "Contain"
+          - "Identify suspicious cloud activity:"
+          - "  AWS: `aws cloudtrail lookup-events --lookup-attributes AttributeKey=Username,AttributeValue=<compromised> --start-time <date> --max-results 50`"
+          - "  Azure: `AzureActivity | where Caller == '<compromised>' | where TimeGenerated > ago(24h) | summarize by OperationNameValue, ActivityStatusValue`"
+          - "  GCP: `gcloud logging read 'protoPayload.authenticationInfo.principalEmail=\"<compromised>\"' --limit=50 --format=json`"
+          - "Determine compromise type:"
+          - "  Access key leaked (GitHub, paste site, logs)"
+          - "  Console password compromised (phishing, credential stuffing)"
+          - "  Session token stolen (SSRF, metadata service exploit)"
+          - "Scope the blast radius — what resources were accessed or modified:"
+          - "  AWS: `aws cloudtrail lookup-events --lookup-attributes AttributeKey=Username,AttributeValue=<user> --start-time <compromise_start> | jq '.Events[].EventName' | sort | uniq -c | sort -rn`"
+          - "  Look for: RunInstances, CreateUser, CreateAccessKey, PutBucketPolicy, CreateLoginProfile"
+        decision_tree:
+          - condition: "Only access keys compromised (console access not affected)"
+            action: "Rotate keys immediately. Apply explicit deny. Scope is limited to API actions."
+          - condition: "Console access compromised (password or SSO)"
+            action: "Disable user + reset password + revoke sessions + check for MFA changes."
+          - condition: "Attacker created new IAM users or roles"
+            action: "CRITICAL: Attacker has backdoor access. Disable new identities immediately. Full IAM audit required."
+          - condition: "Crypto-mining instances detected"
+            action: "Terminate instances immediately. Check ALL regions — miners often spawn in regions you don't monitor."
+      - name: "Contain"
         steps:
-          - "Immediately rotate or disable compromised access keys"
-          - "Revoke active sessions (AWS: revoke IAM sessions, Azure: revoke refresh tokens)"
-          - "Apply explicit deny policy to the compromised identity"
-          - "Disable any new IAM users/roles created by the attacker"
-          - "Block attacker IP ranges at security group / NSG level"
-      - phase: "Eradicate"
+          - "Rotate or disable compromised access keys:"
+          - "  AWS: `aws iam update-access-key --user-name <user> --access-key-id <key> --status Inactive` + `aws iam create-access-key --user-name <user>`"
+          - "  Azure: Azure Portal > App registrations > Certificates & secrets > Delete old, create new"
+          - "  GCP: `gcloud iam service-accounts keys disable <key-id> --iam-account=<sa>@<project>.iam.gserviceaccount.com`"
+          - "Revoke active sessions:"
+          - "  AWS: Attach inline policy to user: `{\"Effect\":\"Deny\",\"Action\":\"*\",\"Resource\":\"*\",\"Condition\":{\"DateLessThan\":{\"aws:TokenIssueTime\":\"<NOW>\"}}}`"
+          - "  Azure: `Revoke-AzureADUserAllRefreshToken -ObjectId <user>`"
+          - "Disable any NEW IAM users/roles created by attacker:"
+          - "  AWS: `aws iam list-users --query 'Users[?CreateDate>=`<date>`]'` → delete each"
+          - "  Check for new access keys on existing users: `aws iam list-access-keys --user-name <user>`"
+          - "Block attacker IPs at security group / NSG / firewall level"
+      - name: "Eradicate"
         steps:
-          - "Audit all changes made during the compromise window"
-          - "Remove unauthorized resources (EC2 instances, Lambda functions, storage buckets)"
-          - "Revert security group and IAM policy changes"
-          - "Check for backdoor access (new access keys, cross-account roles, SSO configurations)"
-      - phase: "Recover"
+          - "Full audit of changes during compromise window:"
+          - "  IAM: New users, roles, policies, access keys, login profiles"
+          - "  Compute: New instances (check ALL regions), Lambda functions, containers"
+          - "  Storage: Bucket policy changes, public access, new buckets"
+          - "  Network: Security group changes, VPC peering, new VPN connections"
+          - "Remove unauthorized resources:"
+          - "  AWS: `aws ec2 describe-instances --region <region> --filters 'Name=instance-state-name,Values=running' --query 'Reservations[].Instances[].{ID:InstanceId,Type:InstanceType,Launch:LaunchTime}'`"
+          - "  Check ALL regions: `for region in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text); do echo \"==$region==\"; aws ec2 describe-instances --region $region --query 'Reservations[].Instances[].InstanceId' --output text; done`"
+          - "Revert security group and IAM policy changes from CloudTrail diff"
+          - "Check for backdoor access: cross-account roles, SSO configurations, federation trust changes"
+      - name: "Recover"
         steps:
           - "Reset credentials and enforce MFA on all affected accounts"
-          - "Restore any modified resources from infrastructure-as-code"
-          - "Verify billing — check for crypto-mining instances"
-          - "Re-enable monitoring and alerting for the affected scope"
-      - phase: "Post-Incident"
+          - "Restore modified resources from Infrastructure-as-Code (Terraform state, CloudFormation, etc.)"
+          - "Verify billing dashboard — check for crypto-mining charges across ALL regions"
+          - "  AWS: Cost Explorer > filter by service = EC2 > group by region > last 7 days"
+          - "Re-enable monitoring and alerting for affected scope"
+          - "Set up billing alerts: SNS notification at $X threshold"
+      - name: "Post-Incident"
         steps:
-          - "Implement least-privilege IAM policies"
-          - "Enable GuardDuty / Defender for Cloud / Security Command Center"
-          - "Set up billing alerts for anomalous spend"
+          - "Implement least-privilege IAM — review and tighten all policies"
+          - "Enable threat detection services:"
+          - "  AWS: GuardDuty (all regions), CloudTrail (all regions + S3 data events)"
+          - "  Azure: Defender for Cloud (all subscriptions), Sentinel"
+          - "  GCP: Security Command Center, VPC Flow Logs"
+          - "Implement SCPs (AWS) or Azure Policy to prevent risky actions (e.g., no public S3, no root access keys)"
+          - "Set up billing anomaly detection — alert on spend > 150% of baseline"
+          - "Scan all repos for leaked credentials: truffleHog, git-secrets, GitHub secret scanning"
+    evidence_checklist:
+      - "CloudTrail / Activity Log / Audit Log for full compromise window"
+      - "IAM diff — what changed (users, roles, policies, keys)"
+      - "Resource inventory diff — what was created/modified/deleted"
+      - "VPC flow logs showing attacker IP connections"
+      - "Billing data showing unauthorized resource usage"
+      - "Source of credential leak (if access key — where was it exposed?)"
 
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 6 — DATA BREACH RESPONSE
+  # ══════════════════════════════════════════════════════════
   - name: "Data Breach Response"
-    description: "Full response plan when sensitive data has been confirmed exfiltrated — technical, legal, and communication steps."
+    description: "Full operational runbook for confirmed data exfiltration — technical containment, legal obligations, regulatory notification, and stakeholder communication."
     category: "Data Breach"
-    mitre: "T1048"
+    mitre: "T1048 — Exfiltration Over Alternative Protocol"
     severity: "critical"
-    premium: true
+    premium: false
     estimated_time: "Days to weeks"
-    roles: ["Incident Commander", "SOC Analyst", "Legal", "PR", "DPO"]
-    tags: [data-breach, exfiltration, gdpr, compliance]
+    roles: ["Incident Commander", "SOC Analyst L3", "Legal / DPO", "PR / Communications", "Executive Sponsor"]
+    tags: [data-breach, exfiltration, gdpr, compliance, notification]
+    escalation:
+      p1_sla: "Immediate — all confirmed data breaches are P1"
+      p1_notify: ["CEO", "CISO", "General Counsel / DPO", "Board (if material breach)"]
+      war_room: "#inc-breach-YYYYMMDD (restricted access — need-to-know only)"
+      external: ["External forensics firm (contract in advance)", "Cyber insurance carrier (breach coach)", "Outside legal counsel (privilege)", "PR / crisis communications firm"]
+    metrics:
+      mttd: "< 24 hours (from first exfiltration to detection)"
+      mttc: "< 4 hours (from detection to exfiltration channel closed)"
+      notification_sla: "GDPR: 72 hours to DPA. HIPAA: 60 days. SEC: 4 business days (material). State laws: varies (15-60 days)"
+      benchmark: "Average cost per breached record: $169 (IBM 2025). Average breach cost: $4.88M."
     phases:
-      - phase: "Detect"
+      - name: "Detect"
         steps:
-          - "Confirm data exfiltration — identify what data left and through what channel"
-          - "Determine volume and sensitivity of exfiltrated data"
-          - "Identify affected data subjects (customers, employees, partners)"
-          - "Establish timeline: when did exfiltration start and stop"
-      - phase: "Contain"
+          - "Confirm data exfiltration — identify what left and through what channel:"
+          - "  DLP alerts: Check DLP dashboard for policy violations (email, cloud storage, USB, web upload)"
+          - "  Network: `DeviceNetworkEvents | where RemoteUrl !in ('<known_domains>') | where ActionType == 'ConnectionSuccess' | summarize TotalBytes=sum(SentBytes) by DeviceName, RemoteUrl | where TotalBytes > 100000000 | sort by TotalBytes desc`"
+          - "  DNS: Look for DNS tunneling — `DnsEvents | where Name has_any ('<suspicious_domains>') | summarize count() by Name, Computer`"
+          - "Determine volume and sensitivity classification of exfiltrated data:"
+          - "  PII (names, SSN, DOB) → regulatory notification required"
+          - "  PHI (medical records) → HIPAA breach notification required"
+          - "  Financial (credit cards, bank accounts) → PCI DSS notification required"
+          - "  Trade secrets / IP → legal action + competitive damage assessment"
+          - "Identify affected data subjects — how many individuals are impacted?"
+          - "Establish timeline: when did exfiltration start and when was it stopped?"
+        decision_tree:
+          - condition: "Exfiltration is still active"
+            action: "IMMEDIATE CONTAINMENT — close the channel before any further scoping."
+          - condition: "PII/PHI of EU residents confirmed"
+            action: "72-hour GDPR clock starts now. Engage DPO and Legal immediately."
+          - condition: "Publicly traded company + material impact"
+            action: "SEC 4-business-day clock. Engage outside counsel for privilege."
+          - condition: "Data posted on dark web / leak site"
+            action: "Engage crisis communications. Prepare public statement. Notify affected individuals immediately."
+      - name: "Contain"
         steps:
-          - "Close the exfiltration channel immediately"
-          - "Isolate affected systems"
-          - "Preserve all evidence (logs, memory dumps, network captures)"
-          - "Engage legal counsel and data protection officer"
-          - "Activate incident communication team"
-      - phase: "Eradicate"
+          - "Close the exfiltration channel immediately:"
+          - "  Block destination IP/domain at firewall: `set security policy from trust to untrust match destination-address <ip> then deny`"
+          - "  Block at DNS: add to DNS sinkhole / RPZ"
+          - "  Block at web proxy: add URL to block list"
+          - "  If USB: disable USB mass storage via GPO: `Computer Config > Admin Templates > System > Removable Storage Access > Deny All`"
+          - "Isolate affected systems — do NOT wipe (evidence preservation)"
+          - "Preserve ALL evidence — establish chain of custody:"
+          - "  Move to forensic preservation immediately"
+          - "  NO system changes without IC approval"
+          - "Engage legal counsel — all communications through counsel for attorney-client privilege"
+          - "Activate incident communication team — all external communications through PR/legal only"
+      - name: "Eradicate"
         steps:
-          - "Remove attacker access and all persistence mechanisms"
-          - "Patch the vulnerability or close the gap that allowed exfiltration"
-          - "Rotate all credentials that may have been exposed in the breach"
-      - phase: "Recover"
+          - "Remove attacker access and all persistence mechanisms (follow Lateral Movement runbook if applicable)"
+          - "Patch the vulnerability or close the gap that enabled exfiltration"
+          - "Rotate ALL credentials that may have been exposed in the breach"
+          - "If insider threat — coordinate with HR/Legal (see Insider Threat runbook)"
+      - name: "Recover"
         steps:
-          - "Rebuild affected systems"
-          - "Implement additional DLP controls on exfiltration channels"
+          - "Rebuild affected systems from clean images"
+          - "Implement additional DLP controls on the exfiltration channel that was used"
           - "Enhanced monitoring on previously affected data stores"
-      - phase: "Post-Incident"
+          - "Deploy CASB (Cloud Access Security Broker) if cloud storage was the vector"
+          - "Review and tighten data classification + access control policies"
+      - name: "Post-Incident"
         steps:
-          - "Notify regulators within required timeframes (GDPR: 72 hours)"
-          - "Notify affected data subjects"
-          - "Engage external forensics firm if needed for legal proceedings"
-          - "File cyber insurance claim"
+          - "Regulatory notifications (with Legal guidance):"
+          - "  GDPR (EU): Notify supervisory authority within 72 hours of awareness. Notify data subjects 'without undue delay' if high risk."
+          - "  HIPAA (US healthcare): Notify HHS within 60 days. Notify individuals within 60 days. If >500: notify media."
+          - "  PCI DSS: Notify acquiring bank and card brands."
+          - "  SEC (public companies): File 8-K within 4 business days if material."
+          - "  State breach notification laws: varies by state (CA: notify AG if >500 residents)"
+          - "Notify affected data subjects — content must include:"
+          - "  What happened (factual, reviewed by Legal)"
+          - "  What data was affected (specific data types)"
+          - "  What you're doing about it (remediation steps)"
+          - "  What they should do (credit monitoring, password reset, etc.)"
+          - "  Contact information for questions"
+          - "Engage external forensics firm for formal investigation report"
+          - "File cyber insurance claim with full documentation"
           - "Publish transparency report if appropriate"
+    evidence_checklist:
+      - "Forensic disk images of affected systems (chain of custody documented)"
+      - "Network captures covering exfiltration period"
+      - "DLP logs showing what data triggered alerts"
+      - "Full EDR timeline from affected hosts"
+      - "Data inventory — exact records/files exfiltrated"
+      - "Firewall and proxy logs showing exfiltration destination"
+      - "AD/IAM logs showing attacker access to data stores"
+      - "All internal and external communications about the breach (for legal)"
+    comms_templates:
+      affected_individuals: |
+        SUBJECT: Important Security Notice from [Company]
+        
+        Dear [Name],
+        
+        We are writing to inform you of a security incident that may have affected your personal information.
+        
+        What happened: On [date], we discovered that an unauthorized party accessed systems containing [type of data].
+        
+        What information was involved: [Specific data types — e.g., name, email address, phone number]
+        
+        What we are doing: We have contained the incident, engaged external cybersecurity experts, and notified relevant authorities. We are implementing additional security measures to prevent future incidents.
+        
+        What you can do:
+        - Monitor your accounts for unusual activity
+        - [If credentials involved]: Change your password immediately
+        - [If financial data]: We are providing [X months] of complimentary credit monitoring through [provider]. Enroll at [URL] using code [CODE].
+        
+        For questions, contact our dedicated support line: [phone] or [email]
+        
+        We take the security of your information seriously and sincerely apologize for this incident.
 
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 7 — INSIDER THREAT INVESTIGATION
+  # ══════════════════════════════════════════════════════════
   - name: "Insider Threat Investigation"
-    description: "Investigate and respond to suspected malicious insider activity — balancing security with legal and HR requirements."
+    description: "Runbook for investigating suspected malicious insider activity — balancing security operations with legal and HR requirements."
     category: "Insider Threat"
-    mitre: "T1078"
+    mitre: "T1078 — Valid Accounts"
     severity: "high"
-    premium: true
+    premium: false
     estimated_time: "Days to weeks"
-    roles: ["SOC Analyst", "HR", "Legal", "Incident Commander"]
-    tags: [insider-threat, investigation, hr, legal]
+    roles: ["SOC Analyst L3", "HR Business Partner", "Legal Counsel", "Incident Commander", "Employee Relations"]
+    tags: [insider-threat, investigation, hr, legal, dlp]
+    escalation:
+      p2_sla: "4 hours to Security Manager"
+      p2_notify: ["Security Manager", "HR Business Partner", "Legal"]
+      escalate_to_p1: "If active data exfiltration confirmed → switch to Data Breach runbook"
+      external: ["External forensics (if legal proceedings anticipated)", "Law enforcement (if criminal activity confirmed — coordinate with Legal)"]
+    metrics:
+      mttd: "Varies — insider threats average 85 days to detect (Ponemon 2025)"
+      mttc: "< 24 hours from confirmed malicious intent to access revocation"
+      benchmark: "Average insider threat incident cost: $16.2M per organization annually (Ponemon 2025)"
     phases:
-      - phase: "Detect"
+      - name: "Detect"
         steps:
-          - "Identify insider threat indicators: unusual data access, off-hours activity, mass downloads"
-          - "Correlate with HR signals (resignation notice, performance issues, access disputes)"
-          - "Review DLP alerts for the suspected user"
-          - "Check for unauthorized USB usage, personal cloud uploads, or email forwarding"
-      - phase: "Contain"
+          - "Identify insider threat indicators (technical):"
+          - "  Mass file downloads: `DeviceFileEvents | where ActionType == 'FileCreated' and FolderPath startswith 'C:\\Users\\<user>\\Downloads' | where Timestamp > ago(7d) | summarize count() by bin(Timestamp, 1h) | sort by Timestamp desc`"
+          - "  USB activity: `DeviceEvents | where ActionType == 'PnpDeviceConnected' and DeviceDescription has 'USB' | where Timestamp > ago(30d)`"
+          - "  Cloud uploads: DLP logs for uploads to personal cloud storage (Google Drive, Dropbox, OneDrive personal)"
+          - "  Email: Large attachments to personal email or unusual external recipients"
+          - "  Off-hours access: `SigninLogs | where UserPrincipalName == '<user>' | extend Hour=datetime_part('hour', TimeGenerated) | where Hour < 6 or Hour > 22 | summarize count() by bin(TimeGenerated, 1d)`"
+          - "Correlate with HR signals:"
+          - "  Resignation notice submitted"
+          - "  Performance improvement plan (PIP)"
+          - "  Passed over for promotion"
+          - "  Workplace disputes or disciplinary action"
+          - "  Unusual financial pressure"
+          - "IMPORTANT: Do NOT alert the subject. Investigation must remain covert until Legal/HR decide to act."
+        decision_tree:
+          - condition: "Suspicious activity but no confirmed malicious intent"
+            action: "Increase monitoring (with Legal approval). DO NOT confront the employee."
+          - condition: "Confirmed data exfiltration to personal accounts/devices"
+            action: "Coordinate with Legal + HR for immediate action plan. Prepare for same-day termination meeting."
+          - condition: "Employee has already resigned and is in notice period"
+            action: "Immediate access review. Consider garden leave (paid leave with no system access)."
+          - condition: "Evidence of criminal activity (selling data, sabotage)"
+            action: "Engage Legal for law enforcement referral. Preserve evidence with forensic rigor."
+      - name: "Contain"
         steps:
-          - "Engage legal and HR BEFORE taking technical action"
-          - "Increase monitoring on the suspected user (with legal approval)"
-          - "Restrict access to sensitive systems without alerting the user (if investigation is covert)"
-          - "Preserve all evidence with chain-of-custody documentation"
-      - phase: "Eradicate"
+          - "CRITICAL: Engage Legal and HR BEFORE taking any technical action"
+          - "  Legal must approve monitoring scope and method"
+          - "  HR must be prepared for employee interaction"
+          - "  Document all approvals in writing"
+          - "Increase monitoring on the suspected user (with Legal approval):"
+          - "  Enable enhanced DLP monitoring for the user"
+          - "  Enable mailbox audit logging if not already on: `Set-Mailbox -Identity <user> -AuditEnabled $true -AuditLogAgeLimit 365`"
+          - "  Review Azure AD conditional access — ensure user can't access from unmanaged devices"
+          - "Restrict access to sensitive systems without alerting (if investigation is covert):"
+          - "  Remove from sensitive SharePoint sites / file shares (use 'permissions review' as cover)"
+          - "  Tighten DLP policies for the user's scope"
+          - "Preserve all evidence with chain-of-custody documentation — every action logged with timestamp and who performed it"
+      - name: "Eradicate"
         steps:
-          - "Disable all access upon legal/HR decision to act"
-          - "Collect company devices"
-          - "Revoke VPN, email, cloud, and building access simultaneously"
-          - "Review all systems the user had access to for planted backdoors"
-      - phase: "Recover"
+          - "Upon Legal/HR decision to act — coordinate simultaneous access revocation:"
+          - "  Disable AD account: `Disable-ADAccount -Identity <user>`"
+          - "  Disable Azure AD: `Set-AzureADUser -ObjectId <user> -AccountEnabled $false`"
+          - "  Revoke all sessions: `Revoke-AzureADUserAllRefreshToken -ObjectId <user>`"
+          - "  Disable VPN access"
+          - "  Revoke badge / building access"
+          - "  Disable phone / MDM wipe of corporate data (NOT personal data)"
+          - "  All done within the SAME timeframe — usually during the HR termination meeting"
+          - "Collect company devices — laptop, phone, external drives (with HR present, documented)"
+          - "Forensic image of company devices BEFORE any wipe"
+          - "Review all systems the user had access to for planted backdoors, logic bombs, or time-delayed scripts:"
+          - "  Check crontab / Task Scheduler for delayed-execution tasks"
+          - "  Review recent code commits for malicious changes"
+          - "  Check for personal SSH keys added to servers"
+      - name: "Recover"
         steps:
-          - "Change shared credentials the user had access to"
-          - "Review and reassign the user's access and responsibilities"
-          - "Audit any code or configurations the user modified"
-      - phase: "Post-Incident"
+          - "Change shared credentials the user had access to (shared accounts, service accounts, API keys)"
+          - "Review and reassign the user's responsibilities and access to another team member"
+          - "Audit code, configurations, and infrastructure changes made by the user in last 90 days"
+          - "Remove user from all groups, distribution lists, shared mailboxes"
+      - name: "Post-Incident"
         steps:
-          - "Document findings for potential legal proceedings"
-          - "Review and improve access control policies"
-          - "Consider implementing UEBA (User Entity Behavior Analytics)"
+          - "Document findings in format suitable for legal proceedings (coordinate with Legal)"
+          - "Preserve forensic images for minimum retention period (coordinate with Legal on hold requirements)"
+          - "Review and improve access control policies: least privilege, need-to-know"
+          - "Implement / improve UEBA (User Entity Behavior Analytics) — Azure Sentinel UEBA, Exabeam, Securonix"
+          - "Review offboarding checklist — ensure same-day access revocation is standard"
+          - "Consider implementing DLP policies that trigger on behavioral patterns, not just content"
+    evidence_checklist:
+      - "DLP alert logs for the suspected user (full investigation period)"
+      - "Email logs — messages to external addresses with attachments"
+      - "File access logs — what was accessed, downloaded, or copied"
+      - "USB device connection logs"
+      - "Cloud storage upload logs (corporate and personal)"
+      - "Badge access logs (physical access patterns)"
+      - "VPN logs (connection times, durations, data volumes)"
+      - "Forensic image of company devices"
+      - "HR documentation (resignation letter, PIP, disciplinary records — from HR, not self-collected)"
+      - "Legal approval documentation for monitoring activities"
 
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 8 — DDoS ATTACK RESPONSE
+  # ══════════════════════════════════════════════════════════
   - name: "DDoS Attack Response"
-    description: "Mitigate active DDoS attacks — from initial detection through traffic scrubbing and service restoration."
+    description: "Operational runbook for mitigating active DDoS attacks — from traffic analysis through scrubbing activation and service restoration."
     category: "DDoS"
-    mitre: "T1498"
+    mitre: "T1498 — Network Denial of Service"
     severity: "high"
-    premium: true
+    premium: false
     estimated_time: "1-4 hours"
-    roles: ["SOC Analyst", "Network Team", "DevOps"]
-    tags: [ddos, availability, network, cdn]
+    roles: ["SOC Analyst L2", "Network Engineer", "DevOps / SRE", "Communications Lead"]
+    tags: [ddos, availability, network, cdn, waf]
+    escalation:
+      p1_sla: "15 minutes — if customer-facing services are down"
+      p2_sla: "30 minutes — if degraded but not fully down"
+      p1_notify: ["Network Team Lead", "DevOps TL", "VP Engineering (if customer-facing outage)"]
+      external: ["DDoS mitigation provider (Cloudflare/Akamai/AWS Shield) — activate scrubbing", "ISP upstream — request blackhole or traffic filtering"]
+    metrics:
+      mttd: "< 5 minutes (automated monitoring should catch traffic anomalies)"
+      mttc: "< 30 minutes (from alert to mitigation service activated)"
+      mttr: "< 2 hours (full service restoration and attack terminated)"
+      benchmark: "Average DDoS attack duration: 68 minutes (Cloudflare 2025). Peak attack sizes > 1 Tbps."
     phases:
-      - phase: "Detect"
+      - name: "Detect"
         steps:
-          - "Confirm DDoS indicators: traffic spike, service degradation, bandwidth saturation"
-          - "Identify attack type: volumetric (UDP flood), protocol (SYN flood), or application layer (HTTP flood)"
-          - "Determine attack source distribution (single source vs. botnet)"
-          - "Identify targeted service/IP"
-      - phase: "Contain"
+          - "Confirm DDoS indicators — check for:"
+          - "  Bandwidth saturation: Network monitoring (PRTG, Grafana, Datadog) shows traffic spike"
+          - "  Connection exhaustion: `netstat -an | awk '{print $6}' | sort | uniq -c | sort -rn` — look for abnormal SYN_RECV, ESTABLISHED counts"
+          - "  Application layer: HTTP 503 rate spike, abnormal request patterns"
+          - "Identify attack type:"
+          - "  Volumetric (UDP flood, DNS amplification): Massive bandwidth consumption. Check: `tcpdump -i eth0 -nn 'udp' -c 1000 | awk '{print $5}' | sort | uniq -c | sort -rn | head`"
+          - "  Protocol (SYN flood, ACK flood): Connection table exhaustion. Check: `ss -s` for socket state distribution"
+          - "  Application layer (HTTP flood, Slowloris): Normal bandwidth, high request rate. Check: WAF logs or `tail -f /var/log/nginx/access.log | awk '{print $1}' | sort | uniq -c | sort -rn | head`"
+          - "Determine target — which IP/service/URL is being targeted"
+          - "Check if this is a distraction attack (DDoS used to mask data exfiltration or other attack)"
+        decision_tree:
+          - condition: "Attack volume exceeds your bandwidth capacity"
+            action: "Immediately activate upstream DDoS mitigation (Cloudflare/Akamai/Shield). On-premise mitigation will not help."
+          - condition: "Application layer attack (low bandwidth, high request rate)"
+            action: "WAF rate limiting + geo-blocking + challenge pages. No need for scrubbing service."
+          - condition: "Multiple services targeted simultaneously"
+            action: "Possible coordinated attack or distraction. Check for concurrent intrusion attempts."
+          - condition: "Ransom note received (RDoS)"
+            action: "DO NOT pay. Activate mitigation. Notify law enforcement."
+      - name: "Contain"
         steps:
-          - "Activate DDoS mitigation service (Cloudflare, AWS Shield, Akamai)"
-          - "Enable rate limiting at WAF/load balancer"
-          - "Implement geo-blocking if attack originates from specific regions"
-          - "Blackhole route the targeted IP if service is sacrificial"
-          - "Scale infrastructure horizontally if possible (auto-scaling)"
-      - phase: "Eradicate"
+          - "Activate DDoS mitigation service:"
+          - "  Cloudflare: Security > DDoS > Enable 'Under Attack Mode' / or API: `curl -X PATCH 'https://api.cloudflare.com/client/v4/zones/<zone>/settings/security_level' -H 'Authorization: Bearer <token>' -d '{\"value\":\"under_attack\"}'`"
+          - "  AWS Shield Advanced: Automatically engaged if subscribed. Contact AWS Shield Response Team (SRT) for assistance."
+          - "  Akamai: Contact SOC to activate scrubbing center"
+          - "Enable rate limiting:"
+          - "  Nginx: `limit_req_zone $binary_remote_addr zone=ddos:10m rate=10r/s; limit_req zone=ddos burst=20 nodelay;`"
+          - "  Cloudflare: Security > WAF > Rate limiting rules > Create rule"
+          - "  AWS WAF: Add rate-based rule: `aws wafv2 create-rate-based-statement --rate-limit 1000 --aggregate-key-type IP`"
+          - "Implement geo-blocking if attack originates from specific regions:"
+          - "  Cloudflare: Security > WAF > Custom rules > Block country"
+          - "  Nginx: Use GeoIP module to block country codes"
+          - "If all else fails and service is sacrificial — blackhole route the targeted IP:"
+          - "  `ip route add blackhole <target_ip>/32` (last resort — drops ALL traffic including legitimate)"
+          - "Scale infrastructure if possible: auto-scaling group adjustments, add instances behind LB"
+      - name: "Eradicate"
         steps:
-          - "Work with ISP to filter attack traffic upstream"
-          - "Fine-tune WAF rules based on attack signature"
-          - "Block identified bot signatures and patterns"
-      - phase: "Recover"
+          - "Work with ISP to filter attack traffic upstream (BGP blackhole, FlowSpec, or RTBH)"
+          - "Fine-tune WAF rules based on attack signatures:"
+          - "  Identify common patterns: User-Agent, request rate, URI patterns, query strings"
+          - "  Block bot signatures at WAF level"
+          - "Block identified attack source ranges (for targeted/non-botnet attacks):"
+          - "  `iptables -A INPUT -s <source_range> -j DROP` (or equivalent in cloud security groups)"
+          - "Verify mitigation is effective — traffic should normalize while attack continues"
+      - name: "Recover"
         steps:
-          - "Gradually restore service and monitor for re-attack"
-          - "Clear any request queues or backlogs"
-          - "Verify service health across all endpoints"
-      - phase: "Post-Incident"
+          - "Gradually restore service — disable 'Under Attack Mode' and aggressive rate limiting"
+          - "Monitor for re-attack for 24-48 hours"
+          - "Clear application caches and request queues: `systemctl restart nginx` or flush CDN cache"
+          - "Verify service health across all endpoints and regions"
+          - "Check for backlog in message queues, database connections, etc."
+      - name: "Post-Incident"
         steps:
-          - "Analyze attack traffic patterns for future prevention"
-          - "Review and update DDoS response plan"
-          - "Ensure DDoS protection is active on all public-facing services"
-          - "Consider dedicated DDoS protection if not already in place"
+          - "Document attack profile: type, volume, duration, source distribution, targeted service"
+          - "Review and update DDoS response plan based on lessons learned"
+          - "Evaluate DDoS mitigation service — was the response fast enough? Right provider?"
+          - "Implement always-on DDoS protection if currently on-demand only"
+          - "Set up automated DDoS detection + mitigation activation (many providers support API-triggered activation)"
+          - "If ransom demand was received — report to law enforcement (FBI IC3, NCSC, etc.)"
+          - "Conduct capacity planning review — can infrastructure handle future attacks?"
+    evidence_checklist:
+      - "Network traffic captures showing attack pattern"
+      - "Bandwidth graphs for attack duration (before, during, after)"
+      - "WAF/firewall logs showing blocked requests"
+      - "Application logs showing error rates during attack"
+      - "Mitigation provider incident report"
+      - "Any ransom demands received (screenshot, preserve original)"

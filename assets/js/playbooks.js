@@ -1,4 +1,4 @@
-/* SCW Incident Playbooks — search, filter, accordion */
+/* SCW Incident Playbooks — search, filter, accordion, copy */
 (function () {
   'use strict';
 
@@ -8,7 +8,7 @@
   var empty  = document.getElementById('pbEmpty');
   if (!grid) return;
 
-  var cards = Array.from(grid.querySelectorAll('.pb-card'));
+  var cards = Array.from(grid.querySelectorAll('.rb-card'));
   var catFilters = document.getElementById('pbCategoryFilters');
 
   var activeCat = 'all';
@@ -51,23 +51,43 @@
     search.addEventListener('input', applyFilters);
   }
 
-  /* Phase accordion */
+  /* Section accordion — handles all rb-section toggles */
   grid.addEventListener('click', function (e) {
-    var toggle = e.target.closest('.pb-phase__toggle');
+    var toggle = e.target.closest('.rb-section__toggle');
     if (!toggle) return;
 
-    var phase = toggle.parentElement;
-    var content = phase.querySelector('.pb-phase__content');
+    var section = toggle.parentElement;
+    var content = section.querySelector('.rb-section__content');
     if (!content) return;
 
-    var isOpen = phase.classList.contains('open');
+    var isOpen = section.classList.contains('open');
 
     if (isOpen) {
-      phase.classList.remove('open');
+      section.classList.remove('open');
       content.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
     } else {
-      phase.classList.add('open');
+      section.classList.add('open');
       content.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
     }
+  });
+
+  /* Copy-to-clipboard for communication templates */
+  grid.addEventListener('click', function (e) {
+    var btn = e.target.closest('.dl-copy-btn');
+    if (!btn) return;
+    var code = btn.parentElement.querySelector('code');
+    if (!code) return;
+
+    var text = code.textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = '✅';
+      btn.classList.add('copied');
+      setTimeout(function () {
+        btn.textContent = '📋';
+        btn.classList.remove('copied');
+      }, 1500);
+    });
   });
 })();
