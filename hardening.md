@@ -12,6 +12,11 @@ permalink: /hardening/
 
 <section class="cs-intro reveal">
   <p>Built from <strong>CIS Benchmarks</strong>, AWS Well-Architected, and production hardening experience. Each item includes severity, reference, and copy-paste commands. Select a platform below to generate your checklist.</p>
+  <div class="harden-hero-stats">
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">748</span><span class="harden-hero-stat__label">Checks</span></div>
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">11</span><span class="harden-hero-stat__label">Platforms</span></div>
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">6</span><span class="harden-hero-stat__label">Categories</span></div>
+  </div>
   <div class="cs-intro__actions">
     <a href="#generator" class="btn btn--primary">Generate Checklist</a>
     <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--ghost">IOC Scanner →</a>
@@ -111,7 +116,19 @@ permalink: /hardening/
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=3">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
+
+<!-- Auth banner (hidden by default, shown by JS when not premium) -->
+<div id="hardenAuthBanner" class="harden-auth-banner" style="display:none;">
+  <div class="harden-auth-banner__inner">
+    <span class="harden-auth-banner__icon">🔐</span>
+    <div class="harden-auth-banner__text">
+      <strong>Advanced Guidance Available</strong>
+      <span>Unlock attack perspectives, validation steps, detection logic, and tuning notes for hardening items.</span>
+    </div>
+    <a href="/auth/signin/" class="btn btn--ghost btn--sm harden-auth-banner__btn">Sign In</a>
+  </div>
+</div>
 
 <!-- Checklist data for JS -->
 <script>
@@ -125,9 +142,18 @@ window.HARDEN_ITEMS = [
     title: {{ item.title | jsonify }},
     description: {{ item.description | jsonify }},
     reference: {{ item.reference | jsonify }},
-    command: {{ item.command | jsonify }}
+    command: {{ item.command | jsonify }},
+    hasPremium: {% if item.premium %}true{% else %}false{% endif %}{% if item.premium %},
+    premium: {
+      attackPerspective: {{ item.premium.attackPerspective | jsonify }},
+      implementationNotes: {{ item.premium.implementationNotes | jsonify }},
+      validationNotes: {{ item.premium.validationNotes | jsonify }},
+      tuningNotes: {{ item.premium.tuningNotes | jsonify }},
+      advancedDetection: {{ item.premium.advancedDetection | jsonify }},
+      relatedIds: {{ item.premium.relatedIds | jsonify }}
+    }{% endif %}
   }{% unless forloop.last %},{% endunless %}
 {% endfor %}
 ];
 </script>
-<script src="/assets/js/hardening.js" defer></script>
+<script src="/assets/js/hardening.js?v=4" defer></script>
