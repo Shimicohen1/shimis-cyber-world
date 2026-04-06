@@ -143,6 +143,9 @@ window.HARDEN_ITEMS = [
     description: {{ item.description | jsonify }},
     reference: {{ item.reference | jsonify }},
     command: {{ item.command | jsonify }},
+    commandFull: {{ item.commandFull | jsonify }},
+    commandLanguage: {{ item.commandLanguage | jsonify | default: '"bash"' }},
+    tags: {{ item.tags | jsonify | default: '[]' }},
     hasPremium: {% if item.premium %}true{% else %}false{% endif %}{% if item.premium %},
     premium: {
       attackPerspective: {{ item.premium.attackPerspective | jsonify }},
