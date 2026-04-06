@@ -161,7 +161,7 @@ sources:
     icon: "💀"
     types: [email]
     descs:
-      email: "Data breach exposure — which breaches included this email, what data leaked"
+      email: "Breach history — shows EXACTLY which breaches exposed this email: company names, dates, and what data leaked (passwords, phone numbers, addresses, IPs)"
     urls:
       email: "https://haveibeenpwned.com/account/{value}"
 
@@ -169,6 +169,46 @@ sources:
     icon: "📧"
     types: [email]
     descs:
-      email: "Email reputation — domain age, social profiles, deliverability, risk score"
+      email: "Reputation profile — is this email suspicious? Shows domain age, linked social profiles, spam history, deliverability score, and whether it's been flagged"
     urls:
       email: "https://emailrep.io/{value}"
+
+  - name: Intelligence X
+    icon: "🕵️"
+    types: [email]
+    descs:
+      email: "Deep search — finds this email in leaked databases, paste sites, darknet forums, and public documents. Shows WHERE it appeared and WHEN"
+    urls:
+      email: "https://intelx.io/?s={value}"
+
+  - name: Hunter.io
+    icon: "🎯"
+    types: [email]
+    descs:
+      email: "Email verification — confirms if this address is real, shows the person's name, job title, company, and other public email addresses on the same domain"
+    urls:
+      email: "https://hunter.io/email-verifier/{value}"
+
+  - name: Dehashed
+    icon: "🔓"
+    types: [email]
+    descs:
+      email: "Breach database search — shows leaked passwords (hashed/cleartext), usernames, IPs, phone numbers, and addresses linked to this email across multiple breaches"
+    urls:
+      email: "https://www.dehashed.com/search?query={value}"
+
+  - name: Holehe (OSINT)
+    icon: "👤"
+    types: [email]
+    descs:
+      email: "Account discovery — checks 120+ websites to see where this email has registered accounts (social media, shopping, forums, dating, gaming)"
+    urls:
+      email: "https://github.com/megadose/holehe"
+
+  - name: Google (Dork)
+    icon: "🔍"
+    types: [email]
+    descs:
+      email: "Public exposure — Google search for this email in leaked documents, paste sites, forums, social profiles, and company directories"
+    urls:
+      email: "https://www.google.com/search?q=%22{value}%22"

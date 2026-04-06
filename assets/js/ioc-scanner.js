@@ -34,7 +34,7 @@
     hash: 'A file hash matching known malware is a confirmed threat indicator. If this hash was found on your systems, the associated file should be quarantined immediately and incident response initiated.',
     domain: 'Malicious domains may host phishing pages, deliver malware payloads, or serve as C2 infrastructure. If users accessed this domain, check for downloaded files and credential exposure.',
     url: 'Malicious URLs deliver payloads, harvest credentials, or redirect to exploit kits. DO NOT visit this URL directly — use the sandboxed analysis tools below to inspect it safely.',
-    email: 'Emails found in breach databases mean credentials may be compromised. Threat actors use leaked emails for credential stuffing, phishing campaigns, and social engineering attacks.'
+    email: 'If this email appeared in any breach, attackers already have it. They use leaked emails to attempt password reuse (credential stuffing) across hundreds of sites, craft targeted phishing emails that look legitimate, and sell the data on darknet markets. The more breaches an email appears in, the higher the risk — each breach may have leaked different data: passwords, phone numbers, home addresses, IP addresses, or financial information.'
   };
 
   /* Recommended actions per IOC type */
@@ -43,8 +43,20 @@
     hash: 'Quarantine the file • Run full endpoint scan • Check for persistence mechanisms (run keys, scheduled tasks) • Search for the hash across all endpoints • Preserve evidence',
     domain: 'Block in DNS/proxy • Check who accessed it and when • Scan endpoints that connected • Look for downloaded payloads • Review email logs for phishing links to this domain',
     url: 'Block the URL in proxy/email gateway • Identify users who clicked • Check endpoints for downloads • Review browser history • Reset credentials if it was a phishing page',
-    email: 'Reset passwords for this account • Enable/verify MFA • Check for unauthorized email forwarding rules • Monitor for phishing targeting this address • Audit recent login activity'
+    email: 'Reset ALL passwords associated with this email immediately • Enable MFA on every account • Check for unauthorized email forwarding rules • Search for this email on Have I Been Pwned to see exact breaches • Monitor for phishing emails targeting this address • Audit recent login activity • Consider using a password manager to generate unique passwords per site'
   };
+
+  /* What could be exposed — shown for email type */
+  var EMAIL_EXPOSURE_ITEMS = [
+    { icon: '🔑', label: 'Passwords', desc: 'Plaintext or hashed passwords from breached databases' },
+    { icon: '📱', label: 'Phone numbers', desc: 'Mobile/home numbers linked to accounts' },
+    { icon: '🏠', label: 'Physical address', desc: 'Home or work addresses from account profiles' },
+    { icon: '🌐', label: 'IP addresses', desc: 'Login IPs revealing your location and ISP' },
+    { icon: '💳', label: 'Financial data', desc: 'Partial credit cards, bank details, purchase history' },
+    { icon: '👤', label: 'Personal info', desc: 'Full name, date of birth, gender, employer' },
+    { icon: '💬', label: 'Private messages', desc: 'DMs, chat logs, forum posts, support tickets' },
+    { icon: '🔗', label: 'Connected accounts', desc: 'Other services linked via this email (OAuth, SSO)' }
+  ];
 
   /* ── Defang / refang ── */
   function defang(val, type) {
@@ -182,6 +194,33 @@
         html += '  <div class="ioc-card__risk-title">⚠️ Why this matters</div>';
         html += '  <p class="ioc-card__risk-text">' + escapeHtml(riskText) + '</p>';
         html += '</div>';
+      }
+
+      /* ── Email-specific: What could be exposed ── */
+      if (ioc.lookup === 'email') {
+        html += '<div class="ioc-card__section-title">🚨 What could be exposed</div>';
+        html += '<div class="ioc-card__exposure-grid">';
+        EMAIL_EXPOSURE_ITEMS.forEach(function (item) {
+          html += '<div class="ioc-exposure-item">';
+          html += '  <span class="ioc-exposure-item__icon">' + item.icon + '</span>';
+          html += '  <div class="ioc-exposure-item__text">';
+          html += '    <strong>' + escapeHtml(item.label) + '</strong>';
+          html += '    <span>' + escapeHtml(item.desc) + '</span>';
+          html += '  </div>';
+          html += '</div>';
+        });
+        html += '</div>';
+
+        /* Domain analysis for email */
+        var emailDomain = ioc.raw.split('@')[1];
+        if (emailDomain) {
+          html += '<div class="ioc-card__domain-note">';
+          html += '  <span class="ioc-card__domain-note-icon">🏢</span>';
+          html += '  <span>Domain <strong>' + escapeHtml(emailDomain) + '</strong> — ';
+          html += 'all accounts registered under this domain may share the same breach exposure. ';
+          html += 'Check if other employees or personal accounts use the same domain.</span>';
+          html += '</div>';
+        }
       }
 
       /* ── Source links with descriptions ── */

@@ -1096,6 +1096,50 @@
 .ioc-link:hover .ioc-link__desc { color: var(--white); }
 .ioc-link:hover .ioc-link__name { color: var(--cyan); }
 
+/* Email exposure grid */
+.ioc-card__exposure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+.ioc-exposure-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  padding: .6rem .75rem;
+  background: rgba(239,68,68,.04);
+  border: 1px solid rgba(239,68,68,.12);
+  border-radius: var(--r-sm, 4px);
+}
+.ioc-exposure-item__icon { font-size: 1rem; flex-shrink: 0; margin-top: .1rem; }
+.ioc-exposure-item__text { display: flex; flex-direction: column; gap: .15rem; }
+.ioc-exposure-item__text strong { color: var(--white); font-size: .78rem; }
+.ioc-exposure-item__text span { color: var(--dim); font-size: .7rem; line-height: 1.4; }
+
+/* Email domain note */
+.ioc-card__domain-note {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  padding: .7rem .9rem;
+  background: rgba(59,130,246,.05);
+  border: 1px solid rgba(59,130,246,.15);
+  border-radius: var(--r-sm, 4px);
+  margin-bottom: .8rem;
+  font-size: .78rem;
+  color: var(--gray);
+  line-height: 1.5;
+}
+.ioc-card__domain-note-icon { font-size: 1rem; flex-shrink: 0; }
+.ioc-card__domain-note strong { color: var(--cyan); }
+
+/* Light theme additions */
+[data-theme="light"] .ioc-exposure-item { background: rgba(239,68,68,.04); border-color: rgba(239,68,68,.1); }
+[data-theme="light"] .ioc-exposure-item__text strong { color: #1a1a2e; }
+[data-theme="light"] .ioc-card__domain-note { background: rgba(59,130,246,.04); border-color: rgba(59,130,246,.12); }
+[data-theme="light"] .ioc-card__domain-note strong { color: #0891b2; }
+
 /* Recommended actions section */
 .ioc-card__actions {
   margin-top: 1rem;
@@ -1216,10 +1260,12 @@
   .ioc-how-it-works { flex-direction: column; gap: .6rem; }
   .ioc-card { padding: 1rem 1.1rem; }
   .ioc-card__links { grid-template-columns: 1fr; }
+  .ioc-card__exposure-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {
   .ioc-card__header { flex-direction: column; }
   .ioc-card__links { grid-template-columns: 1fr; }
+  .ioc-card__exposure-grid { grid-template-columns: 1fr; }
   .ioc-link { padding: .5rem .6rem; }
   .ioc-input-actions { flex-direction: column; align-items: flex-start; }
 }
