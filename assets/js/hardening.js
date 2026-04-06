@@ -35,6 +35,7 @@
 
   /* ── Escape HTML ── */
   function esc(s) {
+    if (!s) return '';
     var d = document.createElement('div');
     d.textContent = s;
     return d.innerHTML;
@@ -185,6 +186,18 @@
         html += '    <pre><code>' + esc(item.command.trim()) + '</code></pre>';
         html += '  </div>';
       }
+      if (isPremium() && item.commandFull) {
+        html += '  <div class="dl-rule__code harden-item__code harden-item__code--full">';
+        html += '    <span class="harden-item__code-label">Full Command</span>';
+        html += '    <button class="dl-copy-btn" title="Copy full command">📋</button>';
+        html += '    <pre><code>' + esc(item.commandFull.trim()) + '</code></pre>';
+        html += '  </div>';
+      }
+      if (item.tags && item.tags.length) {
+        html += '  <div class="harden-item__tags">';
+        item.tags.forEach(function (t) { html += '<span class="harden-item__tag">' + esc(t) + '</span>'; });
+        html += '  </div>';
+      }
       html += buildPremiumSection(item);
       html += '</div>';
     });
@@ -308,6 +321,7 @@
       '## Summary', item.description, ''
     ];
     if (item.command) lines.push('## Command', '```', item.command.trim(), '```', '');
+    if (item.commandFull) lines.push('## Full Command', '```', item.commandFull.trim(), '```', '');
     if (p.attackPerspective) lines.push('## Attack Perspective', p.attackPerspective, '');
     if (p.implementationNotes) lines.push('## Implementation Notes', '```', p.implementationNotes, '```', '');
     if (p.validationNotes) lines.push('## Validation Steps', '```', p.validationNotes, '```', '');

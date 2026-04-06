@@ -108,6 +108,47 @@ items:
     - lin-002
     - lin-010
     - lin-016
+  tags:
+  - ssh
+  - cis-benchmark
+  - privilege-escalation
+  - initial-access
+  commandLanguage: bash
+  commandFull: '# Full hardening script for SSH root login
+
+    # Step 1: Backup current config
+
+    sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak.$(date +%Y%m%d)
+
+
+    # Step 2: Disable root login
+
+    sudo sed -i ''s/^#*PermitRootLogin.*/PermitRootLogin no/'' /etc/ssh/sshd_config
+
+
+    # Step 3: Verify the change
+
+    grep ''^PermitRootLogin'' /etc/ssh/sshd_config
+
+
+    # Step 4: Test config before restart
+
+    sudo sshd -t
+
+
+    # Step 5: Restart (only if test passes)
+
+    sudo systemctl restart sshd
+
+
+    # Step 6: Verify from another session
+
+    ssh root@localhost 2>&1 | grep -i ''denied\|refused''
+
+
+    # Step 7: Check auth log for confirmation
+
+    sudo tail -5 /var/log/auth.log'
 - id: lin-002
   platform: linux
   category: identity
@@ -153,6 +194,12 @@ items:
     - lin-001
     - lin-016
     - lin-025
+  tags:
+  - ssh
+  - authentication
+  - cis-benchmark
+  - brute-force-prevention
+  commandLanguage: bash
 - id: lin-003
   platform: linux
   category: identity
@@ -260,6 +307,53 @@ items:
     - lin-007
     - lin-008
     - lin-021
+  tags:
+  - firewall
+  - network-security
+  - cis-benchmark
+  - ufw
+  - iptables
+  commandLanguage: bash
+  commandFull: '# Complete firewall hardening script (UFW)
+
+    # Step 1: Reset to defaults
+
+    sudo ufw --force reset
+
+
+    # Step 2: Set default policies
+
+    sudo ufw default deny incoming
+
+    sudo ufw default allow outgoing
+
+
+    # Step 3: Allow required services
+
+    sudo ufw allow 22/tcp comment ''SSH''
+
+    sudo ufw allow 443/tcp comment ''HTTPS''
+
+    # Add more as needed:
+
+    # sudo ufw allow from 10.0.0.0/8 to any port 5432 comment ''Postgres internal''
+
+
+    # Step 4: Enable logging
+
+    sudo ufw logging on
+
+
+    # Step 5: Enable firewall
+
+    sudo ufw --force enable
+
+
+    # Step 6: Verify
+
+    sudo ufw status verbose
+
+    sudo ufw status numbered'
 - id: lin-007
   platform: linux
   category: network
@@ -362,6 +456,13 @@ items:
     - lin-010
     - lin-027
     - lin-028
+  tags:
+  - auditd
+  - logging
+  - siem
+  - forensics
+  - cis-benchmark
+  commandLanguage: bash
 - id: lin-010
   platform: linux
   category: logging
@@ -519,6 +620,46 @@ items:
     - win-002
     - win-004
     - win-012
+  tags:
+  - active-directory
+  - lateral-movement
+  - mimikatz
+  - cis-benchmark
+  commandLanguage: powershell
+  commandFull: '# Full Administrator account hardening script
+
+    # Step 1: Create replacement admin
+
+    $securePass = Read-Host -AsSecureString -Prompt ''Enter password for new admin''
+
+    New-LocalUser -Name ''scw_secadmin'' -Password $securePass -Description ''SCW Security Admin''
+
+    Add-LocalGroupMember -Group ''Administrators'' -Member ''scw_secadmin''
+
+
+    # Step 2: Verify new admin works (test in separate session first!)
+
+
+    # Step 3: Rename built-in Administrator
+
+    Rename-LocalUser -Name ''Administrator'' -NewName ''scw_legacy_disabled''
+
+
+    # Step 4: Disable it
+
+    Disable-LocalUser -Name ''scw_legacy_disabled''
+
+
+    # Step 5: Verify
+
+    Get-LocalUser | Where-Object { $_.SID -like ''*-500'' } | Select Name, Enabled, LastLogon
+
+
+    # Step 6: Check no services depend on it
+
+    Get-WmiObject Win32_Service | Where-Object { $_.StartName -like ''*Administrator*'' } | Select Name, StartName
+
+    Get-ScheduledTask | Where-Object { $_.Principal.UserId -like ''*Administrator*'' } | Select TaskName'
 - id: win-002
   platform: windows
   category: identity
@@ -622,6 +763,13 @@ items:
     - win-004
     - win-015
     - win-025
+  tags:
+  - smb
+  - eternalblue
+  - wannacry
+  - lateral-movement
+  - cis-benchmark
+  commandLanguage: powershell
 - id: win-006
   platform: windows
   category: logging
@@ -682,6 +830,13 @@ items:
     - win-007
     - win-018
     - win-023
+  tags:
+  - powershell
+  - logging
+  - detection
+  - siem
+  - cis-benchmark
+  commandLanguage: powershell
 - id: win-007
   platform: windows
   category: logging
@@ -800,6 +955,13 @@ items:
     - aws-002
     - aws-003
     - aws-015
+  tags:
+  - iam
+  - root-account
+  - mfa
+  - cis-benchmark
+  - account-security
+  commandLanguage: bash
 - id: aws-002
   platform: aws
   category: identity
@@ -864,6 +1026,18 @@ items:
     - aws-004
     - aws-019
     - aws-020
+  tags:
+  - security-groups
+  - network
+  - cis-benchmark
+  - ssrf
+  - exposure
+  commandLanguage: bash
+  commandFull: "# Complete SG audit and remediation script\n#!/bin/bash\necho \"=== Security Groups with 0.0.0.0/0 inbound ===\"\naws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]].[GroupId,GroupName,Description]'\
+    \ \\\n  --output table\n\necho \"\"\necho \"=== Details of open rules ===\"\nfor sg in $(aws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]].GroupId'\
+    \ \\\n  --output text); do\n  echo \"--- $sg ---\"\n  aws ec2 describe-security-groups --group-ids \"$sg\" \\\n    --query 'SecurityGroups[].IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]].{From:FromPort,To:ToPort,Proto:IpProtocol}'\
+    \ \\\n    --output table\ndone\n\necho \"\"\necho \"=== IPv6 check (open ::/0) ===\"\naws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?Ipv6Ranges[?CidrIpv6==`::/0`]]].[GroupId,GroupName]'\
+    \ \\\n  --output table"
 - id: aws-006
   platform: aws
   category: logging
@@ -908,6 +1082,13 @@ items:
     - aws-007
     - aws-025
     - aws-026
+  tags:
+  - cloudtrail
+  - logging
+  - audit
+  - cis-benchmark
+  - tamper-detection
+  commandLanguage: bash
 - id: aws-007
   platform: aws
   category: logging
@@ -944,6 +1125,12 @@ items:
     - aws-009
     - aws-033
     - aws-034
+  tags:
+  - s3
+  - encryption
+  - data-protection
+  - cis-benchmark
+  commandLanguage: bash
 - id: aws-009
   platform: aws
   category: encryption
@@ -1120,6 +1307,13 @@ items:
     - gcp-002
     - gcp-008
     - gcp-011
+  tags:
+  - mfa
+  - 2sv
+  - google-workspace
+  - authentication
+  - cis-benchmark
+  commandLanguage: bash
 - id: gcp-002
   platform: gcp
   category: identity
@@ -1159,6 +1353,13 @@ items:
     - gcp-010
     - gcp-011
     - gcp-014
+  tags:
+  - vpc
+  - firewall
+  - network-security
+  - cis-benchmark
+  - gke
+  commandLanguage: bash
 - id: gcp-004
   platform: gcp
   category: logging
@@ -3392,6 +3593,13 @@ items:
     - m365-002
     - m365-004
     - m365-005
+  tags:
+  - defender
+  - safe-links
+  - phishing
+  - email-security
+  - cis-m365
+  commandLanguage: powershell
 - id: m365-002
   platform: m365-defender
   category: services
@@ -3541,6 +3749,13 @@ items:
     - m365-016
     - m365-017
     - m365-014
+  tags:
+  - conditional-access
+  - zero-trust
+  - entra-id
+  - mfa
+  - token-theft
+  commandLanguage: powershell
 - id: m365-016
   platform: m365-defender
   category: logging
