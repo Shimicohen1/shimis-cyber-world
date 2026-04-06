@@ -25,46 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Driven Infrastructure Shifts in Conflict Zones
-    text: AI infrastructure developed in conflict zones is migrating to new international fronts.
-    detail: Recent reports indicate that AI infrastructure, initially developed in Gaza, has been redeployed across Lebanon and Iran. This migration highlights a growing trend of sophisticated cyber capabilities being established and moved across borders, potentially for advanced offensive or defensive operations. Organizations should monitor for AI-driven attacks originating from or targeting these regions.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-cybersecurity
-    link_label: AI & Cybersecurity
+  - title: AI Agents Targeted by Novel Web Attack Vectors
+    text: AI agents are increasingly vulnerable to sophisticated web-based attacks, researchers warn.
+    detail: New research highlights emerging attack vectors targeting AI agents as they interact with the internet. Cybersecurity professionals should prioritize securing AI integrations and scrutinizing data sources to mitigate risks associated with these novel threats.
+    link: https://owasp.org/www-project-generative-ai-security/
+    link_label: OWASP GenAI Security Project
     badge: signal
     tags:
+      - ai-security
       - threat-intel
-      - ai
-      - cloud
-  - title: North Korea's Crypto Heist Escalation Continues
-    text: North Korean state-sponsored actors significantly increased crypto theft in 2025.
-    detail: Reports show a substantial rise in cryptocurrency stolen by North Korean actors in 2025, accounting for a majority of global crypto theft. This trend underscores the persistent threat of nation-state-backed cybercrime targeting digital assets. Financial institutions and cryptocurrency exchanges must enhance their security measures against sophisticated, well-funded adversaries.
-    link: https://www.fincen.gov/news-room/speech/remarks-deputy-director-him--addressing-cyber-threats-and-north-korean-illicit-finance
-    link_label: North Korean Illicit Finance
+      - vulnerability
+  - title: Ransomware Gangs Exploit Drivers to Evade EDR
+    text: Ransomware strains like Qilin and Warlock are bypassing EDR defenses using vulnerable drivers.
+    detail: Attackers are leveraging compromised or vulnerable drivers to disable Endpoint Detection and Response (EDR) solutions, enabling stealthier operations. Organizations must ensure their EDR is up-to-date and consider driver integrity monitoring as a defense-in-depth strategy.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Advisories
     badge: signal
     tags:
+      - ransomware
+      - malware
+      - edr
       - threat-intel
-      - cryptocurrency
-      - nation-state
-  - title: Supply Chain Attacks on Widely Used Packages Persist
-    text: Popular development packages like Axios NPM are increasingly targeted.
-    detail: A recent supply chain attack on the Axios NPM package, downloaded millions of times weekly, demonstrates the ongoing risk to software development pipelines. Attackers are compromising popular libraries to inject malicious code into downstream projects. Developers and security teams must implement robust software supply chain security practices and dependency scanning.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: Software Component Analysis
+  - title: Supply Chain Attacks Target Node.js Maintainers
+    text: North Korean actors are targeting Node.js project maintainers to compromise the software supply chain.
+    detail: State-sponsored groups are actively seeking to inject malicious code into popular open-source Node.js libraries. Developers and organizations relying on these packages should implement rigorous code review, dependency scanning, and provenance verification.
+    link: https://owasp.org/www-project-threat-model-supply-chain/
+    link_label: OWASP Supply Chain Security
     badge: signal
     tags:
       - supply-chain
       - malware
-      - vulnerability
-  - title: Sophisticated Image-Based Malware Obfuscation Techniques
-    text: Malicious code is being hidden within seemingly innocuous image files.
-    detail: A growing trend involves embedding malware within image files, a technique that evades traditional signature-based detection. Attackers leverage image processing to hide executable payloads, making them difficult to identify. Security professionals should employ advanced threat detection solutions that analyze file behavior and content beyond simple file types.
-    link: https://www.mitre.org/capabilities/cybersecurity/all-attacks-techniques-and-procedures/malware-analysis
-    link_label: Malware Analysis Techniques
+      - threat-intel
+      - node-js
+  - title: Phishing Campaigns Leveraging AI Device Codes
+    text: New phishing campaigns cleverly use AI device codes to impersonate legitimate services.
+    detail: Attackers are employing AI-generated device codes to craft sophisticated phishing lures, increasing success rates. Users must remain vigilant against unsolicited communications, verify sender authenticity through separate channels, and avoid clicking suspicious links or providing credentials.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
+    link_label: CISA Phishing Information
     badge: signal
     tags:
-      - malware
+      - phishing
       - threat-intel
-      - detection
+      - social-engineering
+      - ai-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
