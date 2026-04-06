@@ -101,6 +101,22 @@ permalink: /premium/
 </div>
 </div>
 </a>
+
+<a href="/gofish/" class="elite-card">
+<div class="elite-card__glow"></div>
+<div class="elite-card__content">
+<div class="elite-card__head">
+<span class="elite-card__icon">🎣</span>
+<span class="elite-card__status elite-card__status--live">LIVE</span>
+</div>
+<h3>GoFish</h3>
+<p>Paste a suspicious URL or SMS — get instant phishing risk analysis with score, red flags, and verification links.</p>
+<div class="elite-card__meta">
+<span>URL + SMS</span>
+<span>20+ indicators</span>
+</div>
+</div>
+</a>
 </div>
 
 </section>
