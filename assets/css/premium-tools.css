@@ -964,10 +964,18 @@
   .harden-platforms { grid-template-columns: repeat(2, 1fr); }
   .harden-platform-btn { padding: .8rem .5rem; }
   .harden-platform-btn__icon { font-size: 1.2rem; }
-  .harden-item__header { flex-direction: column; }
+  .harden-platform-btn__name { font-size: .7rem; }
+  .harden-platform-btn__count { font-size: .6rem; }
+  .harden-item__header { flex-direction: column; align-items: flex-start; gap: .4rem; }
+  .harden-item__badges { align-self: flex-start; }
   .harden-item__desc,
   .harden-item__ref,
   .harden-item__code { margin-left: 0; }
+  .harden-item__tags { margin-left: 0; }
+  .harden-item__code pre { font-size: .65rem; }
+  .harden-item__code--full { margin-left: 0; }
+  .ioc-export { flex-direction: column; }
+  .ioc-export .btn { width: 100%; text-align: center; }
 }
 
 /* ── Tags on items ── */
@@ -1340,6 +1348,11 @@
 /* Premium responsive */
 @media (max-width: 600px) {
   .harden-premium { margin-left: 0; }
+  .harden-premium__code { padding: .5rem; }
+  .harden-premium__code code { font-size: .65rem; white-space: pre-wrap; word-break: break-word; }
+  .harden-premium__actions { flex-direction: column; }
+  .harden-premium__actions .btn { width: 100%; text-align: center; }
+  .harden-premium__related-tag { font-size: .6rem; }
   .harden-auth-banner__inner { flex-direction: column; text-align: center; }
   .harden-hero-stats { gap: 1rem; }
   .harden-hero-stat__num { font-size: 1.2rem; }

@@ -37,7 +37,7 @@ permalink: /auth/signin/
   </div>
 </div>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=5">
 
 <script>
 (function () {
