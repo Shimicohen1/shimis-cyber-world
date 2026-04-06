@@ -35,7 +35,7 @@
   /* ── Israeli brand keywords (domain matching) ── */
   var IL_BRAND_KEYWORDS = [
     'leumi', 'hapoalim', 'discount', 'mizrahi', 'fibi', 'isracard', 'cal',
-    'max', 'bit', 'paybox', 'pepper', 'one-zero', 'kvish6',
+    'paybox', 'pepper', 'one-zero', 'kvish6',
     'derech-eretz', 'israelpost', 'doarisrael'
   ];
 
@@ -93,7 +93,11 @@
   /* ── Extract URLs from text ── */
   function extractUrls(text) {
     var urlRegex = /https?:\/\/[^\s<>"')\]،]+/gi;
-    return text.match(urlRegex) || [];
+    var matches = text.match(urlRegex) || [];
+    /* Also catch data: and javascript: URIs */
+    var dangerousRegex = /(?:data|javascript):[^\s<>"')\]]+/gi;
+    var dangerous = text.match(dangerousRegex) || [];
+    return matches.concat(dangerous);
   }
 
   /* ── Parse URL parts safely ── */
@@ -126,9 +130,21 @@
     var host = parsed.hostname.toLowerCase();
     var fullLower = urlStr.toLowerCase();
     var parts = host.split('.');
+
+    /* Handle compound TLDs: .co.il, .gov.il, .org.il, .ac.il, .co.uk, .com.au etc. */
+    var COMPOUND_TLDS = ['co.il','gov.il','org.il','ac.il','net.il','muni.il','idf.il','co.uk','org.uk','ac.uk','gov.uk','com.au','com.br','co.nz','co.za','co.in','com.sg'];
     var tld = parts[parts.length - 1];
+    var effectiveTld = tld;
     var sld = parts.length >= 2 ? parts[parts.length - 2] : '';
-    var domain = sld + '.' + tld;
+    if (parts.length >= 3) {
+      var compoundCandidate = parts[parts.length - 2] + '.' + parts[parts.length - 1];
+      if (COMPOUND_TLDS.indexOf(compoundCandidate) !== -1) {
+        effectiveTld = compoundCandidate;
+        sld = parts.length >= 3 ? parts[parts.length - 3] : '';
+      }
+    }
+    var domain = sld + '.' + effectiveTld;
+    var effectiveParts = host.replace('.' + effectiveTld, '').split('.');
 
     /* 1. IP address instead of domain */
     if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)) {
@@ -142,11 +158,12 @@
       score += 25;
     }
 
-    /* 3. Short disposable domain — very suspicious */
-    if (sld.length <= 3 && SUSPECT_TLDS.indexOf(tld) !== -1) {
+    /* 3. Short disposable domain — very suspicious (skip compound TLDs like .co.il) */
+    var isCompound = effectiveTld !== tld;
+    if (!isCompound && sld.length <= 3 && SUSPECT_TLDS.indexOf(tld) !== -1) {
       findings.push({ severity: 'critical', text: 'Throwaway domain: "' + domain + '" — extremely short domain on a suspicious TLD, classic phishing infrastructure', points: 30 });
       score += 30;
-    } else if (sld.length <= 3 && tld.length <= 3) {
+    } else if (!isCompound && sld.length <= 3 && tld.length <= 3) {
       findings.push({ severity: 'high', text: 'Suspiciously short domain: "' + domain + '" — short domains on cheap TLDs are commonly used by attackers', points: 15 });
       score += 15;
     }
@@ -165,9 +182,10 @@
       score += 20;
     }
 
-    /* 6. Excessive subdomains (3+) */
-    if (parts.length > 3) {
-      findings.push({ severity: 'medium', text: 'Excessive subdomains (' + parts.length + ' levels: ' + host + ') — used to disguise the real domain', points: 15 });
+    /* 6. Excessive subdomains (3+, adjusted for compound TLDs) */
+    var subdomainCount = effectiveParts.length - 1; /* minus the SLD */
+    if (subdomainCount >= 2) {
+      findings.push({ severity: 'medium', text: 'Excessive subdomains (' + (subdomainCount + 1) + ' levels: ' + host + ') — used to disguise the real domain', points: 15 });
       score += 15;
     }
 
@@ -302,9 +320,12 @@
       score += ptsHe;
     }
 
-    /* Short message with URL = classic smishing */
+    /* Short message with URL = classic smishing (but not if input is just a bare URL) */
     var urls = extractUrls(text);
-    if (urls.length > 0 && text.length < 300) {
+    var textWithoutUrls = text;
+    urls.forEach(function (u) { textWithoutUrls = textWithoutUrls.replace(u, ''); });
+    var hasRealText = textWithoutUrls.trim().length > 10;
+    if (urls.length > 0 && hasRealText && text.length < 300) {
       findings.push({ severity: 'medium', text: 'Short message containing a link — the #1 smishing pattern: brief text + urgency + click this link', points: 10 });
       score += 10;
     }
@@ -495,13 +516,18 @@
       render(input.value);
     });
 
-    clearBtn.addEventListener('click', function () {
-      input.value = '';
-      document.getElementById('gofishResults').innerHTML = '';
-    });
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        document.getElementById('gofishResults').innerHTML = '';
+        input.focus();
+      });
+    }
 
+    /* Enter = scan immediately (Shift+Enter = newline) */
     input.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
         scanBtn.click();
       }
     });

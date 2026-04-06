@@ -30,7 +30,7 @@ permalink: /gofish/
   </div>
 
   <div class="gofish-input-area">
-    <textarea id="gofishInput" class="ioc-textarea gofish-textarea" rows="5" placeholder="Paste a suspicious URL or SMS text here…&#10;&#10;Examples:&#10;  https://amaz0n-security.xyz/verify?id=839201&#10;  Your account has been locked! Verify now: bit.ly/3xK9mQ2&#10;  הודעה מהבנק: החשבון שלך ייחסם. לחץ כאן: https://leumi-secure.tk/login" spellcheck="false"></textarea>
+    <textarea id="gofishInput" class="ioc-textarea gofish-textarea" rows="4" placeholder="Paste a suspicious URL or SMS text here… (Enter to scan, Shift+Enter for new line)&#10;&#10;Examples:&#10;  https://amaz0n-security.xyz/verify?id=839201&#10;  ברצוננו ליידע כי קיים חוב עבור נסיעות בכביש 6: https://m-r.pw/axIa" spellcheck="false"></textarea>
     <div class="gofish-input-actions">
       <button id="gofishScanBtn" class="btn btn--primary">🎣 Analyze for Phishing</button>
       <button id="gofishClearBtn" class="btn btn--ghost">Clear</button>
@@ -87,4 +87,4 @@ permalink: /gofish/
 </section>
 
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=8">
-<script src="/assets/js/gofish.js?v=2" defer></script>
+<script src="/assets/js/gofish.js?v=3" defer></script>
