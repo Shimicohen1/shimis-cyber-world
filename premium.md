@@ -6,9 +6,9 @@ permalink: /premium/
 
 <div class="container">
 <div class="premium-hero reveal">
-<span class="premium-hero__icon">🔒</span>
-<h1 class="premium-hero__title"><span>Premium</span> Toolkit</h1>
-<p class="premium-hero__desc">Custom-built tools for real-world cybersecurity operations. Exclusive automations, scanners, and field utilities — developed by SCW for premium members.</p>
+<span class="premium-hero__icon">⚡</span>
+<h1 class="premium-hero__title"><span>SCW</span> Toolkit</h1>
+<p class="premium-hero__desc">Custom-built tools for real-world cybersecurity operations. Detection rules, incident runbooks, scanners, and field utilities — built by practitioners, free to use.</p>
 </div>
 
 {% comment %}

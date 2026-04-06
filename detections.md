@@ -5,17 +5,16 @@ permalink: /detections/
 ---
 
 <div class="page-head">
-  <div class="label label--amber page-head__label">PREMIUM</div>
+  <div class="label label--cyan page-head__label">SCW TOOLS</div>
   <h1 class="page-head__title">Detection Library</h1>
-  <p class="page-head__desc">Battle-tested detection rules for real SOC environments. KQL, Sigma, and Splunk — curated by practitioners, mapped to MITRE ATT&CK.</p>
+  <p class="page-head__desc">Production-ready detection rules for real SOC environments. KQL, Sigma, and Splunk — mapped to MITRE ATT&CK. Copy, paste, detect.</p>
 </div>
 
 <section class="cs-intro reveal">
-  <p>Every rule in this library is <strong>production-ready</strong>. Written by security operators, tested in real environments, and mapped to MITRE ATT&CK techniques. Copy, paste, detect.</p>
-  <p>Free rules are fully visible. Premium rules show description and metadata — <strong>unlock the full query with SCW Premium</strong>.</p>
+  <p>Every rule in this library is <strong>battle-tested</strong>. Written by security operators, validated in production environments, and mapped to MITRE ATT&CK techniques. All rules are <strong>free and open</strong> — use them in your SIEM today.</p>
   <div class="cs-intro__actions">
     <a href="#rules" class="btn btn--primary">Browse Rules</a>
-    <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">Get Premium Access</a>
+    <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--ghost">Incident Playbooks →</a>
   </div>
 </section>
 
@@ -70,14 +69,9 @@ permalink: /detections/
   <!-- Rules Grid -->
   <div class="toolkit__grid" id="dlGrid">
     {% for rule in site.data.detections.rules %}
-    <div class="tool-card dl-rule reveal{% if rule.premium %} dl-rule--premium{% endif %}" data-category="{{ rule.category | slugify }}" data-platform="{{ rule.platform | slugify }}" data-name="{{ rule.name | downcase }}" data-tags="{{ rule.tags | join: ' ' | downcase }}" data-mitre="{{ rule.mitre | downcase }}">
+    <div class="tool-card dl-rule reveal" data-category="{{ rule.category | slugify }}" data-platform="{{ rule.platform | slugify }}" data-name="{{ rule.name | downcase }}" data-tags="{{ rule.tags | join: ' ' | downcase }}" data-mitre="{{ rule.mitre | downcase }}">
       <div class="tool-card__head">
         <h4>{{ rule.name }}</h4>
-        {% if rule.premium %}
-        <span class="badge badge--soon">🔒 PRO</span>
-        {% else %}
-        <span class="badge badge--new">FREE</span>
-        {% endif %}
       </div>
       <p class="community-card__tagline">{{ rule.mitre }} — {{ rule.mitre_name }}</p>
       <p>{{ rule.description }}</p>
@@ -91,20 +85,10 @@ permalink: /detections/
       </div>
       {% endif %}
 
-      {% if rule.premium %}
-      <div class="dl-rule__code dl-rule__code--locked">
-        <div class="dl-rule__lock-overlay">
-          <span>🔒</span>
-          <p>Unlock with <a href="{{ '/premium/' | relative_url }}">SCW Premium</a></p>
-        </div>
-        <pre><code>{{ rule.query | truncate: 80, "..." }}</code></pre>
-      </div>
-      {% else %}
       <div class="dl-rule__code">
         <button class="dl-copy-btn" title="Copy to clipboard">📋</button>
         <pre><code>{{ rule.query | strip | xml_escape }}</code></pre>
       </div>
-      {% endif %}
 
       {% if rule.notes %}
       <p class="dl-rule__notes"><strong>💡 Note:</strong> {{ rule.notes }}</p>
@@ -123,11 +107,11 @@ permalink: /detections/
 <!-- CTA -->
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
-    <h2 class="cs-cta__title">Unlock the full Detection Library.</h2>
-    <p class="cs-cta__text">Get access to all {{ site.data.detections.rules | size }} detection rules — production-ready queries you can deploy today across KQL, Sigma, and Splunk.</p>
+    <h2 class="cs-cta__title">New rules ship regularly.</h2>
+    <p class="cs-cta__text">{{ site.data.detections.rules | size }} production-ready queries and growing. Subscribe to get notified when new detection rules drop.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/premium/' | relative_url }}" class="btn btn--primary">Get Premium</a>
-      <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--ghost">Playbooks →</a>
+      <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--primary">Incident Playbooks →</a>
+      <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to Feed</a>
     </div>
   </div>
 </section>
