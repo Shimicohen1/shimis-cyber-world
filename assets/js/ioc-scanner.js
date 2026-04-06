@@ -1,4 +1,4 @@
-/* IOC Scanner — client-side indicator parser + threat intel link generator */
+/* IOC Scanner v2 — client-side indicator parser + threat intel link generator */
 (function () {
   'use strict';
 
@@ -14,21 +14,27 @@
     domain: /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z]{2,})+$/i
   };
 
-  /* Map specific hash/ip types to generic lookup type */
-  var TYPE_MAP = {
-    ipv4: 'ip', ipv6: 'ip',
-    md5: 'hash', sha1: 'hash', sha256: 'hash',
-    domain: 'domain', url: 'url', email: 'email'
+  var TYPE_LABELS = {
+    ip: 'IP Address', hash: 'File Hash', domain: 'Domain',
+    url: 'URL', email: 'Email Address'
   };
 
-  var TYPE_LABELS = {
-    ip: '🌐 IP', hash: '#️⃣ Hash', domain: '🔗 Domain',
-    url: '🔗 URL', email: '📧 Email'
+  var TYPE_ICONS = {
+    ip: '🌐', hash: '#️⃣', domain: '🔗', url: '🔗', email: '📧'
   };
 
   var TYPE_BADGE = {
     ip: 'signal', hash: 'live', domain: 'drop',
     url: 'vault', email: 'signal'
+  };
+
+  /* Context descriptions per IOC type */
+  var TYPE_CONTEXT = {
+    ip: 'Check this IP across threat intelligence platforms for abuse reports, open ports, reputation, and known malicious activity.',
+    hash: 'Scan this file hash against malware databases, antivirus engines, and sandbox environments to identify threats.',
+    domain: 'Investigate this domain for DNS history, hosting infrastructure, reputation, and associations with malicious activity.',
+    url: 'Analyze this URL for phishing indicators, malware distribution, redirect chains, and browser safety verdicts.',
+    email: 'Check this email address for data breach exposure, reputation score, and association with known threat actors.'
   };
 
   /* ── Defang / refang ── */
@@ -53,14 +59,12 @@
     var val = raw.trim();
     if (!val) return null;
 
-    /* Order matters: check hashes first (could look like hex domain) */
     if (PATTERNS.sha256.test(val)) return { raw: val, type: 'sha256', lookup: 'hash' };
     if (PATTERNS.sha1.test(val))   return { raw: val, type: 'sha1',   lookup: 'hash' };
     if (PATTERNS.md5.test(val))    return { raw: val, type: 'md5',    lookup: 'hash' };
     if (PATTERNS.email.test(val))  return { raw: val, type: 'email',  lookup: 'email' };
     if (PATTERNS.url.test(val))    return { raw: val, type: 'url',    lookup: 'url' };
     if (PATTERNS.ipv4.test(val)) {
-      /* Validate octets */
       var octets = val.split('.');
       var valid = octets.every(function (o) { return parseInt(o, 10) <= 255; });
       if (valid) return { raw: val, type: 'ipv4', lookup: 'ip' };
@@ -73,7 +77,6 @@
 
   /* ── Parse input ── */
   function parseInput(text) {
-    /* Split on newlines, commas, semicolons, spaces, tabs */
     var tokens = text.split(/[\n\r,;\t ]+/).map(function (t) { return refang(t.trim()); }).filter(Boolean);
     var seen = {};
     var results = [];
@@ -100,7 +103,8 @@
       var template = src.urls[ioc.lookup];
       if (!template) return;
       var href = template.replace('{value}', encodeURIComponent(ioc.raw));
-      links.push({ name: src.name, icon: src.icon, href: href });
+      var desc = (src.descs && src.descs[ioc.lookup]) || '';
+      links.push({ name: src.name, icon: src.icon, href: href, desc: desc });
     });
     return links;
   }
@@ -114,7 +118,7 @@
     var shouldDefang = document.getElementById('iocDefang').checked;
 
     if (!parsed.iocs.length) {
-      results.innerHTML = '<div class="empty-state"><p>No valid indicators found. Paste IPs, domains, hashes, URLs, or emails.</p></div>';
+      results.innerHTML = '<div class="empty-state"><p>No valid indicators found. Paste IPs, domains, hashes, URLs, or emails — one per line.</p></div>';
       stats.style.display = 'none';
       filters.style.display = 'none';
       exportDiv.style.display = 'none';
@@ -134,7 +138,7 @@
     var filterHtml = '<button class="vault-filter active" data-type="all">All (' + parsed.iocs.length + ')</button>';
     Object.keys(types).forEach(function (t) {
       var count = parsed.iocs.filter(function (i) { return i.lookup === t; }).length;
-      filterHtml += '<button class="vault-filter" data-type="' + t + '">' + (TYPE_LABELS[t] || t) + ' (' + count + ')</button>';
+      filterHtml += '<button class="vault-filter" data-type="' + t + '">' + (TYPE_ICONS[t] || '') + ' ' + (TYPE_LABELS[t] || t) + ' (' + count + ')</button>';
     });
     filters.innerHTML = filterHtml;
     filters.style.display = '';
@@ -146,31 +150,43 @@
       var links = buildLinks(ioc);
       var badgeClass = TYPE_BADGE[ioc.lookup] || 'vault';
       var typeLabel = ioc.type.toUpperCase();
+      var typeContext = TYPE_CONTEXT[ioc.lookup] || '';
 
       html += '<div class="ioc-card" data-type="' + ioc.lookup + '">';
+
+      /* Card header — IOC value + type badge */
       html += '  <div class="ioc-card__header">';
-      html += '    <code class="ioc-card__value">' + escapeHtml(display) + '</code>';
-      html += '    <div class="ioc-card__badges">';
+      html += '    <div class="ioc-card__type-row">';
+      html += '      <span class="ioc-card__type-icon">' + (TYPE_ICONS[ioc.lookup] || '') + '</span>';
       html += '      <span class="badge badge--' + badgeClass + '">' + typeLabel + '</span>';
-      html += '      <span class="tag">' + (TYPE_LABELS[ioc.lookup] || ioc.lookup) + '</span>';
+      html += '      <span class="ioc-card__source-count">' + links.length + ' sources</span>';
       html += '    </div>';
+      html += '    <code class="ioc-card__value">' + escapeHtml(display) + '</code>';
+      html += '    <p class="ioc-card__context">' + escapeHtml(typeContext) + '</p>';
       html += '  </div>';
+
+      /* Lookup links with descriptions */
       html += '  <div class="ioc-card__links">';
       links.forEach(function (l) {
         html += '    <a href="' + escapeAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
-        html += '      <span class="ioc-link__icon">' + l.icon + '</span>';
-        html += '      <span class="ioc-link__name">' + escapeHtml(l.name) + '</span>';
-        html += '      <span class="ioc-link__arrow">↗</span>';
+        html += '      <div class="ioc-link__header">';
+        html += '        <span class="ioc-link__icon">' + l.icon + '</span>';
+        html += '        <span class="ioc-link__name">' + escapeHtml(l.name) + '</span>';
+        html += '        <span class="ioc-link__arrow">↗</span>';
+        html += '      </div>';
+        if (l.desc) {
+          html += '      <p class="ioc-link__desc">' + escapeHtml(l.desc) + '</p>';
+        }
         html += '    </a>';
       });
       html += '  </div>';
+
       html += '</div>';
     });
 
     results.innerHTML = html;
     exportDiv.style.display = '';
 
-    /* Store for export */
     window._iocParsed = parsed;
   }
 
@@ -191,9 +207,11 @@
   /* ── Export ── */
   function exportCsv() {
     if (!window._iocParsed) return;
-    var rows = ['Type,Value,Defanged'];
+    var rows = ['Type,SubType,Value,Defanged,Sources'];
     window._iocParsed.iocs.forEach(function (ioc) {
-      rows.push(ioc.type + ',' + ioc.raw + ',' + defang(ioc.raw, ioc.lookup));
+      var links = buildLinks(ioc);
+      var sourceNames = links.map(function(l) { return l.name; }).join('; ');
+      rows.push(ioc.lookup + ',' + ioc.type + ',' + ioc.raw + ',' + defang(ioc.raw, ioc.lookup) + ',"' + sourceNames + '"');
     });
     downloadFile(rows.join('\n'), 'ioc-scan-results.csv', 'text/csv');
   }
@@ -266,7 +284,6 @@
       document.getElementById('iocExport').style.display = 'none';
     });
 
-    /* Enter key triggers scan */
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         scanBtn.click();
