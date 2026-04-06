@@ -1608,6 +1608,9 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   opacity: 0.9;
 }
 .share-float__btn--linkedin { background: #0a66c2; }
+.share-float__btn--telegram { background: #26a5e4; }
+.btn--telegram { background: #26a5e4; color: #fff; border-color: #26a5e4; }
+.btn--telegram:hover { background: #1e8dc8; border-color: #1e8dc8; }
 .share-float__btn--twitter { background: #000; }
 .share-float__btn--whatsapp { background: #25d366; }
 .share-float__btn--facebook { background: #1877f2; }
