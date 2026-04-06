@@ -1,11 +1,10 @@
-/* Hardening Checklist Generator v3 — lazy-load premium + ai-security
+/* Hardening Checklist Generator v4 — SCW Elite lazy-load + ai-security
    Preserves: platform tabs, filters, checkboxes, localStorage, progress, export */
 (function () {
   'use strict';
 
   var activePlatform = null;
   var STORAGE_KEY = 'scw_harden_checked';
-  var AUTH_KEY    = 'scw_auth';
 
   /* ── Premium data cache (keyed by platform) ── */
   var premiumCache = {};
@@ -25,16 +24,6 @@
         item.premium = premData[item.id];
       }
     });
-  }
-
-  /* ── Auth helpers ── */
-  function getAuth() {
-    try { return JSON.parse(localStorage.getItem(AUTH_KEY)) || null; }
-    catch (e) { return null; }
-  }
-  function isPremium() {
-    var auth = getAuth();
-    return auth && auth.role === 'premium';
   }
 
   /* ── Persistence ── */
@@ -67,7 +56,7 @@
     var html = '<div class="harden-premium">';
     html += '<button class="harden-premium__toggle" data-id="' + item.id + '">';
     html += '<span class="harden-premium__toggle-icon">▸</span>';
-    html += '<span>Advanced Guidance</span>';
+    html += '<span>Elite Guidance</span>';
     html += '</button>';
     html += '<div class="harden-premium__body" data-premium-id="' + item.id + '" style="display:none;"></div>';
     html += '</div>';
@@ -82,31 +71,31 @@
 
     if (p.attackPerspective) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">⚔️ Attack Perspective</h4>';
+      html += '<h4 class="harden-premium__heading">⚔️ Real-World Exposure</h4>';
       html += '<p class="harden-premium__text">' + esc(p.attackPerspective) + '</p>';
       html += '</div>';
     }
     if (p.implementationNotes) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">🛠️ Implementation Notes</h4>';
+      html += '<h4 class="harden-premium__heading">🛠️ Practical Execution</h4>';
       html += '<pre class="harden-premium__code"><code>' + esc(p.implementationNotes) + '</code></pre>';
       html += '</div>';
     }
     if (p.validationNotes) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">✅ Validation Steps</h4>';
+      html += '<h4 class="harden-premium__heading">✅ Verification</h4>';
       html += '<pre class="harden-premium__code"><code>' + esc(p.validationNotes) + '</code></pre>';
       html += '</div>';
     }
     if (p.tuningNotes) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">🎯 Tuning & False Positives</h4>';
+      html += '<h4 class="harden-premium__heading">🎯 Considerations</h4>';
       html += '<p class="harden-premium__text">' + esc(p.tuningNotes) + '</p>';
       html += '</div>';
     }
     if (p.advancedDetection) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">🔍 Advanced Detection Logic</h4>';
+      html += '<h4 class="harden-premium__heading">🔍 Operational Signals</h4>';
       html += '<pre class="harden-premium__code"><code>' + esc(p.advancedDetection) + '</code></pre>';
       html += '</div>';
     }
@@ -124,11 +113,11 @@
     }
 
     html += '<div class="harden-premium__actions">';
-    html += '<button class="btn btn--ghost btn--sm harden-premium__copy" data-id="' + item.id + '">📋 Copy Advanced Guidance</button>';
+    html += '<button class="btn btn--ghost btn--sm harden-premium__copy" data-id="' + item.id + '">📋 Copy Elite Guidance</button>';
     html += '<button class="btn btn--ghost btn--sm harden-premium__export" data-id="' + item.id + '">📄 Export Full Playbook</button>';
     html += '</div>';
 
-    html += '<p class="harden-premium__disclaimer">This content is provided for educational and guidance purposes only. Recommendations, configurations, and detection logic should always be validated in your own environment before deployment.</p>';
+    html += '<p class="harden-premium__disclaimer">Built from real-world security experience. Always validate before production use.</p>';
 
     return html;
   }
@@ -180,7 +169,7 @@
       html += '      <span class="badge badge--' + sevBadge(item.severity) + '">' + item.severity + '</span>';
       html += '      <span class="tag">' + esc(item.category) + '</span>';
       if (item.hasPremium) {
-        html += '      <span class="badge badge--premium" title="Advanced Guidance available">★</span>';
+        html += '      <span class="badge badge--premium" title="Elite Guidance available">★</span>';
       }
       html += '    </div>';
       html += '  </div>';
@@ -263,22 +252,22 @@
         }
         if (item.hasPremium && item.premium) {
           var p = item.premium;
-          if (p.attackPerspective) lines.push('  **Attack Perspective:** ' + p.attackPerspective);
+          if (p.attackPerspective) lines.push('  **Real-World Exposure:** ' + p.attackPerspective);
           if (p.implementationNotes) {
-            lines.push('  **Implementation Notes:**');
+            lines.push('  **Practical Execution:**');
             lines.push('  ```');
             lines.push('  ' + p.implementationNotes.split('\n').join('\n  '));
             lines.push('  ```');
           }
           if (p.validationNotes) {
-            lines.push('  **Validation Steps:**');
+            lines.push('  **Verification:**');
             lines.push('  ```');
             lines.push('  ' + p.validationNotes.split('\n').join('\n  '));
             lines.push('  ```');
           }
-          if (p.tuningNotes) lines.push('  **Tuning:** ' + p.tuningNotes);
+          if (p.tuningNotes) lines.push('  **Considerations:** ' + p.tuningNotes);
           if (p.advancedDetection) {
-            lines.push('  **Detection Logic:**');
+            lines.push('  **Operational Signals:**');
             lines.push('  ```');
             lines.push('  ' + p.advancedDetection.split('\n').join('\n  '));
             lines.push('  ```');
@@ -334,11 +323,11 @@
         '## Summary', item.description, ''
       ];
       if (item.command) lines.push('## Command', '```', item.command.trim(), '```', '');
-      if (p.attackPerspective) lines.push('## Attack Perspective', p.attackPerspective, '');
-      if (p.implementationNotes) lines.push('## Implementation Notes', '```', p.implementationNotes, '```', '');
-      if (p.validationNotes) lines.push('## Validation Steps', '```', p.validationNotes, '```', '');
-      if (p.tuningNotes) lines.push('## Tuning & False Positives', p.tuningNotes, '');
-      if (p.advancedDetection) lines.push('## Detection Logic', '```', p.advancedDetection, '```', '');
+      if (p.attackPerspective) lines.push('## Real-World Exposure', p.attackPerspective, '');
+      if (p.implementationNotes) lines.push('## Practical Execution', '```', p.implementationNotes, '```', '');
+      if (p.validationNotes) lines.push('## Verification', '```', p.validationNotes, '```', '');
+      if (p.tuningNotes) lines.push('## Considerations', p.tuningNotes, '');
+      if (p.advancedDetection) lines.push('## Operational Signals', '```', p.advancedDetection, '```', '');
       lines.push('---', 'Generated by [Shimi\'s Cyber World](https://shimiscyberworld.com/hardening/)');
       var md = lines.join('\n');
       var blob = new Blob([md], { type: 'text/markdown' });
@@ -355,12 +344,12 @@
     var item = (window.HARDEN_ITEMS || []).find(function (i) { return i.id === itemId; });
     if (!item || !item.premium) return;
     var p = item.premium;
-    var parts = [item.title + ' — Advanced Guidance\n'];
-    if (p.attackPerspective) parts.push('Attack Perspective:\n' + p.attackPerspective + '\n');
-    if (p.implementationNotes) parts.push('Implementation Notes:\n' + p.implementationNotes + '\n');
-    if (p.validationNotes) parts.push('Validation Steps:\n' + p.validationNotes + '\n');
-    if (p.tuningNotes) parts.push('Tuning:\n' + p.tuningNotes + '\n');
-    if (p.advancedDetection) parts.push('Detection Logic:\n' + p.advancedDetection + '\n');
+    var parts = [item.title + ' — Elite Guidance\n'];
+    if (p.attackPerspective) parts.push('Real-World Exposure:\n' + p.attackPerspective + '\n');
+    if (p.implementationNotes) parts.push('Practical Execution:\n' + p.implementationNotes + '\n');
+    if (p.validationNotes) parts.push('Verification:\n' + p.validationNotes + '\n');
+    if (p.tuningNotes) parts.push('Considerations:\n' + p.tuningNotes + '\n');
+    if (p.advancedDetection) parts.push('Operational Signals:\n' + p.advancedDetection + '\n');
     navigator.clipboard.writeText(parts.join('\n'));
   }
 
@@ -447,7 +436,7 @@
       if (premCopy) {
         copyPremiumContent(premCopy.dataset.id);
         premCopy.textContent = '✅ Copied!';
-        setTimeout(function () { premCopy.textContent = '📋 Copy Advanced Guidance'; }, 1500);
+        setTimeout(function () { premCopy.textContent = '📋 Copy Elite Guidance'; }, 1500);
         return;
       }
 
@@ -502,11 +491,5 @@
       renderChecklist(activePlatform);
     });
 
-    /* Re-render when auth changes (from sign-in page) */
-    window.addEventListener('storage', function (e) {
-      if (e.key === AUTH_KEY && activePlatform) {
-        renderChecklist(activePlatform);
-      }
-    });
   });
 })();

@@ -11,7 +11,7 @@
       <div class="nav-menu">
         <ul class="nav-links">
           {% for item in site.data.navigation %}
-          <li><a href="{{ item.url | relative_url }}"{% if page.url == item.url %} class="active"{% endif %}>{{ item.label }}{% if item.badge %}<span class="nav-badge">PRO</span>{% endif %}</a></li>
+          <li><a href="{{ item.url | relative_url }}"{% if page.url == item.url %} class="active"{% endif %}>{{ item.label }}{% if item.badge %}<span class="nav-badge">ELITE</span>{% endif %}</a></li>
           {% endfor %}
         </ul>
         <a href="#newsletter" class="nav-subscribe" aria-label="Subscribe to newsletter">✉ Subscribe</a>

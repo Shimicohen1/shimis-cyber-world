@@ -66,7 +66,7 @@ SCW exists to:
 Built from the community. Growing into much more.
 
 - Expanding the SCW ecosystem
-- More tools in the Premium Toolkit
+- More tools inside SCW Elite
 - Deeper community features and signal sharing
 - Curated learning paths and vault resources
 
