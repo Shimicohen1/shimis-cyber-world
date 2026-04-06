@@ -380,16 +380,11 @@
 
 /* Section content */
 .rb-section__content {
+  display: none;
   overflow: hidden;
-  max-height: 0;
-  transition: max-height .4s ease;
-}
-.rb-section__content[hidden] {
-  display: block;
-  max-height: 0;
 }
 .rb-section.open .rb-section__content {
-  max-height: 3000px;
+  display: block;
 }
 
 /* Steps */
