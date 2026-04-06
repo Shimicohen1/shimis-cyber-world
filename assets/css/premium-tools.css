@@ -979,18 +979,18 @@
 /* Filters */
 .ioc-filters { margin: .8rem 0; }
 
-/* IOC result card — v2 */
+/* IOC result card — v3 rich intelligence */
 .ioc-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r);
-  padding: 1.2rem 1.4rem;
-  margin-bottom: .8rem;
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1rem;
   transition: border-color .15s, box-shadow .15s;
 }
 .ioc-card:hover { border-color: rgba(6,182,212,.3); box-shadow: 0 0 20px rgba(6,182,212,.06); }
 .ioc-card__header {
-  margin-bottom: .8rem;
+  margin-bottom: 1rem;
   padding-bottom: .8rem;
   border-bottom: 1px solid var(--border);
 }
@@ -1000,48 +1000,77 @@
   gap: .5rem;
   margin-bottom: .5rem;
 }
-.ioc-card__type-icon { font-size: 1rem; }
+.ioc-card__type-icon { font-size: 1.1rem; }
+.ioc-card__label { font-size: .78rem; color: var(--gray); font-weight: 500; }
 .ioc-card__source-count {
   margin-left: auto;
   font-family: var(--f-mono);
-  font-size: .65rem;
+  font-size: .7rem;
   color: var(--dim);
   letter-spacing: .02em;
 }
 .ioc-card__value {
   display: block;
   font-family: var(--f-mono);
-  font-size: .9rem;
+  font-size: .95rem;
   color: var(--cyan);
   word-break: break-all;
   line-height: 1.5;
-  padding: .5rem .7rem;
-  background: rgba(6,182,212,.05);
-  border: 1px solid rgba(6,182,212,.12);
+  padding: .6rem .8rem;
+  background: rgba(6,182,212,.06);
+  border: 1px solid rgba(6,182,212,.15);
   border-radius: var(--r-sm, 4px);
-  margin-bottom: .5rem;
 }
-.ioc-card__context {
-  font-size: .72rem;
-  color: var(--dim);
-  line-height: 1.45;
+
+/* Risk context section */
+.ioc-card__risk {
+  margin: .8rem 0;
+  padding: .8rem 1rem;
+  background: rgba(245,158,11,.04);
+  border-left: 3px solid rgba(245,158,11,.5);
+  border-radius: 0 var(--r-sm, 4px) var(--r-sm, 4px) 0;
+}
+.ioc-card__risk-title {
+  font-size: .78rem;
+  font-weight: 700;
+  color: #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .35rem;
+}
+.ioc-card__risk-text {
+  font-size: .8rem;
+  color: var(--gray);
+  line-height: 1.55;
   margin: 0;
 }
+
+/* Section title between risk and links */
+.ioc-card__section-title {
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin: 1rem 0 .6rem;
+}
+
+/* Source link grid */
 .ioc-card__links {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: .5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: .6rem;
 }
 .ioc-link {
   display: flex;
   flex-direction: column;
-  gap: .25rem;
-  padding: .6rem .8rem;
+  gap: .4rem;
+  padding: .75rem 1rem;
   background: var(--deep, #0a0a0f);
   border: 1px solid var(--border);
   border-radius: var(--r-sm, 4px);
   color: var(--gray);
-  font-size: .75rem;
+  font-size: .8rem;
   text-decoration: none;
   transition: border-color .15s, color .15s, background .15s;
 }
@@ -1053,19 +1082,42 @@
 .ioc-link__header {
   display: flex;
   align-items: center;
-  gap: .35rem;
+  gap: .4rem;
 }
-.ioc-link__icon { font-size: .85rem; }
-.ioc-link__name { font-weight: 600; color: var(--white); }
-.ioc-link__arrow { color: var(--dim); font-size: .65rem; margin-left: auto; }
+.ioc-link__icon { font-size: .9rem; }
+.ioc-link__name { font-weight: 700; color: var(--white); font-size: .82rem; }
+.ioc-link__arrow { color: var(--dim); font-size: .7rem; margin-left: auto; }
 .ioc-link__desc {
-  font-size: .68rem;
-  color: var(--dim);
-  line-height: 1.4;
+  font-size: .78rem;
+  color: var(--gray);
+  line-height: 1.5;
   margin: 0;
 }
-.ioc-link:hover .ioc-link__desc { color: var(--gray); }
+.ioc-link:hover .ioc-link__desc { color: var(--white); }
 .ioc-link:hover .ioc-link__name { color: var(--cyan); }
+
+/* Recommended actions section */
+.ioc-card__actions {
+  margin-top: 1rem;
+  padding: .8rem 1rem;
+  background: rgba(6,182,212,.04);
+  border-left: 3px solid rgba(6,182,212,.4);
+  border-radius: 0 var(--r-sm, 4px) var(--r-sm, 4px) 0;
+}
+.ioc-card__actions-title {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .35rem;
+}
+.ioc-card__actions-text {
+  font-size: .8rem;
+  color: var(--gray);
+  line-height: 1.55;
+  margin: 0;
+}
 
 /* How it works steps */
 .ioc-how-it-works {
@@ -1141,11 +1193,17 @@
   box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
 [data-theme="light"] .ioc-card__value { color: #0891b2; background: rgba(8,145,178,.05); border-color: rgba(8,145,178,.12); }
+[data-theme="light"] .ioc-card__risk { background: rgba(245,158,11,.06); }
+[data-theme="light"] .ioc-card__risk-text { color: #555; }
+[data-theme="light"] .ioc-card__actions { background: rgba(8,145,178,.04); }
+[data-theme="light"] .ioc-card__actions-text { color: #555; }
+[data-theme="light"] .ioc-card__section-title { color: #1a1a2e; }
 [data-theme="light"] .ioc-link {
   background: #f4f4f8;
   border-color: rgba(0,0,0,.08);
   color: #555;
 }
+[data-theme="light"] .ioc-link__desc { color: #666; }
 [data-theme="light"] .ioc-link:hover { border-color: #0891b2; color: #0891b2; background: rgba(8,145,178,.04); }
 [data-theme="light"] .ioc-link__name { color: #1a1a2e; }
 [data-theme="light"] .ioc-source-chip {
@@ -1156,6 +1214,7 @@
 /* IOC responsive */
 @media (max-width: 768px) {
   .ioc-how-it-works { flex-direction: column; gap: .6rem; }
+  .ioc-card { padding: 1rem 1.1rem; }
   .ioc-card__links { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
