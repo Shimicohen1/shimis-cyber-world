@@ -1,9 +1,10 @@
-/* LockDown v4 — SCW Elite lazy-load + ai-security
+/* LockDown v5 — global category filters across all platforms
    Preserves: platform tabs, filters, checkboxes, localStorage, progress, export */
 (function () {
   'use strict';
 
   var activePlatform = null;
+  var globalCategoryMode = false;   /* true when viewing cross-platform category */
   var STORAGE_KEY = 'scw_harden_checked';
 
   /* ── Premium data cache (keyed by platform) ── */
@@ -125,7 +126,25 @@
   /* ── Render checklist ── */
   function renderChecklist(platform) {
     activePlatform = platform;
+    globalCategoryMode = false;
     var items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.platform === platform; });
+    renderItems(items, platform);
+  }
+
+  /* ── Render cross-platform category ── */
+  function renderGlobalCategory(category) {
+    globalCategoryMode = true;
+    var items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.category === category; });
+    renderItems(items, null);
+
+    /* Deselect platform buttons when in global mode */
+    document.querySelectorAll('.harden-platform-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+  }
+
+  /* ── Shared render logic ── */
+  function renderItems(items, platform) {
     var checked = getChecked();
 
     /* Show controls */
@@ -147,14 +166,16 @@
     document.getElementById('hardenCritical').textContent = critCount;
     document.getElementById('hardenHigh').textContent = highCount;
 
-    /* Active platform button */
-    document.querySelectorAll('.harden-platform-btn').forEach(function (btn) {
-      btn.classList.toggle('active', btn.dataset.platform === platform);
-    });
+    /* Active platform button — only when not global */
+    if (platform) {
+      document.querySelectorAll('.harden-platform-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.platform === platform);
+      });
+    }
 
-    /* Reset filters */
-    document.querySelectorAll('#hardenCatFilters .vault-filter, #hardenSevFilters .vault-filter').forEach(function (b) {
-      b.classList.toggle('active', b.dataset.cat === 'all' || b.dataset.sev === 'all');
+    /* Reset severity filter */
+    document.querySelectorAll('#hardenSevFilters .vault-filter').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.sev === 'all');
     });
 
     /* Build cards */
@@ -168,6 +189,10 @@
       html += '    <div class="harden-item__badges">';
       html += '      <span class="badge badge--' + sevBadge(item.severity) + '">' + item.severity + '</span>';
       html += '      <span class="tag">' + esc(item.category) + '</span>';
+      /* Show platform badge in global category mode */
+      if (globalCategoryMode) {
+        html += '      <span class="badge badge--vault">' + esc(item.platform.toUpperCase()) + '</span>';
+      }
       if (item.hasPremium) {
         html += '      <span class="badge badge--premium" title="Elite Guidance available">★</span>';
       }
@@ -204,7 +229,14 @@
   /* ── Progress ── */
   function updateProgress(items, checked) {
     if (!items) {
-      items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.platform === activePlatform; });
+      if (globalCategoryMode) {
+        /* In global mode, get items from current displayed cards */
+        var activeCat = 'all';
+        document.querySelectorAll('#hardenCatFilters .vault-filter.active').forEach(function (b) { activeCat = b.dataset.cat; });
+        items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.category === activeCat; });
+      } else {
+        items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.platform === activePlatform; });
+      }
     }
     if (!checked) checked = getChecked();
 
@@ -216,28 +248,42 @@
     document.getElementById('hardenDone').textContent = done;
   }
 
-  /* ── Filter ── */
+  /* ── Filter (severity only — category triggers full re-render) ── */
   function applyFilters() {
-    var activeCat = 'all';
     var activeSev = 'all';
-    document.querySelectorAll('#hardenCatFilters .vault-filter.active').forEach(function (b) { activeCat = b.dataset.cat; });
     document.querySelectorAll('#hardenSevFilters .vault-filter.active').forEach(function (b) { activeSev = b.dataset.sev; });
 
     document.querySelectorAll('.harden-item').forEach(function (item) {
-      var catMatch = activeCat === 'all' || item.dataset.cat === activeCat;
       var sevMatch = activeSev === 'all' || item.dataset.sev === activeSev;
-      item.style.display = (catMatch && sevMatch) ? '' : 'none';
+      item.style.display = sevMatch ? '' : 'none';
     });
   }
 
   /* ── Export ── */
   function exportMarkdown() {
-    if (!activePlatform) return Promise.resolve('');
-    return fetchPremiumData(activePlatform).then(function (data) {
-      attachPremium(activePlatform, data);
-      var items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.platform === activePlatform; });
+    var items;
+    var label;
+    if (globalCategoryMode) {
+      var activeCat = 'all';
+      document.querySelectorAll('#hardenCatFilters .vault-filter.active').forEach(function (b) { activeCat = b.dataset.cat; });
+      items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.category === activeCat; });
+      label = activeCat.toUpperCase() + ' (All Platforms)';
+    } else {
+      if (!activePlatform) return Promise.resolve('');
+      items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.platform === activePlatform; });
+      label = activePlatform.toUpperCase() + ' Hardening';
+    }
+
+    /* Fetch premium for all relevant platforms */
+    var platforms = {};
+    items.forEach(function (i) { platforms[i.platform] = true; });
+    var fetches = Object.keys(platforms).map(function (p) {
+      return fetchPremiumData(p).then(function (data) { attachPremium(p, data); });
+    });
+
+    return Promise.all(fetches).then(function () {
       var checked = getChecked();
-      var lines = ['# LockDown — ' + activePlatform.toUpperCase() + ' Hardening', ''];
+      var lines = ['# LockDown — ' + label, ''];
       lines.push('Generated by [SCW LockDown](https://shimiscyberworld.com/hardening/)', '');
 
       items.forEach(function (item) {
@@ -287,7 +333,7 @@
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
-      a.download = 'lockdown-' + activePlatform + '.md';
+      a.download = 'lockdown-' + (globalCategoryMode ? 'category' : activePlatform) + '.md';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -362,6 +408,10 @@
     platforms.addEventListener('click', function (e) {
       var btn = e.target.closest('.harden-platform-btn');
       if (!btn) return;
+      /* Reset category filter to "All" when switching platforms */
+      document.querySelectorAll('#hardenCatFilters .vault-filter').forEach(function (b) {
+        b.classList.toggle('active', b.dataset.cat === 'all');
+      });
       renderChecklist(btn.dataset.platform);
     });
 
@@ -461,13 +511,25 @@
       }
     });
 
-    /* Category filter */
+    /* Category filter — global across all platforms */
     document.getElementById('hardenCatFilters').addEventListener('click', function (e) {
       var btn = e.target.closest('.vault-filter');
       if (!btn) return;
       this.querySelectorAll('.vault-filter').forEach(function (b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      applyFilters();
+
+      var cat = btn.dataset.cat;
+      if (cat === 'all') {
+        /* "All Categories" → go back to platform view if one was selected */
+        if (activePlatform) {
+          renderChecklist(activePlatform);
+        }
+      } else {
+        /* Specific category → show items from ALL platforms */
+        renderGlobalCategory(cat);
+        /* Then apply severity filter on top */
+        applyFilters();
+      }
     });
 
     /* Severity filter */
@@ -483,12 +545,22 @@
     document.getElementById('hardenExportMd').addEventListener('click', downloadMd);
     document.getElementById('hardenCopyMd').addEventListener('click', copyMd);
     document.getElementById('hardenReset').addEventListener('click', function () {
-      if (!activePlatform) return;
       var checked = getChecked();
-      var items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.platform === activePlatform; });
-      items.forEach(function (i) { delete checked[i.id]; });
-      saveChecked(checked);
-      renderChecklist(activePlatform);
+      var items;
+      if (globalCategoryMode) {
+        var activeCat = 'all';
+        document.querySelectorAll('#hardenCatFilters .vault-filter.active').forEach(function (b) { activeCat = b.dataset.cat; });
+        items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.category === activeCat; });
+        items.forEach(function (i) { delete checked[i.id]; });
+        saveChecked(checked);
+        renderGlobalCategory(activeCat);
+      } else {
+        if (!activePlatform) return;
+        items = (window.HARDEN_ITEMS || []).filter(function (i) { return i.platform === activePlatform; });
+        items.forEach(function (i) { delete checked[i.id]; });
+        saveChecked(checked);
+        renderChecklist(activePlatform);
+      }
     });
 
   });

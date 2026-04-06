@@ -150,4 +150,4 @@ window.HARDEN_ITEMS = [
 {% endfor %}
 ];
 </script>
-<script src="/assets/js/hardening.js?v=6" defer></script>
+<script src="/assets/js/hardening.js?v=7" defer></script>
