@@ -1,0 +1,749 @@
+# Hardening Checklist Generator — CIS-aligned security hardening items
+
+platforms:
+  - id: linux
+    name: Linux (Ubuntu/RHEL)
+    icon: "🐧"
+  - id: windows
+    name: Windows Server
+    icon: "🪟"
+  - id: aws
+    name: AWS
+    icon: "☁️"
+  - id: azure
+    name: Microsoft Azure
+    icon: "🔷"
+  - id: gcp
+    name: Google Cloud
+    icon: "🌐"
+
+categories:
+  - id: identity
+    name: Identity & Access
+    icon: "🔑"
+  - id: network
+    name: Network Security
+    icon: "🌐"
+  - id: logging
+    name: Logging & Monitoring
+    icon: "📊"
+  - id: encryption
+    name: Encryption & Data
+    icon: "🔒"
+  - id: services
+    name: Services & Configuration
+    icon: "⚙️"
+  - id: patching
+    name: Patching & Updates
+    icon: "🔄"
+
+items:
+  # ══════════════════════════════════════
+  # LINUX
+  # ══════════════════════════════════════
+
+  # Identity & Access
+  - id: lin-001
+    platform: linux
+    category: identity
+    severity: critical
+    title: "Disable root SSH login"
+    description: "Prevent direct root login via SSH. Use sudo for privilege escalation."
+    reference: "CIS Linux Benchmark 5.2.10"
+    command: |
+      # /etc/ssh/sshd_config
+      PermitRootLogin no
+      # Then restart:
+      sudo systemctl restart sshd
+
+  - id: lin-002
+    platform: linux
+    category: identity
+    severity: critical
+    title: "Enforce SSH key-based authentication"
+    description: "Disable password authentication for SSH. Require public key auth only."
+    reference: "CIS Linux Benchmark 5.2.12"
+    command: |
+      # /etc/ssh/sshd_config
+      PasswordAuthentication no
+      PubkeyAuthentication yes
+      # Restart sshd
+      sudo systemctl restart sshd
+
+  - id: lin-003
+    platform: linux
+    category: identity
+    severity: high
+    title: "Set password complexity and aging"
+    description: "Enforce minimum password length, complexity, and 90-day expiration."
+    reference: "CIS Linux Benchmark 5.4.1"
+    command: |
+      # /etc/security/pwquality.conf
+      minlen = 14
+      minclass = 4
+      # /etc/login.defs
+      PASS_MAX_DAYS 90
+      PASS_MIN_DAYS 7
+      PASS_WARN_AGE 14
+
+  - id: lin-004
+    platform: linux
+    category: identity
+    severity: high
+    title: "Restrict sudo access"
+    description: "Limit sudo privileges to a dedicated admin group. Audit sudoers regularly."
+    reference: "CIS Linux Benchmark 5.3"
+    command: |
+      # List current sudo users
+      grep -r 'ALL' /etc/sudoers /etc/sudoers.d/
+      # Restrict to admin group only
+      sudo visudo
+      # Ensure: %admin ALL=(ALL:ALL) ALL
+
+  - id: lin-005
+    platform: linux
+    category: identity
+    severity: medium
+    title: "Lock inactive user accounts"
+    description: "Automatically lock accounts after 30 days of inactivity."
+    reference: "CIS Linux Benchmark 5.4.1.4"
+    command: |
+      sudo useradd -D -f 30
+      # For existing users:
+      sudo chage --inactive 30 <username>
+
+  # Network
+  - id: lin-006
+    platform: linux
+    category: network
+    severity: critical
+    title: "Configure firewall (iptables/nftables)"
+    description: "Default deny inbound. Allow only required ports (SSH, HTTPS). Log dropped packets."
+    reference: "CIS Linux Benchmark 3.5"
+    command: |
+      # UFW example (Ubuntu)
+      sudo ufw default deny incoming
+      sudo ufw default allow outgoing
+      sudo ufw allow 22/tcp
+      sudo ufw allow 443/tcp
+      sudo ufw enable
+      sudo ufw status verbose
+
+  - id: lin-007
+    platform: linux
+    category: network
+    severity: high
+    title: "Disable IP forwarding"
+    description: "Unless the system is a router, disable IP forwarding to prevent packet routing attacks."
+    reference: "CIS Linux Benchmark 3.1.1"
+    command: |
+      # /etc/sysctl.conf
+      net.ipv4.ip_forward = 0
+      net.ipv6.conf.all.forwarding = 0
+      # Apply
+      sudo sysctl -p
+
+  - id: lin-008
+    platform: linux
+    category: network
+    severity: high
+    title: "Disable ICMP redirects"
+    description: "Prevent ICMP redirect acceptance which can be used for man-in-the-middle attacks."
+    reference: "CIS Linux Benchmark 3.2.2"
+    command: |
+      # /etc/sysctl.conf
+      net.ipv4.conf.all.accept_redirects = 0
+      net.ipv4.conf.default.accept_redirects = 0
+      net.ipv6.conf.all.accept_redirects = 0
+      sudo sysctl -p
+
+  # Logging
+  - id: lin-009
+    platform: linux
+    category: logging
+    severity: critical
+    title: "Enable and configure auditd"
+    description: "Install and configure the Linux audit daemon for security event logging."
+    reference: "CIS Linux Benchmark 4.1"
+    command: |
+      sudo apt install auditd audispd-plugins  # Debian/Ubuntu
+      sudo systemctl enable auditd
+      sudo systemctl start auditd
+      # Key rules (/etc/audit/rules.d/audit.rules):
+      -w /etc/passwd -p wa -k identity
+      -w /etc/shadow -p wa -k identity
+      -w /var/log/auth.log -p wa -k auth_log
+      -a always,exit -F arch=b64 -S execve -k exec
+
+  - id: lin-010
+    platform: linux
+    category: logging
+    severity: high
+    title: "Ship logs to remote syslog / SIEM"
+    description: "Forward critical logs to a central SIEM or syslog server to prevent local log tampering."
+    reference: "CIS Linux Benchmark 4.2.1"
+    command: |
+      # /etc/rsyslog.conf (rsyslog)
+      *.* @@siem.company.com:514
+      # Or use Elastic Agent / Splunk UF / Azure AMA
+
+  # Encryption
+  - id: lin-011
+    platform: linux
+    category: encryption
+    severity: high
+    title: "Enforce TLS 1.2+ system-wide"
+    description: "Disable TLS 1.0/1.1 and weak cipher suites across all services."
+    reference: "CIS Linux Benchmark 1.10"
+    command: |
+      # /etc/ssl/openssl.cnf
+      MinProtocol = TLSv1.2
+      # For SSH (/etc/ssh/sshd_config):
+      Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com
+      MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com
+
+  - id: lin-012
+    platform: linux
+    category: encryption
+    severity: medium
+    title: "Enable filesystem encryption at rest"
+    description: "Use LUKS for full disk encryption or encrypted volumes for sensitive data."
+    reference: "CIS Linux Benchmark 1.1.1"
+    command: |
+      # Check if LUKS is configured
+      sudo lsblk -f | grep crypto_LUKS
+      # Create encrypted volume
+      sudo cryptsetup luksFormat /dev/sdX
+      sudo cryptsetup open /dev/sdX encrypted_vol
+
+  # Services
+  - id: lin-013
+    platform: linux
+    category: services
+    severity: high
+    title: "Disable unnecessary services"
+    description: "Remove or disable services not required: avahi, cups, rpcbind, etc."
+    reference: "CIS Linux Benchmark 2.1-2.2"
+    command: |
+      # List running services
+      sudo systemctl list-units --type=service --state=running
+      # Disable unnecessary ones
+      sudo systemctl disable --now avahi-daemon
+      sudo systemctl disable --now cups
+      sudo systemctl disable --now rpcbind
+
+  - id: lin-014
+    platform: linux
+    category: services
+    severity: high
+    title: "Set secure file permissions"
+    description: "Ensure correct permissions on critical files: passwd, shadow, ssh config."
+    reference: "CIS Linux Benchmark 6.1"
+    command: |
+      sudo chmod 644 /etc/passwd
+      sudo chmod 640 /etc/shadow
+      sudo chmod 600 /etc/ssh/sshd_config
+      sudo chmod 700 /root
+      # Find world-writable files
+      sudo find / -type f -perm -0002 -not -path '/proc/*' 2>/dev/null
+
+  # Patching
+  - id: lin-015
+    platform: linux
+    category: patching
+    severity: critical
+    title: "Enable automatic security updates"
+    description: "Configure unattended-upgrades for automatic security patching."
+    reference: "CIS Linux Benchmark 1.9"
+    command: |
+      # Ubuntu/Debian
+      sudo apt install unattended-upgrades
+      sudo dpkg-reconfigure -plow unattended-upgrades
+      # RHEL/CentOS
+      sudo dnf install dnf-automatic
+      sudo systemctl enable --now dnf-automatic-install.timer
+
+  # ══════════════════════════════════════
+  # WINDOWS SERVER
+  # ══════════════════════════════════════
+
+  - id: win-001
+    platform: windows
+    category: identity
+    severity: critical
+    title: "Rename and disable built-in Administrator"
+    description: "Rename the default Administrator account and create a separate admin account."
+    reference: "CIS Windows Server Benchmark 2.3.1.1"
+    command: |
+      # PowerShell
+      Rename-LocalUser -Name "Administrator" -NewName "scw_admin_disabled"
+      Disable-LocalUser -Name "scw_admin_disabled"
+
+  - id: win-002
+    platform: windows
+    category: identity
+    severity: critical
+    title: "Enforce account lockout policy"
+    description: "Lock accounts after 5 failed login attempts for 30 minutes."
+    reference: "CIS Windows Server Benchmark 1.2"
+    command: |
+      # PowerShell (GPO or local policy)
+      net accounts /lockoutthreshold:5
+      net accounts /lockoutduration:30
+      net accounts /lockoutwindow:30
+
+  - id: win-003
+    platform: windows
+    category: identity
+    severity: high
+    title: "Require NTLMv2 and refuse LM/NTLMv1"
+    description: "Force NTLMv2 authentication and reject legacy LM hashes."
+    reference: "CIS Windows Server Benchmark 2.3.11.7"
+    command: |
+      # GPO: Computer Configuration → Policies → Windows Settings →
+      # Security Settings → Local Policies → Security Options
+      # "Network security: LAN Manager authentication level"
+      # → "Send NTLMv2 response only. Refuse LM & NTLM"
+      # Registry:
+      Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "LmCompatibilityLevel" -Value 5
+
+  - id: win-004
+    platform: windows
+    category: network
+    severity: critical
+    title: "Enable Windows Firewall on all profiles"
+    description: "Ensure Windows Defender Firewall is enabled for Domain, Private, and Public profiles."
+    reference: "CIS Windows Server Benchmark 9.1"
+    command: |
+      # PowerShell
+      Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True
+      # Verify
+      Get-NetFirewallProfile | Select Name, Enabled
+
+  - id: win-005
+    platform: windows
+    category: network
+    severity: high
+    title: "Disable SMBv1"
+    description: "SMBv1 is exploited by WannaCry, EternalBlue, and other attacks. Disable it completely."
+    reference: "CIS Windows Server Benchmark 18.3.3"
+    command: |
+      # PowerShell
+      Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force
+      # Disable SMBv1 client
+      Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart
+
+  - id: win-006
+    platform: windows
+    category: logging
+    severity: critical
+    title: "Enable PowerShell script block logging"
+    description: "Log all PowerShell script execution for forensic visibility."
+    reference: "CIS Windows Server Benchmark 18.9.100"
+    command: |
+      # GPO: Computer Configuration → Administrative Templates →
+      # Windows Components → Windows PowerShell
+      # → "Turn on PowerShell Script Block Logging" = Enabled
+      # Registry:
+      New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" -Force
+      Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" -Name "EnableScriptBlockLogging" -Value 1
+
+  - id: win-007
+    platform: windows
+    category: logging
+    severity: critical
+    title: "Configure Windows Event Forwarding (WEF)"
+    description: "Forward Security, System, and PowerShell event logs to your SIEM."
+    reference: "CIS Windows Server Benchmark 17"
+    command: |
+      # Enable audit policies
+      auditpol /set /category:"Logon/Logoff" /success:enable /failure:enable
+      auditpol /set /category:"Account Logon" /success:enable /failure:enable
+      auditpol /set /category:"Object Access" /success:enable /failure:enable
+      auditpol /set /category:"Privilege Use" /success:enable /failure:enable
+      # Forward to SIEM via Windows Event Forwarding or agent
+
+  - id: win-008
+    platform: windows
+    category: encryption
+    severity: high
+    title: "Enable BitLocker on all volumes"
+    description: "Encrypt all drives with BitLocker using AES-256. Store recovery keys in AD."
+    reference: "CIS Windows Server Benchmark 18.9.12"
+    command: |
+      # PowerShell
+      Enable-BitLocker -MountPoint "C:" -EncryptionMethod Aes256 -RecoveryPasswordProtector
+      # Backup key to AD
+      Backup-BitLockerKeyProtector -MountPoint "C:" -KeyProtectorId (Get-BitLockerVolume -MountPoint "C:").KeyProtector[1].KeyProtectorId
+
+  - id: win-009
+    platform: windows
+    category: services
+    severity: high
+    title: "Disable unnecessary Windows features"
+    description: "Remove unused features: Telnet, TFTP, IIS (if not needed), Windows Subsystem for Linux."
+    reference: "CIS Windows Server Benchmark 2.1"
+    command: |
+      # PowerShell — list enabled features
+      Get-WindowsOptionalFeature -Online | Where-Object State -eq 'Enabled'
+      # Disable examples
+      Disable-WindowsOptionalFeature -Online -FeatureName TelnetClient -NoRestart
+      Disable-WindowsOptionalFeature -Online -FeatureName TFTP -NoRestart
+
+  - id: win-010
+    platform: windows
+    category: patching
+    severity: critical
+    title: "Configure WSUS or Windows Update for Business"
+    description: "Ensure automatic security updates with max 48-hour deployment window."
+    reference: "CIS Windows Server Benchmark 18.9.101"
+    command: |
+      # PowerShell — check update settings
+      Get-WUSettings
+      # Force install all available updates
+      Install-WindowsUpdate -AcceptAll -AutoReboot
+      # Or configure via GPO for enterprise management
+
+  # ══════════════════════════════════════
+  # AWS
+  # ══════════════════════════════════════
+
+  - id: aws-001
+    platform: aws
+    category: identity
+    severity: critical
+    title: "Enable MFA on root account"
+    description: "The AWS root account must have hardware MFA enabled. Never use root for daily operations."
+    reference: "CIS AWS Foundations Benchmark 1.5"
+    command: |
+      # Check root MFA status
+      aws iam get-account-summary --query 'SummaryMap.AccountMFAEnabled'
+      # Enable via AWS Console → IAM → Root user → Security credentials → MFA
+
+  - id: aws-002
+    platform: aws
+    category: identity
+    severity: critical
+    title: "Eliminate root access keys"
+    description: "Delete all access keys associated with the root account."
+    reference: "CIS AWS Foundations Benchmark 1.4"
+    command: |
+      # List root access keys
+      aws iam list-access-keys --user-name root
+      # Delete if any exist
+      aws iam delete-access-key --user-name root --access-key-id <key_id>
+
+  - id: aws-003
+    platform: aws
+    category: identity
+    severity: high
+    title: "Enforce MFA for IAM users"
+    description: "Require MFA for all IAM users, especially those with console access."
+    reference: "CIS AWS Foundations Benchmark 1.10"
+    command: |
+      # List users without MFA
+      aws iam generate-credential-report
+      aws iam get-credential-report --output text --query 'Content' | base64 -d | \
+        awk -F, '$4 == "true" && $8 == "false" { print $1 }'
+
+  - id: aws-004
+    platform: aws
+    category: identity
+    severity: high
+    title: "Enforce least privilege IAM policies"
+    description: "Avoid wildcard (*) actions and resources. Use IAM Access Analyzer to find overly permissive policies."
+    reference: "CIS AWS Foundations Benchmark 1.16"
+    command: |
+      # Find policies with wildcard actions
+      aws iam list-policies --scope Local --query 'Policies[].Arn' --output text | \
+        xargs -I {} aws iam get-policy-version \
+          --policy-arn {} \
+          --version-id $(aws iam get-policy --policy-arn {} --query 'Policy.DefaultVersionId' --output text) \
+          --query 'PolicyVersion.Document'
+      # Use IAM Access Analyzer
+      aws accessanalyzer list-findings --analyzer-arn <arn>
+
+  - id: aws-005
+    platform: aws
+    category: network
+    severity: critical
+    title: "Remove 0.0.0.0/0 from security groups"
+    description: "No security group should allow unrestricted inbound access (0.0.0.0/0 on sensitive ports)."
+    reference: "CIS AWS Foundations Benchmark 5.2"
+    command: |
+      # Find SGs with 0.0.0.0/0 inbound
+      aws ec2 describe-security-groups --query \
+        'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]].[GroupId,GroupName]' \
+        --output table
+
+  - id: aws-006
+    platform: aws
+    category: logging
+    severity: critical
+    title: "Enable CloudTrail in all regions"
+    description: "CloudTrail must log API calls across all regions with log file validation enabled."
+    reference: "CIS AWS Foundations Benchmark 3.1"
+    command: |
+      # Check CloudTrail status
+      aws cloudtrail describe-trails --query 'trailList[].{Name:Name,Multi:IsMultiRegionTrail,Logging:HasCustomEventSelectors}'
+      # Create multi-region trail
+      aws cloudtrail create-trail --name scw-audit-trail \
+        --s3-bucket-name scw-cloudtrail-logs \
+        --is-multi-region-trail \
+        --enable-log-file-validation
+
+  - id: aws-007
+    platform: aws
+    category: logging
+    severity: high
+    title: "Enable GuardDuty"
+    description: "AWS GuardDuty provides ML-based threat detection for your AWS accounts."
+    reference: "CIS AWS Foundations Benchmark 4.15"
+    command: |
+      # Enable GuardDuty
+      aws guardduty create-detector --enable
+      # Check status
+      aws guardduty list-detectors
+
+  - id: aws-008
+    platform: aws
+    category: encryption
+    severity: critical
+    title: "Enable default S3 bucket encryption"
+    description: "All S3 buckets must have server-side encryption (SSE-S3 or SSE-KMS) enabled by default."
+    reference: "CIS AWS Foundations Benchmark 2.1.1"
+    command: |
+      # Check all buckets for encryption
+      for bucket in $(aws s3api list-buckets --query 'Buckets[].Name' --output text); do
+        enc=$(aws s3api get-bucket-encryption --bucket "$bucket" 2>&1)
+        echo "$bucket: $enc"
+      done
+
+  - id: aws-009
+    platform: aws
+    category: encryption
+    severity: high
+    title: "Block public S3 bucket access"
+    description: "Enable S3 Block Public Access at the account level to prevent accidental exposure."
+    reference: "CIS AWS Foundations Benchmark 2.1.5"
+    command: |
+      # Enable account-level block
+      aws s3control put-public-access-block --account-id $(aws sts get-caller-identity --query Account --output text) \
+        --public-access-block-configuration \
+          BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+
+  - id: aws-010
+    platform: aws
+    category: patching
+    severity: high
+    title: "Enable AWS Systems Manager Patch Manager"
+    description: "Automate OS patching for all EC2 instances using SSM Patch Manager."
+    reference: "AWS Well-Architected Security Pillar"
+    command: |
+      # List managed instances
+      aws ssm describe-instance-information --query 'InstanceInformationList[].{Id:InstanceId,Ping:PingStatus}'
+      # Create patch baseline
+      aws ssm create-patch-baseline --name "SCW-Security-Patches" \
+        --approval-rules "PatchRules=[{PatchFilterGroup={PatchFilters=[{Key=CLASSIFICATION,Values=[SecurityUpdates,CriticalUpdates]}]},ApproveAfterDays=0}]"
+
+  # ══════════════════════════════════════
+  # AZURE
+  # ══════════════════════════════════════
+
+  - id: az-001
+    platform: azure
+    category: identity
+    severity: critical
+    title: "Enable MFA for all users"
+    description: "Enforce Multi-Factor Authentication for all Azure AD/Entra ID users via Conditional Access."
+    reference: "CIS Azure Foundations Benchmark 1.1.1"
+    command: |
+      # Azure CLI — check Conditional Access policies
+      az rest --method get --url "https://graph.microsoft.com/v1.0/identity/conditionalAccess/policies"
+      # Create via Portal:
+      # Entra ID → Security → Conditional Access → New Policy
+      # Target: All users | Conditions: All apps | Grant: Require MFA
+
+  - id: az-002
+    platform: azure
+    category: identity
+    severity: critical
+    title: "Disable legacy authentication protocols"
+    description: "Block IMAP, SMTP Auth, POP3, and other legacy protocols that bypass MFA."
+    reference: "CIS Azure Foundations Benchmark 1.1.3"
+    command: |
+      # Create Conditional Access policy to block legacy auth:
+      # Entra ID → Conditional Access → New Policy
+      # Conditions → Client apps → Select "Exchange ActiveSync" + "Other clients"
+      # Grant → Block access
+
+  - id: az-003
+    platform: azure
+    category: identity
+    severity: high
+    title: "Enable Privileged Identity Management (PIM)"
+    description: "Use just-in-time privileged access for admin roles instead of permanent assignments."
+    reference: "CIS Azure Foundations Benchmark 1.1.11"
+    command: |
+      # Azure CLI — list privileged role assignments
+      az role assignment list --query "[?roleDefinitionName=='Owner' || roleDefinitionName=='Contributor'].[principalName,roleDefinitionName]" --output table
+      # Configure PIM via Portal:
+      # Entra ID → PIM → Azure AD roles → Settings → Require justification + MFA
+
+  - id: az-004
+    platform: azure
+    category: network
+    severity: critical
+    title: "Configure Network Security Groups (NSGs)"
+    description: "Every subnet and NIC must have an NSG. Default deny inbound from internet."
+    reference: "CIS Azure Foundations Benchmark 6.1"
+    command: |
+      # List NSGs and rules
+      az network nsg list --query "[].{Name:name, RG:resourceGroup}" --output table
+      # Check for open rules
+      az network nsg rule list --nsg-name <nsg_name> --resource-group <rg> \
+        --query "[?access=='Allow' && direction=='Inbound' && sourceAddressPrefix=='*']"
+
+  - id: az-005
+    platform: azure
+    category: logging
+    severity: critical
+    title: "Enable Microsoft Defender for Cloud"
+    description: "Enable Defender plans for all resource types: Servers, Storage, SQL, Key Vault, App Service."
+    reference: "CIS Azure Foundations Benchmark 2.1"
+    command: |
+      # Check Defender status
+      az security pricing list --query "[].{Name:name, Tier:pricingTier}" --output table
+      # Enable for key resources
+      az security pricing create --name VirtualMachines --tier Standard
+      az security pricing create --name SqlServers --tier Standard
+      az security pricing create --name StorageAccounts --tier Standard
+
+  - id: az-006
+    platform: azure
+    category: logging
+    severity: high
+    title: "Enable diagnostic logging for key resources"
+    description: "Send Azure Activity Log, Sign-in Logs, and resource diagnostics to Log Analytics."
+    reference: "CIS Azure Foundations Benchmark 5.1"
+    command: |
+      # Enable Activity Log export
+      az monitor diagnostic-settings create --name "scw-audit" \
+        --resource "/subscriptions/<sub_id>" \
+        --workspace "<log_analytics_workspace_id>" \
+        --logs '[{"category":"Administrative","enabled":true},{"category":"Security","enabled":true},{"category":"Alert","enabled":true}]'
+
+  - id: az-007
+    platform: azure
+    category: encryption
+    severity: high
+    title: "Enable Azure Disk Encryption"
+    description: "Encrypt all VM disks using Azure Disk Encryption (ADE) with customer-managed keys."
+    reference: "CIS Azure Foundations Benchmark 7.2"
+    command: |
+      # Check encryption status
+      az vm encryption show --resource-group <rg> --name <vm_name>
+      # Enable on VM
+      az vm encryption enable --resource-group <rg> --name <vm_name> \
+        --disk-encryption-keyvault <keyvault_name> --volume-type All
+
+  - id: az-008
+    platform: azure
+    category: encryption
+    severity: critical
+    title: "Enforce HTTPS on storage accounts"
+    description: "Require secure transfer (HTTPS) for all Azure Storage accounts."
+    reference: "CIS Azure Foundations Benchmark 3.1"
+    command: |
+      # Check all storage accounts
+      az storage account list --query "[].{Name:name, HTTPS:enableHttpsTrafficOnly}" --output table
+      # Enable on specific account
+      az storage account update --name <account> --resource-group <rg> --https-only true
+
+  # ══════════════════════════════════════
+  # GCP
+  # ══════════════════════════════════════
+
+  - id: gcp-001
+    platform: gcp
+    category: identity
+    severity: critical
+    title: "Enforce MFA (2-Step Verification) org-wide"
+    description: "Require 2-Step Verification for all users in Google Workspace."
+    reference: "CIS GCP Foundations Benchmark 1.1"
+    command: |
+      # Admin Console → Security → Authentication → 2-Step Verification
+      # Set enforcement: ON for all users
+      # Allow: Security keys (preferred), Authenticator app
+      # Disallow: SMS verification
+
+  - id: gcp-002
+    platform: gcp
+    category: identity
+    severity: critical
+    title: "Restrict service account key usage"
+    description: "Avoid user-managed service account keys. Use Workload Identity or attached service accounts."
+    reference: "CIS GCP Foundations Benchmark 1.4"
+    command: |
+      # List all service account keys
+      gcloud iam service-accounts list --format="table(email)" | while read sa; do
+        gcloud iam service-accounts keys list --iam-account="$sa" \
+          --filter="keyType=USER_MANAGED" --format="table(name,validAfterTime)"
+      done
+
+  - id: gcp-003
+    platform: gcp
+    category: network
+    severity: critical
+    title: "Configure VPC firewall rules"
+    description: "Default deny all ingress. Allow only required ports from specific source ranges."
+    reference: "CIS GCP Foundations Benchmark 3.6"
+    command: |
+      # List all firewall rules with 0.0.0.0/0 source
+      gcloud compute firewall-rules list \
+        --filter="sourceRanges:0.0.0.0/0 AND direction=INGRESS" \
+        --format="table(name,allowed,sourceRanges)"
+
+  - id: gcp-004
+    platform: gcp
+    category: logging
+    severity: critical
+    title: "Enable Cloud Audit Logs"
+    description: "Enable Admin Activity, Data Access, and System Event audit logs for all services."
+    reference: "CIS GCP Foundations Benchmark 2.1"
+    command: |
+      # Check audit log config
+      gcloud projects get-iam-policy <project_id> --format=json | jq '.auditConfigs'
+      # Enable data access logs for all services
+      gcloud projects set-iam-policy <project_id> policy.json
+      # Where policy.json includes:
+      # "auditConfigs": [{ "service": "allServices",
+      #   "auditLogConfigs": [{"logType": "DATA_READ"}, {"logType": "DATA_WRITE"}] }]
+
+  - id: gcp-005
+    platform: gcp
+    category: encryption
+    severity: high
+    title: "Enable Customer-Managed Encryption Keys (CMEK)"
+    description: "Use Cloud KMS for encryption of sensitive GCS buckets, BigQuery datasets, and disks."
+    reference: "CIS GCP Foundations Benchmark 2.2"
+    command: |
+      # Create KMS key
+      gcloud kms keyrings create scw-keyring --location=global
+      gcloud kms keys create scw-encrypt-key --keyring=scw-keyring \
+        --location=global --purpose=encryption
+      # Apply to GCS bucket
+      gsutil kms encryption -k projects/<proj>/locations/global/keyRings/scw-keyring/cryptoKeys/scw-encrypt-key gs://<bucket>
+
+  - id: gcp-006
+    platform: gcp
+    category: services
+    severity: high
+    title: "Disable unused APIs"
+    description: "Disable GCP APIs not required for the project to reduce attack surface."
+    reference: "CIS GCP Foundations Benchmark 1.11"
+    command: |
+      # List enabled APIs
+      gcloud services list --enabled --format="table(config.name)"
+      # Disable unused
+      gcloud services disable <service-name>.googleapis.com

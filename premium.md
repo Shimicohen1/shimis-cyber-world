@@ -62,6 +62,24 @@ permalink: /premium/
 </div>
 </a>
 
+<a href="/ioc-scanner/" class="premium-tool-card premium-tool-card--live reveal" style="text-decoration:none;">
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">🔍</span>
+<h4>IOC Scanner</h4>
+<p>Bulk indicator-of-compromise lookup across 15+ threat intel platforms. Auto-detects IPs, domains, hashes, URLs, emails.</p>
+<span class="premium-tool-card__tag">Threat Intel</span>
+</div>
+</a>
+
+<a href="/hardening/" class="premium-tool-card premium-tool-card--live reveal" style="text-decoration:none;">
+<div class="premium-tool-card__content">
+<span class="premium-tool-card__icon">🛡️</span>
+<h4>Hardening Checklist Generator</h4>
+<p>CIS-aligned security hardening checklists for Linux, Windows, AWS, Azure, and GCP — with real commands and progress tracking.</p>
+<span class="premium-tool-card__tag">Compliance</span>
+</div>
+</a>
+
 </div>
 </section>
 
@@ -172,4 +190,4 @@ permalink: /premium/
 </section>
 </div>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=2">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=3">
