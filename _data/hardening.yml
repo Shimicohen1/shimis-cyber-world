@@ -4967,6 +4967,57 @@ items:
   title: Technical notification email contacts must be configured.
   description: 'Technical contacts configured: 1. Emails: admin@contoso.com'
   reference: MS.EXO.1.1v1 — CIS M365 / Microsoft Secure Score — Exchange Online
+  tags:
+  - exchange-online
+  - notification
+  - administration
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: If technical notification contacts are not configured, critical security alerts from Microsoft (service degradation, compliance violations, data breach notifications) go unnoticed.
+      Attackers benefit from delayed incident response — every hour of undetected access increases data exfiltration potential.
+    implementationNotes: '# Check current notification contacts
+
+      Connect-MgGraph -Scopes ''Organization.ReadWrite.All''
+
+      $org = Get-MgOrganization
+
+      $org.TechnicalNotificationMails
+
+
+      # Set technical contacts
+
+      Update-MgOrganization -OrganizationId $org.Id -TechnicalNotificationMails @(''secops@domain.com'',''it-admin@domain.com'')
+
+
+      # Verify
+
+      (Get-MgOrganization).TechnicalNotificationMails'
+    validationNotes: '# Verify contacts are set
+
+      (Get-MgOrganization).TechnicalNotificationMails
+
+      # Expected: At least one valid monitored mailbox
+
+
+      # Check it''s a shared/group mailbox (not personal)
+
+      Get-EXOMailbox -Identity secops@domain.com | Select RecipientTypeDetails'
+    tuningNotes: Use a distribution group or shared mailbox that multiple team members monitor. Never use a personal mailbox — when that person leaves, alerts go to a dead inbox. Consider also configuring
+      Security & Compliance alerts to a Teams channel.
+    advancedDetection: '// KQL: Detect changes to notification contacts
+
+      AuditLogs
+
+      | where TimeGenerated > ago(7d)
+
+      | where OperationName == ''Update organization''
+
+      | where TargetResources[0].modifiedProperties has ''TechnicalNotificationMails''
+
+      | project TimeGenerated, InitiatedBy.user.userPrincipalName, TargetResources[0].modifiedProperties'
+    relatedIds:
+    - m365-023
 - id: m365-022
   platform: m365-collab
   category: services
@@ -5102,6 +5153,48 @@ items:
   description: 'Mailbox auditing is ON by default since Jan 2019. Verify actions in Exchange PowerShell: Get-Mailbox | Select AuditEnabled,AuditOwner,AuditDelegate,AuditAdmin.'
   reference: CIS.6.1.2 — CIS M365 / Microsoft Secure Score — Exchange Online
   command: Get-Mailbox | Select AuditEnabled
+  tags:
+  - exchange-online
+  - audit-log
+  - mailbox-audit
+  - forensics
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Default mailbox audit actions only capture a subset of operations. Attackers who access a compromised mailbox can perform actions (like creating rules, accessing attachments, modifying
+      permissions) that aren't logged by default, leaving blind spots in forensic investigations.
+    implementationNotes: "# Check current audit actions per logon type\nGet-EXOMailbox -Identity user@domain.com -PropertySets Audit | Select AuditAdmin, AuditDelegate, AuditOwner\n\n# Set comprehensive\
+      \ audit actions for all mailboxes\nGet-EXOMailbox -ResultSize Unlimited | Set-Mailbox `\n  -AuditAdmin Copy,Create,FolderBind,HardDelete,MessageBind,Move,MoveToDeletedItems,SendAs,SendOnBehalf,SoftDelete,Update,UpdateCalendarDelegation,UpdateFolderPermissions,UpdateInboxRules\
+      \ `\n  -AuditDelegate Create,FolderBind,HardDelete,Move,MoveToDeletedItems,SendAs,SendOnBehalf,SoftDelete,Update,UpdateFolderPermissions,UpdateInboxRules `\n  -AuditOwner Create,HardDelete,MailboxLogin,Move,MoveToDeletedItems,SoftDelete,Update,UpdateCalendarDelegation,UpdateFolderPermissions,UpdateInboxRules"
+    validationNotes: '# Verify on a sample mailbox
+
+      $mbx = Get-EXOMailbox -Identity admin@domain.com -PropertySets Audit
+
+      $mbx.AuditAdmin
+
+      $mbx.AuditDelegate
+
+      $mbx.AuditOwner
+
+      # Ensure UpdateInboxRules, UpdateFolderPermissions are listed'
+    tuningNotes: E5 licenses enable MailItemsAccessed logging (who read what emails), which is critical for BEC investigations. E3 does not include this. The additional audit events increase log volume
+      by ~30-50% — ensure your log retention can handle it.
+    advancedDetection: '// KQL: Audit unusual mailbox access patterns
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(24h)
+
+      | where RecordType == ''ExchangeItemGroup'' or RecordType == ''ExchangeItem''
+
+      | where Operation in (''FolderBind'',''MessageBind'',''MailItemsAccessed'')
+
+      | summarize AccessCount=count() by UserId, ClientIPAddress, bin(TimeGenerated, 1h)
+
+      | where AccessCount > 100'
+    relatedIds:
+    - m365-023
+    - m365-025
 - id: m365-025
   platform: m365-collab
   category: logging
@@ -5112,6 +5205,57 @@ items:
   command: 'Get-MailboxAuditBypassAssociation -ResultSize Unlimited
 
     # EXO PowerShell: Get-MailboxAuditBypassAssociation -ResultSize Unlimited'
+  tags:
+  - exchange-online
+  - audit-bypass
+  - forensics
+  - tampering
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: AuditBypassEnabled removes all audit logging for a specific mailbox — it's the ultimate stealth mechanism. If an attacker can enable this on a compromised account, all subsequent
+      email access, rule creation, and data exfiltration becomes completely invisible to SIEM and forensic tools.
+    implementationNotes: '# Find ALL mailboxes with audit bypass enabled
+
+      Get-EXOMailbox -ResultSize Unlimited -Filter ''AuditBypassEnabled -eq $true'' | Select UserPrincipalName, AuditBypassEnabled
+
+
+      # Disable audit bypass on any found
+
+      Get-EXOMailbox -ResultSize Unlimited -Filter ''AuditBypassEnabled -eq $true'' | Set-MailboxAuditBypassAssociation -AuditBypassEnabled $false
+
+
+      # Also check service accounts
+
+      Get-EXOMailbox -ResultSize Unlimited -RecipientTypeDetails SharedMailbox -Filter ''AuditBypassEnabled -eq $true'' | Select UserPrincipalName'
+    validationNotes: '# Verify no mailboxes have bypass
+
+      Get-EXOMailbox -ResultSize Unlimited -Filter ''AuditBypassEnabled -eq $true'' | Measure-Object
+
+      # Expected: Count = 0
+
+
+      # Schedule monthly check
+
+      # Add to your compliance runbook'
+    tuningNotes: Some organizations enable AuditBypass on service accounts that generate high log volume (e.g., migration accounts, automated systems). If you must use it, document the business justification,
+      set an expiration date, and create a compensating control (monitoring the service account via another mechanism).
+    advancedDetection: '// KQL: Alert on AuditBypass being enabled
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(24h)
+
+      | where Operation == ''Set-MailboxAuditBypassAssociation''
+
+      | where Parameters has ''AuditBypassEnabled'' and Parameters has ''True''
+
+      | project TimeGenerated, UserId, Parameters
+
+      | extend AlertSeverity = ''Critical'''
+    relatedIds:
+    - m365-023
+    - m365-024
 - id: m365-026
   platform: m365-collab
   category: services
@@ -5122,6 +5266,75 @@ items:
   command: 'Get-RemoteDomain Default | fl AutoForwardEnabled
 
     # EXO PowerShell: Get-RemoteDomain Default | fl AutoForwardEnabled'
+  tags:
+  - exchange-online
+  - mail-forwarding
+  - data-exfiltration
+  - bec
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: 'Mail forwarding is the #1 persistence mechanism in Business Email Compromise. Attackers set forwarding rules that silently copy all incoming mail to an external address. There are
+      THREE different forwarding mechanisms: transport rules, inbox rules, and SMTP forwarding — all three must be blocked.'
+    implementationNotes: '# Block all three forwarding vectors:
+
+
+      # 1. Transport rule-based forwarding
+
+      New-TransportRule -Name ''Block External Auto-Forward'' -FromScope InOrganization -SentToScope NotInOrganization -MessageTypeMatches AutoForward -RejectMessageReasonText ''External forwarding blocked
+      by policy''
+
+
+      # 2. Disable SMTP forwarding on all mailboxes
+
+      Get-EXOMailbox -ResultSize Unlimited | Set-Mailbox -DeliverToMailboxAndForward $false -ForwardingSmtpAddress $null -ForwardingAddress $null
+
+
+      # 3. Block client-side inbox rules from forwarding
+
+      # Remote Domains
+
+      Get-RemoteDomain | Set-RemoteDomain -AutoForwardEnabled $false
+
+
+      # 4. Find existing forwarding rules
+
+      Get-EXOMailbox -ResultSize Unlimited | Where-Object { $_.ForwardingSmtpAddress -or $_.ForwardingAddress } | Select UserPrincipalName, ForwardingSmtpAddress, ForwardingAddress'
+    validationNotes: '# Check all three vectors:
+
+      # 1. Transport rules
+
+      Get-TransportRule | Where-Object { $_.MessageTypeMatches -eq ''AutoForward'' } | Select Name, State
+
+
+      # 2. SMTP forwarding
+
+      Get-EXOMailbox -ResultSize Unlimited | Where-Object { $_.ForwardingSmtpAddress } | Measure
+
+      # Expected: 0
+
+
+      # 3. Remote domain auto-forward
+
+      Get-RemoteDomain Default | Select AutoForwardEnabled
+
+      # Expected: False'
+    tuningNotes: 'Legitimate forwarding use cases: shared mailbox to ticketing system, executive assistant access. Handle these with proper delegation or shared mailbox permissions rather than forwarding.
+      If forwarding is business-critical, use an allow-list transport rule exception for specific sender-recipient pairs.'
+    advancedDetection: '// KQL: Detect new forwarding rules (all types)
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(24h)
+
+      | where Operation in (''New-InboxRule'',''Set-InboxRule'',''Set-Mailbox'',''New-TransportRule'')
+
+      | where Parameters has_any (''ForwardTo'',''ForwardAsAttachmentTo'',''RedirectTo'',''ForwardingSmtpAddress'',''DeliverToMailboxAndForward'')
+
+      | project TimeGenerated, UserId, Operation, Parameters, ClientIP'
+    relatedIds:
+    - m365-022
+    - m365-027
 - id: m365-027
   platform: m365-collab
   category: services
@@ -5129,6 +5342,45 @@ items:
   title: Ensure mail transport rules do not whitelist specific domains.
   description: 'Transport rules whitelisting domains: 0. None found.'
   reference: CIS.6.2.2 — CIS M365 / Microsoft Secure Score — Exchange Online
+  tags:
+  - exchange-online
+  - transport-rules
+  - domain-whitelist
+  - phishing
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Transport rules that whitelist specific domains bypass spam and phishing filters entirely. Attackers research which domains are whitelisted (e.g., partner domains) and then spoof
+      or compromise those domains to deliver phishing emails that bypass all protection.
+    implementationNotes: "# Find transport rules that whitelist senders/domains\nGet-TransportRule | Where-Object {\n  $_.SetSCL -eq -1 -or\n  $_.SetHeaderName -eq 'X-MS-Exchange-Organization-SkipSafeLinksProcessing'\
+      \ -or\n  $_.SenderDomainIs -or\n  $_.SetHeaderName -eq 'X-MS-Exchange-Organization-BypassClutter'\n} | Select Name, State, SenderDomainIs, SetSCL, Priority | Format-List\n\n# Review and remove overly\
+      \ broad whitelist rules\n# Remove-TransportRule -Identity 'Whitelist Partner Domain'"
+    validationNotes: '# Audit all transport rules with SCL -1 (skip spam filtering)
+
+      Get-TransportRule | Where-Object { $_.SetSCL -eq -1 } | Select Name, SenderDomainIs, FromAddressContainsWords
+
+      # Expected: Minimal rules, well-documented justification
+
+
+      # Check connection filter allow list
+
+      Get-HostedConnectionFilterPolicy | Select IPAllowList'
+    tuningNotes: If partner domains must be trusted, use Tenant Allow/Block List with time limits rather than permanent transport rules. Prefer per-sender allow over per-domain. Never whitelist large email
+      providers (gmail.com, outlook.com) — attackers create accounts on these trivially.
+    advancedDetection: '// KQL: Monitor transport rule changes
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where Operation in (''New-TransportRule'',''Set-TransportRule'',''Enable-TransportRule'')
+
+      | project TimeGenerated, UserId, Operation, Parameters
+
+      | where Parameters has_any (''SetSCL'',''-1'',''SenderDomainIs'',''BypassClutter'')'
+    relatedIds:
+    - m365-026
+    - m365-028
 - id: m365-028
   platform: m365-collab
   category: services
@@ -5136,6 +5388,57 @@ items:
   title: Ensure email from external senders is identified.
   description: 'External email tagging rules: 0. No external tagging rule detected. Create in EAC → Mail flow → Rules.'
   reference: CIS.6.2.3 — CIS M365 / Microsoft Secure Score — Exchange Online
+  tags:
+  - exchange-online
+  - external-sender
+  - phishing-prevention
+  - spoofing
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Without external sender identification, users cannot distinguish emails from inside vs outside the organization. This is exploited in spear-phishing where attackers impersonate internal
+      executives or colleagues. The [External] tag in subject line or banner provides a visual cue that helps users spot impersonation.
+    implementationNotes: '# Enable external sender tagging via transport rule
+
+      New-TransportRule -Name ''Tag External Emails'' -FromScope NotInOrganization -Priority 0 -PrependSubject ''[External] '' -ApplyHtmlDisclaimerLocation Prepend -ApplyHtmlDisclaimerText ''<div style="background:#fef3cd;padding:8px;border:1px
+      solid #ffc107;margin-bottom:10px;font-size:13px;">⚠️ This email originated from outside the organization. Do not click links or open attachments unless you recognize the sender.</div>'' -ApplyHtmlDisclaimerFallbackAction
+      Wrap
+
+
+      # Alternative: Use built-in External Email Tagging (simpler)
+
+      # Exchange Admin Center > Mail flow > Rules > Enable ''External email tagging''
+
+      Set-ExternalInOutlook -Enabled $true'
+    validationNotes: '# Verify transport rule is active
+
+      Get-TransportRule ''Tag External Emails'' | Select Name, State, Priority
+
+
+      # Verify built-in external tagging
+
+      Get-ExternalInOutlook
+
+      # Expected: Enabled = True
+
+
+      # Test: send email from external account and verify tag appears'
+    tuningNotes: The [External] prefix in subject lines breaks reply threading in some email clients. Prefer the HTML disclaimer banner approach or the built-in External Email Tagging feature which adds
+      a callout in Outlook without modifying the subject line. Exclude trusted partner domains if false positives annoy users.
+    advancedDetection: '// KQL: Detect external emails impersonating internal users
+
+      EmailEvents
+
+      | where TimeGenerated > ago(24h)
+
+      | where SenderFromDomain !endswith ''yourdomain.com''
+
+      | where SenderDisplayName in~ (''CEO Name'',''CFO Name'',''CTO Name'')  // Your exec names
+
+      | project TimeGenerated, SenderFromAddress, SenderDisplayName, RecipientEmailAddress, Subject'
+    relatedIds:
+    - m365-026
+    - m365-027
 - id: m365-029
   platform: m365-collab
   category: services
@@ -5144,6 +5447,59 @@ items:
   description: 'User add-in install: not confirmed blocked — check EAC → Organization → Add-ins → User-owned apps..'
   reference: CIS.6.3.1 — CIS M365 / Microsoft Secure Score — Exchange Online
   command: Add-ins → User-owned apps
+  tags:
+  - exchange-online
+  - outlook-addins
+  - supply-chain
+  - oauth
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Outlook add-ins run within the context of the user's mailbox session, with access to email content, contacts, and calendar. Malicious or compromised add-ins can read all emails, exfiltrate
+      data, and impersonate the user — all without triggering standard email security controls.
+    implementationNotes: '# Check current add-in policy
+
+      Get-OwaMailboxPolicy | Select Name, EnabledByDefault, OrganizationEnabled
+
+
+      # Block user-installed add-ins
+
+      Set-OwaMailboxPolicy -Identity ''OwaMailboxPolicy-Default'' -ActionForUnknownFileAndMIMETypes Block
+
+
+      # Or restrict to admin-deployed add-ins only:
+
+      # Exchange Admin Center > Organization > Add-ins
+
+      # Set ''User-installed apps'' to Off
+
+
+      # List all installed add-ins
+
+      Get-App -OrganizationApp | Select DisplayName, Enabled, DefaultStateForUser | Format-Table'
+    validationNotes: '# Verify users can''t install add-ins
+
+      Get-RoleAssignmentPolicy | Get-ManagementRoleAssignment | Where-Object { $_.Role -eq ''My Marketplace Apps'' -or $_.Role -eq ''My Custom Apps'' }
+
+
+      # Check for suspicious installed add-ins
+
+      Get-App -OrganizationApp | Where-Object { $_.DefaultStateForUser -eq ''Enabled'' } | Select DisplayName, AppVersion, MarketplaceAssetId'
+    tuningNotes: Don't block all add-ins — many are business-critical (Salesforce, Zoom, etc.). Instead, deploy approved add-ins via centralized deployment and block user self-service installation. Review
+      the list of deployed add-ins quarterly for outdated or unnecessary ones.
+    advancedDetection: '// KQL: Detect new add-in installations
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where Operation in (''New-App'',''Set-App'')
+
+      | project TimeGenerated, UserId, Operation, Parameters
+
+      | extend AppName = extract(''"Value":"([^"]+)"'', 1, tostring(Parameters))'
+    relatedIds:
+    - m365-030
 - id: m365-030
   platform: m365-collab
   category: identity
@@ -5152,6 +5508,49 @@ items:
   description: Modern authentication is enabled by default for all Exchange Online tenants since 2020. Verify via Get-OrganizationConfig | fl OAuth2ClientProfileEnabled.
   reference: CIS.6.5.1 — CIS M365 / Microsoft Secure Score — Exchange Online
   command: Get-OrganizationConfig | fl OAuth2ClientProfileEnabled
+  tags:
+  - exchange-online
+  - modern-auth
+  - legacy-protocols
+  - authentication
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Legacy authentication protocols (POP3, IMAP, SMTP, EWS with basic auth) don't support MFA. Attackers use credential stuffing against these endpoints — even if MFA is enforced on modern
+      auth, a user's password alone grants mailbox access via legacy protocols. This is the most common MFA bypass in M365.
+    implementationNotes: "# Check modern auth status\nGet-OrganizationConfig | Select OAuth2ClientProfileEnabled\n# Must be True\n\n# Block legacy auth via Conditional Access (recommended)\n$params = @{\n\
+      \  DisplayName = 'Block Legacy Authentication'\n  State = 'enabled'\n  Conditions = @{\n    ClientAppTypes = @('exchangeActiveSync','other')\n    Users = @{ IncludeUsers = @('All') }\n    Applications\
+      \ = @{ IncludeApplications = @('All') }\n  }\n  GrantControls = @{ BuiltInControls = @('block'); Operator = 'OR' }\n}\nNew-MgIdentityConditionalAccessPolicy @params\n\n# Also disable per-protocol\n\
+      Set-CASMailboxPlan -Identity 'ExchangeOnlineEnterprise' -ImapEnabled $false -PopEnabled $false"
+    validationNotes: '# Verify OAuth2 is enabled
+
+      (Get-OrganizationConfig).OAuth2ClientProfileEnabled
+
+      # Expected: True
+
+
+      # Check for legacy auth sign-ins
+
+      # Azure AD > Sign-in logs > Filter: Client App = Legacy
+
+      Get-MgAuditLogSignIn -Filter "clientAppUsed ne ''Browser'' and clientAppUsed ne ''Mobile Apps and Desktop clients''" -Top 10 | Select UserPrincipalName, ClientAppUsed, Status'
+    tuningNotes: 'Before blocking legacy auth, run a Conditional Access policy in report-only mode for 2-4 weeks to identify who''s using legacy protocols. Common offenders: old Outlook versions, multifunction
+      printers scanning to email, and legacy LOB apps. Migrate these before enforcing.'
+    advancedDetection: '// KQL: Detect successful legacy auth sign-ins
+
+      SigninLogs
+
+      | where TimeGenerated > ago(24h)
+
+      | where ClientAppUsed in (''Exchange ActiveSync'',''IMAP4'',''POP3'',''MAPI Over HTTP'',''Authenticated SMTP'',''Other clients'')
+
+      | where ResultType == 0
+
+      | summarize Count=count() by UserPrincipalName, ClientAppUsed, IPAddress
+
+      | sort by Count desc'
+    relatedIds:
+    - m365-033
 - id: m365-031
   platform: m365-collab
   category: identity
@@ -5162,6 +5561,44 @@ items:
   command: 'Get-OrganizationConfig | fl MailTipsAllTipsEnabled
 
     # PowerShell: Get-OrganizationConfig | fl MailTipsAllTipsEnabled,MailTipsExternalRecipientsTipsEnabled'
+  tags:
+  - exchange-online
+  - mailtips
+  - user-awareness
+  - dlp
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: 'MailTips warn users about risky actions: sending to external recipients, large distribution lists, or out-of-office contacts. Without them, users accidentally send sensitive data
+      to wrong recipients or external addresses — the #1 cause of data exposure in email.'
+    implementationNotes: '# Enable all MailTips
+
+      Set-OrganizationConfig -MailTipsAllTipsEnabled $true -MailTipsExternalRecipientsTipsEnabled $true -MailTipsGroupMetricsEnabled $true -MailTipsLargeAudienceThreshold 25
+
+
+      # Verify
+
+      Get-OrganizationConfig | Select MailTipsAllTipsEnabled, MailTipsExternalRecipientsTipsEnabled, MailTipsGroupMetricsEnabled, MailTipsLargeAudienceThreshold'
+    validationNotes: 'Get-OrganizationConfig | Select MailTips*
+
+      # Expected: All MailTips settings = True, LargeAudienceThreshold = 25'
+    tuningNotes: Set LargeAudienceThreshold to 25 for most orgs (alerts when sending to 25+ recipients). Adjust based on organizational email patterns. MailTips only work in Outlook — OWA and mobile clients
+      have limited MailTip support.
+    advancedDetection: '// No specific detection — MailTips are advisory UX elements.
+
+      // Monitor for large-audience emails instead:
+
+      OfficeActivity
+
+      | where Operation == ''Send''
+
+      | extend RecipientCount = array_length(split(Recipients, '',''))
+
+      | where RecipientCount > 50
+
+      | project TimeGenerated, UserId, Subject, RecipientCount'
+    relatedIds:
+    - m365-028
 - id: m365-032
   platform: m365-collab
   category: identity
@@ -5169,6 +5606,42 @@ items:
   title: Ensure additional storage providers are restricted in Outlook on the web.
   description: 'OWA third-party storage: not confirmed disabled — check EAC → Settings → OWA policies..'
   reference: CIS.6.5.3 — CIS M365 / Microsoft Secure Score — Exchange Online
+  tags:
+  - exchange-online
+  - owa
+  - storage-providers
+  - data-leakage
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Outlook on the Web (OWA) can integrate with third-party storage providers (Dropbox, Google Drive, Box). This creates data exfiltration paths that bypass DLP controls — users can save
+      attachments directly to personal cloud storage accounts outside organizational control.
+    implementationNotes: '# Disable additional storage providers in OWA
+
+      Set-OwaMailboxPolicy -Identity ''OwaMailboxPolicy-Default'' -AdditionalStorageProvidersAvailable $false
+
+
+      # Verify
+
+      Get-OwaMailboxPolicy | Select Name, AdditionalStorageProvidersAvailable'
+    validationNotes: 'Get-OwaMailboxPolicy | Select Name, AdditionalStorageProvidersAvailable
+
+      # Expected: False for all policies'
+    tuningNotes: This only affects OWA. Desktop Outlook and mobile clients may still have third-party storage integrations that need separate controls (Intune app protection policies). If users legitimately
+      need Dropbox/Google Drive, configure Defender for Cloud Apps to monitor those connections.
+    advancedDetection: '// KQL: Monitor OWA policy changes
+
+      AuditLogs
+
+      | where TimeGenerated > ago(7d)
+
+      | where OperationName has ''Set-OwaMailboxPolicy''
+
+      | where TargetResources[0].modifiedProperties has ''AdditionalStorageProvidersAvailable''
+
+      | project TimeGenerated, InitiatedBy.user.userPrincipalName, TargetResources'
+    relatedIds:
+    - m365-029
 - id: m365-033
   platform: m365-collab
   category: identity
@@ -5179,6 +5652,57 @@ items:
   command: 'Get-TransportConfig | fl SmtpClientAuthenticationDisabled
 
     # PowerShell: Get-TransportConfig | fl SmtpClientAuthenticationDisabled'
+  tags:
+  - exchange-online
+  - smtp-auth
+  - legacy-auth
+  - brute-force
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: SMTP AUTH allows direct mailbox authentication with username/password — no MFA. Attackers use it for credential stuffing, sending phishing from compromised accounts, and establishing
+      persistent access. It's the most abused legacy protocol endpoint in M365.
+    implementationNotes: '# Disable SMTP AUTH org-wide
+
+      Set-TransportConfig -SmtpClientAuthenticationDisabled $true
+
+
+      # Check per-mailbox overrides
+
+      Get-EXOMailbox -ResultSize Unlimited | Where-Object { $_.SmtpClientAuthenticationDisabled -eq $false } | Select UserPrincipalName
+
+
+      # Disable per-mailbox overrides
+
+      Get-EXOMailbox -ResultSize Unlimited | Where-Object { $_.SmtpClientAuthenticationDisabled -eq $false } | Set-CASMailbox -SmtpClientAuthenticationDisabled $true'
+    validationNotes: '# Verify org-wide setting
+
+      (Get-TransportConfig).SmtpClientAuthenticationDisabled
+
+      # Expected: True
+
+
+      # Verify no per-mailbox exceptions
+
+      Get-EXOMailbox -ResultSize Unlimited | Where-Object { $_.SmtpClientAuthenticationDisabled -eq $false } | Measure
+
+      # Expected: Count = 0'
+    tuningNotes: 'Multifunction printers and LOB apps often require SMTP AUTH to send email. Migrate these to: (1) Azure Communication Services, (2) Direct Send (no auth needed for internal), or (3) OAuth2
+      SMTP if the device supports it. If SMTP AUTH is absolutely required, enable it only on a dedicated service mailbox with a strong unique password.'
+    advancedDetection: '// KQL: Detect SMTP AUTH usage
+
+      SigninLogs
+
+      | where TimeGenerated > ago(7d)
+
+      | where ClientAppUsed == ''Authenticated SMTP''
+
+      | summarize Count=count() by UserPrincipalName, IPAddress, ResultType
+
+      | sort by Count desc'
+    relatedIds:
+    - m365-030
+    - m365-034
 - id: m365-034
   platform: m365-collab
   category: identity
@@ -5186,6 +5710,47 @@ items:
   title: Ensure Direct Send submissions are rejected.
   description: Verify connectors block Direct Send from unauthorized IPs in EAC → Mail flow → Connectors.
   reference: CIS.6.5.5 — CIS M365 / Microsoft Secure Score — Exchange Online
+  tags:
+  - exchange-online
+  - direct-send
+  - mail-relay
+  - spoofing
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Direct Send allows unauthenticated SMTP relay to internal recipients via the MX endpoint. While useful for printers/apps, it can be abused to send spoofed internal emails that bypass
+      external sender warnings.
+    implementationNotes: '# Check inbound connector for Direct Send
+
+      Get-InboundConnector | Where-Object { $_.ConnectorType -eq ''Partner'' } | Select Name, SenderIPAddresses, RequireTls, RestrictDomainsToIPAddresses
+
+
+      # If Direct Send from unauthorized IPs is allowed, restrict:
+
+      # Set-InboundConnector -Identity ''Direct Send'' -SenderIPAddresses @(''10.0.0.0/8'') -RestrictDomainsToIPAddresses $true'
+    validationNotes: '# Verify no open relay
+
+      Get-InboundConnector | Select Name, ConnectorType, SenderIPAddresses, RequireTls | Format-List
+
+
+      # Check accepted domains
+
+      Get-AcceptedDomain | Select DomainName, DomainType'
+    tuningNotes: Direct Send only works for sending TO internal addresses — it can't send externally. The risk is internal spoofing. Restrict by source IP if possible, and ensure SPF/DKIM/DMARC validate
+      internal messages.
+    advancedDetection: '// KQL: Monitor Direct Send usage
+
+      EmailEvents
+
+      | where TimeGenerated > ago(24h)
+
+      | where SenderFromDomain == ''yourdomain.com''
+
+      | where AuthenticationDetails has ''none''
+
+      | project TimeGenerated, SenderFromAddress, RecipientEmailAddress, SenderIPv4, Subject'
+    relatedIds:
+    - m365-033
 - id: m365-035
   platform: m365-collab
   category: services
@@ -5193,6 +5758,41 @@ items:
   title: Idle session sign-out should be enabled for SharePoint Online.
   description: 'Idle session sign-out enabled: False.'
   reference: MS.SHAREPOINT.1.2v1 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - idle-session
+  - session-management
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Without idle session timeout, SharePoint sessions remain active indefinitely on shared/public computers. An attacker can walk up to an unlocked machine in a conference room or hotel
+      business center and access all the user's SharePoint data without needing credentials.
+    implementationNotes: '# Enable idle session sign-out for SharePoint
+
+      Connect-SPOService -Url https://yourtenant-admin.sharepoint.com
+
+      Set-SPOBrowserIdleSignOut -Enabled $true -WarnAfter (New-TimeSpan -Minutes 5) -SignOutAfter (New-TimeSpan -Minutes 15)
+
+
+      # Verify
+
+      Get-SPOBrowserIdleSignOut'
+    validationNotes: 'Get-SPOBrowserIdleSignOut
+
+      # Expected: Enabled = True, WarnAfter = 00:05:00, SignOutAfter = 00:15:00'
+    tuningNotes: 15 minutes is recommended. Longer timeouts (30 min) may be appropriate for users who frequently work in SharePoint throughout the day. Too short (5 min) causes frustration and users will
+      work around it. Combine with Conditional Access session controls for a comprehensive approach.
+    advancedDetection: '// KQL: Track idle session setting changes
+
+      AuditLogs
+
+      | where TimeGenerated > ago(7d)
+
+      | where OperationName has ''Set-SPOBrowserIdleSignOut''
+
+      | project TimeGenerated, InitiatedBy.user.userPrincipalName, TargetResources'
+    relatedIds:
+    - m365-036
 - id: m365-036
   platform: m365-collab
   category: services
@@ -5200,6 +5800,46 @@ items:
   title: SharePoint should use Conditional Access policy for access control.
   description: SharePoint should use Conditional Access policy for access control.
   reference: MS.SHAREPOINT.1.3v1 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - conditional-access
+  - access-control
+  - zero-trust
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Without Conditional Access for SharePoint, there's no way to enforce device compliance, location restrictions, or MFA specifically for SharePoint access. An attacker with stolen credentials
+      can access all SharePoint sites from any device, any location.
+    implementationNotes: "# Set SharePoint to use Conditional Access instead of network-based controls\nSet-SPOTenant -ConditionalAccessPolicy AllowLimitedAccess\n\n# Create CA policy for SharePoint\n$params\
+      \ = @{\n  DisplayName = 'Require Compliant Device for SharePoint'\n  State = 'enabledForReportingButNotEnforced'\n  Conditions = @{\n    Users = @{ IncludeUsers = @('All'); ExcludeUsers = @('<breakglass-id>')\
+      \ }\n    Applications = @{ IncludeApplications = @('SharePoint Online') }\n  }\n  GrantControls = @{ BuiltInControls = @('compliantDevice'); Operator = 'OR' }\n  SessionControls = @{ ApplicationEnforcedRestrictions\
+      \ = @{ IsEnabled = $true } }\n}\nNew-MgIdentityConditionalAccessPolicy @params"
+    validationNotes: '# Verify tenant setting
+
+      (Get-SPOTenant).ConditionalAccessPolicy
+
+      # Expected: AllowLimitedAccess
+
+
+      # Verify CA policy exists
+
+      Get-MgIdentityConditionalAccessPolicy | Where-Object { $_.DisplayName -like ''*SharePoint*'' } | Select DisplayName, State'
+    tuningNotes: Start in report-only mode. AllowLimitedAccess gives browser-only access (no download/sync) to non-compliant devices rather than blocking completely. This provides security while maintaining
+      usability for BYOD users.
+    advancedDetection: '// KQL: Detect SharePoint access from non-compliant devices
+
+      SigninLogs
+
+      | where TimeGenerated > ago(24h)
+
+      | where ResourceDisplayName == ''SharePoint Online''
+
+      | where DeviceDetail.isCompliant != true
+
+      | summarize Count=count() by UserPrincipalName, tostring(DeviceDetail.operatingSystem), ConditionalAccessStatus'
+    relatedIds:
+    - m365-035
+    - m365-037
 - id: m365-037
   platform: m365-collab
   category: identity
@@ -5207,6 +5847,47 @@ items:
   title: Ensure modern authentication for SharePoint applications is required.
   description: Modern auth is enforced by default in SharePoint Online. Legacy auth is deprecated.
   reference: CIS.7.2.1 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - modern-auth
+  - legacy-auth
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Legacy authentication for SharePoint allows access without MFA enforcement. Older SharePoint client libraries and WebDAV connections use basic auth, creating an authentication bypass
+      for attackers.
+    implementationNotes: '# Enforce modern auth for SharePoint
+
+      Set-SPOTenant -LegacyAuthProtocolsEnabled $false
+
+
+      # Verify
+
+      (Get-SPOTenant).LegacyAuthProtocolsEnabled
+
+      # Expected: False'
+    validationNotes: '(Get-SPOTenant).LegacyAuthProtocolsEnabled
+
+      # Expected: False
+
+
+      # Check for legacy auth sign-ins to SharePoint
+
+      # Azure AD > Sign-in logs > Filter: Resource = SharePoint Online, Client App = Legacy'
+    tuningNotes: 'Disabling legacy auth may break: mapped drives using WebDAV, older Office versions (2013 without updates), and InfoPath forms. Test in a pilot group before org-wide enforcement. Office
+      2016+ with updates supports modern auth natively.'
+    advancedDetection: '// KQL: Legacy auth attempts to SharePoint
+
+      SigninLogs
+
+      | where ResourceDisplayName == ''SharePoint Online''
+
+      | where ClientAppUsed !in (''Browser'',''Mobile Apps and Desktop clients'')
+
+      | summarize Count=count() by UserPrincipalName, ClientAppUsed, ResultType'
+    relatedIds:
+    - m365-030
+    - m365-036
 - id: m365-038
   platform: m365-collab
   category: identity
@@ -5214,6 +5895,43 @@ items:
   title: Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled.
   description: 'B2B integration: not detected — enable in SharePoint admin center → Policies → Sharing → More external sharing settings.'
   reference: CIS.7.2.2 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - azure-ad-b2b
+  - guest-access
+  - external-sharing
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Without Azure AD B2B integration, SharePoint guest sharing uses ad-hoc one-time passcodes without proper identity governance. B2B ensures guest users appear in your directory, can
+      be governed by Conditional Access, and their access can be reviewed and revoked centrally.
+    implementationNotes: '# Enable B2B integration for SharePoint
+
+      Set-SPOTenant -EnableAzureADB2BIntegration $true
+
+
+      # Verify
+
+      (Get-SPOTenant).EnableAzureADB2BIntegration'
+    validationNotes: '(Get-SPOTenant).EnableAzureADB2BIntegration
+
+      # Expected: True'
+    tuningNotes: Once enabled, this cannot be disabled. All existing one-time passcode guests are migrated to Azure AD B2B guest accounts. This is the recommended approach — it enables access reviews, Conditional
+      Access for guests, and proper audit logging.
+    advancedDetection: '// KQL: Monitor guest user activity in SharePoint
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where UserId has ''#EXT#''
+
+      | where RecordType has ''SharePoint''
+
+      | summarize Actions=count() by UserId, Operation, Site_'
+    relatedIds:
+    - m365-039
+    - m365-041
 - id: m365-039
   platform: m365-collab
   category: identity
@@ -5221,6 +5939,56 @@ items:
   title: Ensure external content sharing is restricted.
   description: 'SharePoint sharing: ''''. Sharing allows new external users — restrict in SP Admin → Sharing.'
   reference: CIS.7.2.3 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - external-sharing
+  - data-leakage
+  - governance
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Unrestricted external sharing means any employee can share any document with anyone outside the organization — no approval, no tracking. This is the primary data leakage vector. A
+      single compromised account or disgruntled employee can expose entire document libraries.
+    implementationNotes: '# Set sharing to most restrictive appropriate level
+
+      # Options: Disabled, ExistingExternalUserSharingOnly, ExternalUserAndGuestSharing, ExternalUserSharingOnly
+
+      Set-SPOTenant -SharingCapability ExistingExternalUserSharingOnly
+
+
+      # Or allow new guests but require authentication
+
+      Set-SPOTenant -SharingCapability ExternalUserAndGuestSharing -RequireAcceptingAccountMatchInvitedAccount $true -DefaultSharingLinkType Internal
+
+
+      # Set a per-site override for collaboration sites
+
+      Set-SPOSite -Identity https://tenant.sharepoint.com/sites/partnerships -SharingCapability ExternalUserAndGuestSharing'
+    validationNotes: '# Check tenant-level sharing
+
+      (Get-SPOTenant).SharingCapability
+
+
+      # Check all sites
+
+      Get-SPOSite -Limit All | Select Title, Url, SharingCapability | Where-Object { $_.SharingCapability -ne ''Disabled'' } | Format-Table'
+    tuningNotes: Don't set Disabled org-wide — it kills legitimate collaboration. Use ExistingExternalUserSharingOnly as the default (guests must be in the directory first), then allow broader sharing on
+      specific sites that need it. Combine with access expiration and access reviews.
+    advancedDetection: '// KQL: Detect external sharing events
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(24h)
+
+      | where Operation in (''SharingInvitationCreated'',''AnonymousLinkCreated'',''CompanyLinkCreated'',''SecureLinkCreated'')
+
+      | where TargetUserOrGroupName has_any (''@gmail.com'',''@yahoo.com'',''@hotmail.com'')
+
+      | project TimeGenerated, UserId, Operation, TargetUserOrGroupName, Site_'
+    relatedIds:
+    - m365-040
+    - m365-041
+    - m365-042
 - id: m365-040
   platform: m365-collab
   category: identity
@@ -5228,6 +5996,42 @@ items:
   title: Ensure OneDrive content sharing is restricted.
   description: 'OneDrive sharing: ''''. Allows broad sharing — restrict in SP Admin → Sharing.'
   reference: CIS.7.2.4 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - onedrive
+  - external-sharing
+  - data-protection
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: OneDrive contains personal work files — often more sensitive than SharePoint team content (draft contracts, salary sheets, strategic plans). Unrestricted OneDrive sharing gives every
+      user the ability to create anonymous links to any file in their OneDrive.
+    implementationNotes: '# Restrict OneDrive sharing
+
+      Set-SPOTenant -OneDriveSharingCapability ExistingExternalUserSharingOnly
+
+
+      # Verify
+
+      (Get-SPOTenant).OneDriveSharingCapability'
+    validationNotes: '(Get-SPOTenant).OneDriveSharingCapability
+
+      # Expected: ExistingExternalUserSharingOnly or more restrictive'
+    tuningNotes: OneDrive sharing should generally be more restrictive than SharePoint. Consider requiring manager approval for external OneDrive sharing via a Power Automate workflow integrated with a
+      SharePoint approval list.
+    advancedDetection: '// KQL: Detect external OneDrive sharing
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(24h)
+
+      | where RecordType == ''OneDrive''
+
+      | where Operation in (''AnonymousLinkCreated'',''SharingInvitationCreated'')
+
+      | project TimeGenerated, UserId, Operation, TargetUserOrGroupName, ObjectId'
+    relatedIds:
+    - m365-039
+    - m365-043
 - id: m365-041
   platform: m365-collab
   category: identity
@@ -5235,6 +6039,42 @@ items:
   title: Ensure that SharePoint guest users cannot share items they don't own.
   description: 'Guest resharing prevention: not set — enable in SP Admin → Sharing → More external sharing settings.'
   reference: CIS.7.2.5 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - guest-resharing
+  - data-governance
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: If guests can reshare items they don't own, a single compromised guest account becomes a distribution point for the entire site's content. The guest can share with any external address,
+      completely outside your organization's visibility.
+    implementationNotes: '# Prevent guests from resharing
+
+      Set-SPOTenant -PreventExternalUsersFromResharing $true
+
+
+      # Verify
+
+      (Get-SPOTenant).PreventExternalUsersFromResharing'
+    validationNotes: '(Get-SPOTenant).PreventExternalUsersFromResharing
+
+      # Expected: True'
+    tuningNotes: 'This is rarely needed to be False. The legitimate scenario is: external consultant shares a project file with another external consultant. Handle this by having an internal user share
+      instead, maintaining the audit trail.'
+    advancedDetection: '// KQL: Detect guest resharing attempts
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where UserId has ''#EXT#''
+
+      | where Operation in (''SharingInvitationCreated'',''SharingSet'')
+
+      | project TimeGenerated, UserId, Operation, TargetUserOrGroupName, Site_'
+    relatedIds:
+    - m365-039
+    - m365-045
 - id: m365-042
   platform: m365-collab
   category: identity
@@ -5242,6 +6082,48 @@ items:
   title: Ensure SharePoint external sharing is managed through domain whitelist/blacklists.
   description: 'Domain restriction mode: ''none''. No domain restrictions — configure in SP Admin → Sharing.'
   reference: CIS.7.2.6 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - domain-whitelist
+  - external-sharing
+  - governance
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Without domain restrictions, users can share with any external email domain. Domain whitelisting limits sharing to approved partner organizations, reducing the attack surface for
+      data exfiltration to personal email accounts.
+    implementationNotes: '# Set allowed domains for sharing
+
+      Set-SPOTenant -SharingDomainRestrictionMode AllowList -SharingAllowedDomainList ''partner1.com partner2.com consultancy.com''
+
+
+      # Or use block list for known consumer domains
+
+      Set-SPOTenant -SharingDomainRestrictionMode BlockList -SharingBlockedDomainList ''gmail.com yahoo.com hotmail.com outlook.com''
+
+
+      # Verify
+
+      Get-SPOTenant | Select SharingDomainRestrictionMode, SharingAllowedDomainList, SharingBlockedDomainList'
+    validationNotes: 'Get-SPOTenant | Select SharingDomainRestrictionMode, SharingAllowedDomainList
+
+      # Expected: AllowList with specific domains'
+    tuningNotes: AllowList is more secure but requires maintenance as new partners are added. BlockList is easier to maintain but can be bypassed with custom domains. Consider using AllowList for sensitive
+      sites and BlockList org-wide.
+    advancedDetection: '// KQL: Detect sharing to non-whitelisted domains
+
+      OfficeActivity
+
+      | where Operation in (''SharingInvitationCreated'',''SharingSet'')
+
+      | extend TargetDomain = tostring(split(TargetUserOrGroupName, ''@'')[1])
+
+      | where TargetDomain !in~ (''partner1.com'',''partner2.com'')  // Your whitelist
+
+      | project TimeGenerated, UserId, TargetUserOrGroupName, TargetDomain, Site_'
+    relatedIds:
+    - m365-039
+    - m365-044
 - id: m365-043
   platform: m365-collab
   category: identity
@@ -5249,6 +6131,52 @@ items:
   title: Ensure link sharing is restricted in SharePoint and OneDrive.
   description: 'Default sharing link type: ''not set''. CIS recommends ''Specific people'' (direct/specificPeople).'
   reference: CIS.7.2.7 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - link-sharing
+  - anonymous-links
+  - data-protection
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Anonymous 'Anyone with the link' sharing creates URLs that require no authentication — they can be forwarded, posted on social media, or discovered by web crawlers. Once created,
+      the sharing link persists until explicitly removed.
+    implementationNotes: '# Set default link type to internal only
+
+      Set-SPOTenant -DefaultSharingLinkType Internal
+
+      Set-SPOTenant -DefaultLinkPermission View
+
+
+      # Require expiration on anonymous links
+
+      Set-SPOTenant -RequireAnonymousLinksExpireInDays 30
+
+
+      # Verify
+
+      Get-SPOTenant | Select DefaultSharingLinkType, DefaultLinkPermission, RequireAnonymousLinksExpireInDays'
+    validationNotes: 'Get-SPOTenant | Select DefaultSharingLinkType, DefaultLinkPermission, RequireAnonymousLinksExpireInDays
+
+      # Expected: Internal, View, 30 (or less)'
+    tuningNotes: Set DefaultLinkPermission to View, not Edit. Users can change to Edit when needed, but the default should be least-privilege. 30-day expiration for anonymous links is a good balance — shorter
+      for sensitive sites.
+    advancedDetection: '// KQL: Detect anonymous link creation
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(24h)
+
+      | where Operation == ''AnonymousLinkCreated''
+
+      | project TimeGenerated, UserId, ObjectId, Site_
+
+      | summarize LinkCount=count() by UserId, bin(TimeGenerated, 1h)
+
+      | where LinkCount > 5'
+    relatedIds:
+    - m365-039
+    - m365-047
 - id: m365-044
   platform: m365-collab
   category: identity
@@ -5256,6 +6184,50 @@ items:
   title: Ensure external sharing is restricted by security group.
   description: 'Sharing restricted by group: no — restrict sharing to specific security groups in SP Admin.'
   reference: CIS.7.2.8 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - security-groups
+  - sharing-restrictions
+  - governance
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Without security group restrictions, every user in the organization can share externally. Limiting external sharing to specific security groups reduces the number of accounts that
+      can create sharing invitations, minimizing the blast radius of compromised accounts.
+    implementationNotes: '# Create security group for users allowed to share externally
+
+      # New-MgGroup -DisplayName ''External Sharing Allowed'' -SecurityEnabled -MailEnabled:$false -MailNickname ''ext-share''
+
+
+      # Restrict external sharing to group members
+
+      Set-SPOTenant -SharingCapability ExternalUserAndGuestSharing
+
+      # SharePoint Admin Center > Policies > Sharing > ''Restrict external sharing by security group'' > Select group'
+    validationNotes: '# Verify via SharePoint Admin Center
+
+      # Policies > Sharing > Check ''Allow only users in specific security groups to share externally''
+
+
+      # Verify group membership
+
+      Get-MgGroupMember -GroupId ''<group-id>'' | Measure-Object'
+    tuningNotes: Start with a small group (department heads, project managers) and expand as needed. Audit group membership quarterly. Combine with access request workflows for users outside the group who
+      need temporary sharing capability.
+    advancedDetection: '// KQL: Detect external sharing by non-authorized users
+
+      OfficeActivity
+
+      | where Operation in (''SharingInvitationCreated'',''AnonymousLinkCreated'')
+
+      | where TargetUserOrGroupName has ''@'' and TargetUserOrGroupName !endswith ''yourdomain.com''
+
+      | project TimeGenerated, UserId, Operation, TargetUserOrGroupName
+
+      // Compare UserId against authorized sharing group membership'
+    relatedIds:
+    - m365-039
+    - m365-042
 - id: m365-045
   platform: m365-collab
   category: identity
@@ -5263,6 +6235,36 @@ items:
   title: Ensure guest access to a site or OneDrive will expire automatically.
   description: 'Guest expiration: not configured — verify in SP Admin → Sharing → Guest access expiration.'
   reference: CIS.7.2.9 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - guest-expiration
+  - access-lifecycle
+  - governance
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Without automatic guest expiration, former partners, contractors, and project collaborators retain access indefinitely. These stale guest accounts become attack vectors — the external
+      party may not maintain the same security standards, and compromised guest accounts often go unnoticed.
+    implementationNotes: '# Set guest access expiration
+
+      Set-SPOTenant -ExternalUserExpireInDays 90
+
+      Set-SPOTenant -ExternalUserExpirationRequired $true
+
+
+      # Also set via Azure AD access reviews
+
+      # Entra ID > Identity Governance > Access Reviews > New review targeting Guest users'
+    validationNotes: 'Get-SPOTenant | Select ExternalUserExpireInDays, ExternalUserExpirationRequired
+
+      # Expected: 90, True'
+    tuningNotes: '90 days is standard. For highly sensitive sites, use 30 days. Combine with Azure AD access reviews for a complete lifecycle: automatic review requests go to site owners who approve/deny
+      continued access.'
+    advancedDetection: "// KQL: Find stale guest users\nIdentityInfo\n| where TimeGenerated > ago(1d)\n| where UserType == 'Guest'\n| join kind=leftanti (\n    SigninLogs | where TimeGenerated > ago(90d)\
+      \ | distinct UserPrincipalName\n) on $left.AccountUPN == $right.UserPrincipalName\n| project AccountUPN, CreatedDateTime, AccountObjectId"
+    relatedIds:
+    - m365-041
+    - m365-046
 - id: m365-046
   platform: m365-collab
   category: identity
@@ -5270,6 +6272,45 @@ items:
   title: Ensure reauthentication with verification code is restricted.
   description: 'Verification code reauthentication: default — reduce expiration in SP Admin → Sharing → Verification code settings..'
   reference: CIS.7.2.10 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - verification-code
+  - guest-auth
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Verification codes allow one-time passcode access for guests — convenient but provides weaker identity assurance than Azure AD B2B authentication. An attacker who intercepts the one-time
+      passcode email gains access.
+    implementationNotes: '# Restrict verification code sharing
+
+      Set-SPOTenant -SharingCapability ExistingExternalUserSharingOnly
+
+      # This eliminates one-time passcodes by requiring B2B guest accounts
+
+
+      # Or: Enable B2B integration which replaces OTP with proper guest identity
+
+      Set-SPOTenant -EnableAzureADB2BIntegration $true'
+    validationNotes: '(Get-SPOTenant).SharingCapability
+
+      # Expected: ExistingExternalUserSharingOnly
+
+      (Get-SPOTenant).EnableAzureADB2BIntegration
+
+      # Expected: True'
+    tuningNotes: Once Azure AD B2B integration is enabled, verification codes are replaced with proper guest sign-in that supports MFA, Conditional Access, and access reviews.
+    advancedDetection: '// KQL: Detect one-time passcode sign-ins
+
+      SigninLogs
+
+      | where TimeGenerated > ago(7d)
+
+      | where AuthenticationDetails has ''oneTimePasscode''
+
+      | project TimeGenerated, UserPrincipalName, IPAddress, AppDisplayName'
+    relatedIds:
+    - m365-038
+    - m365-045
 - id: m365-047
   platform: m365-collab
   category: identity
@@ -5277,6 +6318,38 @@ items:
   title: Ensure the SharePoint default sharing link permission is set.
   description: 'Default link permission: ''not set''. CIS recommends ''View'' to limit edit access by default.'
   reference: CIS.7.2.11 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - sharepoint-online
+  - default-link
+  - sharing-settings
+  - least-privilege
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: If the default sharing link is 'Anyone' or 'People in your organization', users inadvertently overshare when clicking the share button. The default should be the most restrictive
+      option — 'Specific people' — requiring intentional selection of recipients.
+    implementationNotes: '# Set default to specific people with view-only
+
+      Set-SPOTenant -DefaultSharingLinkType Direct
+
+      Set-SPOTenant -DefaultLinkPermission View'
+    validationNotes: 'Get-SPOTenant | Select DefaultSharingLinkType, DefaultLinkPermission
+
+      # Expected: Direct, View'
+    tuningNotes: '''Direct'' means specific people. Users can still choose broader sharing options manually, but the default is secure. Set per-site overrides for collaboration-heavy sites if needed.'
+    advancedDetection: '// KQL: Monitor sharing link type usage
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where Operation has ''Link''
+
+      | summarize Count=count() by Operation
+
+      | sort by Count desc'
+    relatedIds:
+    - m365-043
 - id: m365-048
   platform: m365-collab
   category: services
@@ -5285,6 +6358,40 @@ items:
   description: 'Infected file download: not confirmed — enable via Set-SPOTenant -DisallowInfectedFileDownload $true..'
   reference: CIS.7.3.1 — CIS M365 / Microsoft Secure Score — SharePoint Online
   command: Set-SPOTenant -DisallowInfectedFileDownload $true
+  tags:
+  - sharepoint-online
+  - malware-protection
+  - file-scanning
+  - defender
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: If infected file download isn't blocked, SharePoint becomes a malware distribution platform. An attacker uploads a malicious file, shares the link, and every recipient who downloads
+      it gets infected — bypassing email security entirely.
+    implementationNotes: '# Block download of infected files
+
+      Set-SPOTenant -DisallowInfectedFileDownload $true
+
+
+      # Verify
+
+      (Get-SPOTenant).DisallowInfectedFileDownload'
+    validationNotes: '(Get-SPOTenant).DisallowInfectedFileDownload
+
+      # Expected: True'
+    tuningNotes: This blocks download of files flagged by Microsoft Defender. False positives are rare but can occur with custom scripts or executable content. Users see a 'This file is infected' banner
+      and cannot download. Admins can still access quarantined files.
+    advancedDetection: '// KQL: Detect malware in SharePoint/OneDrive
+
+      OfficeActivity
+
+      | where TimeGenerated > ago(7d)
+
+      | where Operation == ''FileMalwareDetected''
+
+      | project TimeGenerated, UserId, ObjectId, Site_, SourceFileName'
+    relatedIds:
+    - m365-049
 - id: m365-049
   platform: m365-collab
   category: services
@@ -5292,6 +6399,46 @@ items:
   title: Ensure OneDrive sync is restricted for unmanaged devices.
   description: 'Unmanaged sync restriction: not set — restrict in SP Admin → Settings → Sync.'
   reference: CIS.7.3.2 — CIS M365 / Microsoft Secure Score — SharePoint Online
+  tags:
+  - onedrive
+  - sync-client
+  - device-compliance
+  - unmanaged-devices
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: OneDrive sync on unmanaged devices creates a full local copy of all synced files. If the unmanaged device is compromised, all synced corporate data is exposed. Unlike browser access,
+      synced files persist on disk even after session ends.
+    implementationNotes: '# Restrict sync to domain-joined or compliant devices
+
+      Set-SPOTenant -OneDriveForGuestsEnabled $false
+
+      Set-SPOTenant -IsUnmanagedSyncClientForTenantRestricted $true
+
+      Set-SPOTenant -AllowedDomainListForSyncClient @(''yourdomain.com'')
+
+
+      # Or use Intune policy for finer control
+
+      # Intune > Configuration profiles > OneDrive > Allow syncing only on PCs joined to specific domains'
+    validationNotes: 'Get-SPOTenant | Select IsUnmanagedSyncClientForTenantRestricted, AllowedDomainListForSyncClient
+
+      # Expected: True, your domain(s)'
+    tuningNotes: This blocks the sync client on non-domain-joined machines. Users can still access files via browser with Conditional Access controls. For BYOD scenarios, use Intune App Protection policies
+      to allow mobile access without sync.
+    advancedDetection: '// KQL: Detect OneDrive sync from unregistered devices
+
+      OfficeActivity
+
+      | where RecordType == ''OneDrive''
+
+      | where Operation == ''FileSyncUploadedFull''
+
+      | project TimeGenerated, UserId, ClientIP, UserAgent
+
+      | where UserAgent has ''OneDriveSyncEngine'''
+    relatedIds:
+    - m365-048
 - id: m365-050
   platform: m365-collab
   category: services
@@ -5299,6 +6446,45 @@ items:
   title: Teams messaging policies should be reviewed for security.
   description: Verify settings in Teams Admin Center.
   reference: MS.TEAMS.2.1v1 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - messaging-policy
+  - data-protection
+  - compliance
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Default Teams messaging allows URL previews (potential for phishing link reconnaissance), message editing/deletion (evidence tampering), and Giphy content (potential for inappropriate
+      content that creates compliance risk). Attackers leverage these to hide their tracks.
+    implementationNotes: '# Review and tighten messaging policies
+
+      Connect-MicrosoftTeams
+
+      Get-CsTeamsMessagingPolicy -Identity Global | Select AllowUrlPreviews, AllowOwnerDeleteMessage, AllowUserEditMessage, AllowGiphy, GiphyRatingType, AllowMemes, AllowStickers, ReadReceiptsEnabledType
+
+
+      # Tighten for security
+
+      Set-CsTeamsMessagingPolicy -Identity Global -AllowOwnerDeleteMessage $false -AllowGiphy $false -AllowMemes $false'
+    validationNotes: 'Get-CsTeamsMessagingPolicy -Identity Global | Select AllowOwnerDeleteMessage, AllowGiphy
+
+      # Expected: False, False (for regulated environments)'
+    tuningNotes: In regulated industries (finance, healthcare), disable message deletion and editing to maintain audit trails. In creative/tech companies, this may be too restrictive — focus on disabling
+      Giphy and memes for security-critical channels instead.
+    advancedDetection: '// KQL: Detect Teams message deletions
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''MessageDeleted''
+
+      | summarize DeleteCount=count() by UserId, bin(TimeGenerated, 1h)
+
+      | where DeleteCount > 10'
+    relatedIds:
+    - m365-051
+    - m365-067
 - id: m365-051
   platform: m365-collab
   category: services
@@ -5306,6 +6492,45 @@ items:
   title: Ensure external file sharing in Teams is enabled for only approved cloud storage services.
   description: 'Third-party storage: some enabled — review Dropbox/Google Drive/Box settings in Teams Admin → Settings..'
   reference: CIS.8.1.1 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - external-file-sharing
+  - cloud-storage
+  - data-leakage
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Teams allows integration with third-party cloud storage (Dropbox, Google Drive, Box, etc.) for file sharing. This creates unmonitored data channels that bypass DLP, Defender for Cloud
+      Apps, and SharePoint access controls.
+    implementationNotes: '# Check current cloud storage settings
+
+      Get-CsTeamsClientConfiguration | Select AllowDropBox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
+
+
+      # Disable all third-party storage
+
+      Set-CsTeamsClientConfiguration -AllowDropBox $false -AllowBox $false -AllowGoogleDrive $false -AllowShareFile $false -AllowEgnyte $false
+
+
+      # Keep SharePoint/OneDrive as the only file sharing option'
+    validationNotes: 'Get-CsTeamsClientConfiguration | Select AllowDropBox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
+
+      # Expected: All False'
+    tuningNotes: If users need specific third-party storage for external collaboration, configure Defender for Cloud Apps to monitor the approved provider rather than enabling it natively in Teams.
+    advancedDetection: '// KQL: Detect third-party storage usage in Teams
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation has_any (''FileShared'',''FileUploaded'')
+
+      | where SourceFileExtension != '''' and Site_ !has ''sharepoint.com''
+
+      | project TimeGenerated, UserId, Operation, ObjectId'
+    relatedIds:
+    - m365-050
+    - m365-049
 - id: m365-052
   platform: m365-collab
   category: services
@@ -5313,6 +6538,40 @@ items:
   title: Ensure users can't send emails to a channel email address.
   description: 'Channel email: enabled — disable in Teams Admin → Teams settings → Email integration..'
   reference: CIS.8.1.2 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - channel-email
+  - email-ingestion
+  - phishing
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Channel email addresses allow anyone with the address to post into a Teams channel via email. An attacker who discovers or guesses the channel email address can inject phishing links,
+      malicious attachments, or social engineering content directly into Team conversations.
+    implementationNotes: '# Disable channel email
+
+      Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false
+
+
+      # Verify
+
+      (Get-CsTeamsClientConfiguration).AllowEmailIntoChannel'
+    validationNotes: '(Get-CsTeamsClientConfiguration).AllowEmailIntoChannel
+
+      # Expected: False'
+    tuningNotes: Some teams use channel email for automated ticket ingestion or external notifications. If needed, enable for specific channels with restricted sender lists rather than org-wide. Configure
+      an Exchange transport rule to limit senders.
+    advancedDetection: '// KQL: Detect email-to-channel activity
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''MessageCreatedHasLink'' or Operation has ''Email''
+
+      | project TimeGenerated, UserId, Operation, ChatName'
+    relatedIds:
+    - m365-050
 - id: m365-053
   platform: m365-collab
   category: services
@@ -5320,6 +6579,47 @@ items:
   title: Ensure external domains are restricted in the Teams admin center.
   description: 'External access: likely open to all — restrict to specific domains in Teams Admin → External access..'
   reference: CIS.8.2.1 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - external-access
+  - federation
+  - tenant-security
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Open federation allows any external Teams/Skype user to message your employees. Attackers create fake tenant accounts to send targeted phishing messages or malicious file links directly
+      to employees via Teams — bypassing email security entirely.
+    implementationNotes: '# Check current external access settings
+
+      Get-CsExternalAccessPolicy -Identity Global | Select EnableFederationAccess, EnablePublicCloudAccess
+
+
+      # Block all or allow specific domains only
+
+      Set-CsTenantFederationConfiguration -AllowedDomains @{AllowedDomain=@(@{Domain=''partner1.com''},@{Domain=''partner2.com''})} -AllowFederatedUsers $true
+
+
+      # Or block all external access
+
+      Set-CsTenantFederationConfiguration -AllowFederatedUsers $false'
+    validationNotes: 'Get-CsTenantFederationConfiguration | Select AllowFederatedUsers, AllowedDomains, BlockedDomains
+
+      # Expected: AllowFederatedUsers=True with AllowedDomains whitelist, or AllowFederatedUsers=False'
+    tuningNotes: Use AllowedDomains whitelist rather than blocking all federation. This maintains partner collaboration while preventing unsolicited external contact. Review the domain list quarterly.
+    advancedDetection: '// KQL: Detect external Teams messages
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''MemberAdded'' or Operation == ''MessageCreated''
+
+      | where Members has ''Guest''
+
+      | project TimeGenerated, UserId, Operation, ChatName, Members'
+    relatedIds:
+    - m365-054
+    - m365-055
 - id: m365-054
   platform: m365-collab
   category: services
@@ -5327,6 +6627,40 @@ items:
   title: Ensure communication with unmanaged Teams users is disabled.
   description: 'Unmanaged Teams users: allowed — disable in Teams Admin → External access..'
   reference: CIS.8.2.2 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - unmanaged-users
+  - external-communication
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Unmanaged Teams users (personal Microsoft accounts, non-organizational) have no security controls. Allowing communication with them opens a completely unmonitored messaging channel
+      into your organization.
+    implementationNotes: '# Disable communication with unmanaged Teams users
+
+      Set-CsTenantFederationConfiguration -AllowTeamsConsumer $false -AllowTeamsConsumerInbound $false
+
+
+      # Verify
+
+      Get-CsTenantFederationConfiguration | Select AllowTeamsConsumer, AllowTeamsConsumerInbound'
+    validationNotes: 'Get-CsTenantFederationConfiguration | Select AllowTeamsConsumer, AllowTeamsConsumerInbound
+
+      # Expected: Both False'
+    tuningNotes: There is rarely a legitimate business need for communicating with personal Teams accounts. External partners should use their organizational accounts. If needed, use guest access (B2B)
+      instead of direct federation.
+    advancedDetection: '// KQL: Detect personal account Teams communications
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation has ''ExternalChat'' or Members has ''live.com'' or Members has ''outlook.com''
+
+      | project TimeGenerated, UserId, Operation, Members'
+    relatedIds:
+    - m365-053
+    - m365-056
 - id: m365-055
   platform: m365-collab
   category: services
@@ -5334,6 +6668,43 @@ items:
   title: Ensure external Teams users cannot initiate conversations.
   description: 'Inbound external messages: allowed — restrict in Teams Admin → External access..'
   reference: CIS.8.2.3 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - external-initiation
+  - social-engineering
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: If external users can initiate conversations, they can cold-contact any employee with phishing messages. Requiring internal users to initiate external chats means attackers cannot
+      proactively target employees via Teams.
+    implementationNotes: '# Block external users from starting conversations
+
+      # Teams Admin Center > External Access > External users can message my org''s users > Off
+
+      # Or via PowerShell:
+
+      Set-CsTenantFederationConfiguration -AllowFederatedUsers $true
+
+      # Then in Teams Admin > External Access > Toggle ''External users can message users in my org'' to Off'
+    validationNotes: '# Verify in Teams Admin Center
+
+      # External Access > ''People in my organization can communicate with Teams users whose accounts are managed by an organization'' > Check sub-settings'
+    tuningNotes: This is one of the most effective anti-phishing controls for Teams. Internal users can still add external contacts to chats — they just can't be cold-contacted. No UX impact for legitimate
+      collaboration.
+    advancedDetection: '// KQL: Detect externally initiated conversations
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''ChatCreated''
+
+      | where Members has ''#EXT#''
+
+      | project TimeGenerated, UserId, Operation, Members, ChatName'
+    relatedIds:
+    - m365-053
+    - m365-054
 - id: m365-056
   platform: m365-collab
   category: services
@@ -5341,6 +6712,35 @@ items:
   title: Ensure communication with Skype users is disabled.
   description: 'Skype federation: enabled — disable in Teams Admin → External access → Skype users..'
   reference: CIS.8.2.4 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - skype
+  - legacy-federation
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Skype is end-of-life and no longer receives security updates. Allowing Skype federation creates an unpatched communication channel into your organization that attackers can exploit.
+    implementationNotes: '# Disable Skype consumer federation
+
+      Set-CsTenantFederationConfiguration -AllowPublicUsers $false
+
+
+      # Verify
+
+      (Get-CsTenantFederationConfiguration).AllowPublicUsers'
+    validationNotes: '(Get-CsTenantFederationConfiguration).AllowPublicUsers
+
+      # Expected: False'
+    tuningNotes: Skype consumer was deprecated. There is no legitimate reason to keep this enabled. Skype for Business Online was retired in July 2021.
+    advancedDetection: '// KQL: Detect any Skype federation activity
+
+      OfficeActivity
+
+      | where RecordType has ''Skype'' or Operation has ''Skype''
+
+      | project TimeGenerated, UserId, Operation'
+    relatedIds:
+    - m365-054
 - id: m365-057
   platform: m365-collab
   category: services
@@ -5348,6 +6748,46 @@ items:
   title: Ensure app permission policies are configured.
   description: 'Third-party Teams apps: allowed — restrict in Teams Admin → Teams apps → Permission policies..'
   reference: CIS.8.4.1 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - app-permissions
+  - third-party-apps
+  - supply-chain
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Teams apps run with the installing user's permissions and can access messages, files, and channels. Malicious or compromised third-party apps in the Teams store can silently exfiltrate
+      data from chats and channels.
+    implementationNotes: '# Restrict app permissions
+
+      Get-CsTeamsAppPermissionPolicy -Identity Global
+
+
+      # Block all third-party apps, allow only Microsoft apps
+
+      Set-CsTeamsAppPermissionPolicy -Identity Global -DefaultCatalogAppsType BlockedAppList -GlobalCatalogAppsType BlockedAppList -PrivateCatalogAppsType BlockedAppList -DefaultCatalogApps @() -GlobalCatalogApps
+      @() -PrivateCatalogApps @()
+
+
+      # Or whitelist specific approved apps
+
+      # Set-CsTeamsAppPermissionPolicy -Identity Global -DefaultCatalogAppsType AllowedAppList -DefaultCatalogApps @(@{Id=''app-guid-1''},@{Id=''app-guid-2''})'
+    validationNotes: 'Get-CsTeamsAppPermissionPolicy -Identity Global | Select DefaultCatalogAppsType, GlobalCatalogAppsType, PrivateCatalogAppsType
+
+      # Expected: BlockedAppList or AllowedAppList with specific approved apps'
+    tuningNotes: 'Don''t block all apps — Teams bot integrations, Power Automate connectors, and approved business apps are valuable. Use AllowedAppList with governance: require app review before adding
+      to the whitelist, and review quarterly.'
+    advancedDetection: '// KQL: Detect new app installations in Teams
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation in (''AppInstalled'',''BotAddedToConversation'')
+
+      | project TimeGenerated, UserId, Operation, Parameters'
+    relatedIds:
+    - m365-029
 - id: m365-058
   platform: m365-collab
   category: services
@@ -5355,6 +6795,43 @@ items:
   title: Ensure anonymous users can't join a meeting.
   description: 'Anonymous meeting join: enabled — disable in Teams Admin → Meetings → Meeting policies..'
   reference: CIS.8.5.1 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - anonymous-access
+  - meeting-security
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Anonymous users joining meetings without identification enables meeting bombing, eavesdropping on confidential discussions, and social engineering. The attacker joins with a fake
+      display name and listens to sensitive business discussions.
+    implementationNotes: '# Block anonymous users from joining meetings
+
+      Set-CsTeamsMeetingPolicy -Identity Global -AllowAnonymousUsersToJoinMeeting $false
+
+
+      # Verify
+
+      (Get-CsTeamsMeetingPolicy -Identity Global).AllowAnonymousUsersToJoinMeeting'
+    validationNotes: '(Get-CsTeamsMeetingPolicy -Identity Global).AllowAnonymousUsersToJoinMeeting
+
+      # Expected: False'
+    tuningNotes: This blocks ALL anonymous join. For webinars or public meetings, create a separate meeting policy that allows anonymous join and assign it only to users who host public events. Default
+      policy should be restrictive.
+    advancedDetection: '// KQL: Detect anonymous meeting joins
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''MeetingParticipantJoined''
+
+      | where Members has ''Anonymous''
+
+      | project TimeGenerated, UserId, Operation, MeetingId=ObjectId'
+    relatedIds:
+    - m365-059
+    - m365-060
 - id: m365-059
   platform: m365-collab
   category: services
@@ -5362,6 +6839,42 @@ items:
   title: Ensure anonymous users and dial-in callers can't start a meeting.
   description: 'Anonymous meeting start: enabled — disable in Meeting policies..'
   reference: CIS.8.5.2 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - meeting-start
+  - dial-in
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: If anonymous users or dial-in callers can start meetings before the organizer joins, they create an uncontrolled session where they could share malicious content, record audio, or
+      impersonate the organizer to attendees who join later.
+    implementationNotes: '# Prevent anonymous users and dial-in from starting meetings
+
+      Set-CsTeamsMeetingPolicy -Identity Global -AllowAnonymousUsersToStartMeeting $false
+
+      Set-CsTeamsMeetingPolicy -Identity Global -AllowPSTNUsersToBypassLobby $false
+
+
+      # Verify
+
+      Get-CsTeamsMeetingPolicy -Identity Global | Select AllowAnonymousUsersToStartMeeting, AllowPSTNUsersToBypassLobby'
+    validationNotes: 'Get-CsTeamsMeetingPolicy -Identity Global | Select AllowAnonymousUsersToStartMeeting
+
+      # Expected: False'
+    tuningNotes: Always combine with lobby controls. The organizer should always join first to verify attendees before admitting them.
+    advancedDetection: '// KQL: Detect meetings started by non-organizer
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''MeetingStarted''
+
+      | project TimeGenerated, UserId, Operation, MeetingId=ObjectId'
+    relatedIds:
+    - m365-058
+    - m365-060
 - id: m365-060
   platform: m365-collab
   category: services
@@ -5369,6 +6882,41 @@ items:
   title: Ensure only people in my org can bypass the lobby.
   description: 'Auto-admitted users: ''EveryoneInCompany''. Org-only or stricter.'
   reference: CIS.8.5.3 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - lobby
+  - access-control
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: 'Without lobby controls, anyone with the meeting link joins immediately — no verification. The lobby is the meeting''s access control: it lets the organizer screen attendees and reject
+      uninvited participants.'
+    implementationNotes: '# Configure lobby to only allow org users to bypass
+
+      Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers ''EveryoneInCompanyExcludingGuests''
+
+
+      # Verify
+
+      (Get-CsTeamsMeetingPolicy -Identity Global).AutoAdmittedUsers'
+    validationNotes: '(Get-CsTeamsMeetingPolicy -Identity Global).AutoAdmittedUsers
+
+      # Expected: ''EveryoneInCompanyExcludingGuests'' or ''OrganizerOnly'''
+    tuningNotes: For executive meetings, use 'OrganizerOnly' — even internal users wait in lobby. For regular meetings, 'EveryoneInCompanyExcludingGuests' is a good balance. Set per-policy for different
+      user groups.
+    advancedDetection: '// KQL: Track lobby bypass setting changes
+
+      OfficeActivity
+
+      | where Operation has ''Set-CsTeamsMeetingPolicy''
+
+      | where Parameters has ''AutoAdmittedUsers''
+
+      | project TimeGenerated, UserId, Parameters'
+    relatedIds:
+    - m365-058
+    - m365-061
 - id: m365-061
   platform: m365-collab
   category: services
@@ -5376,6 +6924,37 @@ items:
   title: Ensure users dialing in can't bypass the lobby.
   description: 'PSTN lobby bypass: enabled — disable in Meeting policies..'
   reference: CIS.8.5.4 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - dial-in-lobby
+  - pstn
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Dial-in callers (PSTN) only show a phone number — no identity verification. If they bypass the lobby, an anonymous caller can listen to the entire meeting without any attendee knowing
+      their real identity.
+    implementationNotes: '# Force dial-in callers to wait in lobby
+
+      Set-CsTeamsMeetingPolicy -Identity Global -AllowPSTNUsersToBypassLobby $false'
+    validationNotes: '(Get-CsTeamsMeetingPolicy -Identity Global).AllowPSTNUsersToBypassLobby
+
+      # Expected: False'
+    tuningNotes: This adds friction for legitimate dial-in users. The organizer must manually admit them. For meeting-heavy organizations, consider announcing the policy change and providing instructions
+      for organizers.
+    advancedDetection: '// KQL: Detect PSTN meeting joins
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''MeetingParticipantJoined''
+
+      | where Members has ''PSTN''
+
+      | project TimeGenerated, MeetingId=ObjectId, Members'
+    relatedIds:
+    - m365-060
 - id: m365-062
   platform: m365-collab
   category: services
@@ -5383,6 +6962,42 @@ items:
   title: Ensure meeting chat does not allow anonymous users.
   description: 'Meeting chat type: ''Enabled''. May allow anonymous chat — set to EnabledExceptAnonymous.'
   reference: CIS.8.5.5 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - anonymous-chat
+  - meeting-security
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Meeting chat with anonymous users allows them to share malicious links, phishing content, or inappropriate material directly in the meeting thread — which persists after the meeting
+      ends and is accessible to all participants.
+    implementationNotes: '# Disable meeting chat for anonymous users
+
+      Set-CsTeamsMeetingPolicy -Identity Global -MeetingChatEnabledType ''EnabledExceptAnonymous''
+
+
+      # Verify
+
+      (Get-CsTeamsMeetingPolicy -Identity Global).MeetingChatEnabledType'
+    validationNotes: '(Get-CsTeamsMeetingPolicy -Identity Global).MeetingChatEnabledType
+
+      # Expected: EnabledExceptAnonymous'
+    tuningNotes: EnabledExceptAnonymous is the recommended setting — internal users can still use meeting chat, but anonymous/external attendees cannot post links or messages.
+    advancedDetection: '// KQL: Detect anonymous chat in meetings
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''MessageCreated''
+
+      | where UserId has ''Anonymous'' or UserId == ''''
+
+      | project TimeGenerated, UserId, ChatName, Operation'
+    relatedIds:
+    - m365-058
+    - m365-065
 - id: m365-063
   platform: m365-collab
   category: services
@@ -5390,6 +7005,39 @@ items:
   title: Ensure only organizers and co-organizers can present.
   description: 'Default presenter: ''EveryoneInCompanyUserOverride''. CIS recommends organizers/co-organizers only.'
   reference: CIS.8.5.6 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - presenter-control
+  - content-sharing
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: If all participants can present, an attacker who joins a meeting can share their screen with malicious content, phishing pages, or offensive material. Restricting presentation to
+      organizers/co-organizers prevents meeting hijacking.
+    implementationNotes: '# Set default presenter role
+
+      Set-CsTeamsMeetingPolicy -Identity Global -DesignatedPresenterRoleMode ''OrganizerOnlyUserOverride''
+
+
+      # Verify
+
+      (Get-CsTeamsMeetingPolicy -Identity Global).DesignatedPresenterRoleMode'
+    validationNotes: '(Get-CsTeamsMeetingPolicy -Identity Global).DesignatedPresenterRoleMode
+
+      # Expected: OrganizerOnlyUserOverride'
+    tuningNotes: '''OrganizerOnlyUserOverride'' means only organizer/co-organizers present by default, but the organizer can promote others during the meeting. This provides security while maintaining flexibility.'
+    advancedDetection: '// KQL: Detect unexpected screen sharing
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''ScreenSharingStarted''
+
+      | project TimeGenerated, UserId, MeetingId=ObjectId'
+    relatedIds:
+    - m365-064
 - id: m365-064
   platform: m365-collab
   category: services
@@ -5397,6 +7045,38 @@ items:
   title: Ensure external participants can't give or request control.
   description: 'External control: enabled — disable in Meeting policies..'
   reference: CIS.8.5.7 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - remote-control
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: If external participants can request or give control of shared screens, they can take over a presenter's desktop — accessing applications, files, and credentials visible on screen.
+      This is a direct remote access vector.
+    implementationNotes: '# Disable external control giving/requesting
+
+      Set-CsTeamsMeetingPolicy -Identity Global -AllowExternalParticipantGiveRequestControl $false
+
+
+      # Verify
+
+      (Get-CsTeamsMeetingPolicy -Identity Global).AllowExternalParticipantGiveRequestControl'
+    validationNotes: '(Get-CsTeamsMeetingPolicy -Identity Global).AllowExternalParticipantGiveRequestControl
+
+      # Expected: False'
+    tuningNotes: Internal users can still give/request control among themselves. Only external participants are blocked. This has zero impact on internal collaboration.
+    advancedDetection: '// KQL: Detect remote control events
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation has ''Control'' or Operation has ''RemoteControl''
+
+      | project TimeGenerated, UserId, Operation, MeetingId=ObjectId'
+    relatedIds:
+    - m365-063
 - id: m365-065
   platform: m365-collab
   category: services
@@ -5404,6 +7084,30 @@ items:
   title: Ensure external meeting chat is off.
   description: 'External meeting chat: enabled — disable in Meeting policies..'
   reference: CIS.8.5.8 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - external-chat
+  - data-leakage
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: External meeting chat allows participants from outside the organization to persist messages, links, and files in the meeting thread. This content remains after the meeting ends and
+      can include phishing links or data requests that internal users may follow later.
+    implementationNotes: '# Disable external meeting chat
+
+      # Teams Admin Center > Meetings > Meeting policies > Meeting chat > Off for external participants
+
+      # Or via PowerShell:
+
+      Set-CsTeamsMeetingPolicy -Identity Global -MeetingChatEnabledType ''EnabledExceptAnonymous'''
+    validationNotes: '(Get-CsTeamsMeetingPolicy -Identity Global).MeetingChatEnabledType
+
+      # Expected: EnabledExceptAnonymous or Disabled'
+    tuningNotes: For external webinars where Q&A chat is needed, create a separate meeting policy with chat enabled and assign to webinar organizers only.
+    advancedDetection: // Monitor external messages in meeting chats — same as m365-062 detection
+    relatedIds:
+    - m365-062
 - id: m365-066
   platform: m365-collab
   category: services
@@ -5411,6 +7115,41 @@ items:
   title: Ensure meeting recording is off by default.
   description: 'Cloud recording: enabled — consider disabling as default..'
   reference: CIS.8.5.9 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - meetings
+  - recording
+  - privacy
+  - compliance
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Auto-recording captures all meeting audio, video, and screen shares. If recordings are stored in OneDrive/SharePoint with broad access, sensitive discussions (HR reviews, legal matters,
+      M&A) can be accessed by unauthorized users or exfiltrated if storage is compromised.
+    implementationNotes: '# Disable auto-recording
+
+      Set-CsTeamsMeetingPolicy -Identity Global -AllowCloudRecording $true -RecordingStorageMode ''OneDriveForBusiness'' -AllowRecordingStorageOutsideRegion $false
+
+
+      # Set recording to NOT auto-start
+
+      # Teams Admin Center > Meetings > Meeting policies > Recording & transcription > Cloud recording > On (but NOT ''Meetings automatically record'')'
+    validationNotes: 'Get-CsTeamsMeetingPolicy -Identity Global | Select AllowCloudRecording, RecordingStorageMode
+
+      # Ensure automatic recording is not forced'
+    tuningNotes: Don't disable recording entirely — it has legitimate compliance uses. Instead, ensure recordings go to a controlled location with proper permissions. Set retention policies on meeting recordings
+      (auto-delete after 60-90 days unless retained for compliance).
+    advancedDetection: '// KQL: Track meeting recordings
+
+      OfficeActivity
+
+      | where RecordType == ''MicrosoftTeams''
+
+      | where Operation == ''RecordingStarted''
+
+      | project TimeGenerated, UserId, MeetingId=ObjectId'
+    relatedIds:
+    - m365-058
 - id: m365-067
   platform: m365-collab
   category: logging
@@ -5418,6 +7157,47 @@ items:
   title: Ensure users can report security concerns in Teams.
   description: 'Report security concern: enabled.'
   reference: CIS.8.6.1 — CIS M365 / Microsoft Secure Score — Microsoft Teams
+  tags:
+  - teams
+  - security-reporting
+  - phishing-report
+  - user-awareness
+  - cis-m365
+  commandLanguage: powershell
+  premium:
+    attackPerspective: Without a reporting mechanism, users who receive suspicious Teams messages have no easy way to alert the security team. Phishing via Teams is increasing rapidly, and without user
+      reporting, the security team has zero visibility into Teams-based threats.
+    implementationNotes: '# Enable security reporting in Teams
+
+      # Microsoft Defender Portal > Settings > User reported settings > Enable ''Report message to Microsoft''
+
+      # Also works via: Teams Admin Center > Messaging policies
+
+
+      # Ensure Defender for Office 365 is configured for Teams
+
+      # Defender Portal > Policies > Safe Links > Enable for Teams
+
+      # Defender Portal > Policies > Safe Attachments > Enable for Teams'
+    validationNotes: '# Verify in Defender Portal:
+
+      # Settings > User reported settings > ''Report message to Microsoft'' = Enabled
+
+      # Verify Safe Links for Teams:
+
+      # Defender > Policies > Safe Links > Check Teams is in scope'
+    tuningNotes: Combine with user awareness training about Teams phishing. The report button should be easily accessible — test it regularly. Route reported messages to a monitored mailbox or SIEM alert.
+    advancedDetection: '// KQL: Track user-reported Teams messages
+
+      OfficeActivity
+
+      | where RecordType has ''ThreatIntelligence'' or Operation has ''UserReported''
+
+      | where AppAccessContext has ''Teams''
+
+      | project TimeGenerated, UserId, Operation, ThreatType'
+    relatedIds:
+    - m365-050
 - id: m365-068
   platform: m365-power
   category: services

@@ -1,4 +1,4 @@
-/* SCW Premium Tools — Detection Library & Playbooks */
+/* SCW Elite Tools — Detection Library & Playbooks */
 
 /* ── Live tool cards on premium page ── */
 .premium-tools-live { padding: 2rem 0; }
@@ -1064,20 +1064,20 @@
 }
 .harden-auth-banner__btn { flex-shrink: 0; }
 
-/* ── Premium badge on items ── */
+/* ── Elite badge on items ── */
 .badge--premium {
-  background: linear-gradient(135deg, rgba(168,85,247,.2), rgba(236,72,153,.2));
-  color: #c084fc;
-  border: 1px solid rgba(168,85,247,.3);
+  background: linear-gradient(135deg, rgba(6,182,212,.15), rgba(59,130,246,.15));
+  color: #67e8f9;
+  border: 1px solid rgba(6,182,212,.3);
   font-size: .6rem;
   padding: .15rem .4rem;
   border-radius: 4px;
 }
 .harden-item--has-premium {
-  border-left: 2px solid rgba(168,85,247,.3);
+  border-left: 2px solid rgba(6,182,212,.3);
 }
 
-/* ── Premium expandable section ── */
+/* ── Elite expandable section ── */
 .harden-premium {
   margin: .6rem 0 0 1.6rem;
   border-top: 1px solid var(--border);
@@ -1089,7 +1089,7 @@
   gap: .4rem;
   background: none;
   border: none;
-  color: #c084fc;
+  color: #67e8f9;
   font-family: var(--f-display);
   font-size: .76rem;
   font-weight: 600;
@@ -1097,7 +1097,7 @@
   padding: .3rem 0;
   transition: color .15s;
 }
-.harden-premium__toggle:hover { color: #d8b4fe; }
+.harden-premium__toggle:hover { color: #a5f3fc; }
 .harden-premium__toggle-icon {
   font-size: .65rem;
   transition: transform .15s;
@@ -1178,19 +1178,9 @@
   flex-wrap: wrap;
 }
 
-/* ── Locked CTA ── */
+/* ── Locked CTA (deprecated — kept for backward compat) ── */
 .harden-premium__locked-cta {
-  padding: .6rem .8rem;
-  background: linear-gradient(135deg, rgba(168,85,247,.04), rgba(236,72,153,.04));
-  border: 1px dashed rgba(168,85,247,.2);
-  border-radius: 6px;
-  margin-top: .4rem;
-}
-.harden-premium__locked-cta p {
-  font-size: .72rem;
-  color: var(--dim);
-  margin: 0 0 .5rem;
-  line-height: 1.5;
+  display: none;
 }
 
 /* ── Disclaimer ── */
@@ -1308,19 +1298,19 @@
   margin-top: .8rem;
 }
 
-/* ── Premium light theme ── */
+/* ── Elite light theme ── */
 [data-theme="light"] .harden-auth-banner__inner {
-  background: linear-gradient(135deg, rgba(8,145,178,.05), rgba(147,51,234,.05));
+  background: linear-gradient(135deg, rgba(8,145,178,.05), rgba(59,130,246,.05));
   border-color: rgba(8,145,178,.15);
 }
 [data-theme="light"] .badge--premium {
-  background: linear-gradient(135deg, rgba(147,51,234,.12), rgba(219,39,119,.12));
-  color: #7c3aed;
-  border-color: rgba(147,51,234,.2);
+  background: linear-gradient(135deg, rgba(8,145,178,.12), rgba(59,130,246,.12));
+  color: #0891b2;
+  border-color: rgba(8,145,178,.2);
 }
-[data-theme="light"] .harden-item--has-premium { border-left-color: rgba(147,51,234,.2); }
-[data-theme="light"] .harden-premium__toggle { color: #7c3aed; }
-[data-theme="light"] .harden-premium__toggle:hover { color: #6d28d9; }
+[data-theme="light"] .harden-item--has-premium { border-left-color: rgba(8,145,178,.2); }
+[data-theme="light"] .harden-premium__toggle { color: #0891b2; }
+[data-theme="light"] .harden-premium__toggle:hover { color: #0e7490; }
 [data-theme="light"] .harden-premium__code {
   background: #f5f5f5;
   border-color: rgba(0,0,0,.1);
@@ -1330,9 +1320,9 @@
   background: rgba(8,145,178,.06);
   border-color: rgba(8,145,178,.15);
 }
-[data-theme="light"] .harden-premium__locked-cta {
-  background: linear-gradient(135deg, rgba(147,51,234,.03), rgba(219,39,119,.03));
-  border-color: rgba(147,51,234,.15);
+[data-theme="light"] .label--elite {
+  background: linear-gradient(135deg, #0891b2, #2563eb);
+  color: #fff;
 }
 [data-theme="light"] .auth-card {
   background: var(--card);
@@ -1345,7 +1335,7 @@
   color: #1a1a1a;
 }
 
-/* Premium responsive */
+/* Elite responsive */
 @media (max-width: 600px) {
   .harden-premium { margin-left: 0; }
   .harden-premium__code { padding: .5rem; }

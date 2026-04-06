@@ -1992,7 +1992,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #f59e0b, #f97316);
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
   color: #000;
   padding: .12em .4em;
   border-radius: 3px;
@@ -2023,7 +2023,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   margin-bottom: .4rem;
 }
 .premium-hero__title span {
-  background: linear-gradient(135deg, #f59e0b, #f97316);
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2034,6 +2034,13 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   max-width: 520px;
   margin: 0 auto;
   line-height: 1.6;
+}
+.premium-hero__sub {
+  font-size: .82rem;
+  color: var(--dim);
+  max-width: 480px;
+  margin: .6rem auto 0;
+  line-height: 1.5;
 }
 
 .premium-features {
@@ -2057,7 +2064,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, #f59e0b, #f97316, #ef4444);
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
   opacity: .6;
 }
 .premium-feature__icon {
@@ -2085,7 +2092,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 }
 .premium-cta__box {
   background: var(--surface);
-  border: 1px solid rgba(245,158,11,.2);
+  border: 1px solid rgba(6,182,212,.2);
   border-radius: var(--r-lg);
   padding: 2.5rem;
   max-width: 520px;
@@ -2098,7 +2105,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #f59e0b, #f97316);
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
 }
 .premium-cta__badge {
   display: inline-block;
@@ -2107,8 +2114,8 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
-  background: rgba(245,158,11,.12);
-  color: #f59e0b;
+  background: rgba(6,182,212,.12);
+  color: #06b6d4;
   padding: .3em .8em;
   border-radius: var(--r-sm);
   margin-bottom: 1rem;
@@ -2127,7 +2134,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   margin-bottom: 1.2rem;
 }
 .btn--premium {
-  background: linear-gradient(135deg, #f59e0b, #f97316);
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
   color: #000;
   font-weight: 700;
 }
@@ -2180,8 +2187,8 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   position: relative;
 }
 .premium-plan--highlight {
-  border-color: #f59e0b;
-  box-shadow: 0 0 20px rgba(245,158,11,.08);
+  border-color: #06b6d4;
+  box-shadow: 0 0 20px rgba(6,182,212,.08);
 }
 .premium-plan__popular {
   position: absolute;
@@ -2193,7 +2200,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #f59e0b, #f97316);
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
   color: #000;
   padding: .25em .8em;
   border-radius: var(--r-sm);
@@ -2251,7 +2258,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   margin-top: .8rem;
 }
 
-/* Premium — Locked Tool Cards */
+/* Premium — Locked/Upcoming Tool Cards */
 .premium-tools { padding: 2rem 0; }
 .premium-tools__grid {
   display: grid;
@@ -2264,6 +2271,9 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   border-radius: var(--r);
   position: relative;
   overflow: hidden;
+}
+.premium-tool-card--upcoming .premium-tool-card__content {
+  opacity: .7;
 }
 .premium-tool-card--locked .premium-tool-card__content {
   filter: blur(1.5px);
@@ -2311,8 +2321,8 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
-  color: #f59e0b;
-  background: rgba(245,158,11,.08);
+  color: #06b6d4;
+  background: rgba(6,182,212,.08);
   padding: .2em .6em;
   border-radius: var(--r-sm);
 }
@@ -2321,9 +2331,33 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, #f59e0b, #f97316, #ef4444);
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
   opacity: .4;
   z-index: 3;
+}
+
+/* SCW Elite — Intro & Section Styles */
+.elite-intro {
+  text-align: center;
+  padding: 1.5rem 0 0;
+}
+.elite-intro__text {
+  font-size: .88rem;
+  color: var(--gray);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+.elite-section-intro {
+  font-size: .82rem;
+  color: var(--dim);
+  max-width: 520px;
+  line-height: 1.55;
+  margin-bottom: 1.2rem;
+}
+.label--elite {
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  color: #000;
 }
 
 /* Premium — Includes Grid */

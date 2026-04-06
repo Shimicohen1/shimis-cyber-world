@@ -5,13 +5,13 @@ permalink: /hardening/
 ---
 
 <div class="page-head">
-  <div class="label label--cyan page-head__label">SCW TOOLS</div>
+  <div class="label label--elite page-head__label">SCW ELITE</div>
   <h1 class="page-head__title">Hardening Checklist Generator</h1>
-  <p class="page-head__desc">Select your platform — get an actionable, CIS-aligned security hardening checklist with real commands. Check items off as you go and export your progress.</p>
+  <p class="page-head__desc">Practical hardening guidance with real-world context, implementation depth, and decision-making behind every recommendation.</p>
 </div>
 
 <section class="cs-intro reveal">
-  <p>Built from <strong>CIS Benchmarks</strong>, AWS Well-Architected, and production hardening experience. Each item includes severity, reference, and copy-paste commands. Select a platform below to generate your checklist.</p>
+  <p>Most checklists stop at recommendations. This one adds the context behind them. Built from <strong>CIS Benchmarks</strong>, AWS Well-Architected, and production hardening experience.</p>
   <div class="harden-hero-stats">
     <div class="harden-hero-stat"><span class="harden-hero-stat__num">748</span><span class="harden-hero-stat__label">Checks</span></div>
     <div class="harden-hero-stat"><span class="harden-hero-stat__num">11</span><span class="harden-hero-stat__label">Platforms</span></div>
@@ -111,22 +111,22 @@ permalink: /hardening/
     <p class="cs-cta__text">These checklists are aligned to CIS Benchmarks and real-world hardening procedures. New platforms and items ship regularly.</p>
     <div class="cs-cta__actions">
       <a href="{{ '/detections/' | relative_url }}" class="btn btn--primary">Detection Library →</a>
-      <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools</a>
+      <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">Explore SCW Elite</a>
     </div>
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=5">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=6">
 
-<!-- Auth banner (hidden by default, shown by JS when not premium) -->
+<!-- Elite guidance info banner -->
 <div id="hardenAuthBanner" class="harden-auth-banner" style="display:none;">
   <div class="harden-auth-banner__inner">
-    <span class="harden-auth-banner__icon">🔐</span>
+    <span class="harden-auth-banner__icon">🛡️</span>
     <div class="harden-auth-banner__text">
-      <strong>Advanced Guidance Available</strong>
-      <span>Some items include attack perspectives, validation steps, detection logic, and tuning notes. Full access coming soon.</span>
+      <strong>Elite Guidance Available</strong>
+      <span>Items marked with ★ include deeper context — attack perspectives, validation steps, detection logic, and tuning notes.</span>
     </div>
-    <span class="btn btn--ghost btn--sm harden-auth-banner__btn" style="opacity:.6;cursor:default;">Coming Soon</span>
+    <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost btn--sm harden-auth-banner__btn">Explore SCW Elite</a>
   </div>
 </div>
 
