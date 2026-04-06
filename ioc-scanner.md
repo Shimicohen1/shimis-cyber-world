@@ -7,14 +7,18 @@ permalink: /ioc-scanner/
 <div class="page-head">
   <div class="label label--cyan page-head__label">SCW TOOLS</div>
   <h1 class="page-head__title">IOC Scanner</h1>
-  <p class="page-head__desc">Paste indicators of compromise — IPs, domains, hashes, URLs, emails — and instantly get lookup links across 15+ threat intelligence platforms. No API keys. No signup. Just paste and investigate.</p>
+  <p class="page-head__desc">Paste any indicator — IPs, domains, hashes, URLs, emails — and get instant lookup links across 18 threat intelligence platforms with clear descriptions of what each source checks.</p>
 </div>
 
 <section class="cs-intro reveal">
-  <p>Bulk-process indicators in seconds. The scanner <strong>auto-detects</strong> indicator types, deduplicates, defangs for safe sharing, and generates direct links to VirusTotal, AbuseIPDB, Shodan, OTX, MalwareBazaar, and more.</p>
+  <div class="ioc-how-it-works">
+    <div class="ioc-step"><span class="ioc-step__num">1</span><span class="ioc-step__text">Paste indicators — one per line, comma-separated, or mixed</span></div>
+    <div class="ioc-step"><span class="ioc-step__num">2</span><span class="ioc-step__text">Auto-detection identifies each type (IP, hash, domain, URL, email)</span></div>
+    <div class="ioc-step"><span class="ioc-step__num">3</span><span class="ioc-step__text">Get direct links to relevant platforms with context on what to look for</span></div>
+  </div>
   <div class="cs-intro__actions">
     <a href="#scanner" class="btn btn--primary">Start Scanning</a>
-    <a href="{{ '/detections/' | relative_url }}" class="btn btn--ghost">Detection Library →</a>
+    <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools →</a>
   </div>
 </section>
 
@@ -118,6 +122,10 @@ window.IOC_SOURCES = [
     name: {{ src.name | jsonify }},
     icon: {{ src.icon | jsonify }},
     types: {{ src.types | jsonify }},
+    descs: {
+      {% for pair in src.descs %}{{ pair[0] | jsonify }}: {{ pair[1] | jsonify }}{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    },
     urls: {
       {% for pair in src.urls %}{{ pair[0] | jsonify }}: {{ pair[1] | jsonify }}{% unless forloop.last %},{% endunless %}
       {% endfor %}

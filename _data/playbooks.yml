@@ -7,6 +7,14 @@ categories:
   - Insider Threat
   - Cloud Compromise
   - DDoS
+  - Malware
+  - Supply Chain
+  - Account Takeover
+  - Cryptojacking
+  - Web Application
+  - Zero-Day
+  - Lost Device
+  - API Security
 
 severity_levels:
   - critical
@@ -875,3 +883,680 @@ playbooks:
       - "Application logs showing error rates during attack"
       - "Mitigation provider incident report"
       - "Any ransom demands received (screenshot, preserve original)"
+
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 9 — MALWARE INFECTION RESPONSE
+  # ══════════════════════════════════════════════════════════
+  - name: "Malware Infection Response"
+    description: "Full response playbook for confirmed malware infections — endpoint isolation, malware analysis, remediation, and re-imaging."
+    category: "Malware"
+    mitre: "T1204 — User Execution"
+    severity: "high"
+    estimated_time: "1-4 hours"
+    roles: ["SOC Analyst L2", "Endpoint Engineer", "IT Ops"]
+    tags: [malware, trojan, dropper, infostealer, worm]
+    escalation:
+      p2_sla: "30 minutes to SOC Lead"
+      p2_notify: ["SOC Manager", "Endpoint Team Lead"]
+      escalate_to_p1: "If malware is self-propagating (worm) or involves data exfiltration → escalate to P1 immediately"
+      external: ["Submit samples to VirusTotal, MalwareBazaar, ANY.RUN for community benefit"]
+    metrics:
+      mttd: "< 15 minutes (from execution to EDR alert)"
+      mttc: "< 1 hour (from alert to full containment of affected host)"
+      mttr: "< 4 hours (re-image and restore user to operational state)"
+      benchmark: "EDR auto-containment reduces MTTC to under 1 minute for known threats"
+    phases:
+      - name: "Detect"
+        steps:
+          - "Confirm malware alert from EDR/AV — determine detection type:"
+          - "  Real-time block: Malware was blocked before execution → lower severity"
+          - "  Post-execution detection: Malware ran before detection → higher severity"
+          - "  Behavioral detection: Suspicious behavior matched → investigate thoroughly"
+          - "Gather initial IOCs from EDR alert:"
+          - "  File hash (SHA256), file path, process tree, network connections, dropped files"
+          - "  CrowdStrike: Detection > View full detection details > Process tree"
+          - "  Defender: Incidents > Alert > Device timeline > Filter by alert time"
+          - "Check file hash against threat intel:"
+          - "  VirusTotal: Search hash → check detection ratio and malware family"
+          - "  MalwareBazaar: Search hash → check tags, family, first seen date"
+          - "  Hybrid Analysis: Search hash → check sandbox report for behavior"
+          - "Determine malware category: dropper, RAT, infostealer, ransomware, cryptominer, worm"
+        decision_tree:
+          - condition: "Malware was blocked before execution (real-time prevention)"
+            action: "Lower severity. Verify block was successful. Check if other users received the same file."
+          - condition: "Malware executed and established persistence"
+            action: "Isolate host immediately. Full investigation required."
+          - condition: "Malware is spreading to other hosts"
+            action: "ESCALATE to P1. Switch to Lateral Movement playbook. Network-wide hunt required."
+      - name: "Contain"
+        steps:
+          - "Network-isolate the infected host:"
+          - "  CrowdStrike: Host > Actions > Contain Host"
+          - "  Defender: Device page > Isolate device"
+          - "  Manual: Disable NIC or VLAN isolation via switch port shutdown"
+          - "Block malware hash across the organization:"
+          - "  CrowdStrike: IOC Management > Add indicator > SHA256 > Action: Block"
+          - "  Defender: Settings > Indicators > Add indicator > File hashes"
+          - "  SIEM: Add hash to custom IOC watchlist for detection"
+          - "Block C2 domains/IPs at perimeter:"
+          - "  DNS sinkhole the C2 domain"
+          - "  Firewall block rule for C2 IP addresses"
+          - "Search for the same file across all endpoints:"
+          - "  CrowdStrike: Investigate > Custom IOC > File hash > Search all hosts"
+          - "  Defender: Advanced hunting > `DeviceFileEvents | where SHA256 == '<hash>'`"
+      - name: "Eradicate"
+        steps:
+          - "Kill malicious processes on the infected host"
+          - "Remove malware files, persistence mechanisms, and dropped payloads"
+          - "Remove any scheduled tasks, services, or registry entries created by the malware"
+          - "Check for credential theft — if infostealer, rotate all credentials used on the device"
+          - "Scan with multiple AV engines to ensure complete removal"
+          - "If sophisticated or unknown malware — re-image the host instead of manual cleanup"
+      - name: "Recover"
+        steps:
+          - "Re-image the host from golden image if manual cleanup is not confidence-level high"
+          - "Restore user data from backup (NOT from the infected disk)"
+          - "Patch the vulnerability exploited for initial delivery (if known)"
+          - "Monitor the recovered host for 48 hours for re-infection"
+          - "Re-enable network connectivity after verification"
+      - name: "Post-Incident"
+        steps:
+          - "Document malware family, IOCs, delivery method, and affected scope"
+          - "Update email gateway / web proxy rules to block delivery vector"
+          - "Submit malware sample to MalwareBazaar and VirusTotal for community sharing"
+          - "If new malware variant — write custom detection rule for your SIEM"
+          - "Review endpoint protection configuration — should this have been caught sooner?"
+    evidence_checklist:
+      - "Malware sample (quarantined copy with hash)"
+      - "Full process tree from EDR showing execution chain"
+      - "Network connections made by the malware (C2 traffic)"
+      - "List of files dropped, modified, or deleted"
+      - "Persistence mechanisms created (registry, tasks, services)"
+      - "List of all hosts where the file was found"
+
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 10 — SUPPLY CHAIN ATTACK RESPONSE
+  # ══════════════════════════════════════════════════════════
+  - name: "Supply Chain Attack Response"
+    description: "Response playbook for compromised software supply chain — when a trusted vendor, library, or update mechanism is weaponized."
+    category: "Supply Chain"
+    mitre: "T1195.002 — Supply Chain Compromise: Compromise Software Supply Chain"
+    severity: "critical"
+    estimated_time: "4-24 hours"
+    roles: ["Incident Commander", "SOC Analyst L3", "DevOps / Engineering", "Vendor Management", "Legal"]
+    tags: [supply-chain, third-party, dependency, update-poisoning]
+    escalation:
+      p1_sla: "Immediate — supply chain compromises affect the entire organization"
+      p1_notify: ["CISO", "CTO", "VP Engineering", "Legal", "Vendor Management"]
+      war_room: "#inc-supply-chain-YYYYMMDD"
+      external: ["CISA (cisa.gov/report)", "Affected vendor security team", "ISAC"]
+    metrics:
+      mttd: "< 24 hours (from advisory/detection to confirmed impact assessment)"
+      mttc: "< 4 hours (from confirmation to blocking the compromised component)"
+      mttr: "< 48 hours (to patch/replace the compromised component across all systems)"
+      benchmark: "Average supply chain attack goes undetected for 250+ days (Mandiant 2025)"
+    phases:
+      - name: "Detect"
+        steps:
+          - "Identify the compromised component — check threat intel and vendor advisories:"
+          - "  CISA KEV catalog (cisa.gov/known-exploited-vulnerabilities)"
+          - "  Vendor security advisory / CVE database"
+          - "  Community reporting (Twitter/X, Reddit r/netsec, security mailing lists)"
+          - "Determine if the compromised version is in your environment:"
+          - "  Software inventory: Check CMDB/asset management for affected software version"
+          - "  Dependency scan: `npm audit`, `pip audit`, `dotnet list package --vulnerable`"
+          - "  Container images: `trivy image <image>`, `grype <image>`"
+          - "Search for IOCs associated with the supply chain compromise:"
+          - "  Hashes, domains, IPs, behavioral indicators from vendor advisory"
+          - "Assess blast radius — how many systems have the compromised component?"
+        decision_tree:
+          - condition: "Compromised version is NOT in your environment"
+            action: "Document finding, block the version proactively, monitor for new information."
+          - condition: "Compromised version IS installed but no evidence of exploitation"
+            action: "Proceed to Contain — patch/remove urgently. Search for exploitation IOCs."
+          - condition: "Evidence of active exploitation found"
+            action: "FULL INCIDENT RESPONSE. Treat every system with the component as potentially compromised."
+      - name: "Contain"
+        steps:
+          - "Block the compromised component immediately:"
+          - "  Block the specific version in artifact repositories (npm, PyPI mirrors, Docker registry)"
+          - "  Block update/download URLs at proxy and firewall"
+          - "  Revoke any API keys or tokens associated with the compromised component"
+          - "Isolate systems showing signs of exploitation"
+          - "Disable automatic updates for the affected software until a verified safe version is available"
+          - "If the vendor is the compromise vector — disconnect vendor access (VPN tunnels, API integrations)"
+      - name: "Eradicate"
+        steps:
+          - "Remove or downgrade the compromised component to last-known-good version"
+          - "For each system with the compromised component:"
+          - "  Check for persistence mechanisms added during compromise window"
+          - "  Verify file integrity of the software installation"
+          - "  Rotate any credentials that the software had access to"
+          - "Rebuild systems with evidence of exploitation from clean images"
+          - "Update package lock files / dependency pins to exclude compromised versions"
+      - name: "Recover"
+        steps:
+          - "Deploy the patched/clean version of the component"
+          - "Verify deployment across all systems — zero instances of compromised version remain"
+          - "Re-enable automatic updates once vendor confirms safe version"
+          - "Restore any disabled integrations with new credentials"
+          - "Monitor for re-compromise for 30 days"
+      - name: "Post-Incident"
+        steps:
+          - "Implement Software Bill of Materials (SBOM) for all applications"
+          - "Deploy dependency scanning in CI/CD pipeline (Snyk, Dependabot, Renovate)"
+          - "Review vendor security assessment process — was this vendor properly vetted?"
+          - "Implement software signing verification for all deployments"
+          - "Share IOCs with ISACs and relevant community channels"
+    evidence_checklist:
+      - "Vendor advisory and CVE details"
+      - "List of all systems with the compromised component (version matrix)"
+      - "IOC search results across the environment"
+      - "Network logs showing communication with compromised infrastructure"
+      - "Build/deployment logs showing when the compromised version was introduced"
+      - "Vendor communication timeline"
+
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 11 — ACCOUNT TAKEOVER
+  # ══════════════════════════════════════════════════════════
+  - name: "Account Takeover Response"
+    description: "Response playbook for compromised user accounts — password reset, session revocation, damage assessment, and credential hygiene."
+    category: "Account Takeover"
+    mitre: "T1078 — Valid Accounts"
+    severity: "high"
+    estimated_time: "30-120 minutes"
+    roles: ["SOC Analyst L1/L2", "Identity Team", "Help Desk"]
+    tags: [account-compromise, identity, credential-theft, session-hijack]
+    escalation:
+      p2_sla: "15 minutes to Security Operations"
+      p2_notify: ["SOC Manager", "Identity Team Lead"]
+      escalate_to_p1: "If executive account, admin account, or clear data access/exfiltration → escalate to P1"
+    metrics:
+      mttd: "< 10 minutes (from anomalous sign-in to analyst alert)"
+      mttc: "< 15 minutes (from alert to credential reset + session revocation)"
+      mttr: "< 2 hours (full investigation + user remediation)"
+      benchmark: "83% of breaches involve stolen credentials (Verizon DBIR 2025)"
+    phases:
+      - name: "Detect"
+        steps:
+          - "Identify compromise indicators:"
+          - "  Impossible travel / unusual location sign-in"
+          - "  Sign-in from anonymous proxy or Tor exit node"
+          - "  New device + new location combination"
+          - "  Anomalous application access patterns"
+          - "  User-reported suspicious activity (password reset they didn't request)"
+          - "Check Azure AD / IdP sign-in logs:"
+          - "  `SigninLogs | where UserPrincipalName == '<user>' | where TimeGenerated > ago(7d) | project TimeGenerated, IPAddress, Location, AppDisplayName, DeviceDetail, RiskLevel | sort by TimeGenerated desc`"
+          - "Check for suspicious activity from the account:"
+          - "  Inbox rules created, emails sent, files accessed/shared, groups joined"
+          - "  Azure AD: audit logs for the user in the past 7 days"
+        decision_tree:
+          - condition: "Single anomalous sign-in, no suspicious activity after"
+            action: "Reset password, revoke sessions, interview user. May be false positive from VPN/travel."
+          - condition: "Confirmed unauthorized access with activity (rules, emails, file access)"
+            action: "Immediate lockout + full investigation. Check all activity during compromise window."
+          - condition: "Admin or privileged account compromised"
+            action: "ESCALATE to P1. Disable account, audit all admin actions, check for persistence."
+      - name: "Contain"
+        steps:
+          - "Reset password immediately — use strong random password:"
+          - "  Azure AD: `Set-AzureADUserPassword -ObjectId <user> -Password (ConvertTo-SecureString (New-Guid).Guid.Substring(0,16) -AsPlainText -Force) -ForceChangePasswordNextLogin $true`"
+          - "  Google: Admin > Users > Reset password"
+          - "Revoke ALL active sessions:"
+          - "  Azure AD: `Revoke-AzureADUserAllRefreshToken -ObjectId <user>`"
+          - "  Google: Admin > Users > Security > Sign out user from all sessions"
+          - "Check and remove suspicious inbox rules:"
+          - "  `Get-InboxRule -Mailbox <user> | where {$_.ForwardTo -or $_.DeleteMessage} | fl`"
+          - "Check and revoke suspicious OAuth app consents:"
+          - "  Azure AD: Enterprise Apps > User consent > Review and revoke"
+          - "Check and remove any delegates added to the mailbox"
+      - name: "Eradicate"
+        steps:
+          - "Determine how the account was compromised:"
+          - "  Phishing: Check email for credential harvesting links"
+          - "  Password reuse: Check if the password matches known breaches (HIBP)"
+          - "  Token theft: Check for AiTM proxy indicators in sign-in logs"
+          - "  Malware: Check endpoint for keyloggers or infostealers"
+          - "Force MFA re-enrollment — require the user to set up MFA again from scratch"
+          - "If password reuse — advise user to change passwords on all personal accounts"
+          - "If endpoint was compromised — run full EDR scan or re-image device"
+      - name: "Recover"
+        steps:
+          - "Provide user with new password via secure channel (phone call, in-person, not email)"
+          - "Walk the user through MFA enrollment"
+          - "Restore any deleted emails or modified data from backup"
+          - "Notify anyone who received emails from the account during compromise window"
+          - "Monitor account for re-compromise for 30 days"
+      - name: "Post-Incident"
+        steps:
+          - "If phishing was the vector — check if other users received the same phishing email"
+          - "Review Conditional Access policies — would location/device restrictions have prevented this?"
+          - "Implement risk-based Conditional Access if not already in place"
+          - "Schedule security awareness training for the affected user"
+          - "Review password policy — enforce complexity and banned password list"
+    evidence_checklist:
+      - "Sign-in logs showing unauthorized access times, IPs, locations"
+      - "Inbox rules created during compromise window"
+      - "Emails sent from the account during compromise"
+      - "Files accessed, modified, or shared during compromise"
+      - "OAuth apps granted access during compromise"
+      - "EDR logs if endpoint compromise suspected"
+
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 12 — CRYPTOJACKING / CRYPTO-MINING
+  # ══════════════════════════════════════════════════════════
+  - name: "Cryptojacking Response"
+    description: "Response playbook for unauthorized cryptocurrency mining — identifying mining processes, cloud resource abuse, and cost containment."
+    category: "Cryptojacking"
+    mitre: "T1496 — Resource Hijacking"
+    severity: "high"
+    estimated_time: "1-3 hours"
+    roles: ["SOC Analyst L2", "Cloud Security Engineer", "FinOps"]
+    tags: [cryptojacking, crypto-mining, resource-hijacking, cloud-abuse]
+    escalation:
+      p2_sla: "30 minutes to SOC Lead"
+      p2_notify: ["Cloud Security Lead", "FinOps (for cost anomaly)"]
+      escalate_to_p1: "If mining is running on production systems or cloud costs exceed $1K/day"
+    metrics:
+      mttd: "< 1 hour (from mining start to detection)"
+      mttc: "< 30 minutes (from detection to process termination + access revocation)"
+      mttr: "< 2 hours (cleanup, patch, and credential rotation)"
+      benchmark: "Average cryptojacking cloud cost: $4,600/incident. Can reach $100K+ if undetected."
+    phases:
+      - name: "Detect"
+        steps:
+          - "Identify cryptojacking indicators:"
+          - "  High CPU/GPU utilization on endpoints or servers (sustained 90%+)"
+          - "  Cloud cost anomaly — unexpected compute charges (EC2, GCE, AKS)"
+          - "  Network connections to mining pools (*pool.*, *xmr.*, *nicehash.*, *f2pool.*)"
+          - "  EDR alert for mining-related process names (xmrig, minerd, cgminer, ethminer)"
+          - "Confirm mining activity:"
+          - "  Linux: `top -bn1 | head -20` + `ps aux | grep -i 'xmr\\|mine\\|crypto'`"
+          - "  Windows: `Get-Process | Sort-Object CPU -Descending | Select -First 10`"
+          - "  Network: `netstat -an | grep ':3333\\|:4444\\|:8333\\|:14444'` (common mining ports)"
+          - "  AWS: Check for unauthorized EC2 instances: `aws ec2 describe-instances --filters 'Name=instance-state-name,Values=running'`"
+        decision_tree:
+          - condition: "Mining on endpoint — user installed intentionally"
+            action: "Policy violation. Remove software, document, escalate to HR/management if policy exists."
+          - condition: "Mining installed via malware/exploit"
+            action: "Treat as full compromise. Mining is the payload but access is the real problem."
+          - condition: "Mining on cloud infrastructure with spawned instances"
+            action: "Immediate termination of unauthorized instances. Rotate ALL cloud credentials. Check billing alerts."
+      - name: "Contain"
+        steps:
+          - "Kill mining processes immediately:"
+          - "  Linux: `kill -9 $(pgrep -f 'xmr\\|mine\\|crypto')`"
+          - "  Windows: `Stop-Process -Name 'xmrig','minerd' -Force`"
+          - "Terminate any unauthorized cloud instances:"
+          - "  AWS: `aws ec2 terminate-instances --instance-ids <id>`"
+          - "  Azure: `az vm delete --resource-group <rg> --name <vm> --yes`"
+          - "Block mining pool domains and IPs at network perimeter"
+          - "Block mining pool domains in DNS (sinkhole or blacklist)"
+          - "Disable the compromised access — API keys, IAM roles, user accounts"
+      - name: "Eradicate"
+        steps:
+          - "Remove mining software and associated files"
+          - "Remove persistence mechanisms (crontabs, systemd services, scheduled tasks)"
+          - "Determine initial access vector — how did the miner get deployed?"
+          - "  Common vectors: exposed Docker API, vulnerable web app, leaked cloud credentials, SSH brute force"
+          - "Patch the vulnerability used for access"
+          - "Rotate all credentials on affected systems — cloud keys, SSH keys, service accounts"
+      - name: "Recover"
+        steps:
+          - "Verify mining processes are gone and CPU usage is normal"
+          - "Review cloud billing for the full impact period — dispute charges if possible"
+          - "Restore any modified configurations (crontab, systemd, etc.) from backup"
+          - "Re-deploy affected containers/instances from clean images"
+          - "Set up cloud billing alerts to catch future anomalies early"
+      - name: "Post-Incident"
+        steps:
+          - "Implement cloud cost anomaly alerts (AWS Budgets, Azure Cost Alerts, GCP Budget Alerts)"
+          - "Block known mining domains at DNS level organization-wide"
+          - "Review cloud IAM — implement least-privilege access and remove unused credentials"
+          - "Scan for exposed services (Docker API, Kubernetes API, Redis) on public IPs"
+          - "Deploy network-level mining detection (Suricata rules for Stratum protocol)"
+    evidence_checklist:
+      - "Mining process details (binary hash, command line, configuration)"
+      - "Network connections to mining pools (IPs, domains)"
+      - "Cloud billing records showing cost impact"
+      - "Timeline: when mining started, when detected, when stopped"
+      - "Initial access evidence (CVE exploited, credential leaked)"
+      - "List of unauthorized cloud resources created"
+
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 13 — WEB APPLICATION ATTACK
+  # ══════════════════════════════════════════════════════════
+  - name: "Web Application Attack Response"
+    description: "Response playbook for attacks against web applications — SQL injection, XSS, RCE, file upload, and other OWASP Top 10 attacks."
+    category: "Web Application"
+    mitre: "T1190 — Exploit Public-Facing Application"
+    severity: "critical"
+    estimated_time: "2-8 hours"
+    roles: ["SOC Analyst L2", "Application Security Engineer", "DevOps", "DBA (if SQL injection)"]
+    tags: [web-attack, sqli, xss, rce, owasp, application-security]
+    escalation:
+      p1_sla: "30 minutes to Application Security Lead"
+      p1_notify: ["Application Security Lead", "DevOps Lead", "Product Owner"]
+      escalate_to_p1: "If RCE confirmed, data exfiltration evident, or active shell on web server"
+      external: ["Web application pen testing firm (if persistent attacker)"]
+    metrics:
+      mttd: "< 15 minutes (from attack to WAF/SIEM alert)"
+      mttc: "< 1 hour (from alert to WAF rule + application patch)"
+      mttr: "< 4 hours (full vulnerability remediation + validation)"
+      benchmark: "Web application attacks account for 26% of all breaches (Verizon DBIR 2025)"
+    phases:
+      - name: "Detect"
+        steps:
+          - "Identify the attack type from WAF/SIEM alerts:"
+          - "  SQL Injection: Look for UNION SELECT, OR 1=1, single quotes in parameters"
+          - "  XSS: Look for <script>, javascript:, onerror= in inputs"
+          - "  RCE: Look for command injection patterns (;, |, &&, backticks) or deserialization payloads"
+          - "  Path Traversal: Look for ../ sequences in URL parameters"
+          - "  File Upload: Check for uploaded files with executable extensions (.php, .jsp, .aspx)"
+          - "Review WAF logs for the attack pattern:"
+          - "  Cloudflare: Security > Events > Filter by action=challenge/block"
+          - "  AWS WAF: CloudWatch Logs > Filter matched rules"
+          - "  ModSecurity: `grep 'ModSecurity' /var/log/apache2/error.log | tail -50`"
+          - "Determine if the attack was successful:"
+          - "  Check application logs for errors that indicate successful exploitation"
+          - "  Check for unexpected data in database (SQLi success indicator)"
+          - "  Check for webshells or new files on the web server"
+        decision_tree:
+          - condition: "Attack was blocked by WAF — no evidence of success"
+            action: "Monitor and tune WAF rules. Patch the vulnerability in the next sprint."
+          - condition: "Attack bypassed WAF or there's evidence of successful exploitation"
+            action: "IMMEDIATE: Block attacker IP, patch vulnerability, check for data access."
+          - condition: "Webshell or reverse shell found on server"
+            action: "CRITICAL: Isolate web server. Assume full server compromise. Check for lateral movement."
+      - name: "Contain"
+        steps:
+          - "Block the attacker's IP at WAF and firewall level"
+          - "If attack is automated/distributed — implement rate limiting and CAPTCHA"
+          - "Deploy emergency WAF rule to block the specific attack pattern:"
+          - "  Cloudflare: Security > WAF > Custom rule > Block requests matching pattern"
+          - "  ModSecurity: Add deny rule for the specific payload signature"
+          - "If webshell found — isolate the web server and pre-serve evidence"
+          - "If SQL injection — revoke the application's database user and create new credentials"
+          - "Disable the vulnerable endpoint if possible while patching"
+      - name: "Eradicate"
+        steps:
+          - "Fix the vulnerability in the application code:"
+          - "  SQLi: Use parameterized queries / prepared statements"
+          - "  XSS: Implement output encoding and Content-Security-Policy headers"
+          - "  RCE: Sanitize all user input, disable dangerous functions, update frameworks"
+          - "  File Upload: Validate file types, store outside web root, rename uploaded files"
+          - "Remove any webshells, backdoors, or modified files on the web server"
+          - "If database was accessed — assess data exposure and rotate credentials"
+          - "Deploy patched application version"
+          - "Run application security scan to verify fix (DAST/SAST)"
+      - name: "Recover"
+        steps:
+          - "Verify the patched application is functioning correctly"
+          - "Restore any modified data from backup (if SQLi modified records)"
+          - "Re-enable the endpoint with WAF rules still in place"
+          - "Monitor for re-exploitation attempts for 7 days"
+          - "Run full vulnerability scan against the application"
+      - name: "Post-Incident"
+        steps:
+          - "Add the vulnerability type to the secure coding training curriculum"
+          - "Implement mandatory code review for all input-handling code"
+          - "Deploy DAST scanning in CI/CD pipeline to catch similar issues"
+          - "Review WAF rules — could the attack have been caught earlier?"
+          - "If data breach occurred — follow Data Breach Response playbook for notifications"
+    evidence_checklist:
+      - "WAF logs showing attack requests (full HTTP requests)"
+      - "Application server access logs for the attack period"
+      - "Database query logs (if SQL injection)"
+      - "Webshell or malicious file samples found on server"
+      - "Evidence of data access or exfiltration"
+      - "Patched code diff showing the vulnerability fix"
+
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 14 — ZERO-DAY / VULNERABILITY EXPLOITATION
+  # ══════════════════════════════════════════════════════════
+  - name: "Zero-Day / Vulnerability Exploitation"
+    description: "Response playbook for active exploitation of unpatched vulnerabilities — emergency mitigation when no vendor patch is available."
+    category: "Zero-Day"
+    mitre: "T1190 — Exploit Public-Facing Application"
+    severity: "critical"
+    estimated_time: "2-8 hours (initial mitigation), days to weeks (full remediation)"
+    roles: ["Incident Commander", "SOC Analyst L3", "Vulnerability Management", "IT Ops", "Network Team"]
+    tags: [zero-day, cve, unpatched, exploit, vulnerability]
+    escalation:
+      p1_sla: "Immediate — active zero-day exploitation is always P1"
+      p1_notify: ["CISO", "VP Engineering", "Network Team Lead"]
+      war_room: "#inc-zeroday-CVE-YYYY-XXXXX"
+      external: ["CISA", "Vendor security team", "ISAC", "External IR retainer"]
+    metrics:
+      mttd: "< 4 hours (from public disclosure to internal vulnerability assessment)"
+      mttc: "< 8 hours (from assessment to workaround deployment)"
+      mttr: "Vendor-dependent — track patch availability closely"
+      benchmark: "Average time from CVE disclosure to first exploit: 15 days (Mandiant 2025). Zero-days exploited before disclosure."
+    phases:
+      - name: "Detect"
+        steps:
+          - "Monitor threat intelligence feeds for zero-day announcements:"
+          - "  CISA KEV (cisa.gov/known-exploited-vulnerabilities) — updated daily"
+          - "  Vendor security advisories (Microsoft MSRC, Apache, Cisco PSIRT, etc.)"
+          - "  Twitter/X: @cikiLabs, @GossiTheDog, @kevbeaumont, @campuscodi"
+          - "Determine if the vulnerable component exists in your environment:"
+          - "  Check CMDB/asset inventory for the specific software + version"
+          - "  Run vulnerability scan targeting the specific CVE"
+          - "  Check for the component in container images and deployments"
+          - "Search for IOCs associated with known exploitation:"
+          - "  Apply vendor-provided detection signatures"
+          - "  Search logs for known exploitation patterns"
+          - "Assess exposure — is the vulnerable service internet-facing?"
+        decision_tree:
+          - condition: "Vulnerable component NOT in environment"
+            action: "Document, block proactively if possible, monitor for scope expansion."
+          - condition: "Vulnerable component exists but no evidence of exploitation"
+            action: "Implement workaround/mitigation immediately. Begin patching when available."
+          - condition: "Evidence of active exploitation found"
+            action: "FULL INCIDENT RESPONSE. Isolate affected systems. Treat as confirmed breach."
+      - name: "Contain"
+        steps:
+          - "Implement vendor-recommended workaround immediately:"
+          - "  Disable vulnerable feature/protocol"
+          - "  Apply configuration change to mitigate exploitation"
+          - "  Deploy WAF rule to block exploitation patterns"
+          - "If no workaround available — isolate or disable the vulnerable system:"
+          - "  Remove internet exposure (move behind VPN, restrict to internal only)"
+          - "  Implement network ACL to limit access to the service"
+          - "  If critical system — implement compensating controls (IPS signature, WAF, proxy)"
+          - "Deploy IDS/IPS signatures for the specific exploit"
+          - "If exploitation confirmed — isolate compromised systems and hunt for lateral movement"
+      - name: "Eradicate"
+        steps:
+          - "Apply vendor patch as soon as available"
+          - "If no patch yet — maintain workaround and monitor"
+          - "Verify the patch resolves the vulnerability (re-scan)"
+          - "If exploitation occurred — full investigation of compromised systems"
+          - "Hunt for any persistence established during exploitation window"
+      - name: "Recover"
+        steps:
+          - "Restore internet-facing exposure only after patch is confirmed applied"
+          - "Remove temporary workarounds that may impact functionality"
+          - "Continue monitoring for exploitation attempts for 30 days"
+          - "Verify all instances of the vulnerable component are patched (scan again)"
+      - name: "Post-Incident"
+        steps:
+          - "Review patch management process — why wasn't this caught earlier?"
+          - "Implement automated vulnerability scanning for internet-facing assets"
+          - "Subscribe to vendor security advisory feeds"
+          - "Review network segmentation — could exploitation have been limited?"
+          - "Update asset inventory with accurate software versions"
+    evidence_checklist:
+      - "CVE details and vendor advisory"
+      - "List of all affected systems in the environment"
+      - "Vulnerability scan results (before and after patching)"
+      - "Log evidence of exploitation attempts"
+      - "Workaround deployment confirmation (systems and timeline)"
+      - "Patch deployment confirmation"
+
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 15 — STOLEN / LOST DEVICE
+  # ══════════════════════════════════════════════════════════
+  - name: "Stolen / Lost Device Response"
+    description: "Response playbook for stolen or lost corporate devices — remote wipe, session revocation, credential rotation, and data exposure assessment."
+    category: "Lost Device"
+    mitre: "T1078 — Valid Accounts"
+    severity: "high"
+    estimated_time: "30-90 minutes"
+    roles: ["SOC Analyst L1", "IT Help Desk", "MDM Admin"]
+    tags: [lost-device, stolen-device, mobile, laptop, remote-wipe]
+    escalation:
+      p2_sla: "30 minutes to IT Security"
+      p2_notify: ["IT Security", "MDM Admin", "User's Manager"]
+      escalate_to_p1: "If device is unencrypted, contains sensitive data, or belongs to privileged user"
+    metrics:
+      mttc: "< 30 minutes (from report to remote wipe command issued)"
+      mttr: "< 4 hours (new device provisioned and user operational)"
+      benchmark: "68% of data breaches involve a human element including device loss (Verizon DBIR 2025)"
+    phases:
+      - name: "Detect"
+        steps:
+          - "User reports device lost or stolen — gather details:"
+          - "  When was it last seen? Where? Was it locked? Was it encrypted?"
+          - "  What type of device (laptop, phone, tablet)?"
+          - "  Does it have corporate data (email, files, code repos)?"
+          - "  Was the user logged into any sensitive applications?"
+          - "Check device status in MDM:"
+          - "  Intune: Devices > All devices > Search > Check last check-in, compliance state"
+          - "  Jamf: Computers/Devices > Search > Last inventory update"
+          - "Verify disk encryption is active:"
+          - "  Windows: BitLocker status in Intune"
+          - "  Mac: FileVault status in Jamf"
+          - "  Mobile: Device encryption in MDM compliance report"
+        decision_tree:
+          - condition: "Device is encrypted and was locked"
+            action: "Lower risk. Proceed with remote wipe and credential rotation."
+          - condition: "Device is unencrypted or unlocked"
+            action: "HIGH RISK. Immediate remote wipe. Assume data is compromised. Full credential rotation."
+          - condition: "Device belongs to admin/executive with sensitive access"
+            action: "Escalate to P1. Full credential rotation, session revocation, and access audit."
+      - name: "Contain"
+        steps:
+          - "Issue remote wipe immediately:"
+          - "  Intune: Device > Wipe (Full wipe, not retire)"
+          - "  Jamf: Device > Management > Send MDM command > Erase Device"
+          - "  Google: Admin > Devices > Wipe device"
+          - "  Apple: Find My > Erase device (if not MDM managed)"
+          - "Revoke all active sessions for the user:"
+          - "  Azure AD: `Revoke-AzureADUserAllRefreshToken -ObjectId <user>`"
+          - "  Google: Admin > Users > Security > Sign out from all sessions"
+          - "Disable the device in Azure AD / MDM:"
+          - "  Azure AD: Devices > Search > Disable device"
+          - "Reset the user's password and require MFA re-enrollment"
+          - "Revoke any certificate-based authentication from the device"
+      - name: "Eradicate"
+        steps:
+          - "Confirm remote wipe was executed (check MDM for wipe confirmation)"
+          - "If wipe cannot be confirmed — treat all data on device as compromised"
+          - "Rotate any credentials that were cached or saved on the device:"
+          - "  Email password, VPN credentials, Wi-Fi certificates"
+          - "  SSH keys stored on the device"
+          - "  Application-specific API tokens or service passwords"
+          - "  Code signing certificates if developer device"
+          - "Report to local police if stolen (may be required for insurance)"
+      - name: "Recover"
+        steps:
+          - "Provision replacement device from clean corporate image"
+          - "Enroll new device in MDM and verify compliance"
+          - "Restore user data from cloud backup (OneDrive, iCloud, Google Drive)"
+          - "Verify user can access all required applications with new credentials"
+      - name: "Post-Incident"
+        steps:
+          - "Verify encryption is enforced on all devices via MDM compliance policy"
+          - "Review auto-lock settings — ensure devices lock after 5 minutes of inactivity"
+          - "Consider implementing geofencing alerts for managed devices"
+          - "File insurance claim if applicable"
+          - "Update asset inventory to reflect device status as lost/stolen"
+    evidence_checklist:
+      - "User report: when, where, circumstances of loss"
+      - "MDM device status before and after wipe command"
+      - "Remote wipe confirmation (if received)"
+      - "Encryption status of the device"
+      - "Last known location (if available from MDM/Find My)"
+      - "Police report number (if stolen)"
+
+  # ══════════════════════════════════════════════════════════
+  # PLAYBOOK 16 — API SECURITY BREACH
+  # ══════════════════════════════════════════════════════════
+  - name: "API Security Breach Response"
+    description: "Response playbook for compromised API keys, unauthorized API access, or API abuse — rate limiting, key rotation, and access audit."
+    category: "API Security"
+    mitre: "T1106 — Native API"
+    severity: "critical"
+    estimated_time: "1-4 hours"
+    roles: ["SOC Analyst L2", "API/Platform Engineer", "DevOps"]
+    tags: [api-key, api-abuse, rate-limiting, key-rotation, oauth]
+    escalation:
+      p1_sla: "30 minutes to Platform Security Lead"
+      p1_notify: ["Platform Security Lead", "API Team Lead", "DevOps"]
+      escalate_to_p1: "If API key provides write access to production data or customer-facing systems"
+    metrics:
+      mttd: "< 30 minutes (from anomalous API usage to detection)"
+      mttc: "< 15 minutes (from detection to key revocation)"
+      mttr: "< 2 hours (new key generation, rotation, and consumer notification)"
+      benchmark: "API attacks increased 681% in 2024-2025 (Salt Security)"
+    phases:
+      - name: "Detect"
+        steps:
+          - "Identify API compromise indicators:"
+          - "  Sudden spike in API request volume from a single key"
+          - "  API requests from unusual IP addresses or countries"
+          - "  API key found in public repository (GitHub, GitLab, Pastebin)"
+          - "  Error rate spike (testing stolen key against various endpoints)"
+          - "  Unusual data access patterns (bulk export, sequential enumeration)"
+          - "Check API gateway/proxy logs:"
+          - "  Request volume, error rates, source IPs, accessed endpoints"
+          - "  OWASP API Security: check for BOLA, Broken Authentication, BFLA patterns"
+          - "Determine scope of exposed key's permissions:"
+          - "  What endpoints can it access? Read-only or read-write?"
+          - "  What data can it reach? PII, financial data, internal services?"
+        decision_tree:
+          - condition: "Key found in public repo but no evidence of abuse"
+            action: "Revoke key immediately. Create new key. Check logs for any usage from unknown IPs."
+          - condition: "Key is being actively abused"
+            action: "Revoke key immediately. Block abusing IPs. Audit all actions taken with the key."
+          - condition: "Customer data accessed via compromised API"
+            action: "ESCALATE to P1. Invoke Data Breach Response playbook for notification requirements."
+      - name: "Contain"
+        steps:
+          - "Revoke the compromised API key immediately"
+          - "Block the attacker's IP addresses at API gateway and WAF"
+          - "If OAuth token — revoke the token and associated refresh tokens"
+          - "Implement emergency rate limiting on affected endpoints"
+          - "If key was in code repository — scan git history for other secrets:"
+          - "  `trufflehog git file://. --only-verified`"
+          - "  `gitleaks detect -v`"
+      - name: "Eradicate"
+        steps:
+          - "Generate new API key with minimum required permissions"
+          - "If key was in code — remove from repository AND git history:"
+          - "  `git filter-branch` or BFG Repo-Cleaner to purge from history"
+          - "  Force-push to remote (coordinate with team)"
+          - "Move secrets to a secrets manager (HashiCorp Vault, AWS Secrets Manager, Azure Key Vault)"
+          - "Implement pre-commit hooks to prevent secrets in code (`pre-commit` + `detect-secrets`)"
+          - "Review API permissions — apply least privilege to all API keys"
+      - name: "Recover"
+        steps:
+          - "Deploy new API key to all consuming applications"
+          - "Verify all integrations work with the new key"
+          - "Notify API consumers about the key rotation"
+          - "Monitor for continued abuse attempts (IP blocks may not catch distributed attacks)"
+      - name: "Post-Incident"
+        steps:
+          - "Implement automated secret scanning in CI/CD (GitHub Advanced Security, GitLab Secret Detection)"
+          - "Implement API key rotation policy (90-day maximum lifetime)"
+          - "Deploy API behavioral anomaly detection"
+          - "Review API authentication — consider moving from API keys to OAuth 2.0 with short-lived tokens"
+          - "Implement IP allowlisting for sensitive API endpoints"
+    evidence_checklist:
+      - "Compromised API key details (permissions, creation date, last used)"
+      - "API gateway logs showing unauthorized access patterns"
+      - "Source of key exposure (public repo, Pastebin, etc.)"
+      - "List of all endpoints and data accessed with the key"
+      - "IP addresses involved in abuse"
+      - "Git history showing when the key was committed"

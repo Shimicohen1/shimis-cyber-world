@@ -1,11 +1,16 @@
 # IOC Lookup Sources — grouped by indicator type
-# Each source has a name, base URL template, and supported types
+# Each source has name, URL template, supported types, and per-type descriptions
 
 sources:
   # ── IP Address ──
   - name: VirusTotal
     icon: "🦠"
     types: [ip, domain, hash, url]
+    descs:
+      ip: "Community reputation score, passive DNS, related malware samples"
+      domain: "DNS records, WHOIS, subdomains, detection ratio across 90+ engines"
+      hash: "Antivirus scan results from 70+ engines, behavioral sandbox analysis"
+      url: "URL scanning, redirect chains, embedded content analysis"
     urls:
       ip: "https://www.virustotal.com/gui/ip-address/{value}"
       domain: "https://www.virustotal.com/gui/domain/{value}"
@@ -15,30 +20,40 @@ sources:
   - name: AbuseIPDB
     icon: "🚫"
     types: [ip]
+    descs:
+      ip: "Abuse reports — who reported this IP, attack categories, confidence score"
     urls:
       ip: "https://www.abuseipdb.com/check/{value}"
 
   - name: Shodan
     icon: "🔍"
     types: [ip]
+    descs:
+      ip: "Open ports, running services, banners, known vulnerabilities"
     urls:
       ip: "https://www.shodan.io/host/{value}"
 
   - name: GreyNoise
     icon: "📡"
     types: [ip]
+    descs:
+      ip: "Internet-wide scan data — is this a known scanner, bot, or benign crawler?"
     urls:
       ip: "https://viz.greynoise.io/ip/{value}"
 
   - name: IPVoid
     icon: "🌐"
     types: [ip]
+    descs:
+      ip: "Multi-blacklist check — scans 30+ IP reputation databases at once"
     urls:
       ip: "https://www.ipvoid.com/ip-blacklist-check/"
 
   - name: Censys
     icon: "🔎"
     types: [ip]
+    descs:
+      ip: "Host exposure — certificates, services, cloud provider, geolocation"
     urls:
       ip: "https://search.censys.io/hosts/{value}"
 
@@ -46,6 +61,9 @@ sources:
   - name: URLScan
     icon: "📸"
     types: [domain, url]
+    descs:
+      domain: "Visual screenshot, DOM analysis, outbound requests, HTTP transactions"
+      url: "Full page render, redirect chains, JavaScript behavior, linked resources"
     urls:
       domain: "https://urlscan.io/search/#domain:{value}"
       url: "https://urlscan.io/search/#{value}"
@@ -53,18 +71,25 @@ sources:
   - name: SecurityTrails
     icon: "🛤️"
     types: [domain]
+    descs:
+      domain: "Historical DNS records, subdomains, associated IPs, hosting history"
     urls:
       domain: "https://securitytrails.com/domain/{value}"
 
   - name: DNSDumpster
     icon: "🗺️"
     types: [domain]
+    descs:
+      domain: "DNS recon — map subdomains, MX records, TXT records, hosting info"
     urls:
       domain: "https://dnsdumpster.com/"
 
   - name: Whois
     icon: "📋"
     types: [domain, ip]
+    descs:
+      domain: "Registration details — registrar, creation date, name servers, owner info"
+      ip: "IP allocation — owner organization, ASN, network range, abuse contact"
     urls:
       domain: "https://who.is/whois/{value}"
       ip: "https://who.is/whois-ip/ip-address/{value}"
@@ -73,18 +98,27 @@ sources:
   - name: MalwareBazaar
     icon: "🧬"
     types: [hash]
+    descs:
+      hash: "Malware sample database — family classification, tags, first/last seen dates"
     urls:
       hash: "https://bazaar.abuse.ch/browse.php?search={value}"
 
   - name: Hybrid Analysis
     icon: "🔬"
     types: [hash]
+    descs:
+      hash: "Free sandbox detonation — process tree, network traffic, dropped files"
     urls:
       hash: "https://www.hybrid-analysis.com/search?query={value}"
 
   - name: AlienVault OTX
     icon: "👽"
     types: [ip, domain, hash, url]
+    descs:
+      ip: "Community threat pulses, related indicators, geographic data"
+      domain: "Threat pulses, passive DNS, URL list, associated malware"
+      hash: "Malware analysis, related indicators, threat pulse associations"
+      url: "URL reputation, associated domains, community threat intelligence"
     urls:
       ip: "https://otx.alienvault.com/indicator/ip/{value}"
       domain: "https://otx.alienvault.com/indicator/domain/{value}"
@@ -94,6 +128,10 @@ sources:
   - name: ThreatFox
     icon: "🦊"
     types: [ip, domain, hash]
+    descs:
+      ip: "IOC database — linked malware families, threat actors, first seen, confidence"
+      domain: "IOC database — associated malware, C2 infrastructure, reporter notes"
+      hash: "IOC database — malware family, threat tags, reporter attribution"
     urls:
       ip: "https://threatfox.abuse.ch/browse.php?search=ioc:{value}"
       domain: "https://threatfox.abuse.ch/browse.php?search=ioc:{value}"
@@ -103,6 +141,9 @@ sources:
   - name: Google Safe Browsing
     icon: "🛡️"
     types: [url, domain]
+    descs:
+      url: "Google's phishing & malware verdict — blocked in Chrome, Firefox, Safari"
+      domain: "Domain safety status — phishing, malware, unwanted software flags"
     urls:
       url: "https://transparencyreport.google.com/safe-browsing/search?url={value}"
       domain: "https://transparencyreport.google.com/safe-browsing/search?url={value}"
@@ -110,6 +151,8 @@ sources:
   - name: PhishTank
     icon: "🎣"
     types: [url]
+    descs:
+      url: "Community-verified phishing database — check if URL is a known phish"
     urls:
       url: "https://phishtank.org/phish_search.php?verified=u&active=y"
 
@@ -117,22 +160,15 @@ sources:
   - name: Have I Been Pwned
     icon: "💀"
     types: [email]
+    descs:
+      email: "Data breach exposure — which breaches included this email, what data leaked"
     urls:
       email: "https://haveibeenpwned.com/account/{value}"
 
   - name: EmailRep
     icon: "📧"
     types: [email]
+    descs:
+      email: "Email reputation — domain age, social profiles, deliverability, risk score"
     urls:
       email: "https://emailrep.io/{value}"
-
-# Type detection patterns (for reference — actual regex in JS)
-type_patterns:
-  ipv4: '^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$'
-  ipv6: '^[0-9a-fA-F:]{3,39}$'
-  md5: '^[a-fA-F0-9]{32}$'
-  sha1: '^[a-fA-F0-9]{40}$'
-  sha256: '^[a-fA-F0-9]{64}$'
-  domain: '^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.[a-zA-Z]{2,}$'
-  url: '^https?://'
-  email: '^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$'
