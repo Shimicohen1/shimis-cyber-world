@@ -133,4 +133,4 @@ window.IOC_SOURCES = [
 {% endfor %}
 ];
 </script>
-<script src="/assets/js/ioc-scanner.js?v=5" defer></script>
+<script src="/assets/js/ioc-scanner.js?v=6" defer></script>

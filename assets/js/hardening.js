@@ -11,6 +11,7 @@
   var premiumCache = {};
 
   function fetchPremiumData(platform) {
+    if (!/^[a-z0-9-]+$/.test(platform)) return Promise.resolve({});
     if (premiumCache[platform]) return Promise.resolve(premiumCache[platform]);
     return fetch('/assets/data/premium-' + platform + '.json')
       .then(function (r) { return r.ok ? r.json() : {}; })
@@ -49,6 +50,12 @@
     var d = document.createElement('div');
     d.textContent = s;
     return d.innerHTML;
+  }
+
+  function escapeAttr(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
   /* ── Build premium section HTML ── */
@@ -183,11 +190,11 @@
     var html = '';
     items.forEach(function (item) {
       var isChecked = checked[item.id] ? 'checked' : '';
-      html += '<div class="harden-item' + (checked[item.id] ? ' harden-item--done' : '') + (item.hasPremium ? ' harden-item--has-premium' : '') + '" data-id="' + item.id + '" data-cat="' + item.category + '" data-sev="' + item.severity + '">';
+      html += '<div class="harden-item' + (checked[item.id] ? ' harden-item--done' : '') + (item.hasPremium ? ' harden-item--has-premium' : '') + '" data-id="' + escapeAttr(item.id) + '" data-cat="' + escapeAttr(item.category) + '" data-sev="' + escapeAttr(item.severity) + '">';
       html += '  <div class="harden-item__header">';
-      html += '    <label class="harden-item__check"><input type="checkbox" ' + isChecked + ' data-id="' + item.id + '"><span class="harden-item__title">' + esc(item.title) + '</span></label>';
+      html += '    <label class="harden-item__check"><input type="checkbox" ' + isChecked + ' data-id="' + escapeAttr(item.id) + '"><span class="harden-item__title">' + esc(item.title) + '</span></label>';
       html += '    <div class="harden-item__badges">';
-      html += '      <span class="badge badge--' + sevBadge(item.severity) + '">' + item.severity + '</span>';
+      html += '      <span class="badge badge--' + sevBadge(item.severity) + '">' + esc(item.severity) + '</span>';
       html += '      <span class="tag">' + esc(item.category) + '</span>';
       /* Show platform badge in global category mode */
       if (globalCategoryMode) {
@@ -451,7 +458,7 @@
       var toggleBtn = e.target.closest('.harden-premium__toggle');
       if (toggleBtn) {
         var tid = toggleBtn.dataset.id;
-        var body = document.querySelector('[data-premium-id="' + tid + '"]');
+        var body = document.querySelector('[data-premium-id="' + CSS.escape(tid) + '"]');
         if (!body) return;
         var isOpen = body.style.display !== 'none';
         if (isOpen) {
@@ -501,7 +508,7 @@
       var relTag = e.target.closest('.harden-premium__related-tag');
       if (relTag) {
         var targetId = relTag.dataset.goto;
-        var targetEl = document.querySelector('[data-id="' + targetId + '"]');
+        var targetEl = document.querySelector('[data-id="' + CSS.escape(targetId) + '"]');
         if (targetEl) {
           targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
           targetEl.classList.add('harden-item--highlight');
