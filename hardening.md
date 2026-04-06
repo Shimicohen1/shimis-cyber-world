@@ -116,7 +116,7 @@ permalink: /hardening/
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=5">
 
 <!-- Auth banner (hidden by default, shown by JS when not premium) -->
 <div id="hardenAuthBanner" class="harden-auth-banner" style="display:none;">
