@@ -116,5 +116,5 @@ permalink: /detections/
   </div>
 </section>
 
-<link rel="stylesheet" href="{{ '/assets/css/premium-tools.css?v=2' | relative_url }}">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=2">
 <script src="{{ '/assets/js/detections.js' | relative_url }}" defer></script>
