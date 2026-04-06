@@ -1,12 +1,12 @@
 ---
 layout: page
-title: Detection Library
+title: Detection Vault
 permalink: /detections/
 ---
 
 <div class="page-head">
   <div class="label label--cyan page-head__label">SCW TOOLS</div>
-  <h1 class="page-head__title">Detection Library</h1>
+  <h1 class="page-head__title">Detection Vault</h1>
   <p class="page-head__desc">Production-ready detection rules for real SOC environments. KQL, Sigma, and Splunk — mapped to MITRE ATT&CK. Copy, paste, detect.</p>
 </div>
 
@@ -14,7 +14,7 @@ permalink: /detections/
   <p>Every rule in this library is <strong>battle-tested</strong>. Written by security operators, validated in production environments, and mapped to MITRE ATT&CK techniques. All rules are <strong>free and open</strong> — use them in your SIEM today.</p>
   <div class="cs-intro__actions">
     <a href="#rules" class="btn btn--primary">Browse Rules</a>
-    <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--ghost">Incident Playbooks →</a>
+    <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--ghost">WarRoom →</a>
   </div>
 </section>
 
@@ -110,7 +110,7 @@ permalink: /detections/
     <h2 class="cs-cta__title">New rules ship regularly.</h2>
     <p class="cs-cta__text">{{ site.data.detections.rules | size }} production-ready queries and growing. Subscribe to get notified when new detection rules drop.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--primary">Incident Playbooks →</a>
+      <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--primary">WarRoom →</a>
       <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to Feed</a>
     </div>
   </div>

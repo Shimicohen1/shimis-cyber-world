@@ -1,4 +1,4 @@
-/* SCW Detection Library — search, filter, copy */
+/* SCW Detection Vault — search, filter, copy */
 (function () {
   'use strict';
 

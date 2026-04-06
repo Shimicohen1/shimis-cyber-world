@@ -1,4 +1,4 @@
-/* IOC Scanner v2 — client-side indicator parser + threat intel link generator */
+/* ThreatLens — client-side indicator parser + threat intel link generator */
 (function () {
   'use strict';
 

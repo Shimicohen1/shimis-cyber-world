@@ -1,12 +1,12 @@
 ---
 layout: page
-title: Incident Playbooks
+title: WarRoom
 permalink: /playbooks/
 ---
 
 <div class="page-head">
   <div class="label label--cyan page-head__label">SCW TOOLS</div>
-  <h1 class="page-head__title">Incident Playbooks</h1>
+  <h1 class="page-head__title">WarRoom</h1>
   <p class="page-head__desc">Operational runbooks for every major attack type. Real tool commands, decision trees, escalation procedures, and communication templates — ready to execute when it matters.</p>
 </div>
 
@@ -15,7 +15,7 @@ permalink: /playbooks/
   <p>All playbooks are <strong>free and open</strong>. Use them in your IR process today.</p>
   <div class="cs-intro__actions">
     <a href="#playbooks" class="btn btn--primary">Browse Runbooks</a>
-    <a href="{{ '/detections/' | relative_url }}" class="btn btn--ghost">Detection Library →</a>
+    <a href="{{ '/detections/' | relative_url }}" class="btn btn--ghost">Detection Vault →</a>
   </div>
 </section>
 
@@ -250,7 +250,7 @@ permalink: /playbooks/
     <h2 class="cs-cta__title">New runbooks ship regularly.</h2>
     <p class="cs-cta__text">{{ site.data.playbooks.playbooks | size }} operational runbooks and growing. Built for real incident response teams.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/detections/' | relative_url }}" class="btn btn--primary">Detection Library →</a>
+      <a href="{{ '/detections/' | relative_url }}" class="btn btn--primary">Detection Vault →</a>
       <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to Feed</a>
     </div>
   </div>

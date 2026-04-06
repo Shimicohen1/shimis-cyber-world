@@ -19,7 +19,7 @@ permalink: /hardening/
   </div>
   <div class="cs-intro__actions">
     <a href="#generator" class="btn btn--primary">Generate Checklist</a>
-    <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--ghost">IOC Scanner →</a>
+    <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--ghost">ThreatLens →</a>
   </div>
 </section>
 
@@ -110,7 +110,7 @@ permalink: /hardening/
     <h2 class="cs-cta__title">Harden. Verify. Repeat.</h2>
     <p class="cs-cta__text">These checklists are aligned to CIS Benchmarks and real-world hardening procedures. New platforms and items ship regularly.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/detections/' | relative_url }}" class="btn btn--primary">Detection Library →</a>
+      <a href="{{ '/detections/' | relative_url }}" class="btn btn--primary">Detection Vault →</a>
       <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">Explore SCW Elite</a>
     </div>
   </div>

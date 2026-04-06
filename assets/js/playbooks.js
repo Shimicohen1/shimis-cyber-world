@@ -1,4 +1,4 @@
-/* SCW Incident Playbooks — search, filter, accordion, copy */
+/* SCW WarRoom — search, filter, accordion, copy */
 (function () {
   'use strict';
 
