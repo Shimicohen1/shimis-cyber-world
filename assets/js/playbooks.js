@@ -64,11 +64,9 @@
 
     if (isOpen) {
       section.classList.remove('open');
-      content.hidden = true;
       toggle.setAttribute('aria-expanded', 'false');
     } else {
       section.classList.add('open');
-      content.hidden = false;
       toggle.setAttribute('aria-expanded', 'true');
     }
   });
