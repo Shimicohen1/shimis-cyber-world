@@ -256,5 +256,5 @@ permalink: /playbooks/
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=2">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=3">
 <script src="{{ '/assets/js/playbooks.js' | relative_url }}" defer></script>

@@ -153,12 +153,14 @@ categories:
         status: Coming Soon
         button: Request Access
       - title: "IOC Scanner"
-        description: "Bulk indicator-of-compromise lookup across multiple threat intel feeds."
+        description: "Bulk indicator-of-compromise lookup across 15+ threat intel platforms. Auto-detects IPs, domains, hashes, URLs, emails."
+        url: "/ioc-scanner/"
         tags: [threat-intel, automation]
-        status: Coming Soon
-        button: Request Access
+        status: Live
+        button: Launch Tool
       - title: "Hardening Checklist Generator"
-        description: "Auto-generate security hardening checklists for Linux, Windows, and cloud."
+        description: "CIS-aligned security hardening checklists for Linux, Windows, AWS, Azure, and GCP with real commands."
+        url: "/hardening/"
         tags: [defense, compliance]
-        status: Beta
-        button: Request Access
+        status: Live
+        button: Launch Tool
