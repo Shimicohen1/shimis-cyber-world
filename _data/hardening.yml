@@ -17,27 +17,28 @@ platforms:
     name: Google Cloud
     icon: "🌐"
 
-# ── M365 PLATFORMS (uncomment to activate) ──
-#  - id: m365-entra
-#    name: Microsoft Entra ID
-#    icon: "🔷"
-#  - id: m365-defender
-#    name: Defender / XDR
-#    icon: "🛡️"
-#  - id: m365-intune
-#    name: Microsoft Intune
-#    icon: "📱"
-#  - id: m365-purview
-#    name: Microsoft Purview
-#    icon: "🔒"
-#  - id: m365-cloud
-#    name: Defender for Cloud
-#    icon: "☁️"
-#  - id: m365-collab
-#    name: Exchange / SharePoint / Teams
-#    icon: "📧"
-#  - id: m365-power
-#    name: Power Platform
+# ── M365 PLATFORMS ──
+  - id: m365-entra
+    name: Microsoft Entra ID
+    icon: "🔷"
+  - id: m365-defender
+    name: Defender / XDR
+    icon: "🛡️"
+  - id: m365-intune
+    name: Microsoft Intune
+    icon: "📱"
+  - id: m365-purview
+    name: Microsoft Purview
+    icon: "🔒"
+  - id: m365-cloud
+    name: Defender for Cloud
+    icon: "☁️"
+  - id: m365-collab
+    name: Exchange / SharePoint / Teams
+    icon: "📧"
+  - id: m365-power
+    name: Power Platform
+    icon: "⚡"
 #    icon: "⚡"
 
 categories:
