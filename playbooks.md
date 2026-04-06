@@ -95,7 +95,7 @@ permalink: /playbooks/
           <span class="rb-section__name">Escalation Matrix</span>
           <span class="rb-section__arrow">▸</span>
         </button>
-        <div class="rb-section__content" hidden>
+        <div class="rb-section__content">
           <div class="rb-kv-grid">
             {% if pb.escalation.p1_sla %}<div class="rb-kv"><span class="rb-kv__key">P1 SLA</span><span class="rb-kv__val">{{ pb.escalation.p1_sla }}</span></div>{% endif %}
             {% if pb.escalation.p2_sla %}<div class="rb-kv"><span class="rb-kv__key">P2 SLA</span><span class="rb-kv__val">{{ pb.escalation.p2_sla }}</span></div>{% endif %}
@@ -126,7 +126,7 @@ permalink: /playbooks/
           <span class="rb-section__name">Response Metrics & SLAs</span>
           <span class="rb-section__arrow">▸</span>
         </button>
-        <div class="rb-section__content" hidden>
+        <div class="rb-section__content">
           <div class="rb-kv-grid">
             {% if pb.metrics.mttd %}<div class="rb-kv"><span class="rb-kv__key">MTTD (Mean Time to Detect)</span><span class="rb-kv__val">{{ pb.metrics.mttd }}</span></div>{% endif %}
             {% if pb.metrics.mttc %}<div class="rb-kv"><span class="rb-kv__key">MTTC (Mean Time to Contain)</span><span class="rb-kv__val">{{ pb.metrics.mttc }}</span></div>{% endif %}
@@ -147,7 +147,7 @@ permalink: /playbooks/
           <span class="rb-section__count">{{ phase.steps | size }} steps</span>
           <span class="rb-section__arrow">▸</span>
         </button>
-        <div class="rb-section__content" hidden>
+        <div class="rb-section__content">
           <div class="rb-steps">
             {% for step in phase.steps %}
             {% assign trimmed = step | strip %}
@@ -183,7 +183,7 @@ permalink: /playbooks/
           <span class="rb-section__count">{{ pb.evidence_checklist | size }} items</span>
           <span class="rb-section__arrow">▸</span>
         </button>
-        <div class="rb-section__content" hidden>
+        <div class="rb-section__content">
           <ul class="rb-checklist">
             {% for item in pb.evidence_checklist %}
             <li><label><input type="checkbox"> {{ item }}</label></li>
@@ -201,7 +201,7 @@ permalink: /playbooks/
           <span class="rb-section__name">Communication Templates</span>
           <span class="rb-section__arrow">▸</span>
         </button>
-        <div class="rb-section__content" hidden>
+        <div class="rb-section__content">
           {% if pb.comms_templates.internal %}
           <div class="rb-comms__block">
             <p class="rb-label">Internal Notification</p>
