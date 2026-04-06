@@ -22,7 +22,7 @@ severity_levels:
   - low
 
 rules:
-  # ── FREE RULES (premium: false) ──
+  # ── DETECTION RULES ──
   - name: "Brute Force – Failed Logons Spike"
     description: "Detects more than 10 failed sign-in attempts from a single IP within 5 minutes. Classic brute force indicator."
     category: "Brute Force"
@@ -123,7 +123,7 @@ rules:
     tags: [impossible-travel, identity, azure-ad]
     notes: "Enrich with VPN/proxy IP lists to reduce false positives from corporate VPN."
 
-  # ── PREMIUM RULES (premium: true) ──
+  # ── MORE RULES ──
   - name: "Ransomware – Mass File Encryption Pattern"
     description: "Detects rapid file rename operations with known ransomware extensions — indicates active encryption in progress."
     category: "Ransomware"
@@ -131,7 +131,7 @@ rules:
     mitre: "T1486"
     mitre_name: "Data Encrypted for Impact"
     severity: "critical"
-    premium: true
+    premium: false
     query: |
       DeviceFileEvents
       | where ActionType == "FileRenamed"
@@ -150,7 +150,7 @@ rules:
     mitre: "T1021.002"
     mitre_name: "Remote Services: SMB/Windows Admin Shares"
     severity: "high"
-    premium: true
+    premium: false
     query: |
       DeviceProcessEvents
       | where InitiatingProcessFileName in~ ("psexec.exe","psexesvc.exe")
@@ -170,7 +170,7 @@ rules:
     mitre: "T1134.001"
     mitre_name: "Access Token Manipulation: Token Impersonation"
     severity: "high"
-    premium: true
+    premium: false
     query: |
       title: Token Impersonation via Known Tools
       status: experimental
@@ -197,7 +197,7 @@ rules:
     mitre: "T1528"
     mitre_name: "Steal Application Access Token"
     severity: "critical"
-    premium: true
+    premium: false
     query: |
       AuditLogs
       | where OperationName == "Consent to application"
@@ -218,7 +218,7 @@ rules:
     mitre: "T1530"
     mitre_name: "Data from Cloud Storage"
     severity: "critical"
-    premium: true
+    premium: false
     query: |
       index=aws sourcetype=aws:cloudtrail
         eventName=PutBucketAcl OR eventName=PutBucketPolicy
@@ -235,7 +235,7 @@ rules:
     mitre: "T1003.001"
     mitre_name: "OS Credential Dumping: LSASS Memory"
     severity: "critical"
-    premium: true
+    premium: false
     query: |
       DeviceProcessEvents
       | where FileName in~ ("mimikatz.exe","procdump.exe",
@@ -254,7 +254,7 @@ rules:
     mitre: "T1562.001"
     mitre_name: "Impair Defenses: Disable or Modify Tools"
     severity: "high"
-    premium: true
+    premium: false
     query: |
       DeviceProcessEvents
       | where ProcessCommandLine has_any (
@@ -276,7 +276,7 @@ rules:
     mitre: "T1021.001"
     mitre_name: "Remote Services: Remote Desktop Protocol"
     severity: "medium"
-    premium: true
+    premium: false
     query: |
       index=windows EventCode=4624 LogonType=10
       | stats count by src_ip, dest, Account
@@ -293,7 +293,7 @@ rules:
     mitre: "T1053.005"
     mitre_name: "Scheduled Task/Job: Scheduled Task"
     severity: "medium"
-    premium: true
+    premium: false
     query: |
       title: Scheduled Task Creation via schtasks.exe
       status: stable

@@ -5,17 +5,17 @@ permalink: /playbooks/
 ---
 
 <div class="page-head">
-  <div class="label label--amber page-head__label">PREMIUM</div>
+  <div class="label label--cyan page-head__label">SCW TOOLS</div>
   <h1 class="page-head__title">Incident Playbooks</h1>
-  <p class="page-head__desc">Step-by-step response playbooks for every attack type. Built for SOC teams, IR leads, and security managers — ready to execute when it matters most.</p>
+  <p class="page-head__desc">Operational runbooks for every major attack type. Real tool commands, decision trees, escalation procedures, and communication templates — ready to execute when it matters.</p>
 </div>
 
 <section class="cs-intro reveal">
-  <p>When an incident hits, you don't have time to Google. These playbooks give you <strong>phase-by-phase actions</strong> — from detection through containment, eradication, recovery, and post-incident review. Every step is concrete, every role is assigned.</p>
-  <p>Free playbooks are fully accessible. Premium playbooks show the overview — <strong>unlock all phases with SCW Premium</strong>.</p>
+  <p>These aren't checklists — they're <strong>operational runbooks</strong> built for SOC teams, IR leads, and security managers. Every phase has real tool commands (CrowdStrike, Sentinel KQL, Splunk, AWS CLI), decision trees for branching scenarios, escalation matrices with SLAs, and copy-paste communication templates.</p>
+  <p>All playbooks are <strong>free and open</strong>. Use them in your IR process today.</p>
   <div class="cs-intro__actions">
-    <a href="#playbooks" class="btn btn--primary">Browse Playbooks</a>
-    <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">Get Premium Access</a>
+    <a href="#playbooks" class="btn btn--primary">Browse Runbooks</a>
+    <a href="{{ '/detections/' | relative_url }}" class="btn btn--ghost">Detection Library →</a>
   </div>
 </section>
 
@@ -26,7 +26,7 @@ permalink: /playbooks/
   <div class="dl-stats__grid">
     <div class="dl-stat">
       <span class="dl-stat__number">{{ site.data.playbooks.playbooks | size }}</span>
-      <span class="dl-stat__label">Playbooks</span>
+      <span class="dl-stat__label">Runbooks</span>
     </div>
     <div class="dl-stat">
       <span class="dl-stat__number">{{ site.data.playbooks.categories | size }}</span>
@@ -44,13 +44,13 @@ permalink: /playbooks/
 <!-- Filter -->
 <section id="playbooks">
   <div class="feed__header">
-    <h2 class="feed__title"><span class="label label--cyan">PLAYBOOKS</span> &nbsp;By Attack Type</h2>
+    <h2 class="feed__title"><span class="label label--cyan">RUNBOOKS</span> &nbsp;By Attack Type</h2>
   </div>
 
   <div class="vault-controls">
     <div class="vault-search">
       <svg class="vault-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="pbSearch" class="vault-search__input" placeholder="Search playbooks..." autocomplete="off">
+      <input type="text" id="pbSearch" class="vault-search__input" placeholder="Search runbooks, techniques, or tools..." autocomplete="off">
       <span id="pbCount" class="vault-search__count">{{ site.data.playbooks.playbooks | size }}</span>
     </div>
     <div class="vault-filters" id="pbCategoryFilters">
@@ -61,65 +61,184 @@ permalink: /playbooks/
     </div>
   </div>
 
-  <!-- Playbooks Grid -->
-  <div class="toolkit__grid" id="pbGrid">
+  <!-- Runbooks -->
+  <div class="rb-list" id="pbGrid">
     {% for pb in site.data.playbooks.playbooks %}
-    <div class="tool-card pb-card reveal{% if pb.premium %} pb-card--premium{% endif %}" data-category="{{ pb.category | slugify }}" data-name="{{ pb.name | downcase }}" data-tags="{{ pb.tags | join: ' ' | downcase }}" data-mitre="{{ pb.mitre | downcase }}">
-      <div class="tool-card__head">
-        <h4>{{ pb.name }}</h4>
-        {% if pb.premium %}
-        <span class="badge badge--soon">🔒 PRO</span>
-        {% else %}
-        <span class="badge badge--new">FREE</span>
+    <div class="rb-card reveal" data-category="{{ pb.category | slugify }}" data-name="{{ pb.name | downcase }}" data-tags="{{ pb.tags | join: ' ' | downcase }}" data-mitre="{{ pb.mitre | downcase }}">
+
+      <!-- Header -->
+      <div class="rb-card__header">
+        <div class="rb-card__title-row">
+          <h3 class="rb-card__title">{{ pb.name }}</h3>
+          <span class="badge badge--{% if pb.severity == 'critical' %}live{% elsif pb.severity == 'high' %}signal{% else %}drop{% endif %}">{{ pb.severity }}</span>
+        </div>
+        <p class="community-card__tagline">{{ pb.mitre }}</p>
+        <p class="rb-card__desc">{{ pb.description }}</p>
+
+        <div class="rb-card__meta">
+          <span class="tag">⏱ {{ pb.estimated_time }}</span>
+          {% for role in pb.roles %}<span class="tag">{{ role }}</span>{% endfor %}
+        </div>
+
+        {% if pb.tags %}
+        <div class="tool-card__tags">
+          {% for tag in pb.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+        </div>
         {% endif %}
       </div>
-      <p class="community-card__tagline">{{ pb.mitre }}</p>
-      <p>{{ pb.description }}</p>
 
-      <div class="dl-rule__meta">
-        <span class="badge badge--{% if pb.severity == 'critical' %}live{% elsif pb.severity == 'high' %}signal{% elsif pb.severity == 'medium' %}drop{% else %}vault{% endif %}">{{ pb.severity }}</span>
-        <span class="tag">⏱ {{ pb.estimated_time }}</span>
-        {% for role in pb.roles %}<span class="tag">{{ role }}</span>{% endfor %}
-      </div>
-
-      {% if pb.tags %}
-      <div class="tool-card__tags">
-        {% for tag in pb.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+      <!-- Escalation Matrix -->
+      {% if pb.escalation %}
+      <div class="rb-section rb-escalation">
+        <button class="rb-section__toggle" aria-expanded="false">
+          <span class="rb-section__icon">🚨</span>
+          <span class="rb-section__name">Escalation Matrix</span>
+          <span class="rb-section__arrow">▸</span>
+        </button>
+        <div class="rb-section__content" hidden>
+          <div class="rb-kv-grid">
+            {% if pb.escalation.p1_sla %}<div class="rb-kv"><span class="rb-kv__key">P1 SLA</span><span class="rb-kv__val">{{ pb.escalation.p1_sla }}</span></div>{% endif %}
+            {% if pb.escalation.p2_sla %}<div class="rb-kv"><span class="rb-kv__key">P2 SLA</span><span class="rb-kv__val">{{ pb.escalation.p2_sla }}</span></div>{% endif %}
+            {% if pb.escalation.war_room %}<div class="rb-kv"><span class="rb-kv__key">War Room</span><span class="rb-kv__val"><code>{{ pb.escalation.war_room }}</code></span></div>{% endif %}
+            {% if pb.escalation.escalate_to_p1 %}<div class="rb-kv"><span class="rb-kv__key">Escalate to P1</span><span class="rb-kv__val">{{ pb.escalation.escalate_to_p1 }}</span></div>{% endif %}
+          </div>
+          {% if pb.escalation.p1_notify %}
+          <p class="rb-label">Notify:</p>
+          <ul class="rb-list-inline">{% for n in pb.escalation.p1_notify %}<li>{{ n }}</li>{% endfor %}</ul>
+          {% endif %}
+          {% if pb.escalation.p2_notify %}
+          <p class="rb-label">Notify:</p>
+          <ul class="rb-list-inline">{% for n in pb.escalation.p2_notify %}<li>{{ n }}</li>{% endfor %}</ul>
+          {% endif %}
+          {% if pb.escalation.external %}
+          <p class="rb-label">External Contacts:</p>
+          <ul class="rb-list-plain">{% for ext in pb.escalation.external %}<li>{{ ext }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
       </div>
       {% endif %}
 
-      <!-- Phases accordion -->
-      <div class="pb-phases{% if pb.premium %} pb-phases--locked{% endif %}">
-        {% if pb.premium %}
-        <div class="pb-phases__lock">
-          <span>🔒</span>
-          <p>Unlock all 5 phases with <a href="{{ '/premium/' | relative_url }}">SCW Premium</a></p>
-        </div>
-        {% else %}
-        {% for phase in pb.phases %}
-        <div class="pb-phase">
-          <button class="pb-phase__toggle" aria-expanded="false">
-            <span class="pb-phase__icon">{% if phase.name == 'Detect' %}🔍{% elsif phase.name == 'Contain' %}🛑{% elsif phase.name == 'Eradicate' %}🧹{% elsif phase.name == 'Recover' %}🔄{% elsif phase.name == 'Post-Incident' %}📝{% else %}▶{% endif %}</span>
-            <span class="pb-phase__name">{{ phase.name }}</span>
-            <span class="pb-phase__arrow">▸</span>
-          </button>
-          <div class="pb-phase__content" hidden>
-            <ol class="pb-phase__steps">
-              {% for step in phase.steps %}
-              <li>{{ step }}</li>
-              {% endfor %}
-            </ol>
+      <!-- Response Metrics -->
+      {% if pb.metrics %}
+      <div class="rb-section rb-metrics">
+        <button class="rb-section__toggle" aria-expanded="false">
+          <span class="rb-section__icon">📊</span>
+          <span class="rb-section__name">Response Metrics & SLAs</span>
+          <span class="rb-section__arrow">▸</span>
+        </button>
+        <div class="rb-section__content" hidden>
+          <div class="rb-kv-grid">
+            {% if pb.metrics.mttd %}<div class="rb-kv"><span class="rb-kv__key">MTTD (Mean Time to Detect)</span><span class="rb-kv__val">{{ pb.metrics.mttd }}</span></div>{% endif %}
+            {% if pb.metrics.mttc %}<div class="rb-kv"><span class="rb-kv__key">MTTC (Mean Time to Contain)</span><span class="rb-kv__val">{{ pb.metrics.mttc }}</span></div>{% endif %}
+            {% if pb.metrics.mttr %}<div class="rb-kv"><span class="rb-kv__key">MTTR (Mean Time to Recover)</span><span class="rb-kv__val">{{ pb.metrics.mttr }}</span></div>{% endif %}
+            {% if pb.metrics.notification_sla %}<div class="rb-kv"><span class="rb-kv__key">Notification SLA</span><span class="rb-kv__val">{{ pb.metrics.notification_sla }}</span></div>{% endif %}
+            {% if pb.metrics.benchmark %}<div class="rb-kv rb-kv--highlight"><span class="rb-kv__key">Industry Benchmark</span><span class="rb-kv__val">{{ pb.metrics.benchmark }}</span></div>{% endif %}
           </div>
         </div>
-        {% endfor %}
-        {% endif %}
       </div>
+      {% endif %}
+
+      <!-- Response Phases -->
+      {% for phase in pb.phases %}
+      <div class="rb-section rb-phase">
+        <button class="rb-section__toggle" aria-expanded="false">
+          <span class="rb-section__icon">{% if phase.name == 'Detect' %}🔍{% elsif phase.name == 'Contain' %}🛑{% elsif phase.name == 'Eradicate' %}🧹{% elsif phase.name == 'Recover' %}🔄{% elsif phase.name == 'Post-Incident' %}📝{% else %}▶{% endif %}</span>
+          <span class="rb-section__name">{{ phase.name }}</span>
+          <span class="rb-section__count">{{ phase.steps | size }} steps</span>
+          <span class="rb-section__arrow">▸</span>
+        </button>
+        <div class="rb-section__content" hidden>
+          <div class="rb-steps">
+            {% for step in phase.steps %}
+            {% assign trimmed = step | strip %}
+            {% if trimmed contains "`" or trimmed contains ":" and trimmed contains "  " %}
+            <div class="rb-step rb-step--cmd"><code>{{ step | strip | xml_escape }}</code></div>
+            {% else %}
+            <div class="rb-step">{{ step | xml_escape }}</div>
+            {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if phase.decision_tree %}
+          <div class="rb-decision-tree">
+            <p class="rb-label">⚡ Decision Tree</p>
+            {% for d in phase.decision_tree %}
+            <div class="rb-decision">
+              <div class="rb-decision__if"><strong>IF:</strong> {{ d.condition }}</div>
+              <div class="rb-decision__then"><strong>THEN:</strong> {{ d.action }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+
+      <!-- Evidence Checklist -->
+      {% if pb.evidence_checklist %}
+      <div class="rb-section rb-evidence">
+        <button class="rb-section__toggle" aria-expanded="false">
+          <span class="rb-section__icon">📎</span>
+          <span class="rb-section__name">Evidence Checklist</span>
+          <span class="rb-section__count">{{ pb.evidence_checklist | size }} items</span>
+          <span class="rb-section__arrow">▸</span>
+        </button>
+        <div class="rb-section__content" hidden>
+          <ul class="rb-checklist">
+            {% for item in pb.evidence_checklist %}
+            <li><label><input type="checkbox"> {{ item }}</label></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Communication Templates -->
+      {% if pb.comms_templates %}
+      <div class="rb-section rb-comms">
+        <button class="rb-section__toggle" aria-expanded="false">
+          <span class="rb-section__icon">📨</span>
+          <span class="rb-section__name">Communication Templates</span>
+          <span class="rb-section__arrow">▸</span>
+        </button>
+        <div class="rb-section__content" hidden>
+          {% if pb.comms_templates.internal %}
+          <div class="rb-comms__block">
+            <p class="rb-label">Internal Notification</p>
+            <div class="rb-template">
+              <button class="dl-copy-btn" title="Copy template">📋</button>
+              <pre><code>{{ pb.comms_templates.internal | strip | xml_escape }}</code></pre>
+            </div>
+          </div>
+          {% endif %}
+          {% if pb.comms_templates.external %}
+          <div class="rb-comms__block">
+            <p class="rb-label">External / Customer Notification</p>
+            <div class="rb-template">
+              <button class="dl-copy-btn" title="Copy template">📋</button>
+              <pre><code>{{ pb.comms_templates.external | strip | xml_escape }}</code></pre>
+            </div>
+          </div>
+          {% endif %}
+          {% if pb.comms_templates.affected_individuals %}
+          <div class="rb-comms__block">
+            <p class="rb-label">Affected Individuals Notification</p>
+            <div class="rb-template">
+              <button class="dl-copy-btn" title="Copy template">📋</button>
+              <pre><code>{{ pb.comms_templates.affected_individuals | strip | xml_escape }}</code></pre>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
     </div>
     {% endfor %}
   </div>
 
   <div class="empty-state" id="pbEmpty" style="display:none; margin-top: 2rem;">
-    <p>No matching playbooks found. Try adjusting your filters.</p>
+    <p>No matching runbooks found. Try adjusting your filters.</p>
   </div>
 </section>
 
@@ -128,11 +247,11 @@ permalink: /playbooks/
 <!-- CTA -->
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
-    <h2 class="cs-cta__title">Respond faster. Respond smarter.</h2>
-    <p class="cs-cta__text">Unlock all {{ site.data.playbooks.playbooks | size }} incident playbooks — with full phase-by-phase response steps your team can execute immediately.</p>
+    <h2 class="cs-cta__title">New runbooks ship regularly.</h2>
+    <p class="cs-cta__text">{{ site.data.playbooks.playbooks | size }} operational runbooks and growing. Built for real incident response teams.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/premium/' | relative_url }}" class="btn btn--primary">Get Premium</a>
-      <a href="{{ '/detections/' | relative_url }}" class="btn btn--ghost">Detection Library →</a>
+      <a href="{{ '/detections/' | relative_url }}" class="btn btn--primary">Detection Library →</a>
+      <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to Feed</a>
     </div>
   </div>
 </section>
