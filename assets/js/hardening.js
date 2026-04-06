@@ -53,8 +53,7 @@
 
     html += '<div class="harden-premium__body" data-premium-id="' + item.id + '" style="display:none;">';
 
-    {
-      if (p.attackPerspective) {
+    if (p.attackPerspective) {
         html += '<div class="harden-premium__block">';
         html += '<h4 class="harden-premium__heading">⚔️ Attack Perspective</h4>';
         html += '<p class="harden-premium__text">' + esc(p.attackPerspective) + '</p>';
