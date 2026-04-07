@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: GPU Exploitation Emerges as New Attack Vector
-    text: Novel GPUBreach exploit leverages GPU memory bit-flips for full system takeover.
-    detail: Researchers have detailed GPUBreach, an exploit that uses GPU memory bit-flips to achieve root shell access and system compromise. This attack bypasses traditional defenses by targeting GPU page tables. Organizations should monitor for new advisories and consider hardware-level security implications.
-    link: https://www.nvidia.com/en-us/security/
-    link_label: NVIDIA Security Bulletins
+  - title: GPU Memory Exploitation Emerges as New Attack Vector
+    text: Rowhammer attacks on GPU memory can lead to full system compromise.
+    detail: Researchers have demonstrated GPUBreach, an exploit leveraging GPU memory bit-flips to achieve root shell access. This advanced technique bypasses traditional security by targeting GPU page tables. Defenders should monitor for emerging GPU-specific hardening guidance and investigate potential hardware vulnerabilities.
+    link: https://www.mitre.org/capabilities/cybersecurity/overview
+    link_label: MITRE Cybersecurity
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - data-breach
-  - title: Zero-Day Exploitation Continues Despite Disclosure
-    text: Unpatched BlueHammer zero-day highlights risks of public disclosure without vendor patches.
-    detail: A zero-day vulnerability named BlueHammer, allowing privilege escalation, has been publicly disclosed after dissatisfaction with Microsoft's response. This underscores the immediate risk to systems lacking a vendor patch. Prioritize vulnerability management and prompt patching for critical disclosures.
-    link: https://www.microsoft.com/en-us/security/blog/
-    link_label: Microsoft Security Blog
-    badge: signal
-    tags:
-      - threat-intel
-      - vulnerability
-      - microsoft
-  - title: AI-Powered Attacks Escalate Supply Chain Risks
-    text: AI is now being used to automate sophisticated supply chain attacks targeting code repositories.
-    detail: A new trend shows threat actors employing AI to enhance supply chain attacks, specifically targeting platforms like GitHub. These attacks automate compromise of software dependencies, posing a significant risk to development pipelines. Implement robust code scanning and dependency verification.
-    link: https://owasp.org/www-project-supply-chain-security/
+  - title: AI-Powered Attacks Target Software Supply Chains
+    text: AI is enhancing supply chain attacks, particularly targeting GitHub.
+    detail: A new trend involves AI-assisted attacks automating and sophisticating compromises within software dependencies, specifically targeting platforms like GitHub. Organizations must strengthen their CI/CD pipelines, implement robust code scanning, and verify the integrity of third-party code.
+    link: https://owasp.org/www-community/Supply_Chain_Security
     link_label: OWASP Supply Chain Security
     badge: signal
     tags:
       - threat-intel
       - ai-security
       - supply-chain
-  - title: Ransomware Operators Remain Agile and Evolving
-    text: Medusa ransomware rapidly exploits vulnerabilities, while REvil operators are being apprehended.
-    detail: Medusa ransomware demonstrates a fast exploitation lifecycle, and efforts continue to dismantle groups like REvil. This highlights the dual challenge of rapidly evolving ransomware malware and ongoing law enforcement actions against operators. Maintain vigilance and robust incident response plans.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness
-    link_label: CISA Ransomware Guidance
+  - title: Zero-Day Vulnerabilities Remain Critical Threats
+    text: Unpatched zero-days, like BlueHammer, are being publicly disclosed.
+    detail: The public release of unpatched zero-day vulnerabilities, such as BlueHammer affecting Windows, highlights the risks of delayed patching and vendor response. Organizations need rapid vulnerability management and defense-in-depth strategies to mitigate exploitation of undisclosed flaws.
+    link: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+    link_label: CISA KEV Catalog
     badge: signal
     tags:
       - threat-intel
-      - ransomware
-      - malware
+      - vulnerability
+      - zero-day
+  - title: SaaS Notification Channels Weaponized for Phishing
+    text: Attackers exploit SaaS notifications for sophisticated phishing campaigns.
+    detail: Threat actors are increasingly hijacking notification systems of popular SaaS platforms (e.g., GitHub, Jira) to distribute spam and phishing emails. This tactic bypasses traditional email security filters. Users must be vigilant against alerts originating from trusted platforms and verify sender authenticity.
+    link: https://www.microsoft.com/en-us/security/business/security-101/what-is-phishing
+    link_label: Microsoft Phishing Awareness
+    badge: signal
+    tags:
+      - threat-intel
+      - phishing
+      - saas
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
