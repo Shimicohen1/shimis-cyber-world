@@ -121,6 +121,30 @@ permalink: /premium/
 
 </section>
 
+<!-- ── Telegram Bot: direct access ── -->
+<section class="elite-bot reveal">
+<div class="elite-bot__card">
+<div class="elite-bot__icon">🤖</div>
+<h2 class="elite-bot__title">SCW Elite Bot</h2>
+<p class="elite-bot__desc">Get premium threat intelligence delivered straight to your Telegram — IOC packs, detection rules, and exclusive analysis. Pay with Telegram Stars ⭐</p>
+<div class="elite-bot__products">
+<div class="elite-bot__product">
+<strong>🎯 Weekly IOC Pack</strong>
+<span>5 ⭐</span>
+</div>
+<div class="elite-bot__product">
+<strong>🛡️ Detection Rules</strong>
+<span>25 ⭐</span>
+</div>
+<div class="elite-bot__product">
+<strong>🔒 Elite Monthly</strong>
+<span>100 ⭐/mo</span>
+</div>
+</div>
+<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Bot in Telegram →</a>
+</div>
+</section>
+
 <!-- ── Coming Next: compact ── -->
 <section class="elite-next reveal">
 <h2 class="elite-next__title">In the Pipeline</h2>
