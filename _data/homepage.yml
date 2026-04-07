@@ -25,49 +25,50 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI Agents Targeted by Novel Web Attack Vectors
-    text: AI agents are increasingly vulnerable to sophisticated web-based attacks, researchers warn.
-    detail: New research highlights emerging attack vectors targeting AI agents as they interact with the internet. Cybersecurity professionals should prioritize securing AI integrations and scrutinizing data sources to mitigate risks associated with these novel threats.
-    link: https://owasp.org/www-project-generative-ai-security/
-    link_label: OWASP GenAI Security Project
-    badge: signal
-    tags:
-      - ai-security
-      - threat-intel
-      - vulnerability
-  - title: Ransomware Gangs Exploit Drivers to Evade EDR
-    text: Ransomware strains like Qilin and Warlock are bypassing EDR defenses using vulnerable drivers.
-    detail: Attackers are leveraging compromised or vulnerable drivers to disable Endpoint Detection and Response (EDR) solutions, enabling stealthier operations. Organizations must ensure their EDR is up-to-date and consider driver integrity monitoring as a defense-in-depth strategy.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
-    link_label: CISA Advisories
+  - title: Medusa Ransomware Leverages Zero-Days for Rapid Exploitation
+    text: Medusa ransomware is actively exploiting zero-day vulnerabilities to breach systems quickly.
+    detail: The Medusa ransomware group, linked to China-based Storm-1175, is rapidly compromising systems by exploiting zero-day vulnerabilities. This highlights the critical need for proactive threat hunting and rapid patching of newly discovered flaws. Organizations should prioritize intelligence gathering on emerging ransomware tactics and ensure robust incident response plans are in place.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-149a
+    link_label: CISA Alert on Ransomware
     badge: signal
     tags:
       - ransomware
-      - malware
-      - edr
       - threat-intel
-  - title: Supply Chain Attacks Target Node.js Maintainers
-    text: North Korean actors are targeting Node.js project maintainers to compromise the software supply chain.
-    detail: State-sponsored groups are actively seeking to inject malicious code into popular open-source Node.js libraries. Developers and organizations relying on these packages should implement rigorous code review, dependency scanning, and provenance verification.
-    link: https://owasp.org/www-project-threat-model-supply-chain/
-    link_label: OWASP Supply Chain Security
+      - zero-day
+      - malware
+  - title: Fortinet EMS Vulnerability Actively Exploited
+    text: A critical vulnerability in Fortinet FortiClient EMS is under active exploitation, with patches pending.
+    detail: CISA has added a flaw in Fortinet FortiClient EMS to its Known Exploited Vulnerabilities catalog, indicating active exploitation. Organizations using this product must prioritize applying vendor-provided mitigations and patches as soon as they become available to prevent further compromise. Stay updated on vendor advisories.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-205a
+    link_label: CISA Known Exploited Vulnerabilities
     badge: signal
     tags:
+      - vulnerability
+      - threat-intel
+      - fortinet
+      - exploitation
+  - title: AI Enhances Supply Chain and Phishing Attacks
+    text: AI is increasingly used to automate and sophisticate supply chain and phishing attacks.
+    detail: Recent intelligence indicates AI is powering new supply chain attacks targeting platforms like GitHub and enabling more sophisticated, AI-driven phishing campaigns. This trend necessitates enhanced security for CI/CD pipelines and advanced threat detection methods capable of identifying AI-generated malicious content.
+    link: https://owasp.org/www-community/vulnerabilities/AI-powered_attacks
+    link_label: OWASP AI Security
+    badge: signal
+    tags:
+      - ai-security
       - supply-chain
-      - malware
-      - threat-intel
-      - node-js
-  - title: Phishing Campaigns Leveraging AI Device Codes
-    text: New phishing campaigns cleverly use AI device codes to impersonate legitimate services.
-    detail: Attackers are employing AI-generated device codes to craft sophisticated phishing lures, increasing success rates. Users must remain vigilant against unsolicited communications, verify sender authenticity through separate channels, and avoid clicking suspicious links or providing credentials.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
-    link_label: CISA Phishing Information
-    badge: signal
-    tags:
       - phishing
       - threat-intel
-      - social-engineering
-      - ai-security
+  - title: OSINT Tools Evolving for Social Media Intelligence
+    text: New tools like SharedTrace are emerging to gather enhanced intelligence from social media links.
+    detail: The landscape of Open-Source Intelligence (OSINT) is evolving with tools like SharedTrace that extract detailed user information from shared links across various platforms. Professionals should integrate these tools into their reconnaissance workflows while being mindful of ethical considerations and data privacy regulations.
+    link: https://www.owasp.org/www-project-top-10-most-dangerous-software-weaknesses/
+    link_label: OWASP Top 10
+    badge: signal
+    tags:
+      - osint
+      - tools
+      - intelligence-gathering
+      - social-media
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
