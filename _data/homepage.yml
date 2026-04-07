@@ -89,14 +89,19 @@ tools_teaser:
     url: https://portswigger.net/burp
     status: essential
     sponsored: true
+  - name: Proton VPN
+    description: Swiss no-logs VPN with Secure Core routing and malware filter.
+    url: https://www.jdoqocy.com/click-101720928-15834536
+    status: recommended
+    sponsored: true
   - name: NordVPN
     description: Fast, secure VPN with threat protection for operators.
     url: https://www.anrdoezrs.net/click-101720928-13756265
     status: recommended
     sponsored: true
-  - name: Proton VPN
-    description: Swiss no-logs VPN with Secure Core routing and malware filter.
-    url: https://www.jdoqocy.com/click-101720928-15834536
+  - name: Surfshark
+    description: VPN + CleanWeb malware blocker. Unlimited devices for your whole team.
+    url: https://www.kqzyfj.com/click-101720928-15438560
     status: recommended
     sponsored: true
   - name: Nmap
