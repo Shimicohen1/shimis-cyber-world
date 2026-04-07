@@ -23,7 +23,7 @@
 
 {% elsif include.type == "affiliate" %}
   <div class="ad-slot ad-slot--affiliate" data-track="affiliate">
-    <div class="ad-slot__label">Sponsored</div>
+    <div class="ad-slot__label">Our Pick</div>
     <div class="ad-slot__content">
       <div class="ad-slot__text">
         {% if include.title %}<strong>{{ include.title }}</strong>{% endif %}
@@ -85,7 +85,7 @@
   <div class="feed-entry feed-entry--ad" data-title="" data-tags="" data-excerpt="">
     <div class="feed-item feed-item--ad" data-track="affiliate">
       <div class="feed-item__body">
-        <span class="badge badge--partner">{{ include.badge | default: "Sponsored" }}</span>
+        <span class="badge badge--partner">{{ include.badge | default: "Our Pick" }}</span>
         <h3>{{ include.title }}</h3>
         <p>{{ include.desc }}</p>
         {% if include.url %}
