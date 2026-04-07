@@ -1,4 +1,39 @@
 categories:
+  - name: "Security & Privacy"
+    items:
+      - title: "NordVPN"
+        description: "Fast, secure VPN with threat protection. Essential for researchers and operators working remotely."
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        tags: [vpn, privacy]
+        status: Recommended
+        sponsored: true
+        button: Get NordVPN
+      - title: "Surfshark"
+        description: "All-in-one VPN with CleanWeb ad/malware blocker, unlimited devices, and multi-hop connections. Great value for teams."
+        url: "https://www.kqzyfj.com/click-101720928-15438560"
+        tags: [vpn, privacy, ad-blocker]
+        status: Recommended
+        sponsored: true
+        button: Get Surfshark
+      - title: "ProtonVPN"
+        description: "Swiss-based encrypted VPN with a strong free tier. Built by the team behind ProtonMail."
+        url: "https://protonvpn.com/"
+        tags: [vpn, privacy, encryption]
+        status: Recommended
+        button: Get ProtonVPN
+      - title: "1Password"
+        description: "Secure password manager for teams and individuals. Zero-knowledge architecture, breach monitoring built in."
+        url: "https://1password.com/"
+        tags: [passwords, management]
+        status: Recommended
+        button: Get 1Password
+      - title: "Bitwarden"
+        description: "Open-source password manager. Self-host or cloud — full control over your credentials."
+        url: "https://bitwarden.com/"
+        tags: [passwords, open-source]
+        status: Open
+        button: Learn More
+
   - name: "Reconnaissance"
     items:
       - title: "Nmap"
@@ -93,43 +128,6 @@ categories:
         status: Recommended
         sponsored: true
         button: View Courses
-
-  - name: "Security & Privacy"
-    items:
-      - title: "NordVPN"
-        description: "Fast, secure VPN with threat protection. Essential for researchers and operators working remotely."
-        url: "https://www.anrdoezrs.net/click-101720928-13756265"
-        tags: [vpn, privacy]
-        status: Recommended
-        sponsored: true
-        button: Get NordVPN
-      - title: "Surfshark"
-        description: "All-in-one VPN with CleanWeb ad/malware blocker, unlimited devices, and multi-hop connections. Great value for teams."
-        url: "https://www.kqzyfj.com/click-101720928-15438560"
-        tags: [vpn, privacy, ad-blocker]
-        status: Recommended
-        sponsored: true
-        button: Get Surfshark
-      - title: "ProtonVPN"
-        description: "Swiss-based encrypted VPN with a strong free tier. Built by the team behind ProtonMail."
-        url: "https://protonvpn.com/"
-        tags: [vpn, privacy, encryption]
-        status: Recommended
-        sponsored: true
-        button: Get ProtonVPN
-      - title: "1Password"
-        description: "Secure password manager for teams and individuals. Zero-knowledge architecture, breach monitoring built in."
-        url: "https://1password.com/"
-        tags: [passwords, management]
-        status: Recommended
-        sponsored: true
-        button: Get 1Password
-      - title: "Bitwarden"
-        description: "Open-source password manager. Self-host or cloud — full control over your credentials."
-        url: "https://bitwarden.com/"
-        tags: [passwords, open-source]
-        status: Open
-        button: Learn More
 
   - name: "Utilities"
     items:

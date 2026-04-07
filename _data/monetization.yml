@@ -1,6 +1,6 @@
 # SCW Monetization Configuration
-# Manages all ad placements, sponsored recommendations, and AdSense slots.
-# Ad types: adsense, affiliate, sponsored, premium-cta
+# Manages all ad placements, recommendations, and AdSense slots.
+# Ad types: adsense, affiliate, premium-cta
 
 # ── AdSense Settings ──────────────────────────────────────
 adsense:
@@ -16,7 +16,7 @@ recommendations:
       - name: "NordVPN"
         desc: "Secure your traffic with threat protection built in."
         url: "https://www.anrdoezrs.net/click-101720928-13756265"
-        badge: "Recommended"
+        badge: "Our Pick"
       - name: "Surfshark"
         desc: "All-in-one VPN + ad blocker. Unlimited devices."
         url: "https://www.kqzyfj.com/click-101720928-15438560"
@@ -24,53 +24,45 @@ recommendations:
 
   - match_tags: [malware, ransomware, endpoint]
     products:
-      - name: "1Password"
-        desc: "Zero-knowledge password manager with breach monitoring."
-        url: "https://1password.com/"
-        badge: "Essential"
+      - name: "NordVPN"
+        desc: "Built-in threat protection blocks malware, trackers, and malicious sites."
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
 
   - match_tags: [vulnerability, cve, exploit, zero-day]
     products:
-      - name: "Burp Suite"
-        desc: "Test your apps before attackers do."
-        url: "https://portswigger.net/burp"
-        badge: "Industry Standard"
+      - name: "NordVPN"
+        desc: "Protect your research traffic. Threat protection included."
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
 
   - match_tags: [training, certification, beginner]
     products:
-      - name: "Hack The Box"
-        desc: "Real-world hacking challenges. Prove yourself."
-        url: "https://www.hackthebox.com/"
-        badge: "Top Pick"
-      - name: "TryHackMe"
-        desc: "Guided learning paths with hands-on labs."
-        url: "https://tryhackme.com/"
-        badge: "Best for Beginners"
+      - name: "Surfshark"
+        desc: "Secure your lab traffic. Unlimited devices for your whole setup."
+        url: "https://www.kqzyfj.com/click-101720928-15438560"
+        badge: "Our Pick"
 
   - match_tags: [osint, reconnaissance, discovery]
     products:
-      - name: "Shodan"
-        desc: "Search engine for internet-connected devices."
-        url: "https://www.shodan.io/"
-        badge: "Essential"
+      - name: "NordVPN"
+        desc: "Keep your OSINT research anonymous. Threat protection built in."
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
 
   - match_tags: [phishing, social-engineering, awareness]
     products:
-      - name: "OffSec (OSCP)"
-        desc: "Gold standard certifications for pen testers."
-        url: "https://www.offsec.com/"
-        badge: "Pro Level"
+      - name: "Surfshark"
+        desc: "CleanWeb blocks phishing sites, ads, and trackers automatically."
+        url: "https://www.kqzyfj.com/click-101720928-15438560"
+        badge: "Our Pick"
 
   - match_tags: [password, credential, identity, auth-bypass]
     products:
-      - name: "1Password"
-        desc: "Secure your credentials. Zero-knowledge architecture."
-        url: "https://1password.com/"
-        badge: "Essential"
-      - name: "Bitwarden"
-        desc: "Open-source password manager. Full control."
-        url: "https://bitwarden.com/"
-        badge: "Open Source"
+      - name: "NordVPN"
+        desc: "Protect credentials in transit. Encrypted tunnel + threat protection."
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
 
 # ── In-Feed Ad Slots ──────────────────────────────────────
 # Inserted between post cards in the feed listing.
@@ -79,17 +71,15 @@ feed_ads:
   frequency: 6
   items:
     - type: "affiliate"
-      title: "Level up your skills"
-      desc: "Real-world hacking labs – start for free"
-      url: "https://www.hackthebox.com/"
-      sponsor: "Hack The Box"
-      badge: "Sponsored"
-    - type: "affiliate"
       title: "Protect your privacy"
       desc: "Fast, secure VPN with built-in threat protection"
       url: "https://www.anrdoezrs.net/click-101720928-13756265"
-      sponsor: "NordVPN"
-      badge: "Partner"
+      badge: "Our Pick"
+    - type: "affiliate"
+      title: "Secure all your devices"
+      desc: "VPN + ad blocker + malware protection. Unlimited devices."
+      url: "https://www.kqzyfj.com/click-101720928-15438560"
+      badge: "Our Pick"
     - type: "premium-cta"
       title: "Want early alerts?"
       desc: "Get exclusive analysis, detection rules, and IOC feeds"
@@ -101,23 +91,23 @@ feed_ads:
 toolkit_banners:
   - after_category: "Exploitation"
     type: "affiliate"
-    title: "Want hands-on practice?"
-    desc: "Build real skills with guided hacking labs and CTF challenges."
+    title: "Stay anonymous during testing"
+    desc: "Protect your traffic with a fast, secure VPN. Essential for red team work."
     products:
-      - name: "Hack The Box"
-        url: "https://www.hackthebox.com/"
-        button: "Start Hacking →"
-      - name: "TryHackMe"
-        url: "https://tryhackme.com/"
-        button: "Start Learning →"
+      - name: "NordVPN"
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        button: "Get NordVPN →"
+      - name: "Surfshark"
+        url: "https://www.kqzyfj.com/click-101720928-15438560"
+        button: "Get Surfshark →"
   - after_category: "Defense & Monitoring"
     type: "affiliate"
-    title: "Secure your credentials"
-    desc: "Every breach starts with a compromised password."
+    title: "Protect your entire team"
+    desc: "Unlimited devices, CleanWeb malware blocker, and multi-hop connections."
     products:
-      - name: "1Password"
-        url: "https://1password.com/"
-        button: "Get 1Password →"
+      - name: "Surfshark"
+        url: "https://www.kqzyfj.com/click-101720928-15438560"
+        button: "Get Surfshark →"
   - after_category: "Utilities"
     type: "premium-cta"
     title: "Need more firepower?"
