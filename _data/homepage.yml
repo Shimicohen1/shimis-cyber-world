@@ -25,30 +25,30 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian Actors Targeting US Critical Infrastructure
-    text: Iranian-linked groups are increasingly targeting US critical infrastructure, specifically PLCs and OT devices.
-    detail: A joint advisory from multiple US agencies warns of a surge in attacks against industrial control systems. Organizations managing operational technology should review their network segmentation and access controls, prioritizing patching of internet-exposed devices.
+  - title: Iranian Actors Target US Critical Infrastructure PLCs
+    text: Iranian-linked threat actors are actively targeting US critical infrastructure PLCs.
+    detail: A joint advisory from multiple US agencies highlights the increasing threat from Iranian actors to operational technology in sectors like energy and water. Prioritize hardening access controls and monitoring for anomalous activity on internet-exposed Rockwell/Allen-Bradley PLCs.
     link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-310a
     link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
-      - iran
-  - title: Russian APTs Exploit SOHO Routers for Token Theft
-    text: Russian state-linked actors are leveraging compromised SOHO routers for large-scale Microsoft token theft and DNS hijacking.
-    detail: Groups like Forest Blizzard are exploiting vulnerabilities in edge devices to steal authentication tokens and control network traffic. Implement robust router security, disable unnecessary services, and enforce multi-factor authentication for all cloud services.
-    link: https://www.mitre.org/platforms/attack/software/attack-navigator
-    link_label: MITRE ATT&CK Navigator
+      - plc
+  - title: Russian APTs Exploit SOHO Routers for Data Theft
+    text: Russian state-linked actors are hijacking SOHO routers for data theft and infrastructure.
+    detail: Groups like Forest Blizzard are compromising small office/home office routers to steal Microsoft authentication tokens and establish malicious infrastructure. Implement regular firmware updates, change default credentials, and segment networks to mitigate this widespread threat.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-274a
+    link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
-      - russia
+      - apt
       - router-vulnerability
       - microsoft
-  - title: "AI's Dual Role in Cybersecurity: Boon and Attack Vector"
-    text: New AI models present both enhanced defensive capabilities and new attack vectors for threat actors.
-    detail: Advancements in LLMs offer powerful tools for threat hunting and analysis, but also empower adversaries. Stay informed on the latest AI developments and their implications, focusing on secure AI development practices and threat intelligence gathering.
+  - title: "AI's Dual Role: Boon and Attack Vector in Cybersecurity"
+    text: New AI models present both defensive advantages and new attack opportunities.
+    detail: The rapid advancement of AI, including new LLMs, offers significant potential for cybersecurity defense. However, these same capabilities can be leveraged by adversaries for sophisticated attacks, creating a complex threat landscape. Stay informed on AI security best practices.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
     link_label: OWASP LLM Top 10
     badge: signal
@@ -56,16 +56,16 @@ quick_signals:
       - threat-intel
       - ai-security
       - llm
-  - title: Overlooked Lapses Drive Major Cyber Incidents
-    text: Minor security oversights are frequently the root cause of significant cyber incidents, not just large-scale attacks.
-    detail: Even during high-profile events, unpatched vulnerabilities, open access points, or ignored alerts can lead to breaches. Foster a culture of meticulous security hygiene, conduct regular comprehensive vulnerability assessments, and ensure timely remediation of all findings.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
+  - title: Ransomware Attacks Accelerate with High Velocity
+    text: Threat actor Storm-1175 deploys Medusa ransomware at alarming speed.
+    detail: The rapid deployment of ransomware like Medusa by sophisticated actors indicates a shift towards highly automated and streamlined attack chains. Robust incident response plans, regular backups, and prompt patching are crucial to counter high-velocity attacks.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-177a
+    link_label: CISA Ransomware Advisory
     badge: signal
     tags:
       - threat-intel
-      - vulnerability-management
-      - risk-management
+      - ransomware
+      - malware
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
