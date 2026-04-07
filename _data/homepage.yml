@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: GPU Rowhammer Attacks Achieve System Takeover
-    text: New GPUBreach exploit leverages GPU memory bit-flips for full system compromise.
-    detail: Researchers have demonstrated GPUBreach, an attack exploiting GPU memory bit-flips to achieve root shell access and full system takeover. This novel vector bypasses traditional defenses by manipulating GPU page tables. Organizations should monitor for emerging advisories and consider hardware-level mitigations where possible.
-    link: https://www.usenix.org/conference/usenixsecurity23/presentation/chao
-    link_label: USENIX Security Symposium Paper
+  - title: GPU Vulnerabilities Enable Full System Takeover
+    text: New exploits leverage GPU memory bit-flips for privilege escalation and system compromise.
+    detail: Attacks like GPUBreach demonstrate that GPU vulnerabilities can lead to complete system takeover by manipulating GPU memory. Organizations should monitor for emerging GPU-specific exploits and ensure firmware and driver updates are applied promptly to mitigate risks associated with physical memory manipulation.
+    link: https://www.nvidia.com/en-us/security/
+    link_label: NVIDIA Security Advisories
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - data-breach
-  - title: AI-Powered Supply Chain Attacks on GitHub
-    text: AI is enhancing supply chain attacks targeting GitHub repositories.
-    detail: The cybersecurity landscape is evolving with AI-assisted supply chain attacks now targeting GitHub. These advanced threats leverage AI to automate and refine attacks on software dependencies. Developers and security teams must strengthen code scanning, dependency analysis, and review processes to mitigate these sophisticated risks.
-    link: https://owasp.org/www-project-supply-chain-security/
-    link_label: OWASP Supply Chain Security
+  - title: AI Accelerates Sophistication in Cyber Attacks
+    text: AI is being integrated into supply chain attacks and OSINT tool development.
+    detail: The increasing use of AI in cyberattacks, from automating supply chain compromises on platforms like GitHub to enhancing OSINT tools for data extraction, signifies a growing threat. Defenders must prioritize AI security measures and stay informed about AI-driven attack vectors to counter these evolving threats.
+    link: https://www.owasp.org/www-community/AI_Security
+    link_label: OWASP AI Security
     badge: signal
     tags:
+      - ai-security
       - threat-intel
       - supply-chain
-      - ai-security
-  - title: Zero-Day Exploitation of Flowise AI Agent Builder
-    text: Critical RCE vulnerability in Flowise AI Agent Builder is actively exploited.
-    detail: A severe CVSS 10.0 RCE vulnerability in Flowise AI Agent Builder is under active exploitation, affecting over 12,000 instances. This critical flaw allows for remote code execution, posing a significant risk to AI development environments. Prompt patching or implementing compensating controls is essential for all exposed instances.
-    link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
+  - title: Zero-Day Exploits Surface Amidst Stalled Vendor Responses
+    text: Unpatched zero-days are being publicly disclosed due to slow vendor patch cycles.
+    detail: Reports indicate researchers are publicly releasing zero-day vulnerabilities, like the 'BlueHammer' flaw, when dissatisfied with vendor response times. This trend highlights the critical need for rapid vulnerability patching and disclosure policies. Organizations must proactively hunt for and mitigate such vulnerabilities before they are weaponized.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/known-exploited-vulnerabilities-catalog
     link_label: CISA KEV Catalog
     badge: signal
     tags:
       - threat-intel
       - vulnerability
-      - ai-security
-  - title: Cyber Fraud Costs Exceed $17 Billion Annually
-    text: FBI reports cyber fraud losses surpassing $17 billion, highlighting pervasive digital crime.
-    detail: The FBI's latest figures reveal cyber fraud is costing over $17 billion annually, a stark indicator of escalating digital crime's financial impact. Sophisticated methods, including multi-account laundering and export incentive scams, are being used. Organizations and individuals must enhance fraud detection and user education to combat this growing threat.
-    link: https://www.ic3.gov/
-    link_label: FBI Internet Crime Complaint Center
+      - microsoft
+  - title: SaaS Notification Channels Weaponized for Phishing
+    text: Attackers hijack SaaS notifications to distribute phishing and spam emails.
+    detail: Threat actors are increasingly exploiting the trusted notification pipelines of SaaS platforms, such as GitHub and Jira, to deliver malicious content. This tactic bypasses traditional email filters. Security teams should implement strict controls on SaaS integrations and educate users about the risks of unexpected or suspicious platform notifications.
+    link: https://www.microsoft.com/en-us/security/business/security-101/what-is-phishing
+    link_label: Microsoft Phishing Information
     badge: signal
     tags:
       - threat-intel
-      - cyber-fraud
-      - financial-crime
+      - phishing
+      - malware
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
