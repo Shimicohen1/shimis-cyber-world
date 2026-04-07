@@ -95,13 +95,18 @@ tools_teaser:
     url: https://www.anrdoezrs.net/click-101720928-13756265
     status: recommended
     sponsored: true
+  - name: Proton VPN
+    description: Swiss no-logs VPN with Secure Core routing and malware filter.
+    url: https://www.jdoqocy.com/click-101720928-15834536
+    status: recommended
+    sponsored: true
   - name: Nmap
     description: Network discovery and security auditing. The operator's first move.
     url: https://nmap.org/
     status: essential
-  - name: 1Password
-    description: Secure password manager with zero-knowledge architecture.
-    url: https://1password.com/
+  - name: Proton Pass
+    description: Open-source encrypted passwords with built-in 2FA and aliases.
+    url: https://www.jdoqocy.com/click-101720928-15831601
     status: recommended
     sponsored: true
   - name: TryHackMe
