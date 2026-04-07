@@ -25,47 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian APTs Target US Critical Infrastructure
+  - title: Iranian APTs Target US Critical Infrastructure OT
     text: Iranian threat actors are actively targeting US critical infrastructure's operational technology.
-    detail: Multiple advisories confirm Iranian-linked APTs are focusing on internet-exposed PLCs and OT devices, particularly in energy and water sectors. Organizations must prioritize securing these systems and segmenting networks to mitigate risks.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-140a
+    detail: Recent intelligence indicates Iranian-linked APTs are focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices within US energy and water systems. Organizations should prioritize hardening OT environments and implementing robust network segmentation to mitigate these sophisticated threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-343a
     link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - iran
-  - title: AI Augments Both Cyber Offense and Defense
-    text: New AI models offer advanced capabilities for both attackers and defenders.
-    detail: The rapid development of LLMs like Claude Mythos presents a dual-edged sword, enhancing defensive cybersecurity tools while also potentially empowering malicious actors. Stay informed on AI's evolving role in threat landscapes and defense strategies.
-    link: https://owasp.org/www-project-generative-ai-security/
-    link_label: OWASP Generative AI Security
-    badge: signal
-    tags:
-      - threat-intel
-      - ai-security
-      - llm
-  - title: Russian APT28 Exploits SOHO Routers for Data Theft
-    text: APT28 is leveraging SOHO routers for global DNS hijacking and token theft.
-    detail: Russian state-linked groups, including APT28 and Forest Blizzard, are exploiting vulnerabilities in SOHO routers. These attacks facilitate DNS hijacking and the theft of Microsoft authentication tokens, highlighting the need for robust router security and patching.
-    link: https://www.mitre.org/threat-actor/apt28
-    link_label: MITRE ATT&CK APT28
+  - title: Russian APT28 Exploits SOHO Routers for DNS Hijacking
+    text: Russian APT28 is leveraging SOHO routers for widespread DNS hijacking campaigns.
+    detail: Forest Blizzard (APT28) is actively compromising SOHO routers, repurposing them for malicious infrastructure and conducting global DNS hijacking. This highlights the critical need for regular router firmware updates and network traffic monitoring to detect and prevent such exploits.
+    link: https://www.mitre.org/platforms/attack/software/software-identity-group/apt28
+    link_label: MITRE ATT&CK Profile
     badge: signal
     tags:
       - threat-intel
       - apt28
-      - router-security
-      - russia
+      - router-vulnerabilities
+      - dns-hijacking
+  - title: AI-Powered Data Exfiltration via GrafanaGhost
+    text: New GrafanaGhost vulnerability exploits AI for stealthy data exfiltration.
+    detail: The GrafanaGhost vulnerability allows attackers to use indirect prompt injection against Grafana's AI components to exfiltrate sensitive enterprise data undetected. This underscores the evolving risks associated with AI integration and the need for AI-specific security controls and monitoring.
+    link: https://owasp.org/www-community/vulnerabilities/Prompt_Injection
+    link_label: OWASP Prompt Injection
+    badge: signal
+    tags:
+      - threat-intel
+      - ai-security
+      - vulnerability
+      - data-exfiltration
   - title: Automated Pentesting Limitations Highlighted
-    text: Automated pentesting tools often miss complex, nuanced vulnerabilities.
-    detail: While automated penetration testing provides initial insights, it frequently fails to uncover sophisticated or context-dependent vulnerabilities. Organizations should complement automated scans with skilled manual testing to achieve comprehensive security validation.
-    link: https://owasp.org/www-project-application-security-verification-standard/
-    link_label: OWASP ASVS
+    text: Automated pentesting tools often fall short in detecting complex vulnerabilities.
+    detail: While automated penetration testing tools provide initial critical findings, they frequently miss nuanced vulnerabilities requiring human ingenuity. Organizations should supplement automated scans with skilled manual testing and red teaming to ensure comprehensive security validation.
+    link: https://owasp.org/www-project-top-10-application-security-risks/
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - threat-intel
       - penetration-testing
       - vulnerability-management
+      - red-teaming
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
