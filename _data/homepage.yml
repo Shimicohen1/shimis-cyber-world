@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Powered Attacks Escalate Supply Chain Risks
-    text: AI is enhancing supply chain attacks, automating exploitation of software dependencies on platforms like GitHub.
-    detail: Threat actors are leveraging AI to refine attacks targeting software dependencies and build pipelines. This trend necessitates a proactive approach to supply chain security, including rigorous vetting of third-party code and continuous monitoring of development environments. Organizations should prioritize automated security testing and vulnerability management within their CI/CD pipelines.
-    link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: OWASP Supply Chain Security
+  - title: Iran Targets US Critical Infrastructure with PLCs
+    text: Iranian actors are actively targeting U.S. critical infrastructure PLCs, posing a significant threat to operational technology.
+    detail: Iranian-linked threat actors are focusing on internet-exposed Rockwell/Allen-Bradley programmable logic controllers (PLCs) within U.S. critical infrastructure. This trend, highlighted by multiple advisories, necessitates enhanced monitoring and hardening of OT environments to prevent potential disruptions to essential services.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-076a
+    link_label: CISA Advisory
     badge: signal
     tags:
+      - threat-intel
+      - critical-infrastructure
+      - plc
+  - title: Russian APT28 Exploits SOHO Routers for DNS Hijacking
+    text: APT28 is leveraging compromised SOHO routers for global DNS hijacking and stealthy token exfiltration.
+    detail: Russian state-linked APT28 is actively exploiting vulnerabilities in Small Office/Home Office (SOHO) routers. This campaign is used for both global DNS hijacking and to conduct stealthy Microsoft Office token theft, underscoring the need to secure and update edge network devices.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-139a
+    link_label: CISA Advisory
+    badge: signal
+    tags:
+      - threat-intel
+      - apt28
+      - router-vulnerability
+      - dns-hijacking
+  - title: AI's Growing Influence on Cyber Threats and Defenses
+    text: AI is rapidly reshaping the cybersecurity landscape, impacting both attack vectors and defensive strategies.
+    detail: Artificial Intelligence is a significant catalyst for change in cybersecurity, as observed at RSAC 2026. Its dual nature is evident, with AI-powered tools enhancing offensive capabilities while also driving advancements in defensive measures and the debate between AI and human defenders.
+    link: https://www.nist.gov/artificial-intelligence
+    link_label: NIST AI Resources
+    badge: signal
+    tags:
+      - threat-intel
       - ai-security
-      - supply-chain
-      - threat-intel
-  - title: GPU Vulnerabilities Enable System Takeover
-    text: New exploits like GPUBreach use GPU memory bit-flips to achieve full system control.
-    detail: Researchers have demonstrated that GPU Rowhammer vulnerabilities can be exploited to achieve root shell access and full system takeover, bypassing traditional security measures. This highlights the emerging threat surface associated with GPU hardware. Staying updated on hardware-level vulnerabilities and ensuring systems are patched, especially those with high-performance GPUs, is crucial.
-    link: https://www.nvidia.com/en-us/security/
-    link_label: NVIDIA Security Bulletins
+      - rsac
+  - title: Automated Pentesting Limitations Highlight Human Expertise
+    text: Automated penetration testing tools often fall short, emphasizing the continued importance of human analysts.
+    detail: While automated penetration testing tools offer initial value, they frequently miss complex vulnerabilities requiring human ingenuity. The 'PoC Cliff' problem illustrates this gap, reinforcing the necessity of skilled human analysts for comprehensive security validation and nuanced threat detection.
+    link: https://owasp.org/www-project-application-security-testing/
+    link_label: OWASP Testing Guide
     badge: signal
     tags:
-      - vulnerability
-      - hardware-security
       - threat-intel
-  - title: "Zero-Day Exploitation: Public Disclosure Risks"
-    text: Unpatched zero-days like BlueHammer are being publicly disclosed due to vendor response dissatisfaction.
-    detail: Security researchers are opting for public disclosure of zero-day vulnerabilities when vendor responses are unsatisfactory, as seen with BlueHammer. This practice accelerates the timeline for attackers to develop exploits. Organizations must implement robust threat intelligence feeds and rapid patching strategies to mitigate risks associated with newly disclosed vulnerabilities.
-    link: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
-    link_label: CISA KEV Catalog
-    badge: signal
-    tags:
-      - vulnerability
-      - zero-day
-      - threat-intel
-  - title: SaaS Platform Hijacking for Phishing & Scams
-    text: Attackers weaponize SaaS notification systems for sophisticated phishing and scam campaigns.
-    detail: Threat actors are exploiting the notification pipelines of popular SaaS platforms (e.g., GitHub, Jira) to distribute malicious spam and phishing emails. This trend bypasses traditional email security filters. Organizations should educate users about these evolving tactics and implement stricter controls on integrated applications and notification settings.
-    link: https://www.microsoft.com/en-us/security/business/security-101/what-is-phishing
-    link_label: Microsoft Phishing Awareness
-    badge: signal
-    tags:
-      - phishing
-      - saas-security
-      - threat-intel
+      - penetration-testing
+      - ai-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
