@@ -1,51 +1,578 @@
 {
   "aws-001": {
-    "attackPerspective": "The AWS root account has UNRESTRICTED access to all resources and billing — it cannot be limited by IAM policies. If compromised, an attacker can delete all resources, exfiltrate data, create new admin users, and run up massive bills. Root account compromise was central to several high-profile cloud breaches.",
-    "implementationNotes": "1. Log into the root account via AWS Console\n2. Go to IAM → Security credentials → Multi-factor authentication (MFA)\n3. Choose hardware MFA device (YubiKey preferred) or virtual authenticator\n4. Register the MFA device and test authentication\n5. Store MFA recovery codes in a physical safe or secure vault\n6. Immediately after: delete any root access keys if they exist",
-    "validationNotes": "# Check root MFA via CLI (requires org-level access)\naws iam get-account-summary --query 'SummaryMap.AccountMFAEnabled'\n# Expected: 1\n\n# Check for root access keys (should be none)\naws iam get-account-summary --query 'SummaryMap.AccountAccessKeysPresent'\n# Expected: 0",
-    "tuningNotes": "For organizations with multiple accounts, use AWS Organizations SCP to deny root usage entirely: {\n  \"Effect\": \"Deny\",\n  \"Action\": \"*\",\n  \"Resource\": \"*\",\n  \"Condition\": {\n    \"StringLike\": {\"aws:PrincipalArn\": \"arn:aws:iam::*:root\"}\n  }\n}",
-    "advancedDetection": "",
+    "attackPerspective": "When \"Enable MFA on root account\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check root MFA status\naws iam get-account-summary --query 'SummaryMap.AccountMFAEnabled'\n# Enable via AWS Console → IAM → Root user → Security credentials → MFA\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "aws-002",
       "aws-003",
-      "aws-015"
+      "aws-004"
     ]
   },
   "aws-005": {
-    "attackPerspective": "Open security groups are the cloud equivalent of an open firewall. Automated scanners constantly probe AWS IP ranges for exposed services. The Capital One breach (2019) leveraged a misconfigured security group that allowed SSRF to the metadata service, leading to 100M+ records exposed.",
-    "implementationNotes": "1. Run the audit command to find open SGs\n2. For each open SG: identify the associated resources (EC2, RDS, etc.)\n3. Determine the minimum required CIDR ranges\n4. Replace 0.0.0.0/0 with specific CIDRs or prefix lists\n5. For admin access: use VPN CIDR or AWS SSM Session Manager instead\n6. Test connectivity after changes",
-    "validationNotes": "# Re-run the audit\naws ec2 describe-security-groups --query \\\n  'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]]' --output table\n# Should return empty\n\n# For IPv6\naws ec2 describe-security-groups --query \\\n  'SecurityGroups[?IpPermissions[?Ipv6Ranges[?CidrIpv6==`::/0`]]]' --output table",
-    "tuningNotes": "ALBs and CloudFront distributions legitimately need 0.0.0.0/0 on ports 80/443. Focus on removing open access to SSH (22), RDP (3389), databases (3306, 5432, 1433), and admin ports.",
-    "advancedDetection": "",
+    "attackPerspective": "Without \"Remove 0.0.0.0/0 from security groups\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find SGs with 0.0.0.0/0 inbound\naws ec2 describe-security-groups --query \\\n  'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]].[GroupId,GroupName]' \\\n  --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
-      "aws-004",
       "aws-019",
-      "aws-020"
-    ],
-    "commandFull": "# Complete SG audit and remediation script\n#!/bin/bash\necho \"=== Security Groups with 0.0.0.0/0 inbound ===\"\naws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]].[GroupId,GroupName,Description]' \\\n  --output table\n\necho \"\"\necho \"=== Details of open rules ===\"\nfor sg in $(aws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]]].GroupId' \\\n  --output text); do\n  echo \"--- $sg ---\"\n  aws ec2 describe-security-groups --group-ids \"$sg\" \\\n    --query 'SecurityGroups[].IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]].{From:FromPort,To:ToPort,Proto:IpProtocol}' \\\n    --output table\ndone\n\necho \"\"\necho \"=== IPv6 check (open ::/0) ===\"\naws ec2 describe-security-groups \\\n  --query 'SecurityGroups[?IpPermissions[?Ipv6Ranges[?CidrIpv6==`::/0`]]].[GroupId,GroupName]' \\\n  --output table"
+      "aws-020",
+      "aws-021"
+    ]
   },
   "aws-006": {
-    "attackPerspective": "CloudTrail is the audit trail attackers try to disable first. Sophisticated threat actors will attempt to stop trails, delete logs, or modify S3 bucket policies to prevent logging. Without multi-region trails, attackers can spin up resources in unmonitored regions for crypto mining or data staging.",
-    "implementationNotes": "1. Check existing trails: aws cloudtrail describe-trails\n2. If no multi-region trail exists, create one\n3. Configure S3 bucket with versioning, MFA delete, and lifecycle rules\n4. Enable log file validation for tamper detection\n5. Enable CloudTrail Insights for anomaly detection\n6. Set up CloudWatch alarms for trail modifications",
-    "validationNotes": "# Verify trail configuration\naws cloudtrail get-trail-status --name <trail-name>\n# TrailStatus.IsLogging should be true\n\n# Verify multi-region\naws cloudtrail describe-trails --query 'trailList[].{Name:Name,MultiRegion:IsMultiRegionTrail,Validation:LogFileValidationEnabled}'\n\n# Check for recent events\naws cloudtrail lookup-events --max-results 5",
-    "tuningNotes": "",
-    "advancedDetection": "# Detect CloudTrail tampering\nindex=aws sourcetype=aws:cloudtrail\n  eventName IN (\"StopLogging\", \"DeleteTrail\", \"UpdateTrail\", \"PutEventSelectors\")\n| table _time, sourceIPAddress, userIdentity.arn, eventName, errorCode\n| sort _time",
+    "attackPerspective": "When \"Enable CloudTrail in all regions\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check CloudTrail status\naws cloudtrail describe-trails --query 'trailList[].{Name:Name,Multi:IsMultiRegionTrail,Logging:HasCustomEventSelectors}'\n# Create multi-region trail\naws cloudtrail create-trail --name scw-audit-trail \\\n  --s3-bucket-name scw-cloudtrail-logs \\\n  --is-multi-region-trail \\\n  --enable-log-file-validation\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "aws-007",
-      "aws-025",
-      "aws-026"
+      "aws-026",
+      "aws-027"
     ]
   },
   "aws-008": {
-    "attackPerspective": "Unencrypted S3 buckets are a recurring theme in data breaches. In 2017 alone, Accenture, Verizon, and the US DoD all suffered breaches from exposed S3 data. Even 'private' buckets without encryption are at risk if an attacker gains any AWS access — at-rest encryption adds a mandatory key-access layer.",
-    "implementationNotes": "1. Enable default encryption on each bucket: aws s3api put-bucket-encryption\n2. Use SSE-S3 (AES-256) as the minimum, SSE-KMS for sensitive data\n3. For SSE-KMS: create a customer-managed key with rotation enabled\n4. Update bucket policies to deny unencrypted uploads:\n   Condition: {\"StringNotEquals\": {\"s3:x-amz-server-side-encryption\": \"aws:kms\"}}",
-    "validationNotes": "# Check all buckets\nfor bucket in $(aws s3api list-buckets --query 'Buckets[].Name' --output text); do\n  enc=$(aws s3api get-bucket-encryption --bucket \"$bucket\" 2>&1)\n  if echo \"$enc\" | grep -q 'ServerSideEncryptionConfigurationNotFoundError'; then\n    echo \"UNENCRYPTED: $bucket\"\n  else\n    echo \"OK: $bucket\"\n  fi\ndone",
-    "tuningNotes": "",
-    "advancedDetection": "",
+    "attackPerspective": "Without \"Enable default S3 bucket encryption\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check all buckets for encryption\nfor bucket in $(aws s3api list-buckets --query 'Buckets[].Name' --output text); do\n  enc=$(aws s3api get-bucket-encryption --bucket \"$bucket\" 2>&1)\n  echo \"$bucket: $enc\"\ndone\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "aws-009",
-      "aws-033",
+      "aws-034",
+      "aws-035"
+    ]
+  },
+  "aws-002": {
+    "attackPerspective": "When \"Eliminate root access keys\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List root access keys\naws iam list-access-keys --user-name root\n# Delete if any exist\naws iam delete-access-key --user-name root --access-key-id <key_id>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-003",
+      "aws-004"
+    ]
+  },
+  "aws-003": {
+    "attackPerspective": "When \"Enforce MFA for IAM users\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List users without MFA\naws iam generate-credential-report\naws iam get-credential-report --output text --query 'Content' | base64 -d | \\\n  awk -F, '$4 == \"true\" && $8 == \"false\" { print $1 }'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-004"
+    ]
+  },
+  "aws-004": {
+    "attackPerspective": "When \"Enforce least privilege IAM policies\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find policies with wildcard actions\naws iam list-policies --scope Local --query 'Policies[].Arn' --output text | \\\n  xargs -I {} aws iam get-policy-version \\\n    --policy-arn {} \\\n    --version-id $(aws iam get-policy --policy-arn {} --query 'Policy.DefaultVersionId' --output text) \\\n    --query 'PolicyVersion.Document'\n# Use IAM Access Analyzer\naws accessanalyzer list-findings --analyzer-arn <arn>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-007": {
+    "attackPerspective": "When \"Enable GuardDuty\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable GuardDuty\naws guardduty create-detector --enable\n# Check status\naws guardduty list-detectors\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-026",
+      "aws-027"
+    ]
+  },
+  "aws-009": {
+    "attackPerspective": "Without \"Block public S3 bucket access\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable account-level block\naws s3control put-public-access-block --account-id $(aws sts get-caller-identity --query Account --output text) \\\n  --public-access-block-configuration \\\n    BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-008",
+      "aws-034",
+      "aws-035"
+    ]
+  },
+  "aws-010": {
+    "attackPerspective": "Systems without \"Enable AWS Systems Manager Patch Manager\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List managed instances\naws ssm describe-instance-information --query 'InstanceInformationList[].{Id:InstanceId,Ping:PingStatus}'\n# Create patch baseline\naws ssm create-patch-baseline --name \"SCW-Security-Patches\" \\\n  --approval-rules \"PatchRules=[{PatchFilterGroup={PatchFilters=[{Key=CLASSIFICATION,Values=[SecurityUpdates,CriticalUpdates]}]},ApproveAfterDays=0}]\"\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-046",
+      "aws-047",
+      "aws-048"
+    ]
+  },
+  "aws-011": {
+    "attackPerspective": "When \"Enable AWS SSO / IAM Identity Center\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check if Identity Center is enabled\naws sso-admin list-instances\n# Best practice: Federate via SSO, eliminate long-term IAM keys\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-012": {
+    "attackPerspective": "When \"Rotate IAM access keys every 90 days\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find keys older than 90 days\naws iam generate-credential-report\naws iam get-credential-report --output text --query Content | base64 -d | \\\n  awk -F, 'NR>1 && $9==\"true\" { print $1,$10 }'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-013": {
+    "attackPerspective": "When \"Enforce IAM password policy (14+ chars, complexity)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\naws iam update-account-password-policy \\\n  --minimum-password-length 14 \\\n  --require-symbols --require-numbers \\\n  --require-uppercase-characters --require-lowercase-characters \\\n  --max-password-age 90 --password-reuse-prevention 24\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-014": {
+    "attackPerspective": "When \"Remove unused IAM users and credentials\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find unused users\naws iam generate-credential-report\naws iam get-credential-report --output text --query Content | base64 -d | \\\n  awk -F, 'NR>1 { print $1,$5,$11,$16 }'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-015": {
+    "attackPerspective": "When \"Enable SCP (Service Control Policies) for org\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List current SCPs\naws organizations list-policies --filter SERVICE_CONTROL_POLICY\n# Example: Deny root user actions\n# Attach to OU via aws organizations attach-policy\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-016": {
+    "attackPerspective": "When \"Enforce IMDSv2 on all EC2 instances\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find instances using IMDSv1\naws ec2 describe-instances --query 'Reservations[].Instances[].{ID:InstanceId,IMDS:MetadataOptions.HttpTokens}' --output table\n# Enforce IMDSv2\naws ec2 modify-instance-metadata-options --instance-id <id> --http-tokens required --http-endpoint enabled\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-017": {
+    "attackPerspective": "When \"Use IAM roles instead of access keys for EC2\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check instances with roles\naws ec2 describe-instances --query 'Reservations[].Instances[].{ID:InstanceId,Role:IamInstanceProfile.Arn}' --output table\n# Find instances WITHOUT roles\naws ec2 describe-instances --query 'Reservations[].Instances[?!IamInstanceProfile].InstanceId' --output text\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-018": {
+    "attackPerspective": "When \"Enable cross-account access via roles (not users)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List cross-account roles\naws iam list-roles --query 'Roles[?AssumeRolePolicyDocument.Statement[?Principal.AWS]]' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-001",
+      "aws-002",
+      "aws-003"
+    ]
+  },
+  "aws-019": {
+    "attackPerspective": "Without \"Enable VPC Flow Logs for all VPCs\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List VPCs without flow logs\nfor vpc in $(aws ec2 describe-vpcs --query 'Vpcs[].VpcId' --output text); do\n  fl=$(aws ec2 describe-flow-logs --filter Name=resource-id,Values=$vpc --query 'FlowLogs[].FlowLogId' --output text)\n  [ -z \"$fl\" ] && echo \"NO FLOW LOG: $vpc\"\ndone\n# Enable\naws ec2 create-flow-logs --resource-ids <vpc-id> --resource-type VPC --traffic-type ALL --log-destination-type cloud-watch-logs --log-group-name vpc-flow-logs\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-005",
+      "aws-020",
+      "aws-021"
+    ]
+  },
+  "aws-020": {
+    "attackPerspective": "Without \"Disable SSH (port 22) from 0.0.0.0/0\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find SGs with SSH open to world\naws ec2 describe-security-groups --filters Name=ip-permission.from-port,Values=22 Name=ip-permission.to-port,Values=22 Name=ip-permission.cidr,Values='0.0.0.0/0' \\\n  --query 'SecurityGroups[].{ID:GroupId,Name:GroupName}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-005",
+      "aws-019",
+      "aws-021"
+    ]
+  },
+  "aws-021": {
+    "attackPerspective": "Without \"Disable RDP (port 3389) from 0.0.0.0/0\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\naws ec2 describe-security-groups --filters Name=ip-permission.from-port,Values=3389 Name=ip-permission.to-port,Values=3389 Name=ip-permission.cidr,Values='0.0.0.0/0' \\\n  --query 'SecurityGroups[].{ID:GroupId,Name:GroupName}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-005",
+      "aws-019",
+      "aws-020"
+    ]
+  },
+  "aws-022": {
+    "attackPerspective": "Without \"Use AWS PrivateLink for service endpoints\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List existing VPC endpoints\naws ec2 describe-vpc-endpoints --query 'VpcEndpoints[].{VPC:VpcId,Service:ServiceName,Type:VpcEndpointType}' --output table\n# Create S3 gateway endpoint\naws ec2 create-vpc-endpoint --vpc-id <vpc-id> --service-name com.amazonaws.<region>.s3 --route-table-ids <rtb-id>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-005",
+      "aws-019",
+      "aws-020"
+    ]
+  },
+  "aws-023": {
+    "attackPerspective": "Without \"Enable AWS WAF on public ALBs and CloudFront\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List WAF Web ACLs\naws wafv2 list-web-acls --scope REGIONAL --query 'WebACLs[].{Name:Name,ID:Id}' --output table\n# Check ALBs without WAF\naws elbv2 describe-load-balancers --query 'LoadBalancers[].{ARN:LoadBalancerArn,Name:LoadBalancerName}' --output text\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-005",
+      "aws-019",
+      "aws-020"
+    ]
+  },
+  "aws-024": {
+    "attackPerspective": "Without \"Enable Network Firewall for VPC\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List network firewalls\naws network-firewall list-firewalls --query 'Firewalls[].{Name:FirewallName,VPC:VpcId}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-005",
+      "aws-019",
+      "aws-020"
+    ]
+  },
+  "aws-025": {
+    "attackPerspective": "Without \"Restrict default security group to deny all\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check default SGs with rules\naws ec2 describe-security-groups --filters Name=group-name,Values=default --query 'SecurityGroups[?IpPermissions[0] || IpPermissionsEgress[0]].{VPC:VpcId,GroupId:GroupId}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-005",
+      "aws-019",
+      "aws-020"
+    ]
+  },
+  "aws-026": {
+    "attackPerspective": "When \"Enable CloudTrail log file validation\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\naws cloudtrail describe-trails --query 'trailList[].{Name:Name,Validation:LogFileValidationEnabled}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-007",
+      "aws-027"
+    ]
+  },
+  "aws-027": {
+    "attackPerspective": "When \"Enable AWS Config in all regions\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check Config recorders\naws configservice describe-configuration-recorders\n# Check delivery channels\naws configservice describe-delivery-channels\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-007",
+      "aws-026"
+    ]
+  },
+  "aws-028": {
+    "attackPerspective": "When \"Enable S3 access logging for CloudTrail bucket\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check if logging is enabled on the trail bucket\naws s3api get-bucket-logging --bucket <cloudtrail-bucket>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-007",
+      "aws-026"
+    ]
+  },
+  "aws-029": {
+    "attackPerspective": "When \"Enable CloudWatch alarms for root account usage\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Create metric filter for root login\naws logs put-metric-filter --log-group-name CloudTrail/DefaultLogGroup \\\n  --filter-name RootAccountUsage \\\n  --filter-pattern '{ $.userIdentity.type = \"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType != \"AwsServiceEvent\" }' \\\n  --metric-transformations metricName=RootAccountUsage,metricNamespace=CISBenchmark,metricValue=1\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-007",
+      "aws-026"
+    ]
+  },
+  "aws-030": {
+    "attackPerspective": "When \"Enable CloudWatch alarms for unauthorized API calls\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\naws logs put-metric-filter --log-group-name CloudTrail/DefaultLogGroup \\\n  --filter-name UnauthorizedAPICalls \\\n  --filter-pattern '{ ($.errorCode = \"*UnauthorizedAccess*\") || ($.errorCode = \"AccessDenied*\") }' \\\n  --metric-transformations metricName=UnauthorizedAPICalls,metricNamespace=CISBenchmark,metricValue=1\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-007",
+      "aws-026"
+    ]
+  },
+  "aws-031": {
+    "attackPerspective": "When \"Monitor IAM policy changes\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\naws logs put-metric-filter --log-group-name CloudTrail/DefaultLogGroup \\\n  --filter-name IAMPolicyChanges \\\n  --filter-pattern '{ ($.eventName=CreatePolicy) || ($.eventName=DeletePolicy) || ($.eventName=AttachRolePolicy) || ($.eventName=DetachRolePolicy) || ($.eventName=PutUserPolicy) || ($.eventName=DeleteUserPolicy) }' \\\n  --metric-transformations metricName=IAMPolicyChanges,metricNamespace=CISBenchmark,metricValue=1\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-007",
+      "aws-026"
+    ]
+  },
+  "aws-032": {
+    "attackPerspective": "When \"Enable Security Hub for centralized findings\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable Security Hub\naws securityhub enable-security-hub --enable-default-standards\n# Check findings\naws securityhub get-findings --query 'Findings[].{Title:Title,Severity:Severity.Label}' --max-items 10\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-007",
+      "aws-026"
+    ]
+  },
+  "aws-033": {
+    "attackPerspective": "When \"Enable AWS CloudTrail insights\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\naws cloudtrail put-insight-selectors --trail-name <trail-name> \\\n  --insight-selectors '[{\"InsightType\":\"ApiCallRateInsight\"},{\"InsightType\":\"ApiErrorRateInsight\"}]'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-006",
+      "aws-007",
+      "aws-026"
+    ]
+  },
+  "aws-034": {
+    "attackPerspective": "Without \"Enable EBS default encryption\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check current setting\naws ec2 get-ebs-encryption-by-default\n# Enable\naws ec2 enable-ebs-encryption-by-default\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-008",
+      "aws-009",
+      "aws-035"
+    ]
+  },
+  "aws-035": {
+    "attackPerspective": "Without \"Encrypt RDS instances\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find unencrypted RDS instances\naws rds describe-db-instances --query 'DBInstances[?StorageEncrypted==`false`].{ID:DBInstanceIdentifier,Engine:Engine}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-008",
+      "aws-009",
       "aws-034"
+    ]
+  },
+  "aws-036": {
+    "attackPerspective": "Without \"Enable KMS key rotation\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List keys and rotation status\nfor key in $(aws kms list-keys --query 'Keys[].KeyId' --output text); do\n  rot=$(aws kms get-key-rotation-status --key-id $key --query 'KeyRotationEnabled' --output text 2>/dev/null)\n  echo \"$key: rotation=$rot\"\ndone\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-008",
+      "aws-009",
+      "aws-034"
+    ]
+  },
+  "aws-037": {
+    "attackPerspective": "Without \"Enforce S3 bucket policy to deny HTTP\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check for SSL enforcement\nfor bucket in $(aws s3api list-buckets --query 'Buckets[].Name' --output text); do\n  policy=$(aws s3api get-bucket-policy --bucket $bucket --output text 2>&1)\n  echo \"$bucket: $(echo $policy | grep -c 'aws:SecureTransport') SSL conditions\"\ndone\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-008",
+      "aws-009",
+      "aws-034"
+    ]
+  },
+  "aws-038": {
+    "attackPerspective": "Without \"Enable CloudTrail log encryption with KMS\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\naws cloudtrail describe-trails --query 'trailList[].{Name:Name,KMS:KmsKeyId}' --output table\n# Update if missing\naws cloudtrail update-trail --name <trail> --kms-key-id <key-arn>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-008",
+      "aws-009",
+      "aws-034"
+    ]
+  },
+  "aws-039": {
+    "attackPerspective": "Without \"Enable Secrets Manager rotation\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List secrets without rotation\naws secretsmanager list-secrets --query 'SecretList[?!RotationEnabled].{Name:Name,ARN:ARN}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-008",
+      "aws-009",
+      "aws-034"
+    ]
+  },
+  "aws-040": {
+    "attackPerspective": "Without \"Enforce SSL on RDS connections\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Create parameter group enforcing SSL\naws rds modify-db-parameter-group --db-parameter-group-name <pg> \\\n  --parameters 'ParameterName=rds.force_ssl,ParameterValue=1,ApplyMethod=pending-reboot'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-008",
+      "aws-009",
+      "aws-034"
+    ]
+  },
+  "aws-041": {
+    "attackPerspective": "When \"Enable Amazon Inspector for vulnerability scanning\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable Inspector\naws inspector2 enable --resource-types EC2 ECR LAMBDA\n# Check findings\naws inspector2 list-findings --filter-criteria '{\"severity\":[{\"comparison\":\"EQUALS\",\"value\":\"CRITICAL\"}]}' --query 'findings[].title'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-042",
+      "aws-043",
+      "aws-044"
+    ]
+  },
+  "aws-042": {
+    "attackPerspective": "When \"Enable Amazon Macie for S3 data classification\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable Macie\naws macie2 enable-macie\n# Run discovery job\naws macie2 list-findings --query 'findingIds'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-041",
+      "aws-043",
+      "aws-044"
+    ]
+  },
+  "aws-043": {
+    "attackPerspective": "When \"Enable ECR image scanning\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable scan on push\naws ecr put-image-scanning-configuration --repository-name <repo> --image-scanning-configuration scanOnPush=true\n# Check scan findings\naws ecr describe-image-scan-findings --repository-name <repo> --image-id imageTag=latest\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-041",
+      "aws-042",
+      "aws-044"
+    ]
+  },
+  "aws-044": {
+    "attackPerspective": "When \"Restrict Lambda function permissions\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List Lambda functions and their roles\naws lambda list-functions --query 'Functions[].{Name:FunctionName,Role:Role}' --output table\n# Check for wildcard permissions in role policies\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-041",
+      "aws-042",
+      "aws-043"
+    ]
+  },
+  "aws-045": {
+    "attackPerspective": "When \"Enable ECS/EKS audit logging\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# EKS — enable audit logging\naws eks update-cluster-config --name <cluster> --logging '{\"clusterLogging\":[{\"types\":[\"api\",\"audit\",\"authenticator\",\"controllerManager\",\"scheduler\"],\"enabled\":true}]}'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-041",
+      "aws-042",
+      "aws-043"
+    ]
+  },
+  "aws-046": {
+    "attackPerspective": "Systems without \"Enable SSM Patch Manager auto-patching\" applied can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check SSM managed instances\naws ssm describe-instance-information --query 'InstanceInformationList[].{ID:InstanceId,Ping:PingStatus,Platform:PlatformType}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-010",
+      "aws-047",
+      "aws-048"
+    ]
+  },
+  "aws-047": {
+    "attackPerspective": "Systems without \"Enable AMI auto-updates with Image Builder\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List image pipelines\naws imagebuilder list-image-pipelines --query 'imagePipelineList[].{Name:name,Status:status}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-010",
+      "aws-046",
+      "aws-048"
+    ]
+  },
+  "aws-048": {
+    "attackPerspective": "Systems without \"Monitor for AWS service deprecations\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check AWS Health events\naws health describe-events --filter '{\"eventTypeCategories\":[\"accountNotification\"],\"eventStatusCodes\":[\"open\",\"upcoming\"]}' --query 'events[].{Service:service,Description:eventTypeCode}' --output table\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "aws-010",
+      "aws-046",
+      "aws-047"
     ]
   }
 }

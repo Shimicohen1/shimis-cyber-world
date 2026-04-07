@@ -1,23 +1,564 @@
 {
   "m365-022": {
-    "attackPerspective": "Attackers who compromise a mailbox often create mail transport rules or inbox rules that auto-forward all email to an external address — this is one of the most common persistence and data exfiltration techniques in BEC (Business Email Compromise) attacks. A single forwarding rule can silently exfiltrate months of sensitive communications.",
-    "implementationNotes": "# Connect to Exchange Online\nConnect-ExchangeOnline\n\n# Find transport rules that forward externally\nGet-TransportRule | Where-Object {\n  $_.RedirectMessageTo -or $_.BlindCopyTo -or $_.CopyTo\n} | Select-Object Name, State, Priority, RedirectMessageTo, BlindCopyTo | Format-List\n\n# Find user-level inbox rules forwarding externally\n$mailboxes = Get-EXOMailbox -ResultSize Unlimited -PropertySets Minimum\nforeach ($mbx in $mailboxes) {\n  $rules = Get-InboxRule -Mailbox $mbx.UserPrincipalName -ErrorAction SilentlyContinue\n  $fwd = $rules | Where-Object { $_.ForwardTo -or $_.ForwardAsAttachmentTo -or $_.RedirectTo }\n  if ($fwd) {\n    Write-Warning \"$($mbx.UserPrincipalName) has forwarding rules:\"\n    $fwd | Select-Object Name, ForwardTo, RedirectTo | Format-Table\n  }\n}\n\n# Block auto-forwarding to external domains\nNew-TransportRule -Name 'Block External Auto-Forward' \\\n  -FromScope InOrganization \\\n  -SentToScope NotInOrganization \\\n  -MessageTypeMatches AutoForward \\\n  -RejectMessageReasonText 'External mail forwarding is blocked per security policy'",
-    "validationNotes": "# Verify transport rule blocks forwarding\nGet-TransportRule -Identity 'Block External Auto-Forward' | Select State, Priority\n\n# Test by setting a forwarding rule and sending a test email\n# The message should be rejected\n\n# Check Remote Domains\nGet-RemoteDomain | Select DomainName, AutoForwardEnabled\n# AutoForwardEnabled should be $false for Default (*)",
-    "tuningNotes": "Allow specific forwarding for business-critical integrations (e.g., CRM, ticketing) by adding exceptions to the transport rule. Monitor for users trying to set forwarding via Outlook client or OWA — these attempts will appear in audit logs even if blocked.",
-    "advancedDetection": "// KQL: Detect new inbox rules with forwarding\nOfficeActivity\n| where TimeGenerated > ago(24h)\n| where Operation in ('New-InboxRule', 'Set-InboxRule', 'Enable-InboxRule')\n| where Parameters has_any ('ForwardTo', 'ForwardAsAttachmentTo', 'RedirectTo')\n| project TimeGenerated, UserId, Operation, Parameters\n| extend ForwardTarget = extract('\"Value\":\"([^\"]+)\"', 1, tostring(Parameters))\n| where ForwardTarget !endswith 'yourdomain.com'",
+    "attackPerspective": "When \"Mail transport rules should not forward email externally.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Mail transport rules should not forward email externally.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
     "relatedIds": [
-      "m365-023",
-      "m365-025"
+      "m365-021",
+      "m365-026",
+      "m365-027"
     ]
   },
   "m365-023": {
-    "attackPerspective": "If auditing is disabled, there is no forensic trail of mailbox access, permission changes, or data exfiltration. Attackers who gain initial access will often check audit status and disable it if possible — making their subsequent actions invisible to incident responders.",
-    "implementationNotes": "# Check organization-wide audit status\nGet-OrganizationConfig | Select-Object AuditDisabled\n# Must be False\n\n# Enable if disabled\nSet-OrganizationConfig -AuditDisabled $false\n\n# Verify per-mailbox auditing\nGet-EXOMailbox -ResultSize Unlimited -PropertySets Audit | Where-Object { $_.AuditEnabled -eq $false } | Select UserPrincipalName\n\n# Enable on all mailboxes\nGet-EXOMailbox -ResultSize Unlimited | Set-Mailbox -AuditEnabled $true",
-    "validationNotes": "# Verify global audit\n(Get-OrganizationConfig).AuditDisabled\n# Expected: False\n\n# Verify sample mailboxes\nGet-EXOMailbox -Identity admin@domain.com -PropertySets Audit | Select AuditEnabled, AuditLogAgeLimit\n# Expected: AuditEnabled = True, AuditLogAgeLimit = 90+ days",
-    "tuningNotes": "Default audit log retention is 90 days (E3) or 1 year (E5). For compliance requirements beyond that, configure Microsoft Purview audit log retention policies. Focus on high-value mailboxes (executives, finance) for extended retention.",
-    "advancedDetection": "// KQL: Detect audit being disabled\nOfficeActivity\n| where Operation == 'Set-OrganizationConfig'\n| where Parameters has 'AuditDisabled'\n| where Parameters has 'True'\n| project TimeGenerated, UserId, Operation, ClientIP\n| extend AlertSeverity = 'Critical'",
+    "attackPerspective": "When \"Ensure 'AuditDisabled' organizationally is set to 'False'.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure 'AuditDisabled' organizationally is set to 'False'.\":\n   Get-OrganizationConfig | fl AuditDisabled\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nGet-OrganizationConfig | fl AuditDisabled\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-024",
+      "m365-025",
+      "m365-067"
+    ]
+  },
+  "m365-021": {
+    "attackPerspective": "When \"Technical notification email contacts must be configured.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Technical notification email contacts must be configured.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
     "relatedIds": [
       "m365-022",
+      "m365-026",
+      "m365-027"
+    ]
+  },
+  "m365-024": {
+    "attackPerspective": "When \"Ensure mailbox audit actions are configured.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure mailbox audit actions are configured.\":\n   Get-Mailbox | Select AuditEnabled\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nGet-Mailbox | Select AuditEnabled\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-023",
+      "m365-025",
+      "m365-067"
+    ]
+  },
+  "m365-025": {
+    "attackPerspective": "When \"Ensure 'AuditBypassEnabled' is not enabled on mailboxes.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure 'AuditBypassEnabled' is not enabled on mailboxes.\":\n   Get-MailboxAuditBypassAssociation -ResultSize Unlimited\n# EXO PowerShell: Get-MailboxAuditBypassAssociation -ResultSize Unlimited\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nGet-MailboxAuditBypassAssociation -ResultSize Unlimited\n# EXO PowerShell: Get-MailboxAuditBypassAssociation -ResultSize Unlimited\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-023",
+      "m365-024",
+      "m365-067"
+    ]
+  },
+  "m365-026": {
+    "attackPerspective": "When \"Ensure all forms of mail forwarding are blocked and/or disabled.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure all forms of mail forwarding are blocked and/or disabled.\":\n   Get-RemoteDomain Default | fl AutoForwardEnabled\n# EXO PowerShell: Get-RemoteDomain Default | fl AutoForwardEnabled\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nGet-RemoteDomain Default | fl AutoForwardEnabled\n# EXO PowerShell: Get-RemoteDomain Default | fl AutoForwardEnabled\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-027"
+    ]
+  },
+  "m365-027": {
+    "attackPerspective": "When \"Ensure mail transport rules do not whitelist specific domains.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure mail transport rules do not whitelist specific domains.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-028": {
+    "attackPerspective": "When \"Ensure email from external senders is identified.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure email from external senders is identified.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-029": {
+    "attackPerspective": "When \"Ensure users installing Outlook add-ins is not allowed.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure users installing Outlook add-ins is not allowed.\":\n   Add-ins → User-owned apps\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nAdd-ins → User-owned apps\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-030": {
+    "attackPerspective": "When \"Ensure modern authentication for Exchange Online is enabled.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure modern authentication for Exchange Online is enabled.\":\n   Get-OrganizationConfig | fl OAuth2ClientProfileEnabled\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nGet-OrganizationConfig | fl OAuth2ClientProfileEnabled\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-031",
+      "m365-032",
+      "m365-033"
+    ]
+  },
+  "m365-031": {
+    "attackPerspective": "When \"Ensure MailTips are enabled for end users.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure MailTips are enabled for end users.\":\n   Get-OrganizationConfig | fl MailTipsAllTipsEnabled\n# PowerShell: Get-OrganizationConfig | fl MailTipsAllTipsEnabled,MailTipsExternalRecipientsTipsEnabled\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nGet-OrganizationConfig | fl MailTipsAllTipsEnabled\n# PowerShell: Get-OrganizationConfig | fl MailTipsAllTipsEnabled,MailTipsExternalRecipientsTipsEnabled\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-032",
+      "m365-033"
+    ]
+  },
+  "m365-032": {
+    "attackPerspective": "When \"Ensure additional storage providers are restricted in Outlook on the web.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure additional storage providers are restricted in Outlook on the web.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-033"
+    ]
+  },
+  "m365-033": {
+    "attackPerspective": "When \"Ensure SMTP AUTH is disabled.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure SMTP AUTH is disabled.\":\n   Get-TransportConfig | fl SmtpClientAuthenticationDisabled\n# PowerShell: Get-TransportConfig | fl SmtpClientAuthenticationDisabled\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nGet-TransportConfig | fl SmtpClientAuthenticationDisabled\n# PowerShell: Get-TransportConfig | fl SmtpClientAuthenticationDisabled\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-034": {
+    "attackPerspective": "When \"Ensure Direct Send submissions are rejected.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure Direct Send submissions are rejected.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-035": {
+    "attackPerspective": "When \"Idle session sign-out should be enabled for SharePoint Online.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Idle session sign-out should be enabled for SharePoint Online.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-036": {
+    "attackPerspective": "When \"SharePoint should use Conditional Access policy for access control.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"SharePoint should use Conditional Access policy for access control.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Deploy in report-only mode first to assess impact. Exclude break-glass accounts from all Conditional Access policies. Test with a pilot group before broad deployment.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-037": {
+    "attackPerspective": "When \"Ensure modern authentication for SharePoint applications is required.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure modern authentication for SharePoint applications is required.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-038": {
+    "attackPerspective": "When \"Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-039": {
+    "attackPerspective": "When \"Ensure external content sharing is restricted.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure external content sharing is restricted.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-040": {
+    "attackPerspective": "When \"Ensure OneDrive content sharing is restricted.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure OneDrive content sharing is restricted.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-041": {
+    "attackPerspective": "When \"Ensure that SharePoint guest users cannot share items they don't own.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure that SharePoint guest users cannot share items they don't own.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-042": {
+    "attackPerspective": "When \"Ensure SharePoint external sharing is managed through domain whitelist/blacklists.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure SharePoint external sharing is managed through domain whitelist/blacklists.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-043": {
+    "attackPerspective": "When \"Ensure link sharing is restricted in SharePoint and OneDrive.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure link sharing is restricted in SharePoint and OneDrive.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-044": {
+    "attackPerspective": "When \"Ensure external sharing is restricted by security group.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure external sharing is restricted by security group.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-045": {
+    "attackPerspective": "When \"Ensure guest access to a site or OneDrive will expire automatically.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure guest access to a site or OneDrive will expire automatically.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-046": {
+    "attackPerspective": "When \"Ensure reauthentication with verification code is restricted.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure reauthentication with verification code is restricted.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-047": {
+    "attackPerspective": "When \"Ensure the SharePoint default sharing link permission is set.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure the SharePoint default sharing link permission is set.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-030",
+      "m365-031",
+      "m365-032"
+    ]
+  },
+  "m365-048": {
+    "attackPerspective": "When \"Ensure Office 365 SharePoint infected files are disallowed for download.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-ExchangeOnline / Connect-SPOService / Connect-MicrosoftTeams\n3. Check current state of \"Ensure Office 365 SharePoint infected files are disallowed for download.\":\n   Set-SPOTenant -DisallowInfectedFileDownload $true\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nSet-SPOTenant -DisallowInfectedFileDownload $true\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-049": {
+    "attackPerspective": "When \"Ensure OneDrive sync is restricted for unmanaged devices.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure OneDrive sync is restricted for unmanaged devices.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-050": {
+    "attackPerspective": "When \"Teams messaging policies should be reviewed for security.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Teams messaging policies should be reviewed for security.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-051": {
+    "attackPerspective": "When \"Ensure external file sharing in Teams is enabled for only approved cloud storage services.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure external file sharing in Teams is enabled for only approved cloud storage services.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-052": {
+    "attackPerspective": "When \"Ensure users can't send emails to a channel email address.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure users can't send emails to a channel email address.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-053": {
+    "attackPerspective": "When \"Ensure external domains are restricted in the Teams admin center.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure external domains are restricted in the Teams admin center.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-054": {
+    "attackPerspective": "When \"Ensure communication with unmanaged Teams users is disabled.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure communication with unmanaged Teams users is disabled.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-055": {
+    "attackPerspective": "When \"Ensure external Teams users cannot initiate conversations.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure external Teams users cannot initiate conversations.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-056": {
+    "attackPerspective": "When \"Ensure communication with Skype users is disabled.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure communication with Skype users is disabled.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-057": {
+    "attackPerspective": "When \"Ensure app permission policies are configured.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure app permission policies are configured.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-058": {
+    "attackPerspective": "When \"Ensure anonymous users can't join a meeting.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure anonymous users can't join a meeting.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-059": {
+    "attackPerspective": "When \"Ensure anonymous users and dial-in callers can't start a meeting.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure anonymous users and dial-in callers can't start a meeting.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-060": {
+    "attackPerspective": "When \"Ensure only people in my org can bypass the lobby.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure only people in my org can bypass the lobby.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-061": {
+    "attackPerspective": "When \"Ensure users dialing in can't bypass the lobby.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure users dialing in can't bypass the lobby.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-062": {
+    "attackPerspective": "When \"Ensure meeting chat does not allow anonymous users.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure meeting chat does not allow anonymous users.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-063": {
+    "attackPerspective": "When \"Ensure only organizers and co-organizers can present.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure only organizers and co-organizers can present.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-064": {
+    "attackPerspective": "When \"Ensure external participants can't give or request control.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure external participants can't give or request control.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-065": {
+    "attackPerspective": "When \"Ensure external meeting chat is off.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure external meeting chat is off.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-066": {
+    "attackPerspective": "When \"Ensure meeting recording is off by default.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure meeting recording is off by default.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-021",
+      "m365-022",
+      "m365-026"
+    ]
+  },
+  "m365-067": {
+    "attackPerspective": "When \"Ensure users can report security concerns in Teams.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Microsoft 365 Admin Center / Teams Admin / SharePoint Admin / Exchange Admin with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure users can report security concerns in Teams.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, MicrosoftTeams) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Microsoft Defender for Office 365. Track sharing changes, external access modifications, and transport rule edits. Use Exchange message trace for mail flow analysis. Alert on bulk external sharing events.",
+    "relatedIds": [
+      "m365-023",
       "m365-024",
       "m365-025"
     ]

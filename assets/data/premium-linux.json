@@ -1,52 +1,698 @@
 {
   "lin-001": {
-    "attackPerspective": "Attackers who gain initial access via SSH brute-force or leaked credentials will attempt to escalate to root. If root login is permitted, a single compromised password gives full system control. In the 2021 Codecov supply chain attack, SSH keys were the pivot point for lateral movement.",
-    "implementationNotes": "1. Edit /etc/ssh/sshd_config and set PermitRootLogin no\n2. Ensure at least one sudo-capable user exists before disabling\n3. Test SSH access with the sudo user in a SEPARATE session before restarting sshd\n4. For break-glass: configure a local console-only root password via passwd",
-    "validationNotes": "# Verify root login is disabled\nsudo sshd -T | grep permitrootlogin\n# Expected: permitrootlogin no\n\n# Test from another machine\nssh root@<server> # Should be rejected\n\n# Check auth log for attempts\nsudo grep 'root' /var/log/auth.log | tail -20",
-    "tuningNotes": "On some legacy systems, automated backup tools or config management agents (Ansible, Puppet) may connect as root. Before disabling, audit authorized_keys on root and migrate those to a dedicated service account with limited sudo.",
-    "advancedDetection": "# Detect root login attempts in SIEM\nindex=linux sourcetype=syslog \"Failed password for root\"\n| stats count by src_ip\n| where count > 5\n| sort -count",
+    "attackPerspective": "When \"Disable root SSH login\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nPermitRootLogin no\n# Then restart:\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "lin-002",
-      "lin-010",
-      "lin-016"
-    ],
-    "commandFull": "# Full hardening script for SSH root login\n# Step 1: Backup current config\nsudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak.$(date +%Y%m%d)\n\n# Step 2: Disable root login\nsudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config\n\n# Step 3: Verify the change\ngrep '^PermitRootLogin' /etc/ssh/sshd_config\n\n# Step 4: Test config before restart\nsudo sshd -t\n\n# Step 5: Restart (only if test passes)\nsudo systemctl restart sshd\n\n# Step 6: Verify from another session\nssh root@localhost 2>&1 | grep -i 'denied\\|refused'\n\n# Step 7: Check auth log for confirmation\nsudo tail -5 /var/log/auth.log"
+      "lin-003",
+      "lin-004"
+    ]
   },
   "lin-002": {
-    "attackPerspective": "Password-based SSH is the #1 vector for automated attacks. Botnets like Mirai scan millions of IPs for SSH password auth. After the 2024 XZ Utils backdoor attempt (CVE-2024-3094), key-based auth became even more critical as a defense-in-depth layer.",
-    "implementationNotes": "1. Generate ED25519 key pair: ssh-keygen -t ed25519 -C 'admin@org'\n2. Copy public key: ssh-copy-id -i ~/.ssh/id_ed25519.pub user@host\n3. Test key-based login in a NEW terminal session\n4. Only after confirming key login works: set PasswordAuthentication no\n5. Restart sshd: sudo systemctl restart sshd",
-    "validationNotes": "# Verify password auth is off\nsudo sshd -T | grep passwordauthentication\n# Expected: passwordauthentication no\n\n# Attempt password login (should fail)\nssh -o PreferredAuthentications=password user@<host>",
-    "tuningNotes": "If you use SFTP for automated transfers, ensure those accounts also use key-based auth or are in a Match block with forced-commands.",
-    "advancedDetection": "",
+    "attackPerspective": "When \"Enforce SSH key-based authentication\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nPasswordAuthentication no\nPubkeyAuthentication yes\n# Restart sshd\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "lin-001",
-      "lin-016",
-      "lin-025"
+      "lin-003",
+      "lin-004"
     ]
   },
   "lin-006": {
-    "attackPerspective": "An open firewall means every listening service is directly attackable from the network. In the Capital One breach (2019), a misconfigured WAF combined with open ports enabled SSRF exploitation. Defense-in-depth starts at the network layer.",
-    "implementationNotes": "1. Inventory all required ports: ss -tlnp\n2. Set default deny: sudo ufw default deny incoming\n3. Allow only required ports: sudo ufw allow 22/tcp; sudo ufw allow 443/tcp\n4. Enable: sudo ufw enable\n5. For iptables: use iptables-persistent to survive reboots",
-    "validationNotes": "# Check firewall status\nsudo ufw status verbose\n\n# Port scan yourself\nnmap -sS -p 1-65535 localhost\n\n# From external machine\nnmap -sS -Pn <target_ip>",
-    "tuningNotes": "For containerized workloads, remember that Docker modifies iptables directly and may bypass UFW rules. Use --iptables=false in Docker daemon config and manage container networking through the firewall.",
-    "advancedDetection": "",
+    "attackPerspective": "Without \"Configure firewall (iptables/nftables)\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# UFW example (Ubuntu)\nsudo ufw default deny incoming\nsudo ufw default allow outgoing\nsudo ufw allow 22/tcp\nsudo ufw allow 443/tcp\nsudo ufw enable\nsudo ufw status verbose\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "lin-007",
       "lin-008",
-      "lin-021"
-    ],
-    "commandFull": "# Complete firewall hardening script (UFW)\n# Step 1: Reset to defaults\nsudo ufw --force reset\n\n# Step 2: Set default policies\nsudo ufw default deny incoming\nsudo ufw default allow outgoing\n\n# Step 3: Allow required services\nsudo ufw allow 22/tcp comment 'SSH'\nsudo ufw allow 443/tcp comment 'HTTPS'\n# Add more as needed:\n# sudo ufw allow from 10.0.0.0/8 to any port 5432 comment 'Postgres internal'\n\n# Step 4: Enable logging\nsudo ufw logging on\n\n# Step 5: Enable firewall\nsudo ufw --force enable\n\n# Step 6: Verify\nsudo ufw status verbose\nsudo ufw status numbered"
+      "lin-026"
+    ]
   },
   "lin-009": {
-    "attackPerspective": "Without auditd, attackers operate blind to defenders. Post-exploitation tools like LinPEAS check if auditd is running and adjust their evasion accordingly. In the SolarWinds attack, the lack of comprehensive audit logging on some endpoints delayed detection by months.",
-    "implementationNotes": "1. Install: sudo apt install auditd audispd-plugins\n2. Enable and start: sudo systemctl enable --now auditd\n3. Add rules to /etc/audit/rules.d/audit.rules\n4. Load rules: sudo augenrules --load\n5. Set audit log rotation in /etc/audit/auditd.conf",
-    "validationNotes": "# Check auditd is running\nsudo systemctl status auditd\n\n# Verify rules are loaded\nsudo auditctl -l\n\n# Test: modify /etc/passwd and check\nsudo ausearch -k identity -ts recent",
-    "tuningNotes": "",
-    "advancedDetection": "# Key auditd rules for SOC visibility\n-a always,exit -F arch=b64 -S execve -k exec_commands\n-w /etc/passwd -p wa -k identity\n-w /etc/shadow -p wa -k identity\n-a always,exit -F arch=b64 -S connect -k network_connect\n-w /usr/bin/wget -p x -k download_tools\n-w /usr/bin/curl -p x -k download_tools",
+    "attackPerspective": "When \"Enable and configure auditd\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo apt install auditd audispd-plugins  # Debian/Ubuntu\nsudo systemctl enable auditd\nsudo systemctl start auditd\n# Key rules (/etc/audit/rules.d/audit.rules):\n-w /etc/passwd -p wa -k identity\n-w /etc/shadow -p wa -k identity\n-w /var/log/auth.log -p wa -k auth_log\n-a always,exit -F arch=b64 -S execve -k exec\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "lin-010",
-      "lin-027",
-      "lin-028"
+      "lin-033",
+      "lin-034"
+    ]
+  },
+  "lin-003": {
+    "attackPerspective": "When \"Set password complexity and aging\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/security/pwquality.conf\nminlen = 14\nminclass = 4\n# /etc/login.defs\nPASS_MAX_DAYS 90\nPASS_MIN_DAYS 7\nPASS_WARN_AGE 14\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-004"
+    ]
+  },
+  "lin-004": {
+    "attackPerspective": "When \"Restrict sudo access\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List current sudo users\ngrep -r 'ALL' /etc/sudoers /etc/sudoers.d/\n# Restrict to admin group only\nsudo visudo\n# Ensure: %admin ALL=(ALL:ALL) ALL\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-005": {
+    "attackPerspective": "When \"Lock inactive user accounts\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve limited unauthorized access or information disclosure that could aid further attacks. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo useradd -D -f 30\n# For existing users:\nsudo chage --inactive 30 <username>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-007": {
+    "attackPerspective": "Without \"Disable IP forwarding\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/sysctl.conf\nnet.ipv4.ip_forward = 0\nnet.ipv6.conf.all.forwarding = 0\n# Apply\nsudo sysctl -p\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-008",
+      "lin-026"
+    ]
+  },
+  "lin-008": {
+    "attackPerspective": "Without \"Disable ICMP redirects\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/sysctl.conf\nnet.ipv4.conf.all.accept_redirects = 0\nnet.ipv4.conf.default.accept_redirects = 0\nnet.ipv6.conf.all.accept_redirects = 0\nsudo sysctl -p\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-007",
+      "lin-026"
+    ]
+  },
+  "lin-010": {
+    "attackPerspective": "When \"Ship logs to remote syslog / SIEM\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/rsyslog.conf (rsyslog)\n*.* @@siem.company.com:514\n# Or use Elastic Agent / Splunk UF / Azure AMA\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-009",
+      "lin-033",
+      "lin-034"
+    ]
+  },
+  "lin-011": {
+    "attackPerspective": "Without \"Enforce TLS 1.2+ system-wide\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssl/openssl.cnf\nMinProtocol = TLSv1.2\n# For SSH (/etc/ssh/sshd_config):\nCiphers aes256-gcm@openssh.com,aes128-gcm@openssh.com\nMACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-012",
+      "lin-040",
+      "lin-041"
+    ]
+  },
+  "lin-012": {
+    "attackPerspective": "Without \"Enable filesystem encryption at rest\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check if LUKS is configured\nsudo lsblk -f | grep crypto_LUKS\n# Create encrypted volume\nsudo cryptsetup luksFormat /dev/sdX\nsudo cryptsetup open /dev/sdX encrypted_vol\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-011",
+      "lin-040",
+      "lin-041"
+    ]
+  },
+  "lin-013": {
+    "attackPerspective": "When \"Disable unnecessary services\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List running services\nsudo systemctl list-units --type=service --state=running\n# Disable unnecessary ones\nsudo systemctl disable --now avahi-daemon\nsudo systemctl disable --now cups\nsudo systemctl disable --now rpcbind\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-014",
+      "lin-044",
+      "lin-045"
+    ]
+  },
+  "lin-014": {
+    "attackPerspective": "When \"Set secure file permissions\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo chmod 644 /etc/passwd\nsudo chmod 640 /etc/shadow\nsudo chmod 600 /etc/ssh/sshd_config\nsudo chmod 700 /root\n# Find world-writable files\nsudo find / -type f -perm -0002 -not -path '/proc/*' 2>/dev/null\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-044",
+      "lin-045"
+    ]
+  },
+  "lin-015": {
+    "attackPerspective": "Systems without \"Enable automatic security updates\" applied can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Ubuntu/Debian\nsudo apt install unattended-upgrades\nsudo dpkg-reconfigure -plow unattended-upgrades\n# RHEL/CentOS\nsudo dnf install dnf-automatic\nsudo systemctl enable --now dnf-automatic-install.timer\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-055",
+      "lin-056",
+      "lin-057"
+    ]
+  },
+  "lin-016": {
+    "attackPerspective": "When \"Configure SSH idle timeout\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nClientAliveInterval 300\nClientAliveCountMax 0\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-017": {
+    "attackPerspective": "When \"Restrict cron to authorized users\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo rm -f /etc/cron.deny\necho root | sudo tee /etc/cron.allow\nsudo chmod 600 /etc/cron.allow\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-018": {
+    "attackPerspective": "When \"Set default umask to 027\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/profile and /etc/bashrc\numask 027\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-019": {
+    "attackPerspective": "When \"Ensure no accounts have empty passwords\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find accounts with empty passwords\nsudo awk -F: '($2 == \"\") {print $1}' /etc/shadow\n# Lock any found accounts\nsudo passwd -l <username>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-020": {
+    "attackPerspective": "When \"Ensure root is the only UID 0 account\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nawk -F: '($3 == 0) { print $1 }' /etc/passwd\n# Should only show: root\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-021": {
+    "attackPerspective": "When \"Set SSH MaxAuthTries to 4\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve limited unauthorized access or information disclosure that could aid further attacks. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nMaxAuthTries 4\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-022": {
+    "attackPerspective": "When \"Disable SSH X11 forwarding\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nX11Forwarding no\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-023": {
+    "attackPerspective": "When \"Configure SSH banner\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve limited unauthorized access or information disclosure that could aid further attacks. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\necho 'Authorized users only. All activity is monitored.' | sudo tee /etc/issue.net\n# /etc/ssh/sshd_config\nBanner /etc/issue.net\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-024": {
+    "attackPerspective": "When \"Enforce minimum password age (7 days)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/login.defs\nPASS_MIN_DAYS 7\n# For existing users\nsudo chage --mindays 7 <username>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-025": {
+    "attackPerspective": "When \"Restrict SSH to specific users/groups\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nAllowGroups sshusers\n# Add users to group\nsudo groupadd sshusers\nsudo usermod -aG sshusers <username>\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-001",
+      "lin-002",
+      "lin-003"
+    ]
+  },
+  "lin-026": {
+    "attackPerspective": "Without \"Disable source routing\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/sysctl.conf\nnet.ipv4.conf.all.accept_source_route = 0\nnet.ipv4.conf.default.accept_source_route = 0\nnet.ipv6.conf.all.accept_source_route = 0\nsudo sysctl -p\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-007",
+      "lin-008"
+    ]
+  },
+  "lin-027": {
+    "attackPerspective": "Without \"Enable TCP SYN cookies\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/sysctl.conf\nnet.ipv4.tcp_syncookies = 1\nsudo sysctl -p\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-007",
+      "lin-008"
+    ]
+  },
+  "lin-028": {
+    "attackPerspective": "Without \"Enable reverse path filtering\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/sysctl.conf\nnet.ipv4.conf.all.rp_filter = 1\nnet.ipv4.conf.default.rp_filter = 1\nsudo sysctl -p\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-007",
+      "lin-008"
+    ]
+  },
+  "lin-029": {
+    "attackPerspective": "Without \"Disable IPv6 if not required\", the attack surface expands to allow external reconnaissance and potential exploitation leading to limited unauthorized access or information disclosure that could aid further attacks. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/sysctl.conf\nnet.ipv6.conf.all.disable_ipv6 = 1\nnet.ipv6.conf.default.disable_ipv6 = 1\nnet.ipv6.conf.lo.disable_ipv6 = 1\nsudo sysctl -p\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-007",
+      "lin-008"
+    ]
+  },
+  "lin-030": {
+    "attackPerspective": "Without \"Log suspicious (martian) packets\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/sysctl.conf\nnet.ipv4.conf.all.log_martians = 1\nnet.ipv4.conf.default.log_martians = 1\nsudo sysctl -p\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-007",
+      "lin-008"
+    ]
+  },
+  "lin-031": {
+    "attackPerspective": "Without \"Disable DCCP, SCTP, RDS, TIPC protocols\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/modprobe.d/CIS.conf\ninstall dccp /bin/true\ninstall sctp /bin/true\ninstall rds /bin/true\ninstall tipc /bin/true\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-007",
+      "lin-008"
+    ]
+  },
+  "lin-032": {
+    "attackPerspective": "Without \"Disable wireless interfaces (servers)\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List wireless interfaces\niwconfig 2>/dev/null | grep -v 'no wireless'\n# Disable\nsudo ip link set wlan0 down\n# Blacklist driver\necho 'blacklist cfg80211' | sudo tee /etc/modprobe.d/nowifi.conf\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-006",
+      "lin-007",
+      "lin-008"
+    ]
+  },
+  "lin-033": {
+    "attackPerspective": "When \"Configure auditd rules for privilege escalation\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/audit/rules.d/privilege.rules\n-a always,exit -F path=/usr/bin/sudo -F perm=x -k priv_esc\n-a always,exit -F path=/usr/bin/su -F perm=x -k priv_esc\n-w /etc/sudoers -p wa -k scope\n-w /etc/sudoers.d/ -p wa -k scope\nsudo augenrules --load\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-009",
+      "lin-010",
+      "lin-034"
+    ]
+  },
+  "lin-034": {
+    "attackPerspective": "When \"Audit file deletions by users\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/audit/rules.d/delete.rules\n-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete\nsudo augenrules --load\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-009",
+      "lin-010",
+      "lin-033"
+    ]
+  },
+  "lin-035": {
+    "attackPerspective": "When \"Ensure log files have correct permissions\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo find /var/log -type f -exec chmod g-wx,o-rwx {} +\nsudo chmod 640 /var/log/syslog /var/log/auth.log\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-009",
+      "lin-010",
+      "lin-033"
+    ]
+  },
+  "lin-036": {
+    "attackPerspective": "When \"Audit kernel module loading/unloading\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/audit/rules.d/modules.rules\n-w /sbin/insmod -p x -k modules\n-w /sbin/rmmod -p x -k modules\n-w /sbin/modprobe -p x -k modules\n-a always,exit -F arch=b64 -S init_module -S delete_module -k modules\nsudo augenrules --load\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-009",
+      "lin-010",
+      "lin-033"
+    ]
+  },
+  "lin-037": {
+    "attackPerspective": "When \"Monitor login/logout events\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/audit/rules.d/logins.rules\n-w /var/log/lastlog -p wa -k logins\n-w /var/run/faillock/ -p wa -k logins\n-w /var/log/tallylog -p wa -k logins\nsudo augenrules --load\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-009",
+      "lin-010",
+      "lin-033"
+    ]
+  },
+  "lin-038": {
+    "attackPerspective": "When \"Enable process accounting\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo apt install acct  # Debian/Ubuntu\nsudo systemctl enable --now acct\n# View last commands\nlastcomm --user <username>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-009",
+      "lin-010",
+      "lin-033"
+    ]
+  },
+  "lin-039": {
+    "attackPerspective": "When \"Configure log rotation\" is not properly configured, attackers can operate without detection, leading to limited unauthorized access or information disclosure that could aid further attacks. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/logrotate.conf\nrotate 13\nweekly\ncompress\ndelaycompress\n# Verify\nlogrotate -d /etc/logrotate.conf\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-009",
+      "lin-010",
+      "lin-033"
+    ]
+  },
+  "lin-040": {
+    "attackPerspective": "Without \"Disable SSH weak key exchange algorithms\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nKexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-011",
+      "lin-012",
+      "lin-041"
+    ]
+  },
+  "lin-041": {
+    "attackPerspective": "Without \"Set SSH protocol to version 2 only\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nProtocol 2\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-011",
+      "lin-012",
+      "lin-040"
+    ]
+  },
+  "lin-042": {
+    "attackPerspective": "Without \"Configure SSH host key algorithms\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/ssh/sshd_config\nHostKeyAlgorithms ssh-ed25519,rsa-sha2-512,rsa-sha2-256\nsudo systemctl restart sshd\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-011",
+      "lin-012",
+      "lin-040"
+    ]
+  },
+  "lin-043": {
+    "attackPerspective": "Without \"Verify integrity of installed packages\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Debian/Ubuntu\nsudo debsums --changed\n# RHEL/CentOS\nsudo rpm -Va --nomtime --nosize --nomd5\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-011",
+      "lin-012",
+      "lin-040"
+    ]
+  },
+  "lin-044": {
+    "attackPerspective": "When \"Disable USB storage (servers)\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/modprobe.d/usb-storage.conf\ninstall usb-storage /bin/true\n# Blacklist immediately\nsudo rmmod usb-storage 2>/dev/null\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-045"
+    ]
+  },
+  "lin-045": {
+    "attackPerspective": "When \"Set sticky bit on world-writable directories\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Find world-writable dirs without sticky bit\nsudo find / -type d \\( -perm -0002 -a ! -perm -1000 \\) 2>/dev/null\n# Fix\nsudo chmod +t /tmp /var/tmp\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-046": {
+    "attackPerspective": "When \"Disable core dumps\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/security/limits.conf\n* hard core 0\n# /etc/sysctl.conf\nfs.suid_dumpable = 0\nsudo sysctl -p\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-047": {
+    "attackPerspective": "When \"Enable SELinux or AppArmor\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check SELinux status\nsudo sestatus\n# Or AppArmor\nsudo aa-status\n# Enable AppArmor (Debian/Ubuntu)\nsudo systemctl enable --now apparmor\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-048": {
+    "attackPerspective": "When \"Disable automounting (autofs)\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo systemctl disable --now autofs 2>/dev/null\nsudo apt purge autofs 2>/dev/null\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-049": {
+    "attackPerspective": "When \"Set GRUB bootloader password\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Generate password hash\nsudo grub2-mkpasswd-pbkdf2\n# Add to /etc/grub.d/40_custom:\nset superusers=\"admin\"\npassword_pbkdf2 admin <hash>\nsudo update-grub\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-050": {
+    "attackPerspective": "When \"Restrict access to /boot/grub/grub.cfg\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo chown root:root /boot/grub/grub.cfg\nsudo chmod 600 /boot/grub/grub.cfg\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-051": {
+    "attackPerspective": "When \"Disable Ctrl-Alt-Del reboot\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo systemctl mask ctrl-alt-del.target\nsudo systemctl daemon-reload\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-052": {
+    "attackPerspective": "When \"Mount /tmp with noexec,nosuid,nodev\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# /etc/fstab\ntmpfs /tmp tmpfs defaults,noexec,nosuid,nodev 0 0\nsudo mount -o remount /tmp\n# Verify\nmount | grep /tmp\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-053": {
+    "attackPerspective": "When \"Separate /var, /var/log, /var/log/audit partitions\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check current mounts\ndf -h /var /var/log /var/log/audit\n# Should be separate partitions\nlsblk\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-054": {
+    "attackPerspective": "When \"Configure AIDE file integrity monitoring\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nsudo apt install aide aide-common\nsudo aideinit\n# Add cron job for daily checks\necho '0 5 * * * root /usr/bin/aide --check' | sudo tee /etc/cron.d/aide\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-013",
+      "lin-014",
+      "lin-044"
+    ]
+  },
+  "lin-055": {
+    "attackPerspective": "Systems without \"Verify GPG keys for package repositories\" applied can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Debian/Ubuntu\napt-key list\n# RHEL/CentOS\nrpm -qa gpg-pubkey*\n# Verify repo config\ngrep -r 'gpgcheck' /etc/yum.repos.d/\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-015",
+      "lin-056",
+      "lin-057"
+    ]
+  },
+  "lin-056": {
+    "attackPerspective": "Systems without \"Remove unnecessary packages\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List installed packages\ndpkg -l | wc -l  # Debian\nrpm -qa | wc -l  # RHEL\n# Remove common unnecessary packages\nsudo apt purge telnet rsh-client xinetd ypbind 2>/dev/null\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-015",
+      "lin-055",
+      "lin-057"
+    ]
+  },
+  "lin-057": {
+    "attackPerspective": "Systems without \"Enable kernel live patching\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Ubuntu\nsudo snap install canonical-livepatch\nsudo canonical-livepatch enable <token>\n# RHEL\nsudo yum install kpatch\nsudo systemctl enable --now kpatch\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-015",
+      "lin-055",
+      "lin-056"
+    ]
+  },
+  "lin-058": {
+    "attackPerspective": "Systems without \"Check for known vulnerable packages\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Debian/Ubuntu\nsudo apt install debsecan\ndebsecan --suite $(lsb_release -cs)\n# RHEL\nsudo yum updateinfo list security\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "lin-015",
+      "lin-055",
+      "lin-056"
     ]
   }
 }

@@ -1,22 +1,779 @@
 {
   "m365-178": {
-    "attackPerspective": "Unmanaged devices accessing corporate resources are blind spots — no compliance checks, no patching enforcement, no remote wipe capability. Attackers target users who access corporate data from personal devices where there is no EDR, no disk encryption verification, and no conditional access enforcement. A single unmanaged device with cached credentials can be the entry point for a full breach.",
-    "implementationNotes": "# Connect to Microsoft Graph for Intune\nConnect-MgGraph -Scopes 'DeviceManagementManagedDevices.Read.All','DeviceManagementServiceConfig.ReadWrite.All'\n\n# Get all managed devices\n$devices = Get-MgDeviceManagementManagedDevice -All\nWrite-Host \"Total managed devices: $($devices.Count)\"\n\n# Find non-compliant devices\n$nonCompliant = $devices | Where-Object { $_.ComplianceState -ne 'compliant' }\nWrite-Host \"Non-compliant: $($nonCompliant.Count)\"\n$nonCompliant | Select-Object DeviceName, UserPrincipalName, ComplianceState, OSVersion, LastSyncDateTime | Format-Table\n\n# Get devices not synced in 30+ days (stale)\n$stale = $devices | Where-Object { $_.LastSyncDateTime -lt (Get-Date).AddDays(-30) }\nWrite-Host \"Stale (30+ days): $($stale.Count)\"\n$stale | Select-Object DeviceName, UserPrincipalName, LastSyncDateTime | Format-Table",
-    "validationNotes": "# Verify enrollment restrictions are configured\nGet-MgDeviceManagementDeviceEnrollmentConfiguration | Select DisplayName, DeviceEnrollmentConfigurationType | Format-Table\n\n# Verify compliance policies exist\nGet-MgDeviceManagementDeviceCompliancePolicy | Select DisplayName, LastModifiedDateTime | Format-Table\n# Expected: At least one policy per OS platform",
-    "tuningNotes": "Start with a 'report-only' compliance policy before enforcing to understand the impact. Common initial non-compliance causes: missing BitLocker, outdated OS, no screen lock. Allow a 24-72 hour grace period for users to remediate before blocking access. Exempt shared/kiosk devices from user-based enrollment.",
-    "advancedDetection": "// KQL: Detect sign-ins from unmanaged devices\nSigninLogs\n| where TimeGenerated > ago(24h)\n| where DeviceDetail.isManaged != true\n| where AppDisplayName in ('Microsoft Teams', 'SharePoint Online', 'Exchange Online')\n| summarize Count = count(), Apps = make_set(AppDisplayName) by UserPrincipalName, DeviceDetail.operatingSystem, tostring(DeviceDetail.browser)\n| where Count > 5\n| sort by Count desc",
+    "attackPerspective": "When \"Devices must be enrolled in Microsoft Intune for centralized endpoint management.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Devices must be enrolled in Microsoft Intune for centralized endpoint management.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
     "relatedIds": [
-      "m365-182"
+      "m365-179",
+      "m365-180",
+      "m365-181"
     ]
   },
   "m365-182": {
-    "attackPerspective": "Compliance policies without Conditional Access enforcement are merely advisory — devices can be flagged non-compliant but still access all resources. Attackers love environments where compliance is configured but not enforced, because the security team has false confidence while the actual access controls are open.",
-    "implementationNotes": "# Create a Windows compliance policy (example)\n$compliancePolicy = @{\n  displayName = 'SCW-Win-Compliance-Baseline'\n  description = 'Baseline compliance for Windows devices'\n  osMinimumVersion = '10.0.19045'  # Win 10 22H2+\n  bitLockerEnabled = $true\n  secureBootEnabled = $true\n  codeIntegrityEnabled = $true\n  firewallEnabled = $true\n  antivirusRequired = $true\n  passwordRequired = $true\n  passwordMinimumLength = 12\n  scheduledActionsForRule = @(@{\n    ruleName = 'PasswordRequired'\n    scheduledActionConfigurations = @(@{\n      actionType = 'block'\n      gracePeriodHours = 72\n      notificationTemplateId = ''\n    })\n  })\n}\n\n# Link to Conditional Access\n# Create CA policy: Require device compliance for all cloud apps\n# Target: All users, Exclude: Break-glass accounts\n# Grant: Require device to be marked as compliant",
-    "validationNotes": "# Verify compliance policies assigned\nGet-MgDeviceManagementDeviceCompliancePolicy | ForEach-Object {\n  $assignments = Get-MgDeviceManagementDeviceCompliancePolicyAssignment -DeviceCompliancePolicyId $_.Id\n  [PSCustomObject]@{\n    Policy = $_.DisplayName\n    Assigned = [bool]$assignments\n    GroupCount = $assignments.Count\n  }\n} | Format-Table\n\n# Check overall compliance status\nGet-MgDeviceManagementManagedDevice -All | Group-Object ComplianceState | Select Name, Count | Format-Table",
-    "tuningNotes": "Start enforcement with a pilot group before expanding to all users. The 72-hour grace period is recommended for initial rollout — reduce to 24 hours after stabilization. Monitor the Intune reports for common non-compliance reasons and address the root cause (e.g., push BitLocker policy rather than just flagging it).",
-    "advancedDetection": "// KQL: Detect non-compliant devices accessing sensitive apps\nSigninLogs\n| where TimeGenerated > ago(24h)\n| where DeviceDetail.isCompliant != true\n| where ResourceDisplayName in ('Microsoft Teams', 'SharePoint Online', 'Exchange Online')\n| summarize AccessCount = count() by UserPrincipalName, tostring(DeviceDetail.displayName), ResourceDisplayName\n| sort by AccessCount desc",
+    "attackPerspective": "When \"Device compliance policies must be configured and assigned to all device groups.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Device compliance policies must be configured and assigned to all device groups.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
     "relatedIds": [
-      "m365-178"
+      "m365-183",
+      "m365-184",
+      "m365-185"
+    ]
+  },
+  "m365-179": {
+    "attackPerspective": "When \"Enrollment restrictions should limit personal device enrollment and enforce platform requirements.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Enrollment restrictions should limit personal device enrollment and enforce platform requirements.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-178",
+      "m365-180",
+      "m365-181"
+    ]
+  },
+  "m365-180": {
+    "attackPerspective": "When \"Windows Autopilot should be configured for zero-touch device provisioning.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Windows Autopilot should be configured for zero-touch device provisioning.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-178",
+      "m365-179",
+      "m365-181"
+    ]
+  },
+  "m365-181": {
+    "attackPerspective": "When \"Device enrollment managers should be limited and monitored.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Device enrollment managers should be limited and monitored.\":\n   # Intune → Devices → Enrollment → Device enrollment managers\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Devices → Enrollment → Device enrollment managers\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-178",
+      "m365-179",
+      "m365-180"
+    ]
+  },
+  "m365-183": {
+    "attackPerspective": "When \"Device compliance rate should be maintained above 80%.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Device compliance rate should be maintained above 80%.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-184",
+      "m365-185"
+    ]
+  },
+  "m365-184": {
+    "attackPerspective": "When \"Non-compliant device actions should include notifications, access restrictions, and remote wipe for critical violations.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Non-compliant device actions should include notifications, access restrictions, and remote wipe for critical violations.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-185"
+    ]
+  },
+  "m365-185": {
+    "attackPerspective": "When \"Conditional Access policies should require device compliance for resource access.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Conditional Access policies should require device compliance for resource access.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Deploy in report-only mode first to assess impact. Exclude break-glass accounts from all Conditional Access policies. Test with a pilot group before broad deployment.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-186": {
+    "attackPerspective": "When \"Device configuration profiles should be deployed to enforce organizational security settings.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Device configuration profiles should be deployed to enforce organizational security settings.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-187": {
+    "attackPerspective": "When \"Settings Catalog should be used for modern granular policy management.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Settings Catalog should be used for modern granular policy management.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-188": {
+    "attackPerspective": "When \"BitLocker encryption should be enforced on all managed Windows devices.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"BitLocker encryption should be enforced on all managed Windows devices.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-189": {
+    "attackPerspective": "When \"Security baselines should be deployed and monitored for drift.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Security baselines should be deployed and monitored for drift.\":\n   # Intune → Endpoint security → Security baselines\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Endpoint security → Security baselines\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-190": {
+    "attackPerspective": "When \"Antivirus policies should be deployed via Intune Endpoint Security.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Antivirus policies should be deployed via Intune Endpoint Security.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-191": {
+    "attackPerspective": "When \"Firewall policies should be configured and enforced on managed devices.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Firewall policies should be configured and enforced on managed devices.\":\n   # Intune → Endpoint security → Firewall\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Endpoint security → Firewall\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-192": {
+    "attackPerspective": "When \"Attack Surface Reduction rules should be deployed via Intune.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Attack Surface Reduction rules should be deployed via Intune.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-193": {
+    "attackPerspective": "When \"Endpoint Privilege Management should restrict local administrator rights.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Endpoint Privilege Management should restrict local administrator rights.\":\n   # Intune → Endpoint security → Endpoint Privilege Management\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Endpoint security → Endpoint Privilege Management\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-194": {
+    "attackPerspective": "When \"Account protection policies should enforce Windows Hello for Business and credential guard.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Account protection policies should enforce Windows Hello for Business and credential guard.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-195": {
+    "attackPerspective": "When \"App protection policies should be configured for managed apps (MAM).\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"App protection policies should be configured for managed apps (MAM).\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-196": {
+    "attackPerspective": "When \"LOB and Win32 app deployments should be managed through Intune.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"LOB and Win32 app deployments should be managed through Intune.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-197": {
+    "attackPerspective": "When \"App configuration policies should standardize app settings across devices.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"App configuration policies should standardize app settings across devices.\":\n   # Intune → Apps → App configuration policies\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Apps → App configuration policies\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-198": {
+    "attackPerspective": "Systems without \"Windows Update for Business policies should be configured for managed devices.\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Windows Update for Business policies should be configured for managed devices.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-199",
+      "m365-200",
+      "m365-201"
+    ]
+  },
+  "m365-199": {
+    "attackPerspective": "Systems without \"Feature updates should be managed to control OS version deployment.\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Feature updates should be managed to control OS version deployment.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-200",
+      "m365-201"
+    ]
+  },
+  "m365-200": {
+    "attackPerspective": "Systems without \"Driver updates should be managed through Intune to prevent compatibility issues.\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Driver updates should be managed through Intune to prevent compatibility issues.\":\n   # Intune → Devices → Windows updates → Driver updates\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Devices → Windows updates → Driver updates\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-201"
+    ]
+  },
+  "m365-201": {
+    "attackPerspective": "Systems without \"Update compliance reporting should be monitored for deployment health.\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Update compliance reporting should be monitored for deployment health.\":\n   # Intune → Devices → Windows updates → Monitor\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Devices → Windows updates → Monitor\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-202": {
+    "attackPerspective": "When \"Endpoint Analytics should be enabled for device performance and health monitoring.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Endpoint Analytics should be enabled for device performance and health monitoring.\":\n   # Intune → Reports → Endpoint analytics\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Reports → Endpoint analytics\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-203",
+      "m365-204"
+    ]
+  },
+  "m365-203": {
+    "attackPerspective": "When \"Proactive remediation scripts should be deployed for common device issues.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Proactive remediation scripts should be deployed for common device issues.\":\n   # Intune → Devices → Remediations\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Devices → Remediations\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-202",
+      "m365-204"
+    ]
+  },
+  "m365-204": {
+    "attackPerspective": "When \"Intune audit logs should be reviewed regularly and forwarded to SIEM.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Intune audit logs should be reviewed regularly and forwarded to SIEM.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-202",
+      "m365-203"
+    ]
+  },
+  "m365-205": {
+    "attackPerspective": "When \"Intune RBAC should follow least privilege with scoped role assignments.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Intune RBAC should follow least privilege with scoped role assignments.\":\n   # Intune → Tenant administration → Roles\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Tenant administration → Roles\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-178",
+      "m365-179",
+      "m365-180"
+    ]
+  },
+  "m365-206": {
+    "attackPerspective": "When \"Scope tags should be used to segment device management across teams.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Scope tags should be used to segment device management across teams.\":\n   # Intune → Tenant administration → Roles → Scope tags\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Tenant administration → Roles → Scope tags\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-178",
+      "m365-179",
+      "m365-180"
+    ]
+  },
+  "m365-207": {
+    "attackPerspective": "When \"Multi-admin approval should be enabled for critical Intune operations.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Multi-admin approval should be enabled for critical Intune operations.\":\n   # Intune → Tenant administration → Multi-admin approval\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Tenant administration → Multi-admin approval\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-178",
+      "m365-179",
+      "m365-180"
+    ]
+  },
+  "m365-208": {
+    "attackPerspective": "When \"A compliance policy for Windows devices exists\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"A compliance policy for Windows devices exists\":\n   # Ref: https://learn.microsoft.com/intune/intune-service/protect/compliance-policy-create-windows\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/intune/intune-service/protect/compliance-policy-create-windows\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-209": {
+    "attackPerspective": "When \"macOS Compliance policy is created and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"macOS Compliance policy is created and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-210": {
+    "attackPerspective": "When \"Compliance policy assignment for iOS/iPadOS devices\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Compliance policy assignment for iOS/iPadOS devices\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-211": {
+    "attackPerspective": "When \"Compliance policy assignment for Android Enterprise Fully managed device is configured and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Compliance policy assignment for Android Enterprise Fully managed device is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-212": {
+    "attackPerspective": "When \"Compliance Policy for Android Enterprise Personally-Owned Work Profile is configured and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Compliance Policy for Android Enterprise Personally-Owned Work Profile is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-213": {
+    "attackPerspective": "When \"Compliance policy for Linux devices is configured and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Compliance policy for Linux devices is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-214": {
+    "attackPerspective": "When \"Compliance policy non-compliance actions are configured\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Compliance policy non-compliance actions are configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-215": {
+    "attackPerspective": "When \"Compliance policy grace period is appropriate\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Compliance policy grace period is appropriate\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-216": {
+    "attackPerspective": "When \"Windows Firewall policy is created and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Windows Firewall policy is created and assigned\":\n   # Ref: https://learn.microsoft.com/intune/intune-service/protect/endpoint-security-firewall-policy\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/intune/intune-service/protect/endpoint-security-firewall-policy\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-217": {
+    "attackPerspective": "When \"Windows - BitLocker Policy is created and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Windows - BitLocker Policy is created and assigned\":\n   # Ref: https://learn.microsoft.com/intune/intune-service/protect/encrypt-devices\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/intune/intune-service/protect/encrypt-devices\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-218": {
+    "attackPerspective": "When \"Windows Hello for Business Policy is Configured and Assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Windows Hello for Business Policy is Configured and Assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-219": {
+    "attackPerspective": "When \"macOS - Firewall policy is created and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"macOS - Firewall policy is created and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-220": {
+    "attackPerspective": "When \"Deploy Attack Surface Reduction Policies (ASR) policies for Windows devices\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Deploy Attack Surface Reduction Policies (ASR) policies for Windows devices\":\n   # Ref: https://learn.microsoft.com/intune/intune-service/protect/endpoint-security-asr-policy\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/intune/intune-service/protect/endpoint-security-asr-policy\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-221": {
+    "attackPerspective": "When \"A Windows Defender Antivirus policy is created and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"A Windows Defender Antivirus policy is created and assigned\":\n   # Ref: https://learn.microsoft.com/intune/intune-service/protect/endpoint-security-antivirus-policy\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/intune/intune-service/protect/endpoint-security-antivirus-policy\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-222": {
+    "attackPerspective": "When \"Windows - A security baseline is configured and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Windows - A security baseline is configured and assigned\":\n   # Ref: https://learn.microsoft.com/intune/intune-service/protect/security-baselines\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/intune/intune-service/protect/security-baselines\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-223": {
+    "attackPerspective": "When \"Windows Cloud LAPS policy is created and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Windows Cloud LAPS policy is created and assigned\":\n   # Ref: https://learn.microsoft.com/mem/intune/protect/windows-laps-overview\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/mem/intune/protect/windows-laps-overview\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-224": {
+    "attackPerspective": "When \"Windows - Local Account Protection policy is configured and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Windows - Local Account Protection policy is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-225": {
+    "attackPerspective": "When \"Intune macOS FileVault policy is created and Assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Intune macOS FileVault policy is created and Assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-226": {
+    "attackPerspective": "When \"macOS - Platform SSO is configured and assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"macOS - Platform SSO is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-227": {
+    "attackPerspective": "When \"A Microsoft Defender Antivirus policy is created and assigned in Intune for macOS\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"A Microsoft Defender Antivirus policy is created and assigned in Intune for macOS\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-228": {
+    "attackPerspective": "When \"Intune Endpoint Analytics policy is created and Assigned\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Intune Endpoint Analytics policy is created and Assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-182",
+      "m365-183",
+      "m365-184"
+    ]
+  },
+  "m365-229": {
+    "attackPerspective": "Systems without \"App Protection Policy assigned on iOS/iPad devices\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"App Protection Policy assigned on iOS/iPad devices\":\n   # Ref: https://learn.microsoft.com/intune/intune-service/apps/app-protection-policy\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/intune/intune-service/apps/app-protection-policy\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-230": {
+    "attackPerspective": "Systems without \"An App protection policy for Android platform exists in Intune\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"An App protection policy for Android platform exists in Intune\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-231": {
+    "attackPerspective": "Systems without \"Windows Update policy is assigned and enforced\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-MgGraph -Scopes 'DeviceManagementConfiguration.ReadWrite.All'\n3. Check current state of \"Windows Update policy is assigned and enforced\":\n   # Ref: https://learn.microsoft.com/intune/intune-service/protect/windows-update-for-business-configure\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Intune Admin Center (intune.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/intune/intune-service/protect/windows-update-for-business-configure\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-232": {
+    "attackPerspective": "Systems without \"iOS - Update policy is configured and assigned\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"iOS - Update policy is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-233": {
+    "attackPerspective": "Systems without \"macOS - Update policy is configured and assigned\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"macOS - Update policy is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-234": {
+    "attackPerspective": "Systems without \"Intune Scope Tags are Configured for Delegated Administration\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Intune Scope Tags are Configured for Delegated Administration\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-235": {
+    "attackPerspective": "Systems without \"Intune Terms and Conditions Policy is configured and assigned\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Intune Terms and Conditions Policy is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-236": {
+    "attackPerspective": "Systems without \"Device Clean-up Rule is Created\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Device Clean-up Rule is Created\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-237": {
+    "attackPerspective": "Systems without \"Windows Autopilot deployment profile is configured\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Windows Autopilot deployment profile is configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-238": {
+    "attackPerspective": "Systems without \"Enrollment status page is configured\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Enrollment status page is configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-239": {
+    "attackPerspective": "Systems without \"Windows enrollment is configured for Autopilot\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Windows enrollment is configured for Autopilot\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-240": {
+    "attackPerspective": "Systems without \"Apple Push Notification certificate is configured\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Apple Push Notification certificate is configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-241": {
+    "attackPerspective": "Systems without \"Apple enrollment program token is configured\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Apple enrollment program token is configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
+    ]
+  },
+  "m365-242": {
+    "attackPerspective": "Systems without \"Device enrollment notification is configured and assigned\" applied can be exploited for limited unauthorized access or information disclosure that could aid further attacks. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Sign in to Microsoft Intune Admin Center (intune.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Device enrollment notification is configured and assigned\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (Microsoft.Graph.Intune), Microsoft Graph API or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Intune device compliance logs, Microsoft 365 Unified Audit Log. Track configuration profile changes in Intune Audit logs. Alert on non-compliant device count spikes. Integrate with Sentinel for cross-correlation with sign-in anomalies.",
+    "relatedIds": [
+      "m365-198",
+      "m365-199",
+      "m365-200"
     ]
   }
 }

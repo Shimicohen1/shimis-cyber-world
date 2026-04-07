@@ -1,39 +1,602 @@
 {
   "win-001": {
-    "attackPerspective": "The built-in Administrator (RID 500) account has special properties: it cannot be locked out and bypasses UAC. Attackers specifically target it with pass-the-hash. Tools like CrackMapExec and Mimikatz prioritize RID 500 for lateral movement.",
-    "implementationNotes": "1. Create new admin account first: New-LocalUser -Name 'secadmin'\n2. Add to Administrators: Add-LocalGroupMember -Group 'Administrators' -Member 'secadmin'\n3. Verify new account works with admin privileges\n4. Rename: Rename-LocalUser -Name 'Administrator' -NewName 'scw_disabled'\n5. Disable: Disable-LocalUser -Name 'scw_disabled'",
-    "validationNotes": "# Verify Administrator is disabled\nGet-LocalUser | Where-Object {$_.SID -like '*-500'} | Select Name,Enabled\n\n# Check no services run as the old account\nGet-WmiObject Win32_Service | Where-Object {$_.StartName -like '*Administrator*'}",
-    "tuningNotes": "Some third-party backup and monitoring agents hardcode 'Administrator' as the account name. Audit all scheduled tasks and services before renaming. Use: Get-ScheduledTask | Where-Object {$_.Principal.UserId -like '*admin*'}",
-    "advancedDetection": "# Detect RID 500 logon attempts (Event ID 4624/4625)\nindex=windows EventCode IN (4624,4625) TargetUserSid=\"*-500\"\n| stats count by EventCode, SourceNetworkAddress\n| sort -count",
+    "attackPerspective": "When \"Rename and disable built-in Administrator\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell\nRename-LocalUser -Name \"Administrator\" -NewName \"scw_admin_disabled\"\nDisable-LocalUser -Name \"scw_admin_disabled\"\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "win-002",
-      "win-004",
-      "win-012"
-    ],
-    "commandFull": "# Full Administrator account hardening script\n# Step 1: Create replacement admin\n$securePass = Read-Host -AsSecureString -Prompt 'Enter password for new admin'\nNew-LocalUser -Name 'scw_secadmin' -Password $securePass -Description 'SCW Security Admin'\nAdd-LocalGroupMember -Group 'Administrators' -Member 'scw_secadmin'\n\n# Step 2: Verify new admin works (test in separate session first!)\n\n# Step 3: Rename built-in Administrator\nRename-LocalUser -Name 'Administrator' -NewName 'scw_legacy_disabled'\n\n# Step 4: Disable it\nDisable-LocalUser -Name 'scw_legacy_disabled'\n\n# Step 5: Verify\nGet-LocalUser | Where-Object { $_.SID -like '*-500' } | Select Name, Enabled, LastLogon\n\n# Step 6: Check no services depend on it\nGet-WmiObject Win32_Service | Where-Object { $_.StartName -like '*Administrator*' } | Select Name, StartName\nGet-ScheduledTask | Where-Object { $_.Principal.UserId -like '*Administrator*' } | Select TaskName"
+      "win-003",
+      "win-011"
+    ]
   },
   "win-005": {
-    "attackPerspective": "SMBv1 is the protocol behind EternalBlue (MS17-010), used by WannaCry, NotPetya, and countless ransomware campaigns. Even patched systems remain at risk from new zero-days targeting SMBv1. It's an obsolete protocol with no legitimate modern use case.",
-    "implementationNotes": "1. Check current SMB status: Get-SmbServerConfiguration | Select EnableSMB1Protocol\n2. Disable server: Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force\n3. Disable client feature: Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart\n4. Schedule reboot during maintenance window\n5. Monitor for 30 days for any compatibility issues",
-    "validationNotes": "# Verify SMBv1 is off\nGet-SmbServerConfiguration | Select EnableSMB1Protocol\n# Expected: False\n\n# Check Windows Feature status\nGet-WindowsOptionalFeature -Online -FeatureName SMB1Protocol\n# Expected: State = Disabled\n\n# Scan for SMBv1 connections in logs\nGet-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-SMBServer/Audit'} -MaxEvents 100",
-    "tuningNotes": "Legacy printers, scanners, and NAS devices from pre-2017 may require SMBv1. Inventory these devices first. Use SMB1 audit logging for 30 days before disabling: Set-SmbServerConfiguration -AuditSmb1Access $true",
-    "advancedDetection": "",
+    "attackPerspective": "Without \"Disable SMBv1\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell\nSet-SmbServerConfiguration -EnableSMB1Protocol $false -Force\n# Disable SMBv1 client\nDisable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "win-004",
-      "win-015",
-      "win-025"
+      "win-021",
+      "win-022"
     ]
   },
   "win-006": {
-    "attackPerspective": "Without PowerShell logging, attackers can execute encoded commands, download payloads, and extract data with no trace. Tools like PowerSploit, Empire, and Cobalt Strike heavily abuse PowerShell. Script Block Logging captures the DECODED content, exposing obfuscation.",
-    "implementationNotes": "1. Open Group Policy Editor: gpedit.msc\n2. Navigate: Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell\n3. Enable 'Turn on PowerShell Script Block Logging'\n4. Enable 'Turn on PowerShell Transcription' (optional but recommended)\n5. Set transcript directory to a protected location\n6. Deploy via GPO to all servers and workstations",
-    "validationNotes": "# Check if logging is enabled via registry\nGet-ItemProperty 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging'\n# EnableScriptBlockLogging should be 1\n\n# Test: run a suspicious command\nInvoke-Expression 'whoami'\n\n# Check for the log entry\nGet-WinEvent -LogName 'Microsoft-Windows-PowerShell/Operational' -MaxEvents 5",
-    "tuningNotes": "",
-    "advancedDetection": "# SIEM query for suspicious PowerShell (encoded commands)\nindex=windows source=WinEventLog:Microsoft-Windows-PowerShell/Operational EventCode=4104\n| search ScriptBlockText=\"*-enc*\" OR ScriptBlockText=\"*EncodedCommand*\" OR ScriptBlockText=\"*Net.WebClient*\" OR ScriptBlockText=\"*DownloadString*\"\n| table _time, ComputerName, ScriptBlockText",
+    "attackPerspective": "When \"Enable PowerShell script block logging\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# GPO: Computer Configuration → Administrative Templates →\n# Windows Components → Windows PowerShell\n# → \"Turn on PowerShell Script Block Logging\" = Enabled\n# Registry:\nNew-Item -Path \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging\" -Force\nSet-ItemProperty -Path \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging\" -Name \"EnableScriptBlockLogging\" -Value 1\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "win-007",
-      "win-018",
-      "win-023"
+      "win-028",
+      "win-029"
+    ]
+  },
+  "win-002": {
+    "attackPerspective": "When \"Enforce account lockout policy\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell (GPO or local policy)\nnet accounts /lockoutthreshold:5\nnet accounts /lockoutduration:30\nnet accounts /lockoutwindow:30\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-003",
+      "win-011"
+    ]
+  },
+  "win-003": {
+    "attackPerspective": "When \"Require NTLMv2 and refuse LM/NTLMv1\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# GPO: Computer Configuration → Policies → Windows Settings →\n# Security Settings → Local Policies → Security Options\n# \"Network security: LAN Manager authentication level\"\n# → \"Send NTLMv2 response only. Refuse LM & NTLM\"\n# Registry:\nSet-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name \"LmCompatibilityLevel\" -Value 5\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-011"
+    ]
+  },
+  "win-004": {
+    "attackPerspective": "Without \"Enable Windows Firewall on all profiles\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell\nSet-NetFirewallProfile -Profile Domain,Public,Private -Enabled True\n# Verify\nGet-NetFirewallProfile | Select Name, Enabled\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-005",
+      "win-021",
+      "win-022"
+    ]
+  },
+  "win-007": {
+    "attackPerspective": "When \"Configure Windows Event Forwarding (WEF)\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable audit policies\nauditpol /set /category:\"Logon/Logoff\" /success:enable /failure:enable\nauditpol /set /category:\"Account Logon\" /success:enable /failure:enable\nauditpol /set /category:\"Object Access\" /success:enable /failure:enable\nauditpol /set /category:\"Privilege Use\" /success:enable /failure:enable\n# Forward to SIEM via Windows Event Forwarding or agent\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-006",
+      "win-028",
+      "win-029"
+    ]
+  },
+  "win-008": {
+    "attackPerspective": "Without \"Enable BitLocker on all volumes\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell\nEnable-BitLocker -MountPoint \"C:\" -EncryptionMethod Aes256 -RecoveryPasswordProtector\n# Backup key to AD\nBackup-BitLockerKeyProtector -MountPoint \"C:\" -KeyProtectorId (Get-BitLockerVolume -MountPoint \"C:\").KeyProtector[1].KeyProtectorId\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-035",
+      "win-036",
+      "win-037"
+    ]
+  },
+  "win-009": {
+    "attackPerspective": "When \"Disable unnecessary Windows features\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell — list enabled features\nGet-WindowsOptionalFeature -Online | Where-Object State -eq 'Enabled'\n# Disable examples\nDisable-WindowsOptionalFeature -Online -FeatureName TelnetClient -NoRestart\nDisable-WindowsOptionalFeature -Online -FeatureName TFTP -NoRestart\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-039",
+      "win-040",
+      "win-041"
+    ]
+  },
+  "win-010": {
+    "attackPerspective": "Systems without \"Configure WSUS or Windows Update for Business\" applied can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell — check update settings\nGet-WUSettings\n# Force install all available updates\nInstall-WindowsUpdate -AcceptAll -AutoReboot\n# Or configure via GPO for enterprise management\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-048",
+      "win-049",
+      "win-050"
+    ]
+  },
+  "win-011": {
+    "attackPerspective": "When \"Enable Credential Guard\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell (requires Hyper-V)\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard' -Name 'EnableVirtualizationBasedSecurity' -Value 1\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'LsaCfgFlags' -Value 1\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-012": {
+    "attackPerspective": "When \"Configure account lockout duration (30 min)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# PowerShell\nnet accounts /lockoutduration:30\n# Verify\nnet accounts | findstr /i 'lockout'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-013": {
+    "attackPerspective": "When \"Restrict anonymous access to SAM/shares\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'RestrictAnonymousSAM' -Value 1\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'RestrictAnonymous' -Value 1\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-014": {
+    "attackPerspective": "When \"Disable Guest account\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nDisable-LocalUser -Name 'Guest'\nGet-LocalUser Guest | Select Name,Enabled\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-015": {
+    "attackPerspective": "When \"Enable LAPS (Local Admin Password Solution)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check LAPS status\nGet-AdmPwdPassword -ComputerName <hostname>\n# Or Windows LAPS (new)\nGet-LapsAADPassword -DeviceIds <device_id>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-016": {
+    "attackPerspective": "When \"Set password length to minimum 14 characters\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# GPO: Computer Configuration → Windows Settings → Security Settings →\n# Account Policies → Password Policy → Minimum password length = 14\nnet accounts /minpwlen:14\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-017": {
+    "attackPerspective": "When \"Enable password history (24 passwords)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nnet accounts /uniquepw:24\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-018": {
+    "attackPerspective": "When \"Set maximum password age to 365 days\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nnet accounts /maxpwage:365\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-019": {
+    "attackPerspective": "When \"Configure User Account Control (UAC)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'EnableLUA' -Value 1\nSet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'ConsentPromptBehaviorAdmin' -Value 2\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-020": {
+    "attackPerspective": "When \"Restrict remote desktop access\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Require Network Level Authentication\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp' -Name 'UserAuthentication' -Value 1\n# Restrict to RDP Users group only via GPO\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-001",
+      "win-002",
+      "win-003"
+    ]
+  },
+  "win-021": {
+    "attackPerspective": "Without \"Disable WDigest authentication\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\WDigest' -Name 'UseLogonCredential' -Value 0\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-004",
+      "win-005",
+      "win-022"
+    ]
+  },
+  "win-022": {
+    "attackPerspective": "Without \"Disable NetBIOS over TCP/IP\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Disable via PowerShell for all NICs\nGet-WmiObject Win32_NetworkAdapterConfiguration -Filter 'IPEnabled=True' | ForEach-Object { $_.SetTcpipNetbios(2) }\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-004",
+      "win-005",
+      "win-021"
+    ]
+  },
+  "win-023": {
+    "attackPerspective": "Without \"Disable LLMNR\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Registry\nNew-Item -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Force\nSet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient' -Name 'EnableMulticast' -Value 0\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-004",
+      "win-005",
+      "win-021"
+    ]
+  },
+  "win-024": {
+    "attackPerspective": "Without \"Enable Windows Firewall logging\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-NetFirewallProfile -Profile Domain,Public,Private -LogAllowed True -LogBlocked True -LogMaxSizeKilobytes 16384\n# Check log location\nGet-NetFirewallProfile | Select Name,LogFileName\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-004",
+      "win-005",
+      "win-021"
+    ]
+  },
+  "win-025": {
+    "attackPerspective": "Without \"Configure SMB signing (required)\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters' -Name 'RequireSecuritySignature' -Value 1\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'RequireSecuritySignature' -Value 1\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-004",
+      "win-005",
+      "win-021"
+    ]
+  },
+  "win-026": {
+    "attackPerspective": "Without \"Disable mDNS (Multicast DNS)\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Registry\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Dnscache\\Parameters' -Name 'EnableMDNS' -Value 0\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-004",
+      "win-005",
+      "win-021"
+    ]
+  },
+  "win-027": {
+    "attackPerspective": "Without \"Configure IPSec for sensitive traffic\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Create IPSec rule via PowerShell\nNew-NetIPsecRule -DisplayName 'Encrypt-Sensitive' -InboundSecurity Require -OutboundSecurity Require\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-004",
+      "win-005",
+      "win-021"
+    ]
+  },
+  "win-028": {
+    "attackPerspective": "When \"Enable command line in process creation events\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit' -Name 'ProcessCreationIncludeCmdLine_Enabled' -Value 1\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-006",
+      "win-007",
+      "win-029"
+    ]
+  },
+  "win-029": {
+    "attackPerspective": "When \"Configure Sysmon for endpoint telemetry\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Download Sysmon from Sysinternals\n# Use SwiftOnSecurity config:\nSysmon64.exe -accepteula -i sysmonconfig-export.xml\n# Verify\nGet-Service sysmon64 | Select Status\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-006",
+      "win-007",
+      "win-028"
+    ]
+  },
+  "win-030": {
+    "attackPerspective": "When \"Enable Windows Defender exploit logging\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# GPO: Computer Configuration → Administrative Templates →\n# Windows Components → Microsoft Defender Antivirus → Real-time Protection\n# Enable all audit logs\nSet-MpPreference -EnableControlledFolderAccess AuditMode\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-006",
+      "win-007",
+      "win-028"
+    ]
+  },
+  "win-031": {
+    "attackPerspective": "When \"Audit logon events (success + failure)\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nauditpol /set /subcategory:'Logon' /success:enable /failure:enable\nauditpol /set /subcategory:'Logoff' /success:enable\nauditpol /set /subcategory:'Special Logon' /success:enable /failure:enable\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-006",
+      "win-007",
+      "win-028"
+    ]
+  },
+  "win-032": {
+    "attackPerspective": "When \"Increase Security event log size to 1GB\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nwevtutil sl Security /ms:1073741824\nwevtutil sl 'Microsoft-Windows-PowerShell/Operational' /ms:1073741824\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-006",
+      "win-007",
+      "win-028"
+    ]
+  },
+  "win-033": {
+    "attackPerspective": "When \"Enable DNS client logging\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable DNS Client ETW logging\nwevtutil sl Microsoft-Windows-DNS-Client/Operational /e:true\n# Or use Sysmon Event ID 22\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-006",
+      "win-007",
+      "win-028"
+    ]
+  },
+  "win-034": {
+    "attackPerspective": "When \"Audit privilege use events\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nauditpol /set /subcategory:'Sensitive Privilege Use' /success:enable /failure:enable\nauditpol /set /subcategory:'Non Sensitive Privilege Use' /success:enable /failure:enable\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-006",
+      "win-007",
+      "win-028"
+    ]
+  },
+  "win-035": {
+    "attackPerspective": "Without \"Enforce TLS 1.2+ and disable SSL/TLS 1.0/1.1\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Disable TLS 1.0\nNew-Item -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\Server' -Force\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\Server' -Name 'Enabled' -Value 0\n# Disable TLS 1.1\nNew-Item -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server' -Force\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server' -Name 'Enabled' -Value 0\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-008",
+      "win-036",
+      "win-037"
+    ]
+  },
+  "win-036": {
+    "attackPerspective": "Without \"Disable weak cipher suites (RC4, DES, 3DES)\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Disable RC4\n@('RC4 128/128','RC4 56/128','RC4 40/128') | ForEach-Object {\n  New-Item -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\$_\" -Force\n  Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\$_\" -Name 'Enabled' -Value 0\n}\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-008",
+      "win-035",
+      "win-037"
+    ]
+  },
+  "win-037": {
+    "attackPerspective": "Without \"Enable LDAP signing\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters' -Name 'LDAPServerIntegrity' -Value 2\n# 2 = Require signing\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-008",
+      "win-035",
+      "win-036"
+    ]
+  },
+  "win-038": {
+    "attackPerspective": "Without \"Enable LDAP channel binding\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters' -Name 'LdapEnforceChannelBinding' -Value 2\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-008",
+      "win-035",
+      "win-036"
+    ]
+  },
+  "win-039": {
+    "attackPerspective": "When \"Disable Print Spooler on servers\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nStop-Service -Name Spooler -Force\nSet-Service -Name Spooler -StartupType Disabled\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-040",
+      "win-041"
+    ]
+  },
+  "win-040": {
+    "attackPerspective": "When \"Disable Remote Registry service\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nStop-Service -Name RemoteRegistry -Force\nSet-Service -Name RemoteRegistry -StartupType Disabled\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-039",
+      "win-041"
+    ]
+  },
+  "win-041": {
+    "attackPerspective": "When \"Disable Windows Remote Management (if unused)\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Only if WinRM is not required\nStop-Service -Name WinRM -Force\nSet-Service -Name WinRM -StartupType Disabled\n# Or restrict access\nSet-Item WSMan:\\localhost\\Service\\AllowRemoteAccess -Value $false\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-039",
+      "win-040"
+    ]
+  },
+  "win-042": {
+    "attackPerspective": "When \"Enable Attack Surface Reduction (ASR) rules\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable key ASR rules\n# Block Office from creating child processes\nAdd-MpPreference -AttackSurfaceReductionRules_Ids D4F940AB-401B-4EFC-AADC-AD5F3C50688A -AttackSurfaceReductionRules_Actions Enabled\n# Block credential stealing from LSASS\nAdd-MpPreference -AttackSurfaceReductionRules_Ids 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 -AttackSurfaceReductionRules_Actions Enabled\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-039",
+      "win-040"
+    ]
+  },
+  "win-043": {
+    "attackPerspective": "When \"Configure Windows Defender exclusions audit\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List all Defender exclusions\nGet-MpPreference | Select -ExpandProperty ExclusionPath\nGet-MpPreference | Select -ExpandProperty ExclusionProcess\nGet-MpPreference | Select -ExpandProperty ExclusionExtension\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-039",
+      "win-040"
+    ]
+  },
+  "win-044": {
+    "attackPerspective": "When \"Enable Secure Boot and UEFI\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nConfirm-SecureBootUEFI\n# Should return True\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-039",
+      "win-040"
+    ]
+  },
+  "win-045": {
+    "attackPerspective": "When \"Configure AppLocker/WDAC policies\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check AppLocker status\nGet-AppLockerPolicy -Effective | Select -ExpandProperty RuleCollections\n# Or check WDAC\ncitool --list-policies\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-039",
+      "win-040"
+    ]
+  },
+  "win-046": {
+    "attackPerspective": "When \"Disable autorun and autoplay\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoDriveTypeAutoRun' -Value 255\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-039",
+      "win-040"
+    ]
+  },
+  "win-047": {
+    "attackPerspective": "When \"Disable Windows Script Host\" is misconfigured, it creates an exploitable pathway that can lead to limited unauthorized access or information disclosure that could aid further attacks. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' -Name 'Enabled' -Value 0\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-009",
+      "win-039",
+      "win-040"
+    ]
+  },
+  "win-048": {
+    "attackPerspective": "Systems without \"Enable Microsoft Defender Antivirus real-time protection\" applied can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\nSet-MpPreference -DisableRealtimeMonitoring $false\nUpdate-MpSignature\n# Check status\nGet-MpComputerStatus | Select AntivirusEnabled,RealTimeProtectionEnabled,AntivirusSignatureLastUpdated\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-010",
+      "win-049",
+      "win-050"
+    ]
+  },
+  "win-049": {
+    "attackPerspective": "Systems without \"Configure Windows Update deferral policy\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Registry (Windows Update for Business)\nSet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferQualityUpdates' -Value 1\nSet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferQualityUpdatesPeriodInDays' -Value 0\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-010",
+      "win-048",
+      "win-050"
+    ]
+  },
+  "win-050": {
+    "attackPerspective": "Systems without \"Remove outdated .NET Framework versions\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check installed .NET versions\nGet-ChildItem 'HKLM:\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP' -Recurse | Get-ItemProperty -Name Version -EA 0 | Select PSChildName,Version\n# Remove old versions\nDisable-WindowsOptionalFeature -Online -FeatureName NetFx3 -NoRestart\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "win-010",
+      "win-048",
+      "win-049"
     ]
   }
 }

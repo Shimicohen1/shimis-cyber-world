@@ -1,24 +1,722 @@
 {
   "m365-084": {
-    "attackPerspective": "Sensitivity labels with encryption are the last line of defense — even if an attacker exfiltrates a document, they cannot read it without the decryption key tied to Azure RMS. Without enforced encryption on sensitive content, a single compromised mailbox or OneDrive can lead to massive data breach exposure.",
-    "implementationNotes": "# Connect to Security & Compliance\nConnect-IPPSSession\n\n# List existing sensitivity labels\nGet-Label | Select DisplayName, Priority, ContentType, Disabled | Format-Table\n\n# Create an encryption-enforced label\nNew-Label -DisplayName 'Confidential - Encrypted' \\\n  -Tooltip 'Apply to sensitive documents requiring encryption' \\\n  -EncryptionEnabled $true \\\n  -EncryptionProtectionType Template \\\n  -EncryptionDoNotForward $false \\\n  -ContentType 'File, Email'\n\n# Publish label policy\nNew-LabelPolicy -Name 'SCW-Label-Policy' \\\n  -Labels 'Confidential - Encrypted' \\\n  -ExchangeLocation All \\\n  -ModernGroupLocation All",
-    "validationNotes": "# Verify labels are published\nGet-LabelPolicy | Select Name, Enabled, Labels | Format-Table\n\n# Check encryption settings on label\nGet-Label -Identity 'Confidential - Encrypted' | Select EncryptionEnabled, EncryptionProtectionType",
-    "tuningNotes": "Start with a 'Confidential' label that recommends (not mandates) encryption. Gradually move to mandatory labeling once users are trained. Focus on auto-labeling for high-confidence patterns (credit cards, SSNs) before expanding. Monitor label usage in Content Explorer to understand classification patterns.",
-    "advancedDetection": "// KQL: Track sensitivity label application\nInformationProtectionEvents_CL\n| where TimeGenerated > ago(7d)\n| summarize LabelCount = count() by LabelName_s, Application_s, UserId_s\n| sort by LabelCount desc\n\n// Detect label downgrades (potential data leak attempt)\nMicrosoftPurviewInformationProtection\n| where Activity == 'SensitivityLabelChanged'\n| where OldSensitivityLabelId > NewSensitivityLabelId\n| project TimeGenerated, UserId, FileName, OldLabel, NewLabel",
+    "attackPerspective": "Without \"At least one sensitivity label should enforce encryption.\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"At least one sensitivity label should enforce encryption.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
     "relatedIds": [
+      "m365-085",
+      "m365-086",
+      "m365-089"
+    ]
+  },
+  "m365-086": {
+    "attackPerspective": "Without \"Retention policies must be configured for critical workloads.\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Retention policies must be configured for critical workloads.\":\n   # Purview → Data Lifecycle Management\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Purview → Data Lifecycle Management\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-089"
+    ]
+  },
+  "m365-085": {
+    "attackPerspective": "Without \"Auto-labeling policies should be configured for sensitive content.\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Auto-labeling policies should be configured for sensitive content.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-086",
+      "m365-089"
+    ]
+  },
+  "m365-087": {
+    "attackPerspective": "When \"Insider Risk Management policies should be enabled.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Insider Risk Management policies should be enabled.\":\n   # Purview → Insider Risk Management\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Purview → Insider Risk Management\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-088",
+      "m365-093",
+      "m365-102"
+    ]
+  },
+  "m365-088": {
+    "attackPerspective": "When \"Communication Compliance policies should be configured for regulatory requirements.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Communication Compliance policies should be configured for regulatory requirements.\":\n   # Microsoft Purview\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Microsoft Purview\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-087",
+      "m365-093",
+      "m365-102"
+    ]
+  },
+  "m365-089": {
+    "attackPerspective": "Without \"eDiscovery cases and hold policies should be managed with role-based access.\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"eDiscovery cases and hold policies should be managed with role-based access.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
       "m365-085",
       "m365-086"
     ]
   },
-  "m365-086": {
-    "attackPerspective": "Without retention policies, deleted evidence during a breach investigation is gone permanently. Attackers who gain access often delete emails, Teams messages, and files to cover their tracks. Retention policies ensure that even 'deleted' content is preserved for forensics and legal hold.",
-    "implementationNotes": "# Connect to Security & Compliance Center\nConnect-IPPSSession\n\n# Create baseline retention policy for Exchange\nNew-RetentionCompliancePolicy -Name 'SCW-Exchange-Retention-1Y' \\\n  -ExchangeLocation All \\\n  -Enabled $true\n\nNew-RetentionComplianceRule -Policy 'SCW-Exchange-Retention-1Y' \\\n  -RetentionDuration 365 \\\n  -RetentionComplianceAction Keep \\\n  -ExpirationDateOption ModificationAgeInDays\n\n# Create retention for SharePoint/OneDrive\nNew-RetentionCompliancePolicy -Name 'SCW-SPO-Retention-1Y' \\\n  -SharePointLocation All \\\n  -OneDriveLocation All \\\n  -Enabled $true\n\nNew-RetentionComplianceRule -Policy 'SCW-SPO-Retention-1Y' \\\n  -RetentionDuration 365 \\\n  -RetentionComplianceAction Keep\n\n# Create litigation hold for executives\n$execs = @('ceo@domain.com','cfo@domain.com','ciso@domain.com')\n$execs | ForEach-Object { Set-Mailbox -Identity $_ -LitigationHoldEnabled $true -LitigationHoldDuration 730 }",
-    "validationNotes": "# Verify retention policies\nGet-RetentionCompliancePolicy | Select Name, Enabled, Type, Workload | Format-Table\nGet-RetentionComplianceRule | Select Name, RetentionDuration, RetentionComplianceAction | Format-Table\n\n# Verify litigation hold\nGet-Mailbox -Identity ceo@domain.com | Select LitigationHoldEnabled, LitigationHoldDuration",
-    "tuningNotes": "Start with a 1-year keep-everything policy for all workloads as a baseline. Layer specific retention labels for regulated content (PCI: 1 year, HIPAA: 6 years, SOX: 7 years). Retention policies can conflict — the longest retention and 'keep' always wins over 'delete'. Test with a pilot group first.",
-    "advancedDetection": "// KQL: Detect bulk deletion that retention preserved\nOfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation in ('SoftDelete', 'HardDelete', 'MoveToDeletedItems')\n| summarize DeleteCount = count() by UserId, bin(TimeGenerated, 1h)\n| where DeleteCount > 50\n| project TimeGenerated, UserId, DeleteCount",
+  "m365-090": {
+    "attackPerspective": "Without \"Information barriers should be evaluated for regulated industries.\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Information barriers should be evaluated for regulated industries.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
     "relatedIds": [
       "m365-084",
-      "m365-087"
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-091": {
+    "attackPerspective": "Without \"Records management and file plan must be configured for compliance.\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Records management and file plan must be configured for compliance.\":\n   # Microsoft Purview → Records management\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Microsoft Purview → Records management\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-092": {
+    "attackPerspective": "Without \"Data governance policies should cover all major workloads (Exchange, SharePoint, Teams, OneDrive).\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Data governance policies should cover all major workloads (Exchange, SharePoint, Teams, OneDrive).\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-093": {
+    "attackPerspective": "When \"Audit log search access should be restricted to security and compliance admins.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Audit log search access should be restricted to security and compliance admins.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-087",
+      "m365-088",
+      "m365-102"
+    ]
+  },
+  "m365-094": {
+    "attackPerspective": "Without \"AI interaction data must be governed by Purview DSPM for AI.\", AI/ML security gaps can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"AI interaction data must be governed by Purview DSPM for AI.\":\n   # Purview → DSPM for AI\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Purview → DSPM for AI\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-095",
+      "m365-096",
+      "m365-097"
+    ]
+  },
+  "m365-095": {
+    "attackPerspective": "Without \"Sensitivity labels must be enforced for content accessed by Copilot.\", AI/ML security gaps can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Sensitivity labels must be enforced for content accessed by Copilot.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-096",
+      "m365-097"
+    ]
+  },
+  "m365-096": {
+    "attackPerspective": "Without \"Oversharing controls must be reviewed before Copilot deployment.\", AI/ML security gaps can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Oversharing controls must be reviewed before Copilot deployment.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-097"
+    ]
+  },
+  "m365-097": {
+    "attackPerspective": "Without \"DLP policies should include Copilot interactions as a monitored location.\", AI/ML security gaps can be exploited for significant unauthorized access, privilege escalation, or data exposure. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies should include Copilot interactions as a monitored location.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive). Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-098": {
+    "attackPerspective": "Without \"Copilot Studio agents should be restricted to approved connectors and data sources.\", AI/ML security gaps can be exploited for significant unauthorized access, privilege escalation, or data exposure. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Copilot Studio agents should be restricted to approved connectors and data sources.\":\n   # Power Platform Admin Center → Data policies\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Power Platform Admin Center → Data policies\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-099": {
+    "attackPerspective": "Without \"AI compliance policies should address AI ethics, bias detection, and regulatory requirements.\", AI/ML security gaps can be exploited for significant unauthorized access, privilege escalation, or data exposure. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"AI compliance policies should address AI ethics, bias detection, and regulatory requirements.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-100": {
+    "attackPerspective": "Without \"Insider Risk Management should monitor for risky AI usage patterns.\", AI/ML security gaps can be exploited for significant unauthorized access, privilege escalation, or data exposure. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Insider Risk Management should monitor for risky AI usage patterns.\":\n   # Purview → Insider Risk Management\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Purview → Insider Risk Management\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-101": {
+    "attackPerspective": "Without \"Grounding data access for AI agents must be scoped with least-privilege permissions.\", AI/ML security gaps can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Grounding data access for AI agents must be scoped with least-privilege permissions.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-102": {
+    "attackPerspective": "When \"Ensure Microsoft 365 audit log search is Enabled.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Ensure Microsoft 365 audit log search is Enabled.\":\n   # Purview → Audit\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Purview → Audit\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-087",
+      "m365-088",
+      "m365-093"
+    ]
+  },
+  "m365-103": {
+    "attackPerspective": "When \"Ensure DLP policies are enabled.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure DLP policies are enabled.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-087",
+      "m365-088",
+      "m365-093"
+    ]
+  },
+  "m365-104": {
+    "attackPerspective": "When \"Ensure DLP policies are enabled for Microsoft Teams.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure DLP policies are enabled for Microsoft Teams.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-087",
+      "m365-088",
+      "m365-093"
+    ]
+  },
+  "m365-105": {
+    "attackPerspective": "When \"Ensure Information Protection sensitivity label policies are published.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Ensure Information Protection sensitivity label policies are published.\":\n   # Purview → Information Protection\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Purview → Information Protection\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-087",
+      "m365-088",
+      "m365-093"
+    ]
+  },
+  "m365-106": {
+    "attackPerspective": "Without \"Sensitivity labels are published to users\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Sensitivity labels are published to users\":\n   # Ref: https://learn.microsoft.com/purview/sensitivity-labels\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/purview/sensitivity-labels\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-107": {
+    "attackPerspective": "Without \"Default sensitivity label is configured for documents\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Default sensitivity label is configured for documents\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-108": {
+    "attackPerspective": "Without \"Default sensitivity label is configured for email\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Default sensitivity label is configured for email\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-109": {
+    "attackPerspective": "Without \"Mandatory labeling is enabled for documents\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Mandatory labeling is enabled for documents\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-110": {
+    "attackPerspective": "Without \"Mandatory labeling is enabled for email\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Mandatory labeling is enabled for email\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-111": {
+    "attackPerspective": "Without \"Auto-labeling policies are configured for sensitive content\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Auto-labeling policies are configured for sensitive content\":\n   # Ref: https://learn.microsoft.com/purview/apply-sensitivity-label-automatically\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/purview/apply-sensitivity-label-automatically\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-112": {
+    "attackPerspective": "Without \"Sensitivity labels with encryption are configured\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Sensitivity labels with encryption are configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-113": {
+    "attackPerspective": "Without \"Container labels are configured for SharePoint and Teams\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Container labels are configured for SharePoint and Teams\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-114": {
+    "attackPerspective": "Without \"DLP policies are configured for sensitive content\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"DLP policies are configured for sensitive content\":\n   # Ref: https://learn.microsoft.com/purview/dlp-learn-about-dlp\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/purview/dlp-learn-about-dlp\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-115": {
+    "attackPerspective": "Without \"DLP policies cover Exchange Online\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies cover Exchange Online\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-116": {
+    "attackPerspective": "Without \"DLP policies cover SharePoint Online\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies cover SharePoint Online\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-117": {
+    "attackPerspective": "Without \"DLP policies cover OneDrive for Business\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies cover OneDrive for Business\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-118": {
+    "attackPerspective": "Without \"DLP policies cover Teams\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies cover Teams\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-119": {
+    "attackPerspective": "Without \"DLP policies cover Endpoint devices\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies cover Endpoint devices\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-120": {
+    "attackPerspective": "Without \"DLP policies are configured to alert on policy violations\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies are configured to alert on policy violations\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-121": {
+    "attackPerspective": "Without \"DLP policies block sharing of sensitive content with external users\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies block sharing of sensitive content with external users\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change. Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-122": {
+    "attackPerspective": "Without \"Retention policies are configured for Microsoft 365 workloads\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Retention policies are configured for Microsoft 365 workloads\":\n   # Ref: https://learn.microsoft.com/purview/retention-policies-sharepoint\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/purview/retention-policies-sharepoint\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-123": {
+    "attackPerspective": "Without \"Retention policies cover Exchange Online\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Retention policies cover Exchange Online\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-124": {
+    "attackPerspective": "Without \"Retention policies cover SharePoint Online\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Retention policies cover SharePoint Online\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-125": {
+    "attackPerspective": "Without \"Retention policies cover OneDrive for Business\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Retention policies cover OneDrive for Business\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-126": {
+    "attackPerspective": "Without \"Retention policies cover Teams\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Retention policies cover Teams\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-127": {
+    "attackPerspective": "Without \"Retention labels are published for records management\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Retention labels are published for records management\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-128": {
+    "attackPerspective": "Without \"eDiscovery premium is deployed\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"eDiscovery premium is deployed\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-129": {
+    "attackPerspective": "Without \"Audit logging is enabled and configured\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Audit logging is enabled and configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-130": {
+    "attackPerspective": "Without \"Audit log retention is configured for compliance\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Audit log retention is configured for compliance\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-131": {
+    "attackPerspective": "Without \"Data Lifecycle policies are configured\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Data Lifecycle policies are configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-132": {
+    "attackPerspective": "Without \"Insider Risk Management policies are configured\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect-IPPSSession (Security & Compliance PowerShell)\n3. Check current state of \"Insider Risk Management policies are configured\":\n   # Ref: https://learn.microsoft.com/purview/insider-risk-management\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Microsoft Purview Compliance Portal (compliance.microsoft.com) or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Ref: https://learn.microsoft.com/purview/insider-risk-management\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-133": {
+    "attackPerspective": "Without \"Communication Compliance policies are configured\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Communication Compliance policies are configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-134": {
+    "attackPerspective": "Without \"Adaptive Protection is configured\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Adaptive Protection is configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-135": {
+    "attackPerspective": "Without \"Information barriers are configured\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Information barriers are configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-136": {
+    "attackPerspective": "Without \"DSPM for AI is configured\", AI/ML security gaps can be exploited for limited unauthorized access or information disclosure that could aid further attacks. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DSPM for AI is configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-137": {
+    "attackPerspective": "Without \"AI interaction monitoring is enabled\", AI/ML security gaps can be exploited for limited unauthorized access or information disclosure that could aid further attacks. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"AI interaction monitoring is enabled\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-138": {
+    "attackPerspective": "Without \"Copilot experiences retention is configured\", AI/ML security gaps can be exploited for limited unauthorized access or information disclosure that could aid further attacks. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Copilot experiences retention is configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-139": {
+    "attackPerspective": "Without \"DLP policies cover Copilot interactions\", AI/ML security gaps can be exploited for limited unauthorized access or information disclosure that could aid further attacks. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"DLP policies cover Copilot interactions\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Start with DLP in audit/test mode before enforcing. Build policies incrementally — start with high-confidence sensitive data types (credit cards, SSNs) and expand. Monitor false positive rates and tune thresholds monthly.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-140": {
+    "attackPerspective": "Without \"Compliance Manager assessments are configured\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Compliance Manager assessments are configured\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-141": {
+    "attackPerspective": "Without \"AI regulatory compliance templates are deployed\", AI/ML security gaps can be exploited for limited unauthorized access or information disclosure that could aid further attacks. AI/ML services can be exploited for prompt injection, model theft, or training data poisoning. As organizations adopt AI services, new attack vectors emerge including prompt injection, training data poisoning, and model extraction.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"AI regulatory compliance templates are deployed\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-094",
+      "m365-095",
+      "m365-096"
+    ]
+  },
+  "m365-142": {
+    "attackPerspective": "Without \"Content search permissions are restricted\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Content search permissions are restricted\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
+    ]
+  },
+  "m365-143": {
+    "attackPerspective": "Without \"Privileged access to compliance features is governed\", sensitive data can be intercepted or extracted, resulting in limited unauthorized access or information disclosure that could aid further attacks. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Sign in to Microsoft Purview Compliance Portal (compliance.microsoft.com) with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Privileged access to compliance features is governed\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using PowerShell (ExchangeOnlineManagement, Security & Compliance PowerShell) or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Microsoft 365 Unified Audit Log, Purview Audit, Content Search. Track DLP policy matches and overrides. Alert on bulk label changes or policy modifications. Create custom alert policies in the Compliance Portal for high-severity events.",
+    "relatedIds": [
+      "m365-084",
+      "m365-085",
+      "m365-086"
     ]
   }
 }

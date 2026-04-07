@@ -1,24 +1,83 @@
 {
   "az-001": {
-    "attackPerspective": "Without MFA, a single stolen password grants full access to all Azure resources the user can reach. Password spray, credential stuffing, and phishing attacks succeed over 99% of the time when MFA is not enforced. Microsoft reports that MFA blocks 99.9% of automated account compromise attacks.",
-    "implementationNotes": "# Check MFA registration status\nConnect-MgGraph -Scopes 'UserAuthenticationMethod.Read.All','Reports.Read.All'\n\n# Get MFA registration report\nGet-MgReportAuthenticationMethodUserRegistrationDetail -All | Select UserPrincipalName, IsMfaRegistered, MethodsRegistered | Where-Object { $_.IsMfaRegistered -eq $false } | Format-Table\n\n# Create Conditional Access policy requiring MFA for all users\n$params = @{\n  displayName = 'Require MFA for All Users'\n  state = 'enabledForReportingButNotEnforced'  # Start in report-only\n  conditions = @{\n    users = @{ includeUsers = @('All'); excludeUsers = @('<break-glass-id>') }\n    applications = @{ includeApplications = @('All') }\n  }\n  grantControls = @{\n    operator = 'OR'\n    builtInControls = @('mfa')\n  }\n}\nNew-MgIdentityConditionalAccessPolicy @params",
-    "validationNotes": "# Verify CA policy exists and is enabled\nGet-MgIdentityConditionalAccessPolicy | Where-Object { $_.DisplayName -like '*MFA*' } | Select DisplayName, State | Format-Table\n\n# Check MFA registration completion\n$report = Get-MgReportAuthenticationMethodUserRegistrationDetail -All\n$total = $report.Count\n$mfaEnabled = ($report | Where-Object { $_.IsMfaRegistered }).Count\nWrite-Host \"MFA Registered: $mfaEnabled / $total ($([math]::Round($mfaEnabled/$total*100,1))%)\"",
-    "tuningNotes": "Deploy in report-only mode first to identify users who would be blocked. Exclude break-glass accounts but monitor them separately. Use Authentication Strengths to require phishing-resistant MFA (FIDO2/Windows Hello) for admins. Allow 'remember MFA for 14 days' on compliant devices to reduce user friction.",
-    "advancedDetection": "// KQL: Detect sign-ins without MFA\nSigninLogs\n| where TimeGenerated > ago(24h)\n| where AuthenticationRequirement == 'singleFactorAuthentication'\n| where ResultType == 0  // Successful\n| where AppDisplayName !in ('Azure Portal', 'Microsoft Graph')  // Focus on cloud apps\n| summarize Count = count() by UserPrincipalName, AppDisplayName\n| sort by Count desc",
+    "attackPerspective": "When \"Enable MFA for all users\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Azure CLI — check Conditional Access policies\naz rest --method get --url \"https://graph.microsoft.com/v1.0/identity/conditionalAccess/policies\"\n# Create via Portal:\n# Entra ID → Security → Conditional Access → New Policy\n# Target: All users | Conditions: All apps | Grant: Require MFA\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "az-002",
       "az-003"
     ]
   },
   "az-005": {
-    "attackPerspective": "Microsoft Defender for Cloud provides the central security posture and threat detection layer for Azure. Without it, there's no unified view of misconfigurations, no vulnerability assessments for VMs, no threat alerts for storage/SQL/Key Vault, and no Secure Score tracking. Attackers specifically target subscriptions without monitoring.",
-    "implementationNotes": "# Check current Defender plans\nConnect-AzAccount\nGet-AzSecurityPricing | Format-Table Name, PricingTier, FreeTrialRemainingTime\n\n# Enable all critical plans\n$plans = @('VirtualMachines','SqlServers','AppServices','StorageAccounts','KeyVaults','Dns','Arm','Containers')\nforeach ($plan in $plans) {\n  Set-AzSecurityPricing -Name $plan -PricingTier 'Standard'\n  Write-Host \"Enabled Defender for $plan\"\n}\n\n# Enable auto-provisioning of Log Analytics agent\nSet-AzSecurityAutoProvisioningSetting -Name 'default' -EnableAutoProvision\n\n# Check Secure Score\nGet-AzSecuritySecureScore | Select DisplayName, CurrentScore, MaxScore, Percentage | Format-Table",
-    "validationNotes": "# Verify all plans are Standard\nGet-AzSecurityPricing | Where-Object { $_.PricingTier -eq 'Free' }\n# Expected: Empty (all should be Standard)\n\n# Check active security alerts\nGet-AzSecurityAlert | Where-Object { $_.Status -eq 'Active' } | Measure-Object\n\n# Verify Secure Score\nGet-AzSecuritySecureScore | Select Percentage",
-    "tuningNotes": "Enable plans incrementally starting with VirtualMachines and StorageAccounts (highest ROI). Review Secure Score recommendations weekly — focus on Quick Wins (high impact, low effort). Suppress false positive alerts using suppression rules rather than disabling plans. Cost optimization: use Defender for Servers P1 ($5/server) for dev/test.",
-    "advancedDetection": "// KQL: Track Defender plan changes (potential tampering)\nAzureActivity\n| where TimeGenerated > ago(7d)\n| where OperationNameValue == 'Microsoft.Security/pricings/write'\n| extend Tier = tostring(parse_json(Properties).resource.properties.pricingTier)\n| extend PlanName = tostring(parse_json(Properties).resource.name)\n| project TimeGenerated, Caller, PlanName, Tier, SubscriptionId\n| where Tier == 'Free'\n| extend AlertSeverity = 'High'",
+    "attackPerspective": "When \"Enable Microsoft Defender for Cloud\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check Defender status\naz security pricing list --query \"[].{Name:name, Tier:pricingTier}\" --output table\n# Enable for key resources\naz security pricing create --name VirtualMachines --tier Standard\naz security pricing create --name SqlServers --tier Standard\naz security pricing create --name StorageAccounts --tier Standard\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "az-006"
+    ]
+  },
+  "az-002": {
+    "attackPerspective": "When \"Disable legacy authentication protocols\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Create Conditional Access policy to block legacy auth:\n# Entra ID → Conditional Access → New Policy\n# Conditions → Client apps → Select \"Exchange ActiveSync\" + \"Other clients\"\n# Grant → Block access\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
     "relatedIds": [
       "az-001",
-      "az-004"
+      "az-003"
+    ]
+  },
+  "az-003": {
+    "attackPerspective": "When \"Enable Privileged Identity Management (PIM)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Azure CLI — list privileged role assignments\naz role assignment list --query \"[?roleDefinitionName=='Owner' || roleDefinitionName=='Contributor'].[principalName,roleDefinitionName]\" --output table\n# Configure PIM via Portal:\n# Entra ID → PIM → Azure AD roles → Settings → Require justification + MFA\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Customize thresholds based on your organization's risk profile. Test changes in a staging environment before production deployment. Document any deviations with formal risk acceptance.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "az-001",
+      "az-002"
+    ]
+  },
+  "az-004": {
+    "attackPerspective": "Without \"Configure Network Security Groups (NSGs)\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# List NSGs and rules\naz network nsg list --query \"[].{Name:name, RG:resourceGroup}\" --output table\n# Check for open rules\naz network nsg rule list --nsg-name <nsg_name> --resource-group <rg> \\\n  --query \"[?access=='Allow' && direction=='Inbound' && sourceAddressPrefix=='*']\"\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": []
+  },
+  "az-006": {
+    "attackPerspective": "When \"Enable diagnostic logging for key resources\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Enable Activity Log export\naz monitor diagnostic-settings create --name \"scw-audit\" \\\n  --resource \"/subscriptions/<sub_id>\" \\\n  --workspace \"<log_analytics_workspace_id>\" \\\n  --logs '[{\"category\":\"Administrative\",\"enabled\":true},{\"category\":\"Security\",\"enabled\":true},{\"category\":\"Alert\",\"enabled\":true}]'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "az-005"
+    ]
+  },
+  "az-007": {
+    "attackPerspective": "Without \"Enable Azure Disk Encryption\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check encryption status\naz vm encryption show --resource-group <rg> --name <vm_name>\n# Enable on VM\naz vm encryption enable --resource-group <rg> --name <vm_name> \\\n  --disk-encryption-keyvault <keyvault_name> --volume-type All\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "az-008"
+    ]
+  },
+  "az-008": {
+    "attackPerspective": "Without \"Enforce HTTPS on storage accounts\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Access Admin Console with appropriate administrative credentials\n2. Navigate to the configuration area for this control\n3. Review the current state\n4. Apply the recommended configuration\n5. Validate the change\n6. Document in change management",
+    "validationNotes": "# Verify compliance\n# Check all storage accounts\naz storage account list --query \"[].{Name:name, HTTPS:enableHttpsTrafficOnly}\" --output table\n# Enable on specific account\naz storage account update --name <account> --resource-group <rg> --https-only true\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Alert on configuration changes that deviate from the hardened baseline.",
+    "relatedIds": [
+      "az-007"
     ]
   }
 }
