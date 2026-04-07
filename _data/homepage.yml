@@ -25,47 +25,51 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iran Targets US Critical Infrastructure with PLCs
-    text: Iranian actors are actively targeting U.S. critical infrastructure PLCs, posing a significant threat to operational technology.
-    detail: Iranian-linked threat actors are focusing on internet-exposed Rockwell/Allen-Bradley programmable logic controllers (PLCs) within U.S. critical infrastructure. This trend, highlighted by multiple advisories, necessitates enhanced monitoring and hardening of OT environments to prevent potential disruptions to essential services.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-076a
+  - title: Iranian Cyber Actors Target US Critical Infrastructure
+    text: Iranian-linked groups are increasingly targeting US operational technology and PLCs.
+    detail: A concerning trend shows Iranian APTs actively compromising internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices in US critical infrastructure, specifically energy and water systems. Organizations must bolster defenses for SCADA and industrial control systems against these persistent threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-294a
     link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
+      - iran
       - critical-infrastructure
-      - plc
-  - title: Russian APT28 Exploits SOHO Routers for DNS Hijacking
-    text: APT28 is leveraging compromised SOHO routers for global DNS hijacking and stealthy token exfiltration.
-    detail: Russian state-linked APT28 is actively exploiting vulnerabilities in Small Office/Home Office (SOHO) routers. This campaign is used for both global DNS hijacking and to conduct stealthy Microsoft Office token theft, underscoring the need to secure and update edge network devices.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-139a
-    link_label: CISA Advisory
+      - industrial-control-systems
+  - title: Russian APT28 Exploits Routers for Token Theft and DNS Hijacking
+    text: APT28 is leveraging SOHO routers for large-scale DNS hijacking and Microsoft token theft.
+    detail: Forest Blizzard (APT28) is actively compromising SOHO routers to conduct global DNS hijacking campaigns and stealthily exfiltrate Microsoft Office authentication tokens. Network defenders should prioritize securing edge devices and monitoring for unusual DNS traffic patterns.
+    link: https://www.mitre.org/threat-actor-groups/APT28
+    link_label: MITRE ATT&CK
     badge: signal
     tags:
       - threat-intel
+      - russia
       - apt28
       - router-vulnerability
       - dns-hijacking
-  - title: AI's Growing Influence on Cyber Threats and Defenses
-    text: AI is rapidly reshaping the cybersecurity landscape, impacting both attack vectors and defensive strategies.
-    detail: Artificial Intelligence is a significant catalyst for change in cybersecurity, as observed at RSAC 2026. Its dual nature is evident, with AI-powered tools enhancing offensive capabilities while also driving advancements in defensive measures and the debate between AI and human defenders.
+  - title: AI Enhances OSINT Capabilities for Threat Hunting
+    text: New tools leverage AI to extract user data from shared links, aiding investigations.
+    detail: OSINT tools like SharedTrace are integrating AI to analyze shared links, uncovering user details from platforms like TikTok and Discord. This empowers threat intelligence analysts to identify connections and gather crucial context during investigations, enhancing situational awareness.
+    link: https://owasp.org/www-community/Artificial_Intelligence_Security
+    link_label: OWASP AI Security
+    badge: signal
+    tags:
+      - osint
+      - threat-intel
+      - ai-security
+      - tools
+  - title: "AI's Dual Role in Cybersecurity: Boon and Attack Vector"
+    text: New LLMs offer defensive capabilities but also present novel attack opportunities.
+    detail: The emergence of advanced LLMs like Anthropic's Claude Mythos presents a double-edged sword. While beneficial for defensive cybersecurity, these models can be exploited, as seen with packaging flaws leading to stealer malware distribution and indirect prompt injection for data exfiltration.
     link: https://www.nist.gov/artificial-intelligence
     link_label: NIST AI Resources
     badge: signal
     tags:
       - threat-intel
       - ai-security
-      - rsac
-  - title: Automated Pentesting Limitations Highlight Human Expertise
-    text: Automated penetration testing tools often fall short, emphasizing the continued importance of human analysts.
-    detail: While automated penetration testing tools offer initial value, they frequently miss complex vulnerabilities requiring human ingenuity. The 'PoC Cliff' problem illustrates this gap, reinforcing the necessity of skilled human analysts for comprehensive security validation and nuanced threat detection.
-    link: https://owasp.org/www-project-application-security-testing/
-    link_label: OWASP Testing Guide
-    badge: signal
-    tags:
-      - threat-intel
-      - penetration-testing
-      - ai-security
+      - llm
+      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
