@@ -124,21 +124,21 @@ permalink: /premium/
 <!-- ── Telegram Bot: direct access ── -->
 <section class="elite-bot reveal">
 <div class="elite-bot__card">
-<div class="elite-bot__icon">🤖</div>
+<div class="elite-bot__icon">📊</div>
 <h2 class="elite-bot__title">SCW Elite Bot</h2>
-<p class="elite-bot__desc">Stay one step ahead. Get curated IOCs, detection rules, and exclusive threat analysis delivered straight to your Telegram — before the next attack hits.</p>
+<p class="elite-bot__desc">Real threat data from this week's incidents — IOCs, CVEs, and MITRE ATT&CK mapping extracted from our feed and delivered straight to your Telegram. Copy-paste into your SIEM.</p>
 <div class="elite-bot__products">
 <div class="elite-bot__product">
-<strong>🎯 Weekly IOC Pack</strong>
-<span>5 ⭐</span>
+<strong>📊 Threat Intel Brief</strong>
+<span>15 ⭐</span>
 </div>
 <div class="elite-bot__product">
-<strong>🛡️ Detection Rules</strong>
-<span>25 ⭐</span>
+<strong>🎯 IOC Export Pack</strong>
+<span>30 ⭐</span>
 </div>
 <div class="elite-bot__product">
 <strong>🔒 Elite Monthly</strong>
-<span>100 ⭐/mo</span>
+<span>75 ⭐/mo</span>
 </div>
 </div>
 <a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Unlock My Intel →</a>
