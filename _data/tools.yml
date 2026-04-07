@@ -1,13 +1,6 @@
 categories:
   - name: "Security & Privacy"
     items:
-      - title: "Proton VPN"
-        description: "Swiss-based no-logs VPN with built-in ad blocker, NetShield malware filter, and Secure Core routing through privacy-friendly countries."
-        url: "https://www.jdoqocy.com/click-101720928-15834536"
-        tags: [vpn, privacy, encryption]
-        status: Recommended
-        sponsored: true
-        button: Get Proton VPN
       - title: "NordVPN"
         description: "Fast, secure VPN with threat protection. Essential for researchers and operators working remotely."
         url: "https://www.anrdoezrs.net/click-101720928-13756265"
@@ -15,6 +8,13 @@ categories:
         status: Recommended
         sponsored: true
         button: Get NordVPN
+      - title: "Proton VPN"
+        description: "Swiss-based no-logs VPN with built-in ad blocker, NetShield malware filter, and Secure Core routing through privacy-friendly countries."
+        url: "https://www.jdoqocy.com/click-101720928-15834536"
+        tags: [vpn, privacy, encryption]
+        status: Recommended
+        sponsored: true
+        button: Get Proton VPN
       - title: "Surfshark"
         description: "All-in-one VPN with CleanWeb ad/malware blocker, unlimited devices, and multi-hop connections. Great value for teams."
         url: "https://www.kqzyfj.com/click-101720928-15438560"

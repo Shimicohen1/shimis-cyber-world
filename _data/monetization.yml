@@ -13,13 +13,13 @@ adsense:
 recommendations:
   - match_tags: [vpn, privacy, network]
     products:
+      - name: "NordVPN"
+        desc: "Secure your traffic with threat protection built in. Fast and reliable."
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
       - name: "Proton VPN"
         desc: "Swiss no-logs VPN with NetShield malware filter and Secure Core routing."
         url: "https://www.jdoqocy.com/click-101720928-15834536"
-        badge: "Our Pick"
-      - name: "NordVPN"
-        desc: "Secure your traffic with threat protection built in."
-        url: "https://www.anrdoezrs.net/click-101720928-13756265"
         badge: "Recommended"
       - name: "Surfshark"
         desc: "All-in-one VPN + ad blocker. Unlimited devices."
@@ -28,13 +28,13 @@ recommendations:
 
   - match_tags: [malware, ransomware, endpoint]
     products:
-      - name: "Proton VPN"
-        desc: "NetShield blocks malware domains, ads, and trackers at DNS level."
-        url: "https://www.jdoqocy.com/click-101720928-15834536"
-        badge: "Our Pick"
       - name: "NordVPN"
         desc: "Built-in threat protection blocks malware, trackers, and malicious sites."
         url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
+      - name: "Proton VPN"
+        desc: "NetShield blocks malware domains, ads, and trackers at DNS level."
+        url: "https://www.jdoqocy.com/click-101720928-15834536"
         badge: "Recommended"
       - name: "Surfshark"
         desc: "CleanWeb blocks malware and ads at DNS level. Unlimited devices."
@@ -43,13 +43,13 @@ recommendations:
 
   - match_tags: [vulnerability, cve, exploit, zero-day]
     products:
-      - name: "Proton VPN"
-        desc: "Secure Core routes traffic through Switzerland, Iceland, and Sweden first."
-        url: "https://www.jdoqocy.com/click-101720928-15834536"
-        badge: "Our Pick"
       - name: "NordVPN"
         desc: "Protect your research traffic. Threat protection included."
         url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
+      - name: "Proton VPN"
+        desc: "Secure Core routes traffic through Switzerland, Iceland, and Sweden first."
+        url: "https://www.jdoqocy.com/click-101720928-15834536"
         badge: "Recommended"
       - name: "Surfshark"
         desc: "Unlimited devices for your security lab. VPN + malware blocker."
@@ -58,10 +58,14 @@ recommendations:
 
   - match_tags: [training, certification, beginner]
     products:
-      - name: "Proton VPN"
-        desc: "Protect your lab traffic with Swiss-grade encryption. No logs."
-        url: "https://www.jdoqocy.com/click-101720928-15834536"
+      - name: "NordVPN"
+        desc: "Protect your lab traffic with fast, secure VPN + threat protection."
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
         badge: "Our Pick"
+      - name: "Proton VPN"
+        desc: "Swiss-grade encryption for your security lab. No logs."
+        url: "https://www.jdoqocy.com/click-101720928-15834536"
+        badge: "Recommended"
       - name: "Surfshark"
         desc: "Secure your lab traffic. Unlimited devices for your whole setup."
         url: "https://www.kqzyfj.com/click-101720928-15438560"
@@ -69,25 +73,33 @@ recommendations:
 
   - match_tags: [osint, reconnaissance, discovery]
     products:
-      - name: "Proton VPN"
-        desc: "Route OSINT through Secure Core — no logs, Swiss jurisdiction."
-        url: "https://www.jdoqocy.com/click-101720928-15834536"
-        badge: "Our Pick"
       - name: "NordVPN"
         desc: "Keep your OSINT research anonymous. Threat protection built in."
         url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
+      - name: "Proton VPN"
+        desc: "Route OSINT through Secure Core — no logs, Swiss jurisdiction."
+        url: "https://www.jdoqocy.com/click-101720928-15834536"
         badge: "Recommended"
+      - name: "Surfshark"
+        desc: "Anonymous research with unlimited devices. CleanWeb included."
+        url: "https://www.kqzyfj.com/click-101720928-15438560"
+        badge: "Great Value"
 
   - match_tags: [phishing, social-engineering, awareness]
     products:
+      - name: "NordVPN"
+        desc: "Threat protection blocks phishing sites, trackers, and malware."
+        url: "https://www.anrdoezrs.net/click-101720928-13756265"
+        badge: "Our Pick"
       - name: "Proton VPN"
         desc: "NetShield blocks phishing domains and trackers at DNS level."
         url: "https://www.jdoqocy.com/click-101720928-15834536"
-        badge: "Our Pick"
+        badge: "Recommended"
       - name: "Surfshark"
         desc: "CleanWeb blocks phishing sites, ads, and trackers automatically."
         url: "https://www.kqzyfj.com/click-101720928-15438560"
-        badge: "Recommended"
+        badge: "Great Value"
 
   - match_tags: [password, credential, identity, auth-bypass]
     products:
@@ -107,20 +119,20 @@ feed_ads:
   frequency: 6
   items:
     - type: "affiliate"
+      title: "Protect your privacy"
+      desc: "Fast, secure VPN with built-in threat protection. 40% off."
+      url: "https://www.anrdoezrs.net/click-101720928-13756265"
+      badge: "Our Pick"
+    - type: "affiliate"
       title: "Swiss-grade privacy"
       desc: "No-logs VPN with Secure Core routing and built-in malware filter"
       url: "https://www.jdoqocy.com/click-101720928-15834536"
-      badge: "Our Pick"
-    - type: "affiliate"
-      title: "Protect your privacy"
-      desc: "Fast, secure VPN with built-in threat protection"
-      url: "https://www.anrdoezrs.net/click-101720928-13756265"
-      badge: "Our Pick"
+      badge: "Recommended"
     - type: "affiliate"
       title: "Secure all your devices"
       desc: "VPN + ad blocker + malware protection. Unlimited devices."
       url: "https://www.kqzyfj.com/click-101720928-15438560"
-      badge: "Our Pick"
+      badge: "Great Value"
     - type: "affiliate"
       title: "Encrypted password vault"
       desc: "Open-source passwords with built-in 2FA and email aliases"
@@ -140,12 +152,12 @@ toolkit_banners:
     title: "Stay anonymous during testing"
     desc: "Protect your traffic with a fast, secure VPN. Essential for red team work."
     products:
-      - name: "Proton VPN"
-        url: "https://www.jdoqocy.com/click-101720928-15834536"
-        button: "Get Proton VPN →"
       - name: "NordVPN"
         url: "https://www.anrdoezrs.net/click-101720928-13756265"
         button: "Get NordVPN →"
+      - name: "Proton VPN"
+        url: "https://www.jdoqocy.com/click-101720928-15834536"
+        button: "Get Proton VPN →"
       - name: "Surfshark"
         url: "https://www.kqzyfj.com/click-101720928-15438560"
         button: "Get Surfshark →"
