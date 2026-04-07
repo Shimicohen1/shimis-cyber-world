@@ -126,7 +126,7 @@ permalink: /premium/
 <div class="elite-bot__card">
 <div class="elite-bot__icon">🤖</div>
 <h2 class="elite-bot__title">SCW Elite Bot</h2>
-<p class="elite-bot__desc">Get premium threat intelligence delivered straight to your Telegram — IOC packs, detection rules, and exclusive analysis. Pay with Telegram Stars ⭐</p>
+<p class="elite-bot__desc">Stay one step ahead. Get curated IOCs, detection rules, and exclusive threat analysis delivered straight to your Telegram — before the next attack hits.</p>
 <div class="elite-bot__products">
 <div class="elite-bot__product">
 <strong>🎯 Weekly IOC Pack</strong>
@@ -141,7 +141,7 @@ permalink: /premium/
 <span>100 ⭐/mo</span>
 </div>
 </div>
-<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Bot in Telegram →</a>
+<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Unlock My Intel →</a>
 </div>
 </section>
 
