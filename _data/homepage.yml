@@ -26,45 +26,45 @@ identity:
     url: /about/
 quick_signals:
   - title: Iranian Cyber Actors Target US Critical Infrastructure
-    text: Iranian-linked groups are actively targeting US critical infrastructure PLCs and OT devices.
-    detail: Recent advisories highlight a concerning trend of Iranian APTs focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT systems in US energy and water sectors. Organizations should prioritize securing OT environments and reviewing access controls for industrial control systems.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-099a
+    text: Iranian threat actors are actively targeting US critical infrastructure's operational technology.
+    detail: Recent advisories highlight Iranian APTs focusing on internet-exposed PLCs and OT devices in US energy and water systems. Organizations should prioritize securing OT environments and monitoring for unauthorized access attempts.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-065a
     link_label: CISA Advisory on Iranian Targeting
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - iran
-  - title: AI's Dual Role in Cybersecurity Escalates
-    text: AI is a double-edged sword, boosting defenses while enabling sophisticated attacks.
-    detail: The rapid advancement of AI models presents both opportunities for enhancing cybersecurity measures and significant risks for attackers. Professionals must stay abreast of AI-driven scams and leverage AI tools responsibly for threat detection and analysis.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: OWASP Top 10 AI Security Risks
+  - title: AI Fuels Surge in Cyber Fraud and Scams
+    text: AI is significantly boosting the sophistication and scale of cyber fraud.
+    detail: Cybercriminals are leveraging AI for advanced scams, leading to record financial losses. This trend necessitates enhanced AI-driven threat detection and user education on recognizing AI-manipulated fraudulent content.
+    link: https://www.ic3.gov/Media/StatisticReport
+    link_label: FBI IC3 Statistics
     badge: signal
     tags:
       - threat-intel
       - ai-security
-      - llm
-  - title: Exploitable Vulnerabilities Drive Cybercrime Losses
-    text: Unpatched vulnerabilities in widely used software continue to fuel record cybercrime losses.
-    detail: Active exploitation of vulnerabilities in platforms like Ninja Forms and Flowise, coupled with unaddressed security lapses, contributes to escalating cybercrime costs. Prioritize timely patching and vulnerability management for critical applications and infrastructure.
-    link: https://nvd.nist.gov/
-    link_label: NVD Vulnerability Database
+      - fraud
+  - title: Exploitation of Unpatched Vulnerabilities Continues
+    text: Active exploitation of unpatched critical vulnerabilities remains a significant threat.
+    detail: Recent reports show active exploitation of flaws in Ninja Forms and Flowise, alongside a newly disclosed zero-day. Prompt patching and diligent vulnerability management are crucial to mitigate these risks.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-0740
+    link_label: "NVD: Ninja Forms Vulnerability"
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - patch-management
-  - title: OSINT Tools Evolve for Data Extraction
-    text: New OSINT tools are emerging to extract user data from shared links.
-    detail: Tools like SharedTrace are enabling more granular data extraction from online links, posing privacy and security challenges. Organizations should educate employees on secure link sharing practices and monitor for unauthorized data aggregation.
-    link: https://www.sans.org/information-security-policy/getting-started-with-osint/
-    link_label: SANS OSINT Resources
+  - title: Supply Chain Attacks Exploit SaaS Integrators
+    text: SaaS integration providers are becoming key targets for supply chain attacks.
+    detail: Breaches at SaaS integrators are leading to widespread data theft via compromised authentication tokens. Companies must rigorously vet third-party access and implement strong access controls for integrated services.
+    link: https://owasp.org/www-community/attacks/Supply_Chain_Attack
+    link_label: OWASP Supply Chain Attacks
     badge: signal
     tags:
-      - osint
-      - data-privacy
-      - tools
+      - threat-intel
+      - supply-chain
+      - data-breach
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
