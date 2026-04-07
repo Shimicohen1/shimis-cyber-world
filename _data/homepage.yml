@@ -25,46 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Powered Cybercrime Escalation Demands Vigilance
-    text: AI is increasingly used to craft sophisticated phishing and supply chain attacks, driving a significant rise in cybercrime losses.
-    detail: AI is no longer just a defense tool; it's actively fueling advanced cyber threats. Recent reports highlight AI's role in sophisticated social engineering, supply chain attacks on platforms like GitHub, and highly convincing phishing campaigns. Organizations must bolster defenses against AI-enhanced attack vectors and educate users on these evolving tactics.
-    link: https://www.cisa.gov/news-events/news/artificial-intelligence-and-cybersecurity
-    link_label: CISA on AI & Cybersecurity
+  - title: GPU Memory Exploitation Emerges as New Attack Vector
+    text: Novel GPUBreach exploit leverages GPU memory bit-flips for system takeover.
+    detail: Researchers have demonstrated the GPUBreach exploit, which uses GPU memory bit-flips to achieve full system takeover and privilege escalation. This attack targets GPU page tables, bypassing traditional security measures. Organizations should monitor for new research and advisories related to GPU hardware vulnerabilities.
+    link: https://www.mitre.org/about/news/mitre-releases-new-cyber-threat-intelligence-platform
+    link_label: MITRE Cyber Threat Intelligence
     badge: signal
     tags:
-      - ai-security
       - threat-intel
-      - phishing
-  - title: Zero-Day Exploitation Remains a Critical Threat
-    text: Unpatched zero-day vulnerabilities, like BlueHammer and Fortinet EMS flaws, are actively exploited, necessitating rapid patching and robust detection.
-    detail: The active exploitation of zero-day vulnerabilities, such as the recently disclosed BlueHammer for Windows and a critical flaw in Fortinet FortiClient EMS, underscores the persistent danger of unpatched systems. Security teams must prioritize timely vulnerability management, threat intelligence feeds, and EDR solutions capable of detecting novel attack patterns.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/vulnerability-management
-    link_label: CISA on Vulnerability Management
-    badge: signal
-    tags:
       - vulnerability
+      - gpu
+  - title: Zero-Day Exploitation of Fortinet FortiClient EMS Continues
+    text: Actively exploited Fortinet FortiClient EMS zero-day has been added to CISA's catalog.
+    detail: CISA has added a critical flaw in Fortinet FortiClient EMS to its Known Exploited Vulnerabilities catalog due to active exploitation. A patch is still pending, leaving organizations vulnerable. Prioritize immediate mitigation strategies and monitor vendor advisories for urgent updates.
+    link: https://www.cisa.gov/news-events/advisories/aa23-303a
+    link_label: CISA Alert
+    badge: signal
+    tags:
       - threat-intel
+      - vulnerability
+      - fortinet
       - zero-day
-  - title: Ransomware Ecosystem Evolves with New Actors and Tactics
-    text: Emerging threat actors like DARKFEED and sophisticated campaigns like Medusa Ransomware highlight the dynamic ransomware landscape.
-    detail: The ransomware threat continues to evolve with the emergence of new actors, such as DARKFEED, and the rapid exploitation of vulnerabilities by groups like Medusa. International law enforcement efforts, like the arrests related to REvil and GandCrab, show progress, but the constant emergence of new variants and actors demands continuous monitoring and adaptive defenses.
-    link: https://www.cisa.gov/news-events/news/ransomware-guidance-and-resources
-    link_label: CISA Ransomware Resources
+  - title: AI-Powered Attacks Target Software Supply Chains
+    text: AI is being used to automate and enhance supply chain attacks on platforms like GitHub.
+    detail: A new trend involves AI-powered attacks specifically targeting software supply chains, automating the compromise of dependencies on platforms like GitHub. This elevates the sophistication and speed of attacks. Implement rigorous code review, dependency scanning, and secure development practices.
+    link: https://owasp.org/www-project-top-10-tied-to-software-supply-chain-compromise/
+    link_label: OWASP Supply Chain Security
     badge: signal
     tags:
-      - ransomware
-      - malware
       - threat-intel
-  - title: OSINT Tools Expand Data Gathering Capabilities
-    text: New OSINT tools like SharedTrace enable deeper user data extraction from shared links across platforms, requiring enhanced privacy awareness.
-    detail: The proliferation of specialized OSINT tools, such as SharedTrace, allows for the extraction of detailed user information from shared links on platforms like TikTok and Instagram. This capability poses significant privacy risks. Organizations and individuals should be aware of what information can be gleaned and implement stricter data-sharing policies and privacy settings.
-    link: https://owasp.org/www-community/OSINT
-    link_label: OWASP OSINT Community
+      - ai-security
+      - supply-chain
+      - github
+  - title: Minor Security Lapses Fuel Major Cyber Incidents
+    text: Overlooked security oversights, not just complex attacks, often initiate major breaches.
+    detail: Cybersecurity analysis indicates that seemingly minor security lapses, like open access points or unexamined alerts, are frequently the root cause of significant cyber incidents. A proactive approach to hardening, regular security audits, and prompt attention to alerts are crucial defenses.
+    link: https://www.nist.gov/cyberframework
+    link_label: NIST Cybersecurity Framework
     badge: signal
     tags:
-      - osint
-      - tools
-      - privacy
+      - threat-intel
+      - risk-management
+      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
