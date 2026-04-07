@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian Cyber Actors Targeting US Infrastructure
-    text: Iranian-linked groups are increasingly targeting U.S. critical infrastructure PLCs and OT devices.
-    detail: Recent advisories highlight a concerning trend of Iranian threat actors focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices within U.S. critical infrastructure. Organizations should prioritize securing these operational technology systems and industrial control systems against state-sponsored threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-065a
+  - title: Iranian Cyber Actors Target US Critical Infrastructure
+    text: Iranian-linked threat actors are actively targeting US critical infrastructure PLCs and OT devices.
+    detail: Iranian APTs are focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices within US critical infrastructure, posing a significant risk to energy and water systems. Organizations should prioritize hardening these exposed systems and monitoring for anomalous activity.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-077a
     link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - iran
-  - title: AI's Dual Role in Cybersecurity Exploitation and Defense
-    text: AI models present both advanced defensive capabilities and new avenues for sophisticated cyberattacks.
-    detail: The rapid development of AI, including new LLMs, offers powerful tools for cybersecurity defense but also empowers attackers with novel scam methodologies and enhanced capabilities. Professionals must stay informed about AI's evolving impact, focusing on both leveraging AI for security and mitigating AI-driven threats.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+  - title: AI-Powered Cyber Scams and Fraud Surge
+    text: AI is amplifying cyber fraud, with significant financial losses and new scam methodologies emerging.
+    detail: Cyber fraud losses are hitting record highs, with AI playing an increasing role in sophisticated scams like investment fraud and Business Email Compromise (BEC). Professionals must stay vigilant against AI-driven social engineering and invest in AI-aware threat detection and user education.
+    link: https://www.fbi.gov/how-we-can-help-you/scams-and-safety/common-scams-and-crimes/internet-crime-complaint-center
+    link_label: IC3 Report
     badge: signal
     tags:
       - threat-intel
       - ai-security
+      - fraud
+  - title: Russian APTs Exploit Routers for Token Theft
+    text: Russian state-linked groups are leveraging router vulnerabilities to steal Microsoft Office authentication tokens.
+    detail: APT28 and other Russian state-sponsored actors are exploiting SOHO routers to conduct global DNS hijacking and pilfer Microsoft Office authentication tokens. Network defenders should ensure router firmware is up-to-date and implement strong multi-factor authentication for all cloud services.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-319a
+    link_label: CISA Advisory
+    badge: signal
+    tags:
+      - threat-intel
+      - apt28
+      - microsoft
       - vulnerability
-  - title: Exploitation of SaaS Integrator Breaches for Data Theft
-    text: Breaches at SaaS integration providers are leading to widespread data theft via stolen authentication tokens.
-    detail: A concerning pattern has emerged where attackers compromise SaaS integration providers to obtain authentication tokens, subsequently targeting numerous cloud storage and SaaS vendors. This highlights the critical need for robust access control and vigilant monitoring of third-party vendor security postures.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
+  - title: OSINT Tools Enhance Threat Intelligence Gathering
+    text: New OSINT tools like SharedTrace are emerging to extract valuable data from online links.
+    detail: Tools such as SharedTrace are making it easier to gather user data from shared links, enhancing OSINT capabilities for threat intelligence. Cybersecurity professionals should evaluate and integrate such tools to improve their reconnaissance and situational awareness, while also considering privacy implications.
+    link: https://owasp.org/www-project-top-10/
+    link_label: OWASP Top 10
     badge: signal
     tags:
+      - osint
       - threat-intel
-      - data-breach
-      - supply-chain
-  - title: Record Cybercrime Losses Driven by Sophisticated Scams
-    text: Cybercrime continues to shatter financial loss records, with AI-powered scams and BEC posing significant threats.
-    detail: Annual cybercrime losses are reaching unprecedented levels, with AI-driven investment scams and Business Email Compromise (BEC) schemes contributing significantly to the billions lost. Financial institutions and individuals must enhance detection mechanisms and user education to combat these evolving fraud tactics.
-    link: https://www.ic3.gov/
-    link_label: FBI IC3
-    badge: signal
-    tags:
-      - threat-intel
-      - cyber-fraud
-      - ai-security
+      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
