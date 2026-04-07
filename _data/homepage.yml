@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian Cyber Actors Targeting US Critical Infrastructure
-    text: Iranian-linked groups are increasingly targeting US critical infrastructure, specifically PLCs and OT devices.
-    detail: Iranian threat actors are actively compromising internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices within US critical infrastructure. This poses a significant risk to energy, water, and other essential services. Organizations should prioritize securing OT environments and monitoring for suspicious activity.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-075a
+  - title: Iranian Cyber Actors Target US Critical Infrastructure
+    text: Iranian-linked actors are increasingly targeting US critical infrastructure, specifically PLCs and OT devices.
+    detail: A joint advisory from multiple US agencies highlights a concerning trend of Iranian threat actors focusing on internet-exposed Rockwell/Allen-Bradley PLCs within critical infrastructure sectors like energy and water. Organizations should prioritize securing OT environments and monitoring for suspicious activity targeting these industrial control systems.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-303a
     link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - iran
-  - title: Russian APTs Exploit SOHO Routers for Data Theft
-    text: Russian state-linked actors are hijacking SOHO routers for DNS hijacking and Microsoft token theft.
-    detail: Groups like Forest Blizzard are compromising SOHO routers to establish malicious infrastructure and steal Microsoft Office authentication tokens. This highlights a persistent threat vector against small and home office environments. Implement robust router security, disable unnecessary services, and enforce strong authentication.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-101a
+  - title: Russian APTs Exploit SOHO Routers for Token Theft
+    text: Russian state-linked groups are leveraging SOHO routers to steal Microsoft authentication tokens.
+    detail: Threat actors, including Forest Blizzard, are actively compromising SOHO routers to conduct global DNS hijacking and steal Microsoft Office authentication tokens. This highlights a persistent vulnerability in widely deployed edge devices. Network defenders must ensure routers are patched, configured securely, and monitored for unusual traffic patterns.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-357a
     link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - russia
       - vulnerability
-      - iot
-  - title: AI's Dual Role in Cybersecurity Landscape
-    text: New AI models present both significant defensive capabilities and potential attack vectors.
-    detail: The rapid advancement of AI, exemplified by new LLMs like Claude Mythos, offers powerful tools for cybersecurity defense but also empowers attackers. Organizations must stay informed about AI's evolving impact and invest in AI-driven security solutions while anticipating AI-augmented threats.
-    link: https://owasp.org/www-project-generative-ai-security/
-    link_label: OWASP Generative AI Security Project
+      - microsoft
+  - title: AI's Dual Role in Cybersecurity Evolution
+    text: AI presents both significant opportunities and threats in the evolving cybersecurity landscape.
+    detail: The rapid advancement of AI models, like Anthropic's Claude Mythos, offers powerful new tools for defensive cybersecurity while simultaneously posing risks for attackers. Cybersecurity professionals must stay abreast of AI's dual-use nature, leveraging its capabilities for threat detection and analysis while preparing for AI-enhanced attack vectors.
+    link: https://www.nist.gov/itl/cybersecurity/artificial-intelligence-and-cybersecurity
+    link_label: NIST AI & Cybersecurity
     badge: signal
     tags:
       - threat-intel
       - ai-security
-      - llm
-  - title: Cybercrime Losses Continue to Skyrocket Globally
-    text: Cybercrime costs are escalating, with Americans losing billions annually due to sophisticated scams.
-    detail: Cybercrime losses are reaching record highs, with a significant increase reported year-over-year. This trend underscores the need for enhanced public awareness, robust security practices, and effective incident response strategies to mitigate financial and data losses from evolving cyber threats.
-    link: https://www.ic3.gov/Media/PDF/AnnualReport/2023_IC3_Report.pdf
-    link_label: FBI IC3 Report
+      - emerging-tech
+  - title: OSINT Tools Enhance Attack Surface Visibility
+    text: New OSINT tools are emerging to uncover user data from shared links and online profiles.
+    detail: Tools like SharedTrace are making it easier for researchers and attackers alike to gather detailed user information from shared links across platforms such as TikTok, Instagram, and Discord. Security teams should leverage similar OSINT techniques for proactive attack surface mapping and identifying potential exposure points.
+    link: https://owasp.org/www-project-application-security-verification-standard/
+    link_label: OWASP ASVS
     badge: signal
     tags:
-      - threat-intel
-      - cybercrime
-      - financial-fraud
+      - osint
+      - tools
+      - attack-surface
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
