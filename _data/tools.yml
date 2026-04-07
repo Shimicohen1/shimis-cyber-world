@@ -15,12 +15,20 @@ categories:
         status: Recommended
         sponsored: true
         button: Get Surfshark
-      - title: "ProtonVPN"
-        description: "Swiss-based encrypted VPN with a strong free tier. Built by the team behind ProtonMail."
-        url: "https://protonvpn.com/"
+      - title: "Proton VPN"
+        description: "Swiss-based no-logs VPN with built-in ad blocker, NetShield malware filter, and Secure Core routing through privacy-friendly countries."
+        url: "https://www.jdoqocy.com/click-101720928-15834536"
         tags: [vpn, privacy, encryption]
         status: Recommended
-        button: Get ProtonVPN
+        sponsored: true
+        button: Get Proton VPN
+      - title: "Proton Pass"
+        description: "Open-source, end-to-end encrypted password manager with built-in 2FA, email aliases, and passkey support. From the makers of ProtonMail."
+        url: "https://www.jdoqocy.com/click-101720928-15831601"
+        tags: [passwords, privacy, open-source]
+        status: Recommended
+        sponsored: true
+        button: Get Proton Pass
       - title: "1Password"
         description: "Secure password manager for teams and individuals. Zero-knowledge architecture, breach monitoring built in."
         url: "https://1password.com/"
