@@ -25,30 +25,19 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: GPU Memory Exploits Enable System Takeover
-    text: Novel GPUBreach exploit leverages GPU memory bit-flips for full system compromise.
-    detail: Researchers have demonstrated the GPUBreach exploit, which utilizes GPU Rowhammer vulnerabilities and memory bit-flips to achieve root shell access and full system takeover. This attack bypasses traditional defenses by targeting GPU page tables. Professionals should monitor for advisories related to GPU memory integrity and potential mitigations.
-    link: https://www.mitre.org/capabilities/attack-techniques/attack-t1596
-    link_label: "MITRE ATT&CK: Vulnerability Exploitation"
+  - title: GPU Vulnerabilities Enable Full System Compromise
+    text: New GPUBreach exploit leverages GPU memory bit-flips for system takeover.
+    detail: Researchers have demonstrated GPUBreach, an attack exploiting GPU Rowhammer vulnerabilities to achieve root shell access and full system takeover. This bypasses traditional defenses by targeting GPU memory. Organizations should monitor for advisories related to GPU hardware and firmware security updates to mitigate this emerging threat.
+    link: https://www.nvidia.com/en-us/security/
+    link_label: NVIDIA Security Advisories
     badge: signal
     tags:
       - threat-intel
       - vulnerability
-      - gpu-security
-  - title: Zero-Day Exploits for Fortinet FortiClient EMS Actively Targeted
-    text: Fortinet FortiClient EMS zero-day actively exploited; CISA adds to catalog.
-    detail: A critical zero-day vulnerability in Fortinet FortiClient EMS is under active exploitation, prompting CISA to add it to its Known Exploited Vulnerabilities catalog. Organizations using this product must prioritize patching and implement workarounds immediately to mitigate the risk of system compromise.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-143a
-    link_label: CISA Known Exploited Vulnerabilities
-    badge: signal
-    tags:
-      - threat-intel
-      - vulnerability
-      - fortinet
-      - zero-day
+      - data-breach
   - title: AI-Powered Attacks Escalate Supply Chain Risks
-    text: AI is now powering sophisticated supply chain attacks targeting platforms like GitHub.
-    detail: The cybersecurity landscape is evolving with AI-assisted attacks specifically targeting software dependencies on platforms like GitHub. This trend signifies a new level of automation and sophistication in compromising software supply chains. Security teams must enhance their code scanning and dependency validation processes.
+    text: AI is being used to automate and enhance supply chain attacks on platforms like GitHub.
+    detail: AI is now a tool for threat actors, automating sophisticated supply chain attacks that compromise software dependencies. This trend, seen targeting GitHub, necessitates a heightened focus on DevSecOps practices. Organizations must implement robust code scanning, dependency vulnerability management, and secure CI/CD pipelines.
     link: https://owasp.org/www-community/Supply_Chain_Security
     link_label: OWASP Supply Chain Security
     badge: signal
@@ -56,17 +45,26 @@ quick_signals:
       - threat-intel
       - ai-security
       - supply-chain
-      - github
-  - title: Minor Lapses Lead to Major Cyber Incidents
-    text: Seemingly small security oversights are frequently the root cause of significant breaches.
-    detail: Major cyber incidents often stem from overlooked, minor security lapses such as open access points or unexamined alerts. This highlights the critical importance of diligent security hygiene and thorough review of even seemingly insignificant security events. Continuous monitoring and prompt remediation are essential.
-    link: https://owasp.org/www-project-top-10/
-    link_label: OWASP Top 10
+  - title: Zero-Day Exploitation Continues Despite Disclosure
+    text: Unpatched zero-days like BlueHammer are being publicly disclosed and exploited.
+    detail: The public release of unpatched zero-day vulnerabilities, such as BlueHammer, poses immediate risks. Threat actors can leverage these flaws for privilege escalation before official patches are available. Proactive vulnerability management, rapid patching, and robust endpoint detection are crucial to defend against such threats.
+    link: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+    link_label: CISA Known Exploited Vulnerabilities
     badge: signal
     tags:
       - threat-intel
-      - risk-management
-      - incident-response
+      - vulnerability
+      - zero-day
+  - title: Cyber Fraud Reaches Staggering Financial Losses
+    text: Cyber fraud now exceeds $17 billion annually, with complex money laundering schemes.
+    detail: The scale of cyber fraud is immense, with the FBI reporting over $17 billion in losses. Sophisticated methods, including laundering funds through hundreds of accounts, complicate recovery. Businesses and individuals must implement multi-factor authentication, be wary of unsolicited communications, and use secure transaction methods.
+    link: https://www.ic3.gov/
+    link_label: FBI Internet Crime Complaint Center
+    badge: signal
+    tags:
+      - threat-intel
+      - cyber-fraud
+      - financial-crime
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
