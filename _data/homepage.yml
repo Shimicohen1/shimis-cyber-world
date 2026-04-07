@@ -25,48 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Driven Cybercrime Escalates Sharply
-    text: AI is rapidly transforming cybercrime, enabling sophisticated scams and increasing fraud losses.
-    detail: Reports indicate a surge in AI-powered scams, contributing to record-breaking cyber fraud losses. Professionals must prioritize AI threat detection and educate users on AI-driven phishing and social engineering tactics. Stay updated on AI's dual role in defense and offense.
-    link: https://www.cisa.gov/news-events/news/artificial-intelligence-and-cybersecurity
-    link_label: CISA on AI & Cybersecurity
-    badge: signal
-    tags:
-      - threat-intel
-      - ai-security
-      - cybercrime
-  - title: Iranian Actors Target US Critical Infrastructure
-    text: Iranian-linked threat actors are increasingly targeting US critical infrastructure PLCs and OT devices.
-    detail: Recent advisories highlight Iranian APTs focusing on internet-exposed PLCs and OT systems in US energy and water sectors. Organizations must urgently review and secure operational technology environments, implement network segmentation, and monitor for unauthorized access.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-348a
-    link_label: CISA Advisory on Iranian Threat Actors
+  - title: Iranian Cyber Actors Targeting US Critical Infrastructure
+    text: Iranian threat actors are actively targeting US critical infrastructure PLCs and OT devices.
+    detail: Recent advisories highlight a concerning trend of Iranian-linked groups focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices within US energy and water systems. Organizations should bolster defenses for ICS/OT environments and monitor for indicators of compromise related to these targeted sectors.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-309a
+    link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - iran
-  - title: Exploitation of Open-Source Tools and Vulnerabilities
-    text: New tools and vulnerabilities in open-source components are being actively exploited by threat actors.
-    detail: The cybersecurity landscape sees continuous emergence of new OSINT tools and the rapid exploitation of vulnerabilities, such as recent Flowise RCE. Organizations should maintain robust software supply chain security, perform regular vulnerability scanning, and prioritize patching critical flaws.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
+  - title: AI-Powered Scams and Fraud on the Rise
+    text: Cyber fraud losses are skyrocketing, with AI-driven scams becoming increasingly sophisticated.
+    detail: Cybercrime losses, particularly from fraud, have reached record highs, with AI playing a growing role in investment, BEC, and romance scams. Professionals should stay updated on AI-generated phishing techniques and educate users on recognizing sophisticated social engineering tactics.
+    link: https://www.ic3.gov/Media/PDF/AnnualReport/2023_IC3Report.pdf
+    link_label: FBI IC3 Report
+    badge: signal
+    tags:
+      - threat-intel
+      - ai-security
+      - cyber-fraud
+  - title: Exploitation of SOHO Routers for Credential Theft
+    text: Russian state-linked actors are exploiting SOHO routers for DNS hijacking and token theft.
+    detail: APT28 and other Russian-linked groups are actively compromising SOHO routers to conduct global DNS hijacking campaigns and steal Microsoft Office authentication tokens. Organizations must ensure their edge devices are patched, configured securely, and monitored for anomalous network traffic.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-137a
+    link_label: CISA Advisory on APT28
     badge: signal
     tags:
       - threat-intel
       - vulnerability
-      - tools
-      - supply-chain
-  - title: Russian APTs Leverage Routers for Credential Theft
-    text: Russian state-linked groups are exploiting SOHO routers to steal Microsoft authentication tokens.
-    detail: APT28 and other Russian-linked actors are actively compromising SOHO routers to hijack DNS and steal Microsoft Office tokens. Network defenders should harden router configurations, disable unnecessary services, and monitor for unusual DNS activity and token exfiltration.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-075a
-    link_label: CISA Advisory on Russian APTs
+      - router-security
+  - title: OSINT Tools Evolving for Data Extraction
+    text: New OSINT tools like SharedTrace are emerging for extracting user data from shared links.
+    detail: The OSINT landscape is continually evolving with new tools like SharedTrace, capable of extracting detailed user information from shared links across platforms like TikTok, Instagram, and Discord. Security professionals should be aware of these tools to better understand potential reconnaissance vectors.
+    link: https://owasp.org/www-community/OSINT
+    link_label: OWASP OSINT Guidance
     badge: signal
     tags:
+      - osint
+      - tools
       - threat-intel
-      - router-security
-      - russia
-      - microsoft
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
