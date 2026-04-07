@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: GPU Vulnerabilities Enable Full System Takeover
-    text: New exploits leverage GPU memory bit-flips for privilege escalation and system compromise.
-    detail: Attacks like GPUBreach demonstrate that GPU vulnerabilities can lead to complete system takeover by manipulating GPU memory. Organizations should monitor for emerging GPU-specific exploits and ensure firmware and driver updates are applied promptly to mitigate risks associated with physical memory manipulation.
-    link: https://www.nvidia.com/en-us/security/
-    link_label: NVIDIA Security Advisories
-    badge: signal
-    tags:
-      - threat-intel
-      - vulnerability
-      - data-breach
-  - title: AI Accelerates Sophistication in Cyber Attacks
-    text: AI is being integrated into supply chain attacks and OSINT tool development.
-    detail: The increasing use of AI in cyberattacks, from automating supply chain compromises on platforms like GitHub to enhancing OSINT tools for data extraction, signifies a growing threat. Defenders must prioritize AI security measures and stay informed about AI-driven attack vectors to counter these evolving threats.
-    link: https://www.owasp.org/www-community/AI_Security
-    link_label: OWASP AI Security
+  - title: AI-Powered Attacks Escalate Supply Chain Risks
+    text: AI is enhancing supply chain attacks, automating exploitation of software dependencies on platforms like GitHub.
+    detail: Threat actors are leveraging AI to refine attacks targeting software dependencies and build pipelines. This trend necessitates a proactive approach to supply chain security, including rigorous vetting of third-party code and continuous monitoring of development environments. Organizations should prioritize automated security testing and vulnerability management within their CI/CD pipelines.
+    link: https://owasp.org/www-community/Supply_Chain_Security
+    link_label: OWASP Supply Chain Security
     badge: signal
     tags:
       - ai-security
-      - threat-intel
       - supply-chain
-  - title: Zero-Day Exploits Surface Amidst Stalled Vendor Responses
-    text: Unpatched zero-days are being publicly disclosed due to slow vendor patch cycles.
-    detail: Reports indicate researchers are publicly releasing zero-day vulnerabilities, like the 'BlueHammer' flaw, when dissatisfied with vendor response times. This trend highlights the critical need for rapid vulnerability patching and disclosure policies. Organizations must proactively hunt for and mitigate such vulnerabilities before they are weaponized.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/known-exploited-vulnerabilities-catalog
+      - threat-intel
+  - title: GPU Vulnerabilities Enable System Takeover
+    text: New exploits like GPUBreach use GPU memory bit-flips to achieve full system control.
+    detail: Researchers have demonstrated that GPU Rowhammer vulnerabilities can be exploited to achieve root shell access and full system takeover, bypassing traditional security measures. This highlights the emerging threat surface associated with GPU hardware. Staying updated on hardware-level vulnerabilities and ensuring systems are patched, especially those with high-performance GPUs, is crucial.
+    link: https://www.nvidia.com/en-us/security/
+    link_label: NVIDIA Security Bulletins
+    badge: signal
+    tags:
+      - vulnerability
+      - hardware-security
+      - threat-intel
+  - title: "Zero-Day Exploitation: Public Disclosure Risks"
+    text: Unpatched zero-days like BlueHammer are being publicly disclosed due to vendor response dissatisfaction.
+    detail: Security researchers are opting for public disclosure of zero-day vulnerabilities when vendor responses are unsatisfactory, as seen with BlueHammer. This practice accelerates the timeline for attackers to develop exploits. Organizations must implement robust threat intelligence feeds and rapid patching strategies to mitigate risks associated with newly disclosed vulnerabilities.
+    link: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
     link_label: CISA KEV Catalog
     badge: signal
     tags:
-      - threat-intel
       - vulnerability
-      - microsoft
-  - title: SaaS Notification Channels Weaponized for Phishing
-    text: Attackers hijack SaaS notifications to distribute phishing and spam emails.
-    detail: Threat actors are increasingly exploiting the trusted notification pipelines of SaaS platforms, such as GitHub and Jira, to deliver malicious content. This tactic bypasses traditional email filters. Security teams should implement strict controls on SaaS integrations and educate users about the risks of unexpected or suspicious platform notifications.
+      - zero-day
+      - threat-intel
+  - title: SaaS Platform Hijacking for Phishing & Scams
+    text: Attackers weaponize SaaS notification systems for sophisticated phishing and scam campaigns.
+    detail: Threat actors are exploiting the notification pipelines of popular SaaS platforms (e.g., GitHub, Jira) to distribute malicious spam and phishing emails. This trend bypasses traditional email security filters. Organizations should educate users about these evolving tactics and implement stricter controls on integrated applications and notification settings.
     link: https://www.microsoft.com/en-us/security/business/security-101/what-is-phishing
-    link_label: Microsoft Phishing Information
+    link_label: Microsoft Phishing Awareness
     badge: signal
     tags:
-      - threat-intel
       - phishing
-      - malware
+      - saas-security
+      - threat-intel
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
