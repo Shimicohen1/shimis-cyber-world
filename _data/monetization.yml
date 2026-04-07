@@ -1,0 +1,126 @@
+# SCW Monetization Configuration
+# Manages all ad placements, sponsored recommendations, and AdSense slots.
+# Ad types: adsense, affiliate, sponsored, premium-cta
+
+# ── AdSense Settings ──────────────────────────────────────
+adsense:
+  enabled: false  # flip to true once AdSense is approved
+  publisher_id: "ca-pub-5567674302137832"
+
+# ── Contextual Product Recommendations ────────────────────
+# Matched to post tags. Shown in "Why It Matters" / recommendations section.
+# Each entry: tag match → product cards shown alongside the post.
+recommendations:
+  - match_tags: [vpn, privacy, network]
+    products:
+      - name: "NordVPN"
+        desc: "Secure your traffic with threat protection built in."
+        url: "https://nordvpn.com/"
+        badge: "Recommended"
+      - name: "Surfshark"
+        desc: "All-in-one VPN + ad blocker. Unlimited devices."
+        url: "https://surfshark.com/"
+        badge: "Great Value"
+
+  - match_tags: [malware, ransomware, endpoint]
+    products:
+      - name: "1Password"
+        desc: "Zero-knowledge password manager with breach monitoring."
+        url: "https://1password.com/"
+        badge: "Essential"
+
+  - match_tags: [vulnerability, cve, exploit, zero-day]
+    products:
+      - name: "Burp Suite"
+        desc: "Test your apps before attackers do."
+        url: "https://portswigger.net/burp"
+        badge: "Industry Standard"
+
+  - match_tags: [training, certification, beginner]
+    products:
+      - name: "Hack The Box"
+        desc: "Real-world hacking challenges. Prove yourself."
+        url: "https://www.hackthebox.com/"
+        badge: "Top Pick"
+      - name: "TryHackMe"
+        desc: "Guided learning paths with hands-on labs."
+        url: "https://tryhackme.com/"
+        badge: "Best for Beginners"
+
+  - match_tags: [osint, reconnaissance, discovery]
+    products:
+      - name: "Shodan"
+        desc: "Search engine for internet-connected devices."
+        url: "https://www.shodan.io/"
+        badge: "Essential"
+
+  - match_tags: [phishing, social-engineering, awareness]
+    products:
+      - name: "OffSec (OSCP)"
+        desc: "Gold standard certifications for pen testers."
+        url: "https://www.offsec.com/"
+        badge: "Pro Level"
+
+  - match_tags: [password, credential, identity, auth-bypass]
+    products:
+      - name: "1Password"
+        desc: "Secure your credentials. Zero-knowledge architecture."
+        url: "https://1password.com/"
+        badge: "Essential"
+      - name: "Bitwarden"
+        desc: "Open-source password manager. Full control."
+        url: "https://bitwarden.com/"
+        badge: "Open Source"
+
+# ── In-Feed Ad Slots ──────────────────────────────────────
+# Inserted between post cards in the feed listing.
+# frequency: show ad every N posts (e.g. every 6th post card)
+feed_ads:
+  frequency: 6
+  items:
+    - type: "affiliate"
+      title: "Level up your skills"
+      desc: "Real-world hacking labs – start for free"
+      url: "https://www.hackthebox.com/"
+      sponsor: "Hack The Box"
+      badge: "Sponsored"
+    - type: "affiliate"
+      title: "Protect your privacy"
+      desc: "Fast, secure VPN with built-in threat protection"
+      url: "https://nordvpn.com/"
+      sponsor: "NordVPN"
+      badge: "Partner"
+    - type: "premium-cta"
+      title: "Want early alerts?"
+      desc: "Get exclusive analysis, detection rules, and IOC feeds"
+      url: "/premium/"
+      badge: "SCW Elite"
+
+# ── Toolkit Banner ────────────────────────────────────────
+# Shows between tool categories on the toolkit page.
+toolkit_banners:
+  - after_category: "Exploitation"
+    type: "affiliate"
+    title: "Want hands-on practice?"
+    desc: "Build real skills with guided hacking labs and CTF challenges."
+    products:
+      - name: "Hack The Box"
+        url: "https://www.hackthebox.com/"
+        button: "Start Hacking →"
+      - name: "TryHackMe"
+        url: "https://tryhackme.com/"
+        button: "Start Learning →"
+  - after_category: "Defense & Monitoring"
+    type: "affiliate"
+    title: "Secure your credentials"
+    desc: "Every breach starts with a compromised password."
+    products:
+      - name: "1Password"
+        url: "https://1password.com/"
+        button: "Get 1Password →"
+  - after_category: "Utilities"
+    type: "premium-cta"
+    title: "Need more firepower?"
+    desc: "SCW Elite tools: IOC Scanner, Detection Vault, Threat Playbooks, and more."
+    url: "/premium/"
+    button: "Explore SCW Elite →"

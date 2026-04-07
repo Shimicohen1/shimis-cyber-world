@@ -35,10 +35,19 @@ permalink: /posts/
 <div class="archive">
   <div class="archive__list" id="feed-list">
     {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" %}
+    {% assign ad_freq = site.data.monetization.feed_ads.frequency | default: 6 %}
+    {% assign ad_items = site.data.monetization.feed_ads.items %}
+    {% assign ad_count = ad_items | size %}
     {% for post in non_cve %}
     <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}">
       {% include post-card.html %}
     </div>
+    {% assign loop_idx = forloop.index | modulo: ad_freq %}
+    {% if loop_idx == 0 and ad_count > 0 %}
+      {% assign ad_idx = forloop.index | divided_by: ad_freq | minus: 1 | modulo: ad_count %}
+      {% assign ad = ad_items[ad_idx] %}
+      {% include ad-slot.html type="feed-native" title=ad.title desc=ad.desc url=ad.url sponsor=ad.sponsor badge=ad.badge button=ad.button %}
+    {% endif %}
     {% endfor %}
   </div>
 
