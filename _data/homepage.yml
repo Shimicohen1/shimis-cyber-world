@@ -26,45 +26,45 @@ identity:
     url: /about/
 quick_signals:
   - title: Iranian Cyber Actors Target US Critical Infrastructure
-    text: Iranian-linked threat actors are actively targeting US critical infrastructure, specifically PLCs and OT devices.
-    detail: Iranian APTs are focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices in US critical infrastructure sectors like energy and water. Organizations should immediately review and secure their OT environments, focusing on network segmentation and access controls. Consult CISA advisories for specific mitigation guidance.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-057a
-    link_label: CISA Advisory AA24-057A
+    text: Iranian-linked groups are actively targeting US critical infrastructure PLCs and OT devices.
+    detail: Recent advisories highlight a concerning trend of Iranian APTs focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT systems in US energy and water sectors. Organizations should prioritize securing OT environments and reviewing access controls for industrial control systems.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-099a
+    link_label: CISA Advisory on Iranian Targeting
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - iran
-  - title: "AI's Dual Role in Cybersecurity: Boon and Threat"
-    text: New AI models present both advanced defensive capabilities and novel attack vectors.
-    detail: The rapid advancement of AI models like Anthropic's Claude Mythos offers powerful tools for cybersecurity defense, but also equips adversaries with new capabilities for offensive operations. Professionals must stay informed about both offensive and defensive AI applications, integrating AI security best practices into their strategies.
-    link: https://owasp.org/www-project-generative-ai-security/
-    link_label: OWASP Generative AI Security
+  - title: AI's Dual Role in Cybersecurity Escalates
+    text: AI is a double-edged sword, boosting defenses while enabling sophisticated attacks.
+    detail: The rapid advancement of AI models presents both opportunities for enhancing cybersecurity measures and significant risks for attackers. Professionals must stay abreast of AI-driven scams and leverage AI tools responsibly for threat detection and analysis.
+    link: https://owasp.org/www-project-top-10-ai-security-risks/
+    link_label: OWASP Top 10 AI Security Risks
     badge: signal
     tags:
       - threat-intel
       - ai-security
       - llm
-  - title: Exploitation of SaaS Integrator Breaches for Data Theft
-    text: Data theft is accelerating through breaches at SaaS integration providers, compromising downstream clients.
-    detail: Attackers are leveraging compromised SaaS integration providers to gain access to authentication tokens, enabling widespread data theft from various cloud storage and SaaS vendors. Companies must rigorously vet their third-party SaaS integrations and implement robust access controls and continuous monitoring for suspicious activities.
-    link: https://www.nist.gov/cyberframework/third-party-risk-management
-    link_label: NIST Third-Party Risk Management
+  - title: Exploitable Vulnerabilities Drive Cybercrime Losses
+    text: Unpatched vulnerabilities in widely used software continue to fuel record cybercrime losses.
+    detail: Active exploitation of vulnerabilities in platforms like Ninja Forms and Flowise, coupled with unaddressed security lapses, contributes to escalating cybercrime costs. Prioritize timely patching and vulnerability management for critical applications and infrastructure.
+    link: https://nvd.nist.gov/
+    link_label: NVD Vulnerability Database
     badge: signal
     tags:
       - threat-intel
-      - data-breach
-      - supply-chain
-  - title: Cybercrime Losses Continue Record Surge, Fueled by Scams
-    text: Cybercrime losses are escalating, with AI-driven scams and Business Email Compromise (BEC) leading the charge.
-    detail: Cybercrime continues to shatter financial records, with losses reaching tens of billions annually, driven by sophisticated scams including AI-powered fraud and BEC. Organizations should prioritize user education on identifying and reporting phishing and social engineering attempts, and implement advanced threat detection solutions.
-    link: https://www.ic3.gov/Media/PDF/AnnualReport/2023_IC3Report.pdf
-    link_label: FBI IC3 2023 Report
+      - vulnerability
+      - patch-management
+  - title: OSINT Tools Evolve for Data Extraction
+    text: New OSINT tools are emerging to extract user data from shared links.
+    detail: Tools like SharedTrace are enabling more granular data extraction from online links, posing privacy and security challenges. Organizations should educate employees on secure link sharing practices and monitor for unauthorized data aggregation.
+    link: https://www.sans.org/information-security-policy/getting-started-with-osint/
+    link_label: SANS OSINT Resources
     badge: signal
     tags:
-      - threat-intel
-      - cyber-fraud
-      - ai-scams
+      - osint
+      - data-privacy
+      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
