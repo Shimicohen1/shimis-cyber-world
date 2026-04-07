@@ -57,4 +57,16 @@ permalink: /tools/
     {% endfor %}
   </div>
 </section>
+
+{% comment %}── Toolkit Ad Banners between categories ──{% endcomment %}
+{% for banner in site.data.monetization.toolkit_banners %}
+  {% if banner.after_category == category.name %}
+    {% if banner.type == "premium-cta" %}
+      {% include ad-slot.html type="premium-cta" title=banner.title desc=banner.desc url=banner.url button=banner.button %}
+    {% else %}
+      {% include ad-slot.html type="toolkit-banner" title=banner.title desc=banner.desc products=banner.products url=banner.url button=banner.button %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
 {% endfor %}

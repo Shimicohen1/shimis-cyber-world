@@ -1,0 +1,118 @@
+{% comment %}
+  ad-slot.html — Reusable ad unit component
+  
+  Usage:
+    {% include ad-slot.html type="adsense" slot="post-mid" %}
+    {% include ad-slot.html type="affiliate" title="..." desc="..." url="..." sponsor="..." %}
+    {% include ad-slot.html type="feed-native" %}
+    {% include ad-slot.html type="post-recommendations" tags=page.tags %}
+{% endcomment %}
+
+{% if include.type == "adsense" %}
+  {% if site.data.monetization.adsense.enabled %}
+  <div class="ad-slot ad-slot--adsense ad-slot--{{ include.slot | default: 'generic' }}">
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="{{ site.data.monetization.adsense.publisher_id }}"
+      {% if include.ad_slot %}data-ad-slot="{{ include.ad_slot }}"{% endif %}
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+  {% endif %}
+
+{% elsif include.type == "affiliate" %}
+  <div class="ad-slot ad-slot--affiliate" data-track="affiliate">
+    <div class="ad-slot__label">Sponsored</div>
+    <div class="ad-slot__content">
+      <div class="ad-slot__text">
+        {% if include.title %}<strong>{{ include.title }}</strong>{% endif %}
+        {% if include.desc %}<p>{{ include.desc }}</p>{% endif %}
+      </div>
+      {% if include.url %}
+      <a href="{{ include.url }}" target="_blank" rel="noopener noreferrer" class="btn btn--sm btn--accent" data-track="affiliate">
+        {{ include.button | default: "Learn More →" }}
+      </a>
+      {% endif %}
+    </div>
+    {% if include.sponsor %}<div class="ad-slot__sponsor">by {{ include.sponsor }}</div>{% endif %}
+  </div>
+
+{% elsif include.type == "premium-cta" %}
+  <div class="ad-slot ad-slot--premium">
+    <div class="ad-slot__content">
+      <div class="ad-slot__text">
+        <strong>🔒 {{ include.title | default: "Get deeper insights" }}</strong>
+        <p>{{ include.desc | default: "Early alerts, IOC feeds, detection rules, and exclusive analysis." }}</p>
+      </div>
+      <a href="{{ include.url | default: '/premium/' | relative_url }}" class="btn btn--sm btn--accent" data-track="premium">
+        {{ include.button | default: "Explore SCW Elite →" }}
+      </a>
+    </div>
+  </div>
+
+{% elsif include.type == "post-recommendations" %}
+  {% comment %} Contextual product recommendations based on post tags {% endcomment %}
+  {% assign post_tags = include.tags %}
+  {% assign matched = false %}
+  {% for rec in site.data.monetization.recommendations %}
+    {% for mtag in rec.match_tags %}
+      {% if post_tags contains mtag %}
+        {% unless matched %}
+          {% assign matched = true %}
+  <div class="ad-slot ad-slot--recommendations">
+    <h3 class="ad-slot__heading">🛠 Recommended Tools</h3>
+    <div class="ad-slot__products">
+          {% for product in rec.products %}
+      <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="ad-slot__product" data-track="affiliate">
+        <div class="ad-slot__product-info">
+          <strong>{{ product.name }}</strong>
+          <span>{{ product.desc }}</span>
+        </div>
+        {% if product.badge %}<span class="badge badge--partner">{{ product.badge }}</span>{% endif %}
+      </a>
+          {% endfor %}
+    </div>
+  </div>
+        {% endunless %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+{% elsif include.type == "feed-native" %}
+  {% comment %} Native ad card that blends with feed post cards {% endcomment %}
+  <div class="feed-entry feed-entry--ad" data-title="" data-tags="" data-excerpt="">
+    <div class="feed-item feed-item--ad" data-track="affiliate">
+      <div class="feed-item__body">
+        <span class="badge badge--partner">{{ include.badge | default: "Sponsored" }}</span>
+        <h3>{{ include.title }}</h3>
+        <p>{{ include.desc }}</p>
+        {% if include.url %}
+        <a href="{% if include.url contains '://' %}{{ include.url }}{% else %}{{ include.url | relative_url }}{% endif %}" 
+           {% if include.url contains '://' %}target="_blank" rel="noopener noreferrer"{% endif %}
+           class="btn btn--ghost btn--sm">{{ include.button | default: "Learn More →" }}</a>
+        {% endif %}
+        {% if include.sponsor %}<div class="ad-slot__sponsor">by {{ include.sponsor }}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+
+{% elsif include.type == "toolkit-banner" %}
+  <div class="ad-slot ad-slot--toolkit-banner">
+    <div class="ad-slot__content">
+      <div class="ad-slot__text">
+        <strong>{{ include.title }}</strong>
+        <p>{{ include.desc }}</p>
+      </div>
+      <div class="ad-slot__actions">
+        {% for product in include.products %}
+        <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="btn btn--sm btn--ghost" data-track="affiliate">{{ product.button | default: product.name }}</a>
+        {% endfor %}
+        {% if include.url %}
+        <a href="{{ include.url | relative_url }}" class="btn btn--sm btn--accent" data-track="premium">{{ include.button }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}

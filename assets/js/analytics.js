@@ -57,6 +57,22 @@ document.addEventListener('click', function (e) {
     return;
   }
 
+  // Track ad slot clicks (recommendations, feed native, toolkit banners)
+  var adSlot = link.closest('.ad-slot') || link.closest('.feed-item--ad');
+  if (adSlot) {
+    var adType = adSlot.classList.contains('ad-slot--recommendations') ? 'recommendation' :
+                 adSlot.classList.contains('ad-slot--premium') ? 'premium_cta' :
+                 adSlot.classList.contains('feed-item--ad') ? 'feed_native' :
+                 adSlot.classList.contains('ad-slot--toolkit-banner') ? 'toolkit_banner' : 'ad';
+    gtag('event', 'ad_click', {
+      ad_type: adType,
+      link_url: href,
+      link_text: text,
+      page_path: path
+    });
+    return;
+  }
+
   // Track all external link clicks
   if (href.indexOf('http') === 0 && href.indexOf(window.location.hostname) === -1) {
     gtag('event', 'outbound_click', {

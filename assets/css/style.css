@@ -2571,3 +2571,70 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   .newsletter__input-wrap { flex-direction: column; }
   .newsletter__btn { padding: 0.75rem; }
 }
+
+/* ── Ad Slots & Monetization ──────────────────────────── */
+.ad-slot { margin: 1.5rem 0; border-radius: 10px; overflow: hidden; }
+.ad-slot--adsense { min-height: 100px; text-align: center; }
+.ad-slot--affiliate,
+.ad-slot--premium,
+.ad-slot--recommendations,
+.ad-slot--toolkit-banner {
+  border: 1px solid rgba(0, 255, 135, 0.15);
+  background: rgba(0, 255, 135, 0.03);
+  padding: 1rem 1.25rem;
+}
+.ad-slot__label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+.ad-slot__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.ad-slot__text strong { display: block; margin-bottom: 0.25rem; color: var(--text); }
+.ad-slot__text p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+.ad-slot__sponsor { font-size: 0.7rem; color: #666; margin-top: 0.5rem; }
+.ad-slot__heading {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent, #00ff87);
+  margin: 0 0 0.75rem;
+}
+.ad-slot__products { display: flex; flex-direction: column; gap: 0.5rem; }
+.ad-slot__product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s;
+}
+.ad-slot__product:hover { border-color: rgba(0, 255, 135, 0.3); }
+.ad-slot__product-info { display: flex; flex-direction: column; gap: 0.15rem; }
+.ad-slot__product-info strong { font-size: 0.9rem; }
+.ad-slot__product-info span { font-size: 0.8rem; color: var(--text-muted); }
+.ad-slot__actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.ad-slot--toolkit-banner { margin: 1.5rem 0 2rem; }
+.ad-slot--toolkit-banner .ad-slot__content { flex-wrap: wrap; }
+
+/* Feed native ad */
+.feed-item--ad {
+  border: 1px dashed rgba(0, 255, 135, 0.2);
+  background: rgba(0, 255, 135, 0.02);
+}
+.feed-item--ad .feed-item__body { padding: 1rem; }
+
+@media (max-width: 600px) {
+  .ad-slot__content { flex-direction: column; align-items: flex-start; }
+  .ad-slot__actions { width: 100%; }
+}
