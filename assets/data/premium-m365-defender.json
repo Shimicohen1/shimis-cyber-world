@@ -1,26 +1,650 @@
 {
   "m365-001": {
-    "attackPerspective": "Safe Links provides time-of-click URL verification — the critical defense against delayed-detonation phishing. Attackers increasingly use URLs that are clean at delivery time but redirect to malicious payloads hours later, after email gateway scanning. Without Safe Links, these attacks bypass all initial scanning.",
-    "implementationNotes": "1. Navigate to Microsoft Defender portal → Policies → Threat policies → Safe Links\n2. Create or edit the default policy\n3. Enable: 'On - URLs will be rewritten and checked against a list of known malicious links when user clicks'\n4. Enable for: Email messages AND Microsoft Teams\n5. Apply to: All users in the organization\n6. Enable real-time URL scanning and wait for URL scanning to complete",
-    "validationNotes": "# PowerShell verification\nConnect-ExchangeOnline\nGet-SafeLinksPolicy | Select Name, IsEnabled, ScanUrls, EnableForInternalSenders\n\n# Test with EICAR equivalent URL (use Defender testing tools)\n# Check policy application\nGet-SafeLinksRule | Select Name, State, Priority, SentTo",
-    "tuningNotes": "Some organizations exclude specific domains from rewriting (internal portals, trusted SaaS). Use the 'Do not rewrite URLs' list sparingly — each exclusion is a potential bypass. Audit the exclusion list quarterly.",
-    "advancedDetection": "",
+    "attackPerspective": "When \"Ensure Safe Links for Office Applications is Enabled.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure Safe Links for Office Applications is Enabled.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
     "relatedIds": [
       "m365-002",
-      "m365-004",
-      "m365-005"
+      "m365-003",
+      "m365-004"
     ]
   },
   "m365-015": {
-    "attackPerspective": "Conditional Access is the backbone of Zero Trust in Entra ID. Without it, any valid credential grants full access from ANY device, ANY location. After the 2024 Midnight Blizzard attack on Microsoft, Conditional Access policies became the #1 recommended defense against token theft and credential replay.",
-    "implementationNotes": "1. Entra ID → Security → Conditional Access → Create new policy\n2. Policy 1 — Require MFA: All users → All cloud apps → Grant: Require MFA\n3. Policy 2 — Block legacy auth: All users → Conditions: Client apps (Legacy) → Block\n4. Policy 3 — Require compliant device: All users → All cloud apps → Grant: Require device compliance\n5. Use Report-only mode for 7 days before enforcing\n6. Exclude break-glass accounts from ALL policies",
-    "validationNotes": "# Check policies via Graph API\nConnect-MgGraph -Scopes 'Policy.Read.All'\nGet-MgIdentityConditionalAccessPolicy | Select DisplayName, State, Conditions, GrantControls\n\n# Check sign-in logs for policy hits\n# Entra ID → Sign-in logs → Conditional Access tab",
-    "tuningNotes": "Always create 2 break-glass accounts (cloud-only, no MFA, excluded from CA policies) with complex 128-char passwords. Store credentials in a physical safe. Monitor these accounts with alerts for any sign-in activity.",
-    "advancedDetection": "# Detect CA policy bypass attempts\nSigninLogs\n| where ConditionalAccessStatus == 'notApplied' or ConditionalAccessStatus == 'failure'\n| where UserPrincipalName !in ('breakglass1@domain.com', 'breakglass2@domain.com')\n| summarize count() by UserPrincipalName, ConditionalAccessStatus, AppDisplayName\n| sort by count_ desc",
+    "attackPerspective": "When \"Ensure outbound anti-spam message limits are in place.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure outbound anti-spam message limits are in place.\":\n   # Defender → Outbound anti-spam policy\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Outbound anti-spam policy\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-002": {
+    "attackPerspective": "When \"Ensure the Common Attachment Types Filter is enabled.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure the Common Attachment Types Filter is enabled.\":\n   # Defender → Policies → Anti-malware\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Policies → Anti-malware\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-003",
+      "m365-004"
+    ]
+  },
+  "m365-003": {
+    "attackPerspective": "When \"Ensure notifications for internal users sending malware is Enabled.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure notifications for internal users sending malware is Enabled.\":\n   # Defender → Policies → Anti-malware → Default policy → Notifications\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Policies → Anti-malware → Default policy → Notifications\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-004"
+    ]
+  },
+  "m365-004": {
+    "attackPerspective": "When \"Ensure Safe Attachments policy is enabled.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure Safe Attachments policy is enabled.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-005": {
+    "attackPerspective": "When \"Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled.\":\n   # Defender → Policies → Safe Attachments → Global settings → Turn on for SPO/OD/Teams\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Policies → Safe Attachments → Global settings → Turn on for SPO/OD/Teams\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-006": {
+    "attackPerspective": "When \"Ensure Exchange Online Spam Policies are set to notify administrators.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure Exchange Online Spam Policies are set to notify administrators.\":\n   # Defender → Anti-spam → Default policy\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Anti-spam → Default policy\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-007": {
+    "attackPerspective": "When \"Ensure that an anti-phishing policy has been created.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure that an anti-phishing policy has been created.\":\n   # Defender → Anti-phishing\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Anti-phishing\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-008": {
+    "attackPerspective": "When \"Ensure that SPF records are published for all Exchange Domains.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure that SPF records are published for all Exchange Domains.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-009": {
+    "attackPerspective": "When \"Ensure that DKIM is enabled for all Exchange Online Domains.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure that DKIM is enabled for all Exchange Online Domains.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-010": {
+    "attackPerspective": "When \"Ensure DMARC Records for all Exchange Online domains are published.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Ensure DMARC Records for all Exchange Online domains are published.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-011": {
+    "attackPerspective": "When \"Ensure comprehensive attachment filtering is applied.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure comprehensive attachment filtering is applied.\":\n   # Defender → Policies → Anti-malware → Add dangerous file extensions\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Policies → Anti-malware → Add dangerous file extensions\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-012": {
+    "attackPerspective": "When \"Ensure the connection filter IP allow list is not used.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure the connection filter IP allow list is not used.\":\n   # Defender → Policies → Anti-spam → Connection filter\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Policies → Anti-spam → Connection filter\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-013": {
+    "attackPerspective": "When \"Ensure the connection filter safe list is off.\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure the connection filter safe list is off.\":\n   # Defender → Anti-spam → Connection filter\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Anti-spam → Connection filter\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-014": {
+    "attackPerspective": "When \"Ensure inbound anti-spam policies do not contain allowed domains.\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure inbound anti-spam policies do not contain allowed domains.\":\n   # Defender → Anti-spam inbound policies\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Anti-spam inbound policies\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-001",
+      "m365-002",
+      "m365-003"
+    ]
+  },
+  "m365-016": {
+    "attackPerspective": "When \"Ensure emergency access account activity is monitored.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure emergency access account activity is monitored.\":\n   # Defender → Alert policies for emergency access account sign-ins\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Alert policies for emergency access account sign-ins\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-144",
+      "m365-145",
+      "m365-146"
+    ]
+  },
+  "m365-017": {
+    "attackPerspective": "When \"Ensure Priority account protection is enabled and configured.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure Priority account protection is enabled and configured.\":\n   # Defender → Settings → Priority account protection\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Settings → Priority account protection\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-018",
+      "m365-019",
+      "m365-020"
+    ]
+  },
+  "m365-018": {
+    "attackPerspective": "When \"Ensure Priority accounts have 'Strict protection' presets applied.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure Priority accounts have 'Strict protection' presets applied.\":\n   # Defender → Preset security policies\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Preset security policies\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-017",
+      "m365-019",
+      "m365-020"
+    ]
+  },
+  "m365-019": {
+    "attackPerspective": "When \"Ensure Microsoft Defender for Cloud Apps is enabled and configured.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure Microsoft Defender for Cloud Apps is enabled and configured.\":\n   # Defender → Cloud apps\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Cloud apps\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-017",
+      "m365-018",
+      "m365-020"
+    ]
+  },
+  "m365-020": {
+    "attackPerspective": "When \"Ensure Zero-hour auto purge for Microsoft Teams is on.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Ensure Zero-hour auto purge for Microsoft Teams is on.\":\n   # Defender → Settings → Zero-hour auto purge (ZAP)\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender → Settings → Zero-hour auto purge (ZAP)\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-017",
+      "m365-018",
+      "m365-019"
+    ]
+  },
+  "m365-144": {
+    "attackPerspective": "When \"Defender XDR incidents must be actively monitored and triaged.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Defender XDR incidents must be actively monitored and triaged.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
     "relatedIds": [
       "m365-016",
+      "m365-145",
+      "m365-146"
+    ]
+  },
+  "m365-145": {
+    "attackPerspective": "When \"Incidents should be resolved in a timely manner with documented remediation.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Incidents should be resolved in a timely manner with documented remediation.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-146"
+    ]
+  },
+  "m365-146": {
+    "attackPerspective": "When \"Cross-domain incident correlation should be active across Defender workloads.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Cross-domain incident correlation should be active across Defender workloads.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-147": {
+    "attackPerspective": "When \"Defender XDR must generate actionable alerts across workloads.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Defender XDR must generate actionable alerts across workloads.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-148": {
+    "attackPerspective": "When \"XDR signals should cover endpoints, identity, email, and cloud apps.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"XDR signals should cover endpoints, identity, email, and cloud apps.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-149": {
+    "attackPerspective": "When \"Automated Investigation and Response (AIR) should be enabled.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Automated Investigation and Response (AIR) should be enabled.\":\n   # Defender XDR → Settings → Endpoints → Advanced features\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender XDR → Settings → Endpoints → Advanced features\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-150": {
+    "attackPerspective": "When \"AIR remediation approval level should be set to semi-automated or full automation for low-risk threats.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"AIR remediation approval level should be set to semi-automated or full automation for low-risk threats.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-151": {
+    "attackPerspective": "When \"Custom detection rules should be configured for organization-specific threats.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Custom detection rules should be configured for organization-specific threats.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-152": {
+    "attackPerspective": "When \"Advanced hunting queries should be used regularly for proactive threat investigation.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Advanced hunting queries should be used regularly for proactive threat investigation.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-153": {
+    "attackPerspective": "When \"Endpoints must be onboarded to Defender for Endpoint for XDR telemetry.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Endpoints must be onboarded to Defender for Endpoint for XDR telemetry.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-154": {
+    "attackPerspective": "When \"Endpoint compliance rate should be above 80%.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Endpoint compliance rate should be above 80%.\":\n   # Intune → Devices → Compliance\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Intune → Devices → Compliance\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-155": {
+    "attackPerspective": "When \"Defender for Endpoint alerts must be triaged — high/critical threats require immediate investigation.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Defender for Endpoint alerts must be triaged — high/critical threats require immediate investigation.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-156": {
+    "attackPerspective": "When \"Attack Surface Reduction (ASR) rules should be enabled in audit or block mode.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Attack Surface Reduction (ASR) rules should be enabled in audit or block mode.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-157": {
+    "attackPerspective": "When \"Endpoint Detection and Response (EDR) in block mode should be enabled for non-Microsoft AV.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Endpoint Detection and Response (EDR) in block mode should be enabled for non-Microsoft AV.\":\n   # Defender XDR → Settings → Endpoints → Advanced features → EDR in block mode\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender XDR → Settings → Endpoints → Advanced features → EDR in block mode\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-158": {
+    "attackPerspective": "When \"Network protection should be enabled on endpoints to block malicious connections.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Network protection should be enabled on endpoints to block malicious connections.\":\n   Set-MpPreference -EnableNetworkProtection Enabled\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\nSet-MpPreference -EnableNetworkProtection Enabled\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-159": {
+    "attackPerspective": "When \"Web content filtering should be configured to block risky website categories.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Web content filtering should be configured to block risky website categories.\":\n   # Defender XDR → Settings → Endpoints → Web content filtering\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender XDR → Settings → Endpoints → Web content filtering\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-160": {
+    "attackPerspective": "When \"Defender for Identity sensors must be deployed on all domain controllers.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Defender for Identity sensors must be deployed on all domain controllers.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
       "m365-017",
-      "m365-014"
+      "m365-018",
+      "m365-019"
+    ]
+  },
+  "m365-161": {
+    "attackPerspective": "When \"Identity-based threats (lateral movement, credential theft) must be actively monitored.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Identity-based threats (lateral movement, credential theft) must be actively monitored.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-017",
+      "m365-018",
+      "m365-019"
+    ]
+  },
+  "m365-162": {
+    "attackPerspective": "When \"Defender for Identity should monitor LDAP and Kerberos for anomalous authentication patterns.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Defender for Identity should monitor LDAP and Kerberos for anomalous authentication patterns.\":\n   # Defender XDR → Settings → Identities\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender XDR → Settings → Identities\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-017",
+      "m365-018",
+      "m365-019"
+    ]
+  },
+  "m365-163": {
+    "attackPerspective": "When \"Sensitive groups and accounts should be tagged for enhanced monitoring.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Sensitive groups and accounts should be tagged for enhanced monitoring.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-017",
+      "m365-018",
+      "m365-019"
+    ]
+  },
+  "m365-164": {
+    "attackPerspective": "When \"Honeytoken accounts should be configured for lateral movement detection.\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Honeytoken accounts should be configured for lateral movement detection.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-017",
+      "m365-018",
+      "m365-019"
+    ]
+  },
+  "m365-165": {
+    "attackPerspective": "When \"Defender for Cloud Apps must be connected to the Microsoft 365 environment.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Defender for Cloud Apps must be connected to the Microsoft 365 environment.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-166": {
+    "attackPerspective": "When \"Cloud App anomaly detection policies should be active (impossible travel, mass download, etc.).\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Cloud App anomaly detection policies should be active (impossible travel, mass download, etc.).\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-167": {
+    "attackPerspective": "When \"OAuth app governance should monitor and control third-party app permissions.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"OAuth app governance should monitor and control third-party app permissions.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-168": {
+    "attackPerspective": "When \"Shadow IT discovery should identify unsanctioned cloud apps.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Shadow IT discovery should identify unsanctioned cloud apps.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-169": {
+    "attackPerspective": "When \"Session and access policies should enforce Conditional Access App Control for sensitive apps.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open PowerShell as administrator\n2. Connect to the appropriate PowerShell module\n3. Check current state of \"Session and access policies should enforce Conditional Access App Control for sensitive apps.\":\n   # Defender XDR → Cloud apps → Policies → Conditional Access App Control\n4. Review output and identify gaps against the recommended baseline\n5. Apply remediation via Admin Console or PowerShell\n6. Re-run the check command to validate the change\n7. Document the change and update your compliance baseline",
+    "validationNotes": "# Verify compliance\n# Defender XDR → Cloud apps → Policies → Conditional Access App Control\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Deploy in report-only mode first to assess impact. Exclude break-glass accounts from all Conditional Access policies. Test with a pilot group before broad deployment.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-170": {
+    "attackPerspective": "When \"File policies should detect sensitive content shared externally via cloud apps.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"File policies should detect sensitive content shared externally via cloud apps.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-171": {
+    "attackPerspective": "When \"Email threat alerts from Defender for Office 365 must be triaged promptly.\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Email threat alerts from Defender for Office 365 must be triaged promptly.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-172": {
+    "attackPerspective": "When \"Threat Explorer should be used for email investigation and manual remediation.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Threat Explorer should be used for email investigation and manual remediation.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-173": {
+    "attackPerspective": "When \"Microsoft Secure Score should be above 70% and reviewed weekly.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Microsoft Secure Score should be above 70% and reviewed weekly.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-174": {
+    "attackPerspective": "When \"Secure Score recommendations categorized as 'high impact' should be prioritized.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Secure Score recommendations categorized as 'high impact' should be prioritized.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-175": {
+    "attackPerspective": "When \"Unified RBAC should be enabled across all Defender workloads.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Unified RBAC should be enabled across all Defender workloads.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-176": {
+    "attackPerspective": "When \"Microsoft Sentinel connector should be configured for extended SIEM integration.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Microsoft Sentinel connector should be configured for extended SIEM integration.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
+    ]
+  },
+  "m365-177": {
+    "attackPerspective": "When \"Email & collaboration notifications should be configured for critical alerts.\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Sign in to Admin Console with Global Administrator or appropriate admin role\n2. Navigate to the configuration area for \"Email & collaboration notifications should be configured for critical alerts.\"\n3. Review the current setting against the recommended state\n4. Apply the recommended configuration\n5. Allow up to 24 hours for policy propagation across the tenant\n6. Validate using CLI or the admin portal",
+    "validationNotes": "# Validate via Microsoft Secure Score\n# Navigate to security.microsoft.com → Secure Score\n# Or use: Microsoft 365 DSC (Desired State Configuration) for automated baseline comparison",
+    "tuningNotes": "Test in a non-production tenant or with a pilot group before broad deployment. Use Microsoft 365 DSC to export and version-control your configuration baseline. Review this control quarterly against Microsoft's updated security recommendations.",
+    "advancedDetection": "Monitor via Audit logs. Create custom alert policies for configuration changes. Forward to SIEM for correlation.",
+    "relatedIds": [
+      "m365-016",
+      "m365-144",
+      "m365-145"
     ]
   }
 }

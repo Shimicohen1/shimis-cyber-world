@@ -1,26 +1,479 @@
 {
   "gcp-001": {
-    "attackPerspective": "Google accounts without 2-Step Verification are vulnerable to phishing, credential stuffing, and session hijacking. In the 2023 attack on Mandiant's X account, lack of MFA on a key account was the root cause. For cloud admin accounts, MFA is the single most important control.",
-    "implementationNotes": "1. Admin Console → Security → Authentication → 2-Step Verification\n2. Allow users to turn on 2-Step Verification: ON\n3. Enforcement: ON for all organizational units\n4. New user enrollment period: 1 week\n5. Methods: Allow security keys and authenticator app; disable SMS\n6. For admin OUs: require security keys only",
-    "validationNotes": "# Check enrollment status via Admin SDK\n# Admin Console → Reporting → User Reports → Security\n# Filter: 2-Step Verification enrollment = Not enrolled\n\n# Via gcloud directory API\ngcloud identity groups memberships list --group-email=<group> --format='table(preferredMemberKey.id)'",
-    "tuningNotes": "Allow a 1-week grace period for new employees. After that, enforce hard lock. For break-glass admin accounts, use hardware backup codes stored in a physical safe.",
-    "advancedDetection": "",
+    "attackPerspective": "When \"Enforce MFA (2-Step Verification) org-wide\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Admin Console → Security → Authentication → 2-Step Verification\n# Set enforcement: ON for all users\n# Allow: Security keys (preferred), Authenticator app\n# Disallow: SMS verification\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Admin Console → Security → Authentication → 2-Step Verification\n# Set enforcement: ON for all users\n# Allow: Security keys (preferred), Authenticator app\n# Disallow: SMS verification\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Prioritize phishing-resistant MFA methods (FIDO2, Windows Hello for Business) over SMS/voice. For legacy systems that cannot support modern MFA, implement compensating controls and document risk acceptance.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
     "relatedIds": [
       "gcp-002",
-      "gcp-008",
-      "gcp-011"
+      "gcp-007",
+      "gcp-008"
     ]
   },
   "gcp-003": {
-    "attackPerspective": "Overly permissive VPC firewall rules are the cloud network equivalent of leaving the front door open. In one notable GCP incident, an open SSH rule on a development VPC allowed attackers to pivot from a compromised developer machine to production workloads. Google's threat intelligence shows constant scanning of GCP IP ranges.",
-    "implementationNotes": "1. Audit current rules: gcloud compute firewall-rules list\n2. Identify rules with sourceRanges: 0.0.0.0/0\n3. Replace with specific CIDR blocks or service account-based rules\n4. Use hierarchical firewall policies for org-wide defaults\n5. Enable firewall rule logging for denied traffic\n6. Delete or disable the 'default-allow-ssh' and 'default-allow-rdp' rules",
-    "validationNotes": "# Verify no open rules remain\ngcloud compute firewall-rules list \\\n  --filter='sourceRanges:0.0.0.0/0 AND direction=INGRESS AND disabled=false' \\\n  --format='table(name,allowed,sourceRanges)'\n\n# Should return empty or only load balancer health check rules\n\n# Test with nmap from external\nnmap -sS -Pn <external_ip>",
-    "tuningNotes": "GCP health checks require 0.0.0.0/0 from Google probe ranges (35.191.0.0/16, 130.211.0.0/22). Don't remove these. Also, GKE master authorized networks should use a specific CIDR, not 0.0.0.0/0.",
-    "advancedDetection": "",
+    "attackPerspective": "Without \"Configure VPC firewall rules\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # List all firewall rules with 0.0.0.0/0 source\ngcloud compute firewall-rules list \\\n  --filter=\"sourceRanges:0.0.0.0/0 AND direction=INGRESS\" \\\n  --format=\"table(name,allowed,sourceRanges)\"\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# List all firewall rules with 0.0.0.0/0 source\ngcloud compute firewall-rules list \\\n  --filter=\"sourceRanges:0.0.0.0/0 AND direction=INGRESS\" \\\n  --format=\"table(name,allowed,sourceRanges)\"\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
     "relatedIds": [
-      "gcp-010",
-      "gcp-011",
-      "gcp-014"
+      "gcp-015",
+      "gcp-016",
+      "gcp-017"
+    ]
+  },
+  "gcp-002": {
+    "attackPerspective": "When \"Restrict service account key usage\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # List all service account keys\ngcloud iam service-accounts list --format=\"table(email)\" | while read sa; do\n  gcloud iam service-accounts keys list --iam-account=\"$sa\" \\\n    --filter=\"keyType=USER_MANAGED\" --format=\"table(name,validAfterTime)\"\ndone\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# List all service account keys\ngcloud iam service-accounts list --format=\"table(email)\" | while read sa; do\n  gcloud iam service-accounts keys list --iam-account=\"$sa\" \\\n    --filter=\"keyType=USER_MANAGED\" --format=\"table(name,validAfterTime)\"\ndone\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-007",
+      "gcp-008"
+    ]
+  },
+  "gcp-004": {
+    "attackPerspective": "When \"Enable Cloud Audit Logs\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check audit log config\ngcloud projects get-iam-policy <project_id> --format=json | jq '.auditConfigs'\n# Enable data access logs for all services\ngcloud projects set-iam-policy <project_id> policy.json\n# Where policy.json includes:\n# \"auditConfigs\": [{ \"service\": \"allServices\",\n#   \"auditLogConfigs\": [{\"logType\": \"DATA_READ\"}, {\"logType\": \"DATA_WRITE\"}] }]\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check audit log config\ngcloud projects get-iam-policy <project_id> --format=json | jq '.auditConfigs'\n# Enable data access logs for all services\ngcloud projects set-iam-policy <project_id> policy.json\n# Where policy.json includes:\n# \"auditConfigs\": [{ \"service\": \"allServices\",\n#   \"auditLogConfigs\": [{\"logType\": \"DATA_READ\"}, {\"logType\": \"DATA_WRITE\"}] }]\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-021",
+      "gcp-022",
+      "gcp-023"
+    ]
+  },
+  "gcp-005": {
+    "attackPerspective": "Without \"Enable Customer-Managed Encryption Keys (CMEK)\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Create KMS key\ngcloud kms keyrings create scw-keyring --location=global\ngcloud kms keys create scw-encrypt-key --keyring=scw-keyring \\\n  --location=global --purpose=encryption\n# Apply to GCS bucket\ngsutil kms encryption -k projects/<proj>/locations/global/keyRings/scw-keyring/cryptoKeys/scw-encrypt-key gs://<bucket>\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Create KMS key\ngcloud kms keyrings create scw-keyring --location=global\ngcloud kms keys create scw-encrypt-key --keyring=scw-keyring \\\n  --location=global --purpose=encryption\n# Apply to GCS bucket\ngsutil kms encryption -k projects/<proj>/locations/global/keyRings/scw-keyring/cryptoKeys/scw-encrypt-key gs://<bucket>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-027",
+      "gcp-028",
+      "gcp-029"
+    ]
+  },
+  "gcp-006": {
+    "attackPerspective": "When \"Disable unused APIs\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # List enabled APIs\ngcloud services list --enabled --format=\"table(config.name)\"\n# Disable unused\ngcloud services disable <service-name>.googleapis.com\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# List enabled APIs\ngcloud services list --enabled --format=\"table(config.name)\"\n# Disable unused\ngcloud services disable <service-name>.googleapis.com\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-032",
+      "gcp-033",
+      "gcp-034"
+    ]
+  },
+  "gcp-007": {
+    "attackPerspective": "When \"Restrict service account impersonation\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # List SA impersonation permissions\ngcloud projects get-iam-policy <project> \\\n  --flatten='bindings[].members' \\\n  --filter='bindings.role:roles/iam.serviceAccountTokenCreator' \\\n  --format='table(bindings.members)'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# List SA impersonation permissions\ngcloud projects get-iam-policy <project> \\\n  --flatten='bindings[].members' \\\n  --filter='bindings.role:roles/iam.serviceAccountTokenCreator' \\\n  --format='table(bindings.members)'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-002",
+      "gcp-008"
+    ]
+  },
+  "gcp-008": {
+    "attackPerspective": "When \"Disable default service account for GCE\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Find instances using default SA\ngcloud compute instances list --format='table(name,serviceAccounts[].email)' | grep 'compute@developer'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Find instances using default SA\ngcloud compute instances list --format='table(name,serviceAccounts[].email)' | grep 'compute@developer'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-002",
+      "gcp-007"
+    ]
+  },
+  "gcp-009": {
+    "attackPerspective": "When \"Enforce org-wide domain restricted sharing\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve complete environment compromise, data exfiltration, and persistent backdoor access. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   gcloud resource-manager org-policies describe constraints/iam.allowedPolicyMemberDomains --organization=<org_id>\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\ngcloud resource-manager org-policies describe constraints/iam.allowedPolicyMemberDomains --organization=<org_id>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-002",
+      "gcp-007"
+    ]
+  },
+  "gcp-010": {
+    "attackPerspective": "When \"Enable Security Key enforcement for admins\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Admin Console → Security → Authentication → 2-Step Verification\n# Set: Security key only for Admin OU\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Admin Console → Security → Authentication → 2-Step Verification\n# Set: Security key only for Admin OU\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-002",
+      "gcp-007"
+    ]
+  },
+  "gcp-011": {
+    "attackPerspective": "When \"Remove primitive roles (Owner/Editor) from SAs\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Find primitive role bindings\ngcloud projects get-iam-policy <project> \\\n  --flatten='bindings[].members' \\\n  --filter='bindings.role:(roles/owner OR roles/editor)' \\\n  --format='table(bindings.role, bindings.members)'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Find primitive role bindings\ngcloud projects get-iam-policy <project> \\\n  --flatten='bindings[].members' \\\n  --filter='bindings.role:(roles/owner OR roles/editor)' \\\n  --format='table(bindings.role, bindings.members)'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-002",
+      "gcp-007"
+    ]
+  },
+  "gcp-012": {
+    "attackPerspective": "When \"Enable Cloud Identity-Aware Proxy (IAP)\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # List IAP-enabled backends\ngcloud iap web get-iam-policy --resource-type=backend-services\n# Enable IAP on backend\ngcloud iap web enable --resource-type=backend-services --service=<service>\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# List IAP-enabled backends\ngcloud iap web get-iam-policy --resource-type=backend-services\n# Enable IAP on backend\ngcloud iap web enable --resource-type=backend-services --service=<service>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-002",
+      "gcp-007"
+    ]
+  },
+  "gcp-013": {
+    "attackPerspective": "When \"Review IAM recommender suggestions\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   gcloud recommender recommendations list \\\n  --recommender=google.iam.policy.Recommender \\\n  --project=<project> --location=global \\\n  --format='table(content.operationGroups[0].operations[0].path, priority, stateInfo.state)'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\ngcloud recommender recommendations list \\\n  --recommender=google.iam.policy.Recommender \\\n  --project=<project> --location=global \\\n  --format='table(content.operationGroups[0].operations[0].path, priority, stateInfo.state)'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-002",
+      "gcp-007"
+    ]
+  },
+  "gcp-014": {
+    "attackPerspective": "When \"Configure session length for Cloud Console\" is not enforced, an attacker who gains initial access can exploit this identity gap to achieve significant unauthorized access, privilege escalation, or data exposure. Identity misconfigurations are the #1 initial access vector in cloud breaches. Modern attack frameworks (MITRE ATT&CK T1078, T1098) specifically target identity weaknesses as the primary pivot point for cloud compromise. This is frequently seen in real-world incidents involving credential stuffing, token theft, and OAuth app abuse.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Admin Console → Security → Google Cloud session control\n# Set: Session duration = 8 hours or less\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Admin Console → Security → Google Cloud session control\n# Set: Session duration = 8 hours or less\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-001",
+      "gcp-002",
+      "gcp-007"
+    ]
+  },
+  "gcp-015": {
+    "attackPerspective": "Without \"Enable Private Google Access for subnets\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # List subnets without Private Google Access\ngcloud compute networks subnets list --format='table(name,region,privateIpGoogleAccess)' | grep False\n# Enable\ngcloud compute networks subnets update <subnet> --region=<region> --enable-private-ip-google-access\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# List subnets without Private Google Access\ngcloud compute networks subnets list --format='table(name,region,privateIpGoogleAccess)' | grep False\n# Enable\ngcloud compute networks subnets update <subnet> --region=<region> --enable-private-ip-google-access\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-003",
+      "gcp-016",
+      "gcp-017"
+    ]
+  },
+  "gcp-016": {
+    "attackPerspective": "Without \"Disable default network\", the attack surface expands to allow external reconnaissance and potential exploitation leading to complete environment compromise, data exfiltration, and persistent backdoor access. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check if default network exists\ngcloud compute networks list --filter='name=default'\n# Delete default firewall rules then network\ngcloud compute firewall-rules list --filter='network:default' --format='value(name)' | xargs -I{} gcloud compute firewall-rules delete {} --quiet\ngcloud compute networks delete default --quiet\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check if default network exists\ngcloud compute networks list --filter='name=default'\n# Delete default firewall rules then network\ngcloud compute firewall-rules list --filter='network:default' --format='value(name)' | xargs -I{} gcloud compute firewall-rules delete {} --quiet\ngcloud compute networks delete default --quiet\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-003",
+      "gcp-015",
+      "gcp-017"
+    ]
+  },
+  "gcp-017": {
+    "attackPerspective": "Without \"Enable Cloud Armor DDoS protection\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Create security policy\ngcloud compute security-policies create scw-policy --description='WAF and DDoS'\n# Add rate limiting rule\ngcloud compute security-policies rules create 1000 --security-policy=scw-policy --action=throttle --rate-limit-threshold-count=100 --rate-limit-threshold-interval-sec=60\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Create security policy\ngcloud compute security-policies create scw-policy --description='WAF and DDoS'\n# Add rate limiting rule\ngcloud compute security-policies rules create 1000 --security-policy=scw-policy --action=throttle --rate-limit-threshold-count=100 --rate-limit-threshold-interval-sec=60\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-003",
+      "gcp-015",
+      "gcp-016"
+    ]
+  },
+  "gcp-018": {
+    "attackPerspective": "Without \"Restrict firewall rule source ranges\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   gcloud compute firewall-rules list --filter='sourceRanges:0.0.0.0/0 AND direction=INGRESS AND disabled=false' --format='table(name,allowed[].map().firewall_rule().list(),sourceRanges)'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\ngcloud compute firewall-rules list --filter='sourceRanges:0.0.0.0/0 AND direction=INGRESS AND disabled=false' --format='table(name,allowed[].map().firewall_rule().list(),sourceRanges)'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-003",
+      "gcp-015",
+      "gcp-016"
+    ]
+  },
+  "gcp-019": {
+    "attackPerspective": "Without \"Enable VPC Service Controls\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # List access policies\ngcloud access-context-manager policies list --organization=<org_id>\n# List service perimeters\ngcloud access-context-manager perimeters list --policy=<policy_id>\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# List access policies\ngcloud access-context-manager policies list --organization=<org_id>\n# List service perimeters\ngcloud access-context-manager perimeters list --policy=<policy_id>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-003",
+      "gcp-015",
+      "gcp-016"
+    ]
+  },
+  "gcp-020": {
+    "attackPerspective": "Without \"Use Cloud NAT instead of external IPs\", the attack surface expands to allow external reconnaissance and potential exploitation leading to significant unauthorized access, privilege escalation, or data exposure. Network exposure directly increases the attack surface visible to external threat actors. Threat actors routinely scan for exposed services (Shodan, Censys) and can discover misconfigurations within minutes of deployment.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check for VMs with external IPs\ngcloud compute instances list --format='table(name,networkInterfaces[].accessConfigs[].natIP)' | grep -v '^$'\n# Create Cloud NAT\ngcloud compute routers create scw-router --region=<region> --network=<vpc>\ngcloud compute routers nats create scw-nat --router=scw-router --region=<region> --auto-allocate-nat-external-ips --nat-all-subnet-ip-ranges\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check for VMs with external IPs\ngcloud compute instances list --format='table(name,networkInterfaces[].accessConfigs[].natIP)' | grep -v '^$'\n# Create Cloud NAT\ngcloud compute routers create scw-router --region=<region> --network=<vpc>\ngcloud compute routers nats create scw-nat --router=scw-router --region=<region> --auto-allocate-nat-external-ips --nat-all-subnet-ip-ranges\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Consider implementing allow-lists for trusted partner domains rather than blanket blocking. Review quarterly as business relationships change.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-003",
+      "gcp-015",
+      "gcp-016"
+    ]
+  },
+  "gcp-021": {
+    "attackPerspective": "When \"Enable Data Access audit logs for all services\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Set org-level audit config via policy.json:\n# { \"auditConfigs\": [{ \"service\": \"allServices\",\n#   \"auditLogConfigs\": [{\"logType\": \"ADMIN_READ\"},\n#     {\"logType\": \"DATA_READ\"}, {\"logType\": \"DATA_WRITE\"}] }] }\ngcloud projects set-iam-policy <project> policy.json\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Set org-level audit config via policy.json:\n# { \"auditConfigs\": [{ \"service\": \"allServices\",\n#   \"auditLogConfigs\": [{\"logType\": \"ADMIN_READ\"},\n#     {\"logType\": \"DATA_READ\"}, {\"logType\": \"DATA_WRITE\"}] }] }\ngcloud projects set-iam-policy <project> policy.json\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-004",
+      "gcp-022",
+      "gcp-023"
+    ]
+  },
+  "gcp-022": {
+    "attackPerspective": "When \"Export logs to BigQuery or Cloud Storage\" is not properly configured, attackers can operate without detection, leading to complete environment compromise, data exfiltration, and persistent backdoor access. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Create BigQuery sink\ngcloud logging sinks create audit-to-bq \\\n  bigquery.googleapis.com/projects/<project>/datasets/audit_logs \\\n  --log-filter='logName:\"cloudaudit.googleapis.com\"'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Create BigQuery sink\ngcloud logging sinks create audit-to-bq \\\n  bigquery.googleapis.com/projects/<project>/datasets/audit_logs \\\n  --log-filter='logName:\"cloudaudit.googleapis.com\"'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent. Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-004",
+      "gcp-021",
+      "gcp-023"
+    ]
+  },
+  "gcp-023": {
+    "attackPerspective": "When \"Enable Security Command Center (SCC)\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check SCC status\ngcloud scc organizations describe <org_id> 2>/dev/null\n# Enable via Console → Security → Security Command Center\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check SCC status\ngcloud scc organizations describe <org_id> 2>/dev/null\n# Enable via Console → Security → Security Command Center\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-004",
+      "gcp-021",
+      "gcp-022"
+    ]
+  },
+  "gcp-024": {
+    "attackPerspective": "When \"Configure Cloud Monitoring alerting policies\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Create alert for firewall rule changes\ngcloud alpha monitoring policies create \\\n  --notification-channels=<channel-id> \\\n  --condition-filter='resource.type=\"gce_firewall_rule\" AND protoPayload.methodName=\"v1.compute.firewalls.insert\"'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Create alert for firewall rule changes\ngcloud alpha monitoring policies create \\\n  --notification-channels=<channel-id> \\\n  --condition-filter='resource.type=\"gce_firewall_rule\" AND protoPayload.methodName=\"v1.compute.firewalls.insert\"'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-004",
+      "gcp-021",
+      "gcp-022"
+    ]
+  },
+  "gcp-025": {
+    "attackPerspective": "When \"Monitor for service account key creation\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Search audit logs for SA key creation\ngcloud logging read 'protoPayload.methodName=\"google.iam.admin.v1.CreateServiceAccountKey\"' --limit=50 --format='table(timestamp,protoPayload.authenticationInfo.principalEmail,protoPayload.request.name)'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Search audit logs for SA key creation\ngcloud logging read 'protoPayload.methodName=\"google.iam.admin.v1.CreateServiceAccountKey\"' --limit=50 --format='table(timestamp,protoPayload.authenticationInfo.principalEmail,protoPayload.request.name)'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-004",
+      "gcp-021",
+      "gcp-022"
+    ]
+  },
+  "gcp-026": {
+    "attackPerspective": "When \"Enable VPC Flow Logs for all subnets\" is not properly configured, attackers can operate without detection, leading to significant unauthorized access, privilege escalation, or data exposure. Without proper logging, attackers operate undetected, extending dwell time from hours to months. In incident response, the absence of logs is the single biggest factor that extends investigation time and prevents accurate scoping of a breach.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Find subnets without flow logs\ngcloud compute networks subnets list --format='table(name,region,logConfig.enable)' | grep -v True\n# Enable\ngcloud compute networks subnets update <subnet> --region=<region> --enable-flow-logs\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Find subnets without flow logs\ngcloud compute networks subnets list --format='table(name,region,logConfig.enable)' | grep -v True\n# Enable\ngcloud compute networks subnets update <subnet> --region=<region> --enable-flow-logs\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-004",
+      "gcp-021",
+      "gcp-022"
+    ]
+  },
+  "gcp-027": {
+    "attackPerspective": "Without \"Enable CMEK for BigQuery datasets\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check encryption on datasets\nbq show --format=prettyjson <project>:<dataset> | jq '.defaultEncryptionConfiguration'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check encryption on datasets\nbq show --format=prettyjson <project>:<dataset> | jq '.defaultEncryptionConfiguration'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-005",
+      "gcp-028",
+      "gcp-029"
+    ]
+  },
+  "gcp-028": {
+    "attackPerspective": "Without \"Enforce uniform bucket-level access for GCS\", sensitive data can be intercepted or extracted, resulting in complete environment compromise, data exfiltration, and persistent backdoor access. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Find buckets not using uniform access\ngsutil ls -p <project> | while read bucket; do\n  gsutil uniformbucketlevelaccess get $bucket\ndone\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Find buckets not using uniform access\ngsutil ls -p <project> | while read bucket; do\n  gsutil uniformbucketlevelaccess get $bucket\ndone\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-005",
+      "gcp-027",
+      "gcp-029"
+    ]
+  },
+  "gcp-029": {
+    "attackPerspective": "Without \"Enable confidential computing for sensitive VMs\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Create confidential VM\ngcloud compute instances create confidential-vm \\\n  --machine-type=n2d-standard-2 \\\n  --confidential-compute --maintenance-policy=TERMINATE\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Create confidential VM\ngcloud compute instances create confidential-vm \\\n  --machine-type=n2d-standard-2 \\\n  --confidential-compute --maintenance-policy=TERMINATE\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-005",
+      "gcp-027",
+      "gcp-028"
+    ]
+  },
+  "gcp-030": {
+    "attackPerspective": "Without \"Rotate KMS keys on schedule\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Set rotation schedule (90 days)\ngcloud kms keys update <key> --keyring=<keyring> --location=global \\\n  --rotation-period=90d --next-rotation-time=$(date -u +%Y-%m-%dT%H:%M:%SZ -d '+1 day')\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Set rotation schedule (90 days)\ngcloud kms keys update <key> --keyring=<keyring> --location=global \\\n  --rotation-period=90d --next-rotation-time=$(date -u +%Y-%m-%dT%H:%M:%SZ -d '+1 day')\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-005",
+      "gcp-027",
+      "gcp-028"
+    ]
+  },
+  "gcp-031": {
+    "attackPerspective": "Without \"Enable Certificate Authority Service for internal TLS\", sensitive data can be intercepted or extracted, resulting in significant unauthorized access, privilege escalation, or data exposure. Missing encryption exposes data to interception, extraction, and regulatory penalties. Regulatory frameworks (GDPR, HIPAA, PCI-DSS) mandate encryption controls, making this both a security and compliance requirement.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # List CAs\ngcloud privateca roots list --location=<location>\n# Create subordinate CA for service mesh\ngcloud privateca subordinates create scw-sub-ca --location=<location> --issuer-pool=<pool>\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# List CAs\ngcloud privateca roots list --location=<location>\n# Create subordinate CA for service mesh\ngcloud privateca subordinates create scw-sub-ca --location=<location> --issuer-pool=<pool>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Ensure TLS 1.2+ is enforced. For internal systems with legacy dependencies, create an exception register with remediation timeline. Customer-managed keys provide additional control but increase operational complexity.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-005",
+      "gcp-027",
+      "gcp-028"
+    ]
+  },
+  "gcp-032": {
+    "attackPerspective": "When \"Enable Binary Authorization for GKE\" is misconfigured, it creates an exploitable pathway that can lead to complete environment compromise, data exfiltration, and persistent backdoor access. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check Binary Authorization policy\ngcloud container binauthz policy export\n# Enable on cluster\ngcloud container clusters update <cluster> --enable-binauthz\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check Binary Authorization policy\ngcloud container binauthz policy export\n# Enable on cluster\ngcloud container clusters update <cluster> --enable-binauthz\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-006",
+      "gcp-033",
+      "gcp-034"
+    ]
+  },
+  "gcp-033": {
+    "attackPerspective": "When \"Enable GKE Workload Identity\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check if Workload Identity is enabled\ngcloud container clusters describe <cluster> --format='value(workloadIdentityConfig)'\n# Enable\ngcloud container clusters update <cluster> --workload-pool=<project>.svc.id.goog\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check if Workload Identity is enabled\ngcloud container clusters describe <cluster> --format='value(workloadIdentityConfig)'\n# Enable\ngcloud container clusters update <cluster> --workload-pool=<project>.svc.id.goog\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-006",
+      "gcp-032",
+      "gcp-034"
+    ]
+  },
+  "gcp-034": {
+    "attackPerspective": "When \"Restrict public access to Cloud SQL\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Find SQL instances with public IPs\ngcloud sql instances list --format='table(name,ipAddresses[].type,settings.ipConfiguration.authorizedNetworks[].value)'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Find SQL instances with public IPs\ngcloud sql instances list --format='table(name,ipAddresses[].type,settings.ipConfiguration.authorizedNetworks[].value)'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-006",
+      "gcp-032",
+      "gcp-033"
+    ]
+  },
+  "gcp-035": {
+    "attackPerspective": "When \"Enable GKE Shielded Nodes\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   gcloud container clusters describe <cluster> --format='value(shieldedNodes)'\n# Enable\ngcloud container clusters update <cluster> --enable-shielded-nodes\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\ngcloud container clusters describe <cluster> --format='value(shieldedNodes)'\n# Enable\ngcloud container clusters update <cluster> --enable-shielded-nodes\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-006",
+      "gcp-032",
+      "gcp-033"
+    ]
+  },
+  "gcp-036": {
+    "attackPerspective": "When \"Enable Container Threat Detection\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Enable via SCC\n# Security Command Center → Settings → Container Threat Detection → Enable\n# Or via gcloud:\ngcloud scc settings update --organization=<org_id> --enable-service=CONTAINER_THREAT_DETECTION\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Enable via SCC\n# Security Command Center → Settings → Container Threat Detection → Enable\n# Or via gcloud:\ngcloud scc settings update --organization=<org_id> --enable-service=CONTAINER_THREAT_DETECTION\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-006",
+      "gcp-032",
+      "gcp-033"
+    ]
+  },
+  "gcp-037": {
+    "attackPerspective": "When \"Disable serial port access to VMs\" is misconfigured, it creates an exploitable pathway that can lead to significant unauthorized access, privilege escalation, or data exposure. Misconfigured services create unauthorized pathways for data access and lateral movement. Attackers chain service misconfigurations with other weaknesses to build kill chains that bypass individual security controls.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Org policy\ngcloud resource-manager org-policies enable-enforce compute.disableSerialPortAccess --organization=<org_id>\n# Per-instance\ngcloud compute instances add-metadata <vm> --metadata serial-port-enable=false\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Org policy\ngcloud resource-manager org-policies enable-enforce compute.disableSerialPortAccess --organization=<org_id>\n# Per-instance\ngcloud compute instances add-metadata <vm> --metadata serial-port-enable=false\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-006",
+      "gcp-032",
+      "gcp-033"
+    ]
+  },
+  "gcp-038": {
+    "attackPerspective": "Systems without \"Enable OS Patch Management\" applied can be exploited for complete environment compromise, data exfiltration, and persistent backdoor access. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check OS Config agent status\ngcloud compute instances os-inventory list-instances --format='table(name,zone)'\n# Create patch job\ngcloud compute os-config patch-jobs execute --instance-filter-all --duration=3600s\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check OS Config agent status\ngcloud compute instances os-inventory list-instances --format='table(name,zone)'\n# Create patch job\ngcloud compute os-config patch-jobs execute --instance-filter-all --duration=3600s\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "This is a critical control — implement as-is without relaxation. Any exceptions must be formally risk-accepted by CISO or equivalent.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-039",
+      "gcp-040"
+    ]
+  },
+  "gcp-039": {
+    "attackPerspective": "Systems without \"Enable Container Analysis for vulnerability scanning\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check scanning settings\ngcloud artifacts repositories describe <repo> --location=<location> --format='value(name)'\n# Enable scanning via on-demand scan\ngcloud artifacts docker images scan <image-url>\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check scanning settings\ngcloud artifacts repositories describe <repo> --location=<location> --format='value(name)'\n# Enable scanning via on-demand scan\ngcloud artifacts docker images scan <image-url>\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Apply via Organization Policy constraints for consistent enforcement across all projects. Use Terraform or Deployment Manager for infrastructure-as-code compliance. Integrate with Security Command Center for continuous monitoring.",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-038",
+      "gcp-040"
+    ]
+  },
+  "gcp-040": {
+    "attackPerspective": "Systems without \"Monitor for outdated GKE cluster versions\" applied can be exploited for significant unauthorized access, privilege escalation, or data exposure. Unpatched systems are targeted by automated scanners within hours of CVE disclosure. Exploit code is often publicly available within days of disclosure, making timely patching critical.",
+    "implementationNotes": "1. Open Cloud Shell or local terminal with gcloud CLI authenticated\n2. Verify current state:\n   # Check cluster versions\ngcloud container clusters list --format='table(name,currentMasterVersion,currentNodeVersion,status)'\n# Check for available upgrades\ngcloud container get-server-config --zone=<zone> --format='value(validMasterVersions[0:3])'\n\n3. Review the output and identify non-compliant resources\n4. Apply the remediation using gcloud CLI or Terraform\n5. Verify the change took effect by re-running the check command\n6. Document the change in your change management system",
+    "validationNotes": "# Verify compliance\n# Check cluster versions\ngcloud container clusters list --format='table(name,currentMasterVersion,currentNodeVersion,status)'\n# Check for available upgrades\ngcloud container get-server-config --zone=<zone> --format='value(validMasterVersions[0:3])'\n\n\n# Expected: Output should confirm the control is properly configured.\n# Re-run periodically or integrate into automated compliance scanning.",
+    "tuningNotes": "Tune log retention based on regulatory requirements: GDPR (varies), HIPAA (6 years), PCI-DSS (1 year), SOC2 (1 year). Forward to SIEM for correlation and alerting. Consider cost optimization by tiering storage (hot → cool → archive).",
+    "advancedDetection": "Monitor via Cloud Audit Logs, Security Command Center. Enable Data Access audit logs for sensitive operations. Create log-based metrics and alerting policies in Cloud Monitoring. Use Security Command Center findings for continuous compliance assessment.\nFilter: protoPayload.methodName has relevant API calls\nAlert: Cloud Monitoring → Alerting → Create Policy",
+    "relatedIds": [
+      "gcp-038",
+      "gcp-039"
     ]
   }
 }
