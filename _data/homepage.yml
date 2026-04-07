@@ -25,19 +25,30 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: GPU Vulnerabilities Enable Full System Takeover
-    text: New GPUBreach exploit leverages GPU memory bit-flips for system compromise.
-    detail: Researchers have demonstrated GPUBreach, a novel attack exploiting GPU Rowhammer vulnerabilities in GDDR6 memory to achieve root shell access and full system takeover. This bypasses traditional defenses by targeting GPU page tables. Professionals should monitor GPU vendor advisories and consider hardware-level mitigations where applicable.
-    link: https://www.intel.com/content/www/us/en/developer/articles/technical/rowhammer-processors-and-mitigation-techniques.html
-    link_label: Rowhammer Mitigation Techniques
+  - title: GPU Memory Exploits Enable System Takeover
+    text: Novel GPUBreach exploit leverages GPU memory bit-flips for full system compromise.
+    detail: Researchers have demonstrated the GPUBreach exploit, which utilizes GPU Rowhammer vulnerabilities and memory bit-flips to achieve root shell access and full system takeover. This attack bypasses traditional defenses by targeting GPU page tables. Professionals should monitor for advisories related to GPU memory integrity and potential mitigations.
+    link: https://www.mitre.org/capabilities/attack-techniques/attack-t1596
+    link_label: "MITRE ATT&CK: Vulnerability Exploitation"
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - gpu-security
-  - title: AI-Powered Attacks Target Software Supply Chains
-    text: AI is increasingly used to automate sophisticated supply chain attacks on platforms like GitHub.
-    detail: The cybersecurity landscape sees a rise in AI-assisted supply chain attacks, specifically targeting platforms like GitHub to compromise software dependencies. This trend necessitates enhanced code scanning, dependency analysis, and proactive threat hunting for AI-generated malicious code. Stay updated on AI security best practices.
+  - title: Zero-Day Exploits for Fortinet FortiClient EMS Actively Targeted
+    text: Fortinet FortiClient EMS zero-day actively exploited; CISA adds to catalog.
+    detail: A critical zero-day vulnerability in Fortinet FortiClient EMS is under active exploitation, prompting CISA to add it to its Known Exploited Vulnerabilities catalog. Organizations using this product must prioritize patching and implement workarounds immediately to mitigate the risk of system compromise.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-143a
+    link_label: CISA Known Exploited Vulnerabilities
+    badge: signal
+    tags:
+      - threat-intel
+      - vulnerability
+      - fortinet
+      - zero-day
+  - title: AI-Powered Attacks Escalate Supply Chain Risks
+    text: AI is now powering sophisticated supply chain attacks targeting platforms like GitHub.
+    detail: The cybersecurity landscape is evolving with AI-assisted attacks specifically targeting software dependencies on platforms like GitHub. This trend signifies a new level of automation and sophistication in compromising software supply chains. Security teams must enhance their code scanning and dependency validation processes.
     link: https://owasp.org/www-community/Supply_Chain_Security
     link_label: OWASP Supply Chain Security
     badge: signal
@@ -46,27 +57,16 @@ quick_signals:
       - ai-security
       - supply-chain
       - github
-  - title: Zero-Day Exploitation of Fortinet EMS Active
-    text: Actively exploited zero-day flaw in Fortinet FortiClient EMS requires urgent patching.
-    detail: A critical zero-day vulnerability in Fortinet FortiClient EMS is under active exploitation, with a full patch still pending. Organizations using this product must prioritize immediate mitigation strategies and monitor CISA's Known Exploited Vulnerabilities catalog for updates. Proactive endpoint security is crucial.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-137a
-    link_label: CISA Known Exploited Vulnerabilities
+  - title: Minor Lapses Lead to Major Cyber Incidents
+    text: Seemingly small security oversights are frequently the root cause of significant breaches.
+    detail: Major cyber incidents often stem from overlooked, minor security lapses such as open access points or unexamined alerts. This highlights the critical importance of diligent security hygiene and thorough review of even seemingly insignificant security events. Continuous monitoring and prompt remediation are essential.
+    link: https://owasp.org/www-project-top-10/
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - threat-intel
-      - vulnerability
-      - fortinet
-      - zero-day
-  - title: Minor Lapses Fuel Major Cyber Incidents
-    text: Seemingly small security oversights are consistently leading to significant cyber breaches.
-    detail: Cybersecurity incidents often originate from overlooked, minor security lapses such as open access points or unexamined alerts. This highlights the critical importance of rigorous security hygiene, regular vulnerability assessments, and comprehensive security awareness training for all personnel. Address the basics diligently.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
-    badge: signal
-    tags:
-      - threat-intel
-      - security-posture
       - risk-management
+      - incident-response
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
