@@ -26,48 +26,46 @@ identity:
     url: /about/
 quick_signals:
   - title: Iranian Cyber Actors Target US Critical Infrastructure
-    text: Iranian threat actors are actively targeting US critical infrastructure PLCs and OT devices.
-    detail: Iranian-linked advanced persistent threat (APT) actors are increasingly focusing on internet-exposed Rockwell/Allen-Bradley programmable logic controllers (PLCs) and other operational technology (OT) devices within U.S. critical infrastructure, posing a significant risk to energy and water systems. Prioritize securing and monitoring these exposed industrial control systems.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-343a
-    link_label: CISA Advisory
+    text: Iranian-linked groups are actively targeting US critical infrastructure PLCs and OT devices.
+    detail: Multiple reports indicate Iranian APTs are focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices within US energy and water systems. Organizations should prioritize securing these exposed operational technology assets and review access controls.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-349a
+    link_label: CISA Advisory on Iranian Targeting
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - iran
-  - title: Russian APT28 Exploits SOHO Routers for DNS Hijacking
-    text: APT28 is exploiting SOHO routers for global DNS hijacking and stealthy token theft.
-    detail: Russian state-linked APT28, identified as Forest Blizzard, is actively compromising small office/home office (SOHO) routers. These devices are then repurposed for malicious infrastructure, including global DNS hijacking and stealthy pilfering of Microsoft Office authentication tokens, highlighting a persistent threat to small business and remote work environments.
-    link: https://www.mitre.org/threat-actor/APT28
-    link_label: APT28 Profile
-    badge: signal
-    tags:
-      - threat-intel
-      - apt28
-      - router-vulnerability
-      - dns-hijacking
-  - title: AI Integration Creates New Attack Vectors
-    text: AI models and tools are becoming targets and enablers for sophisticated cyberattacks.
-    detail: The rapid integration of AI in cybersecurity presents a dual-edged sword. While beneficial for defense, AI models are also becoming targets for exploitation, such as GrafanaGhost leveraging AI for data exfiltration, and packaging flaws in AI releases being weaponized for malware distribution.
-    link: https://owasp.org/www-project-generative-ai-security/
-    link_label: OWASP GenAI Security
+  - title: "AI's Dual Role in Cybersecurity: Boon and Bane"
+    text: New AI models offer significant defensive capabilities but also pose new attack vectors.
+    detail: The rapid advancement of AI, exemplified by models like Claude Mythos, presents a double-edged sword. While beneficial for defensive cybersecurity, these models can also be weaponized by threat actors. Professionals must stay abreast of AI's evolving impact on both offense and defense.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP Top 10 for LLM Apps
     badge: signal
     tags:
       - threat-intel
       - ai-security
-      - vulnerability
-      - supply-chain
-  - title: OSINT Tools Evolve for Enhanced Data Discovery
-    text: New OSINT tools are emerging to extract richer user and network intelligence from shared links.
-    detail: The OSINT landscape is continuously evolving with new tools like SharedTrace enabling the extraction of detailed user information from shared links across platforms like TikTok, Instagram, and Discord. Professionals should stay abreast of these tools for both threat hunting and vulnerability assessment.
-    link: https://github.com/UserInterrupted/sharedtrace
-    link_label: SharedTrace GitHub
+      - llm
+  - title: Russian APTs Exploit SOHO Routers for Token Theft
+    text: Russian state-linked actors are compromising SOHO routers to steal Microsoft authentication tokens.
+    detail: Groups like Forest Blizzard are actively exploiting vulnerabilities in SOHO routers to conduct DNS hijacking and pilfer Microsoft Office authentication tokens. Organizations should ensure all network edge devices, especially routers, are patched and secured against known exploits.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-287a
+    link_label: CISA Advisory on Russian APTs
     badge: signal
     tags:
-      - osint
-      - tools
       - threat-intel
-      - data-discovery
+      - apt28
+      - microsoft
+      - vulnerability
+  - title: Automated Pentesting Limitations and the 'PoC Cliff'
+    text: Automated pentesting tools face limitations, often hitting a 'PoC Cliff' after initial findings.
+    detail: While automated penetration testing tools can quickly identify vulnerabilities, they often struggle to progress beyond proof-of-concept findings. This 'PoC Cliff' highlights the continued need for skilled human analysts to interpret results and conduct deeper investigations for effective risk mitigation.
+    link: https://owasp.org/www-project-application-security-verification-standard/
+    link_label: OWASP ASVS
+    badge: signal
+    tags:
+      - threat-intel
+      - tools
+      - penetration-testing
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
