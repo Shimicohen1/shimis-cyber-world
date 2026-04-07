@@ -130,15 +130,15 @@ permalink: /premium/
 <div class="elite-bot__products">
 <div class="elite-bot__product">
 <strong>📊 Threat Intel Brief</strong>
-<span>15 ⭐</span>
+<span>150 ⭐</span>
 </div>
 <div class="elite-bot__product">
 <strong>🎯 IOC Export Pack</strong>
-<span>30 ⭐</span>
+<span>250 ⭐</span>
 </div>
 <div class="elite-bot__product">
 <strong>🔒 Elite Monthly</strong>
-<span>75 ⭐/mo</span>
+<span>500 ⭐/mo</span>
 </div>
 </div>
 <a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Unlock My Intel →</a>
