@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian Actors Target US Critical Infrastructure PLCs
-    text: Iranian-linked threat actors are actively targeting US critical infrastructure PLCs.
-    detail: A joint advisory from multiple US agencies highlights the increasing threat from Iranian actors to operational technology in sectors like energy and water. Prioritize hardening access controls and monitoring for anomalous activity on internet-exposed Rockwell/Allen-Bradley PLCs.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-310a
+  - title: Iranian Cyber Actors Targeting US Infrastructure
+    text: Iranian-linked groups are increasingly targeting U.S. critical infrastructure PLCs and OT devices.
+    detail: Recent advisories highlight a concerning trend of Iranian threat actors focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT devices within U.S. critical infrastructure. Organizations should prioritize securing these operational technology systems and industrial control systems against state-sponsored threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-065a
     link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
-      - plc
-  - title: Russian APTs Exploit SOHO Routers for Data Theft
-    text: Russian state-linked actors are hijacking SOHO routers for data theft and infrastructure.
-    detail: Groups like Forest Blizzard are compromising small office/home office routers to steal Microsoft authentication tokens and establish malicious infrastructure. Implement regular firmware updates, change default credentials, and segment networks to mitigate this widespread threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-274a
-    link_label: CISA Advisory
-    badge: signal
-    tags:
-      - threat-intel
-      - apt
-      - router-vulnerability
-      - microsoft
-  - title: "AI's Dual Role: Boon and Attack Vector in Cybersecurity"
-    text: New AI models present both defensive advantages and new attack opportunities.
-    detail: The rapid advancement of AI, including new LLMs, offers significant potential for cybersecurity defense. However, these same capabilities can be leveraged by adversaries for sophisticated attacks, creating a complex threat landscape. Stay informed on AI security best practices.
+      - iran
+  - title: AI's Dual Role in Cybersecurity Exploitation and Defense
+    text: AI models present both advanced defensive capabilities and new avenues for sophisticated cyberattacks.
+    detail: The rapid development of AI, including new LLMs, offers powerful tools for cybersecurity defense but also empowers attackers with novel scam methodologies and enhanced capabilities. Professionals must stay informed about AI's evolving impact, focusing on both leveraging AI for security and mitigating AI-driven threats.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
     link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - threat-intel
       - ai-security
-      - llm
-  - title: Ransomware Attacks Accelerate with High Velocity
-    text: Threat actor Storm-1175 deploys Medusa ransomware at alarming speed.
-    detail: The rapid deployment of ransomware like Medusa by sophisticated actors indicates a shift towards highly automated and streamlined attack chains. Robust incident response plans, regular backups, and prompt patching are crucial to counter high-velocity attacks.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-177a
-    link_label: CISA Ransomware Advisory
+      - vulnerability
+  - title: Exploitation of SaaS Integrator Breaches for Data Theft
+    text: Breaches at SaaS integration providers are leading to widespread data theft via stolen authentication tokens.
+    detail: A concerning pattern has emerged where attackers compromise SaaS integration providers to obtain authentication tokens, subsequently targeting numerous cloud storage and SaaS vendors. This highlights the critical need for robust access control and vigilant monitoring of third-party vendor security postures.
+    link: https://www.nist.gov/cyberframework
+    link_label: NIST Cybersecurity Framework
     badge: signal
     tags:
       - threat-intel
-      - ransomware
-      - malware
+      - data-breach
+      - supply-chain
+  - title: Record Cybercrime Losses Driven by Sophisticated Scams
+    text: Cybercrime continues to shatter financial loss records, with AI-powered scams and BEC posing significant threats.
+    detail: Annual cybercrime losses are reaching unprecedented levels, with AI-driven investment scams and Business Email Compromise (BEC) schemes contributing significantly to the billions lost. Financial institutions and individuals must enhance detection mechanisms and user education to combat these evolving fraud tactics.
+    link: https://www.ic3.gov/
+    link_label: FBI IC3
+    badge: signal
+    tags:
+      - threat-intel
+      - cyber-fraud
+      - ai-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
