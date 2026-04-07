@@ -25,48 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian APTs Target US Critical Infrastructure PLCs
-    text: Iranian threat actors are actively targeting US critical infrastructure via PLCs.
-    detail: Iranian-linked actors are specifically targeting internet-exposed Rockwell/Allen-Bradley PLCs within U.S. critical infrastructure. Federal advisories confirm these campaigns focus on operational technology devices. Organizations should review PLC security configurations and network segmentation to mitigate risks.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-076a
-    link_label: CISA Advisory
+  - title: Iranian State-Sponsored Cyber Activity Escalates
+    text: Iranian threat actors are increasingly targeting US critical infrastructure and energy systems.
+    detail: Multiple reports indicate Iranian-linked groups are actively targeting U.S. critical infrastructure, specifically internet-exposed PLCs and OT devices. This coordinated effort poses a significant risk to energy and water systems, demanding enhanced vigilance and protective measures for these vital sectors.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-173a
+    link_label: CISA Advisory on Iranian Activity
     badge: signal
     tags:
       - threat-intel
-      - critical-infrastructure
       - iran
-  - title: "AI's Dual Role in Cybersecurity: Offense and Defense"
-    text: AI is a powerful tool for both cyber defenders and attackers.
-    detail: New AI models like Claude Mythos present significant capabilities for defensive cybersecurity but also pose risks for offensive operations. The cybersecurity community must proactively research and develop defenses against AI-powered threats while leveraging AI for threat detection and analysis.
-    link: https://www.nist.gov/itl/applied-cybersecurity/nist-ai-risk-management-framework
-    link_label: NIST AI RMF
+      - critical-infrastructure
+  - title: AI's Dual Role in Cybersecurity Intensifies
+    text: New AI models present both advanced defense capabilities and sophisticated attack vectors.
+    detail: The rapid development of AI, including new LLMs like Claude Mythos, offers powerful tools for cybersecurity defenses but also empowers adversaries with advanced scamming and exploitation techniques. Organizations must adapt by integrating AI for defense while preparing for AI-enhanced attacks.
+    link: https://owasp.org/www-community/AI-Security/
+    link_label: OWASP AI Security Resources
     badge: signal
     tags:
       - threat-intel
       - ai-security
       - llm
-  - title: Exploitation of SaaS Integrator Breaches for Data Theft
-    text: Compromised SaaS integrators are enabling widespread data theft from downstream clients.
-    detail: A breach at a SaaS integration provider led to stolen authentication tokens being used to target numerous cloud storage and SaaS vendors. Companies must rigorously vet third-party integrations and implement robust access controls and continuous monitoring for compromised credentials.
-    link: https://owasp.org/www-project-application-security-verification-standard/
-    link_label: OWASP ASVS
+  - title: Exploitable Vulnerabilities in Common Tools Pose Risk
+    text: Active exploitation of vulnerabilities in widely used tools like Ninja Forms and Flowise requires immediate attention.
+    detail: Unauthenticated RCE vulnerabilities in Ninja Forms and critical Flowise vulnerabilities are being actively exploited, threatening WordPress sites and general deployments. Prompt patching and security reviews of these integrations are crucial to prevent data breaches and unauthorized access.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-0740
+    link_label: NVD CVE-2026-0740 Details
     badge: signal
     tags:
       - threat-intel
-      - supply-chain
-      - data-breach
-      - third-party-risk
-  - title: Escalating Cybercrime Losses Driven by Sophisticated Scams
-    text: Cybercrime losses are surging, with AI-driven scams and BEC on the rise.
-    detail: Cybercrime losses have reached record highs, with billions lost annually, driven by sophisticated investment scams, BEC, and AI-powered fraud. Increased vigilance, user education on phishing and social engineering, and robust authentication methods are critical defenses.
+      - vulnerability
+      - wordpress
+  - title: Cybercrime Financial Losses Continue Record Surge
+    text: Cybercrime losses are escalating, with AI-driven scams and sophisticated fraud schemes causing billions in damages.
+    detail: Recent reports highlight a significant increase in cybercrime financial losses, reaching billions annually, with AI scams and BEC schemes driving much of this growth. Individuals and organizations must enhance fraud detection and user awareness training to combat these evolving threats.
     link: https://www.ic3.gov/
-    link_label: FBI IC3
+    link_label: FBI Internet Crime Complaint Center
     badge: signal
     tags:
       - threat-intel
       - cyber-fraud
-      - ransomware
-      - bec
+      - financial-crime
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
