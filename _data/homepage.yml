@@ -26,45 +26,46 @@ identity:
     url: /about/
 quick_signals:
   - title: Iranian Cyber Actors Target US Critical Infrastructure
-    text: Iranian-linked threat actors are actively targeting US critical infrastructure via OT devices.
-    detail: Multiple advisories highlight Iranian APTs focusing on internet-exposed Rockwell/Allen-Bradley PLCs and other OT systems in US energy and water sectors. Organizations must urgently review and secure their operational technology environments, focusing on network segmentation and access controls for exposed devices.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-079a
+    text: Iranian-linked actors are increasingly targeting US critical infrastructure PLCs and OT devices.
+    detail: Advisories from US agencies highlight a growing threat from Iranian APTs focusing on operational technology. Organizations managing these systems should review access controls and network segmentation to mitigate risks.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-316a
     link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
-      - ics
-  - title: "AI's Dual Role in Cybersecurity: Boon and Threat"
-    text: New AI models offer defensive capabilities but also empower attackers.
-    detail: The rapid advancement of AI, including new LLMs, presents a double-edged sword. While beneficial for defensive cybersecurity, these tools can also be leveraged by threat actors for sophisticated scams and attacks. Professionals should monitor AI developments and focus on AI-driven threat detection and prompt security.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+      - iran
+  - title: AI Scams Surge, Driving Record Cyber Fraud Losses
+    text: Cyber fraud losses are at an all-time high, with AI-powered scams rapidly increasing.
+    detail: With cybercrime costs soaring, sophisticated AI-driven scams are becoming more prevalent. Professionals should prioritize user education on identifying AI-generated phishing and social engineering tactics.
+    link: https://www.ic3.gov/Media/PDF/AnnualReport/2023_IC3_AnnualReport.pdf
+    link_label: FBI IC3 Report
     badge: signal
     tags:
       - threat-intel
       - ai-security
-      - llm
-  - title: Ransomware Attacks Accelerate with New Actors
-    text: Emerging threat actors are deploying ransomware at high velocity.
-    detail: The emergence of new threat actors like DARKFEED and the rapid, high-velocity deployment of ransomware such as Medusa by Storm-1175 indicate a growing, dynamic threat landscape. Organizations need robust ransomware defenses, including rapid incident response and proactive threat hunting.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-032a
-    link_label: CISA Ransomware Guidance
+      - fraud
+  - title: Exploited Vulnerabilities in SaaS Integrators Pose Supply Chain Risk
+    text: Breaches at SaaS integration providers are leading to widespread data theft across multiple organizations.
+    detail: The exploitation of compromised SaaS integration platforms indicates a significant supply chain risk. Companies must rigorously vet their third-party vendors and implement robust monitoring for suspicious access patterns.
+    link: https://owasp.org/www-project-top-10-tied-to-the-project-list/owasp_top_10_2021.pdf
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - threat-intel
-      - ransomware
-      - malware
-  - title: Exploitation of SaaS Integrator Breaches for Data Theft
-    text: SaaS integration provider breaches are leading to widespread data theft.
-    detail: A breach at a SaaS integration provider has led to stolen authentication tokens being used to target numerous cloud storage and SaaS vendors. This highlights the critical importance of securing third-party integrations and implementing strict access controls, including regular token rotation and least privilege.
-    link: https://www.cisecurity.org/blog/understanding-and-mitigating-supply-chain-risks
-    link_label: CIS Supply Chain Risk
-    badge: signal
-    tags:
-      - threat-intel
-      - data-breach
       - supply-chain
+      - data-breach
+      - vulnerability
+  - title: OSINT Tools Evolve for Deeper User Data Extraction
+    text: New OSINT tools are emerging that can extract detailed user information from shared links.
+    detail: Tools like SharedTrace highlight the increasing sophistication of OSINT capabilities. Security teams should be aware of these tools' potential for both intelligence gathering and malicious reconnaissance, and consider data minimization strategies.
+    link: https://www.owasp.org/www-project-top-10-tied-to-the-project-list/owasp_top_10_2021.pdf
+    link_label: OWASP Top 10
+    badge: signal
+    tags:
+      - osint
+      - tools
+      - threat-intel
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
