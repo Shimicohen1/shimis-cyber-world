@@ -2048,3 +2048,71 @@
   .gofish-verify-links { grid-template-columns: 1fr; }
   .gofish-detect-grid { grid-template-columns: 1fr; }
 }
+
+/* ── SCW Elite Bot Section ────────────────────────────── */
+.elite-bot { margin: 3rem 0; }
+.elite-bot__card {
+  background: linear-gradient(135deg, rgba(6,182,212,.08), rgba(59,130,246,.08));
+  border: 1px solid rgba(6,182,212,.2);
+  border-radius: 1rem;
+  padding: 2.5rem;
+  text-align: center;
+}
+.elite-bot__icon { font-size: 3rem; margin-bottom: .75rem; }
+.elite-bot__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 .75rem;
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.elite-bot__desc {
+  color: var(--muted);
+  max-width: 500px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+.elite-bot__products {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.elite-bot__product {
+  background: rgba(6,182,212,.06);
+  border: 1px solid rgba(6,182,212,.15);
+  border-radius: .5rem;
+  padding: .75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  min-width: 140px;
+}
+.elite-bot__product strong { font-size: .85rem; }
+.elite-bot__product span { color: var(--muted); font-size: .8rem; }
+.btn--lg { padding: .75rem 2rem; font-size: 1rem; }
+
+/* Post bot CTA */
+.post-bot-cta {
+  background: linear-gradient(135deg, rgba(6,182,212,.06), rgba(59,130,246,.06));
+  border: 1px solid rgba(6,182,212,.15);
+  border-radius: .75rem;
+  padding: 1.25rem 1.5rem;
+  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.post-bot-cta__icon { font-size: 1.75rem; flex-shrink: 0; }
+.post-bot-cta__text { flex: 1; min-width: 200px; }
+.post-bot-cta__text strong { display: block; margin-bottom: .25rem; }
+.post-bot-cta__text span { color: var(--muted); font-size: .9rem; }
+.post-bot-cta .btn { white-space: nowrap; }
+
+[data-theme="light"] .elite-bot__card { background: linear-gradient(135deg, rgba(8,145,178,.06), rgba(59,130,246,.06)); border-color: rgba(8,145,178,.15); }
+[data-theme="light"] .elite-bot__product { background: rgba(8,145,178,.04); border-color: rgba(8,145,178,.1); }
+[data-theme="light"] .post-bot-cta { background: linear-gradient(135deg, rgba(8,145,178,.04), rgba(59,130,246,.04)); border-color: rgba(8,145,178,.1); }
