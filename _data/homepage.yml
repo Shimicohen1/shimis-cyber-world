@@ -25,46 +25,53 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian Cyber Actors Target US Critical Infrastructure
-    text: Iranian threat actors are actively targeting US critical infrastructure's operational technology.
-    detail: Recent advisories highlight Iranian APTs focusing on internet-exposed PLCs and OT devices in US energy and water systems. Organizations should prioritize securing OT environments and monitoring for unauthorized access attempts.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-065a
-    link_label: CISA Advisory on Iranian Targeting
+  - title: Iranian State-Sponsored Cyber Activity Escalates
+    text: Iranian actors are increasingly targeting US critical infrastructure and utilizing AI in cyber operations.
+    detail: Recent reports highlight Iranian-linked threat actors targeting US critical infrastructure PLCs and energy/water systems. Additionally, their cyber operations may involve AI, presenting a complex and evolving threat. Organizations should bolster defenses for OT environments and monitor for AI-driven attack vectors.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-298a
+    link_label: CISA Advisory on Iranian Operations
     badge: signal
     tags:
       - threat-intel
-      - critical-infrastructure
       - iran
-  - title: AI Fuels Surge in Cyber Fraud and Scams
-    text: AI is significantly boosting the sophistication and scale of cyber fraud.
-    detail: Cybercriminals are leveraging AI for advanced scams, leading to record financial losses. This trend necessitates enhanced AI-driven threat detection and user education on recognizing AI-manipulated fraudulent content.
-    link: https://www.ic3.gov/Media/StatisticReport
-    link_label: FBI IC3 Statistics
+      - critical-infrastructure
+      - apt
+  - title: "AI Transformation in Cybersecurity: A Double-Edged Sword"
+    text: AI is rapidly reshaping cybersecurity, offering both enhanced defense capabilities and new attack vectors.
+    detail: The rapid advancement and integration of AI in cybersecurity, as observed at RSAC 2026, presents a dual challenge. While AI tools can bolster defenses, they also empower adversaries with sophisticated attack methods. Continuous evaluation of AI's impact and proactive adaptation are crucial.
+    link: https://owasp.org/www-community/AI-Security/
+    link_label: OWASP AI Security
     badge: signal
     tags:
       - threat-intel
-      - ai-security
-      - fraud
-  - title: Exploitation of Unpatched Vulnerabilities Continues
-    text: Active exploitation of unpatched critical vulnerabilities remains a significant threat.
-    detail: Recent reports show active exploitation of flaws in Ninja Forms and Flowise, alongside a newly disclosed zero-day. Prompt patching and diligent vulnerability management are crucial to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-0740
-    link_label: "NVD: Ninja Forms Vulnerability"
+      - ai
+      - rsac
+      - cyber-defense
+      - attack-vectors
+  - title: Exploitable Vulnerabilities Fueling Cybercrime Surge
+    text: Unpatched vulnerabilities and misconfigurations are consistently exploited, driving record cybercrime losses.
+    detail: Active exploitation of vulnerabilities in common platforms like WordPress (Ninja Forms) and Flowise, alongside broader issues like router compromises, contribute to significant data breaches and financial losses. Prioritizing timely patching and secure configuration management is essential.
+    link: https://nvd.nist.gov/
+    link_label: NVD Vulnerability Database
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - patch-management
-  - title: Supply Chain Attacks Exploit SaaS Integrators
-    text: SaaS integration providers are becoming key targets for supply chain attacks.
-    detail: Breaches at SaaS integrators are leading to widespread data theft via compromised authentication tokens. Companies must rigorously vet third-party access and implement strong access controls for integrated services.
-    link: https://owasp.org/www-community/attacks/Supply_Chain_Attack
-    link_label: OWASP Supply Chain Attacks
+      - data-breach
+      - cybercrime
+  - title: OSINT Tools Evolving for Deeper User Reconnaissance
+    text: New OSINT tools are emerging, capable of extracting detailed user information from shared links.
+    detail: Tools like SharedTrace are enhancing open-source intelligence gathering by extracting user data from shared links across social media and communication platforms. Cybersecurity professionals should be aware of these capabilities for threat hunting and incident response.
+    link: https://owasp.org/www-community/Application_Security_Testing_Methodology
+    link_label: OWASP Testing Methodology
     badge: signal
     tags:
-      - threat-intel
-      - supply-chain
-      - data-breach
+      - osint
+      - tools
+      - reconnaissance
+      - threat-hunting
+      - data-extraction
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
