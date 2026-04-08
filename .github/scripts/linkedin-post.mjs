@@ -186,29 +186,24 @@ const TOOL_RECOMMENDATIONS = {
 const DEFAULT_TOOL = { text: '🛡️ Free security tools → BreachRadar, ThreatLens, LockDown, GoFish', url: '/tools/' };
 
 /* ── Tag → MONETIZED product recommendation (affiliate / revenue) ── */
+/* Only shown when tags naturally match — never forced */
 const MONETIZED_RECS = [
-  // CJ Affiliate partners — each entry has tags that trigger it, plus a weight for rotation
-  { tags: ['ransomware','malware','threat-intel','darkweb','apt','backdoor','c2','trojan','botnet','exploit','zero-day'],
-    text: '🔐 Protect your network → NordVPN Threat Protection',
-    url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
-  { tags: ['phishing','social-engineering','email','spam','bec','scam','fraud'],
-    text: '🔐 Encrypted email & privacy → Proton VPN',
-    url: 'https://www.jdoqocy.com/click-101720928-15834536' },
   { tags: ['credentials','password','identity','brute-force','authentication','mfa','2fa','iam','okta','active-directory','kerberos','ldap'],
     text: '🔑 Secure your credentials → Proton Pass (password manager)',
     url: 'https://www.kqzyfj.com/click-101720928-15831601' },
+  { tags: ['phishing','social-engineering','email','spam','bec','scam','fraud'],
+    text: '🔐 Encrypted email & privacy → Proton VPN',
+    url: 'https://www.jdoqocy.com/click-101720928-15834536' },
   { tags: ['vpn','privacy','network','surveillance','tracking','proxy','tor','encryption','data-leak','data-breach','exposure'],
     text: '🔐 Stay private online → Surfshark VPN',
     url: 'https://www.kqzyfj.com/click-101720928-15438560' },
+  { tags: ['ransomware','malware','apt','backdoor','c2','trojan','botnet','exploit','zero-day'],
+    text: '🔐 Protect your network → NordVPN Threat Protection',
+    url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
 ];
 
-/* ── Fallback monetized rec — rotates daily so the feed stays varied ── */
-const FALLBACK_MONETIZED = [
-  { text: '🔐 Protect your network → NordVPN Threat Protection', url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
-  { text: '🔐 Encrypted browsing for teams → Proton VPN', url: 'https://www.jdoqocy.com/click-101720928-15834536' },
-  { text: '🔑 Stop credential theft → Proton Pass', url: 'https://www.kqzyfj.com/click-101720928-15831601' },
-  { text: '🌐 Company-wide VPN → Surfshark for Teams', url: 'https://www.kqzyfj.com/click-101720928-15438560' },
-];
+/* ── SCW Elite — promoted when no monetized partner fits ── */
+const SCW_ELITE_REC = { text: '⭐ Get premium threat intel, IOC exports & deep-dive reports → SCW Elite', url: 'https://t.me/Shimiscyberworldbot?start=elite' };
 
 function getToolRecommendation(tags) {
   const tagList = (tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
@@ -220,13 +215,12 @@ function getToolRecommendation(tags) {
 
 function getMonetizedRecommendation(tags) {
   const tagList = (tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
-  // Find the best match by checking tag overlap
+  // Only return affiliate rec if tags naturally match
   for (const rec of MONETIZED_RECS) {
     if (tagList.some(t => rec.tags.includes(t))) return rec;
   }
-  // No tag match → rotate daily through fallback list
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
-  return FALLBACK_MONETIZED[dayOfYear % FALLBACK_MONETIZED.length];
+  // No natural fit → promote SCW Elite instead of forcing an affiliate
+  return SCW_ELITE_REC;
 }
 
 function buildHashtags(meta) {
