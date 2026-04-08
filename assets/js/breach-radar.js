@@ -1,36 +1,82 @@
-/* BreachRadar v2 — Dark Web Breach Intelligence Scanner */
+/* BreachRadar v3 — Company/Domain Exposure Intelligence Engine
+ *
+ * Architecture: client-side JS (Jekyll/GitHub Pages — no server).
+ * Primary source: RansomLook (ransomlook.io/api/search)
+ * CORS handled via proxy fallback chain.
+ *
+ * Internal modules (sections within IIFE):
+ *   normalize  — query parsing, domain/org extraction
+ *   match      — confidence scoring, false-positive guards
+ *   source     — API calls, CORS proxy chain, response transform
+ *   dossier    — result aggregation and dossier building
+ *   render     — HTML output
+ *   init       — DOM bindings
+ */
 (function () {
   'use strict';
 
+  /* ════════════════════════════════════════════════════════════
+   *  CONSTANTS
+   * ════════════════════════════════════════════════════════════ */
+
   var API_BASE = 'https://www.ransomlook.io/api';
   var API_TIMEOUT = 25000;
+
   var CORS_PROXIES = [
-    function (u) { return u; }, /* direct first — works if CORS ever enabled */
+    function (u) { return u; },
     function (u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
     function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); }
   ];
 
-  /* ── Known ransomware group metadata ── */
+  /* Words too generic to match alone — guard against false positives */
+  var GENERIC_WORDS = [
+    'bank','core','global','group','systems','tech','solutions','holdings',
+    'services','data','digital','network','cloud','security','consulting',
+    'international','associates','partners','industries','enterprises',
+    'management','software','labs','media','health','energy','capital',
+    'financial','medical','logistics','communications','engineering',
+    'insurance','construction','education','technology','research'
+  ];
+
+  var DISCLAIMER_TEXT = 'This result may reflect an unverified claim published by a threat actor or leak-tracking source. Presence in the dataset does not independently confirm a breach.';
+
+  /* ── Known threat actor metadata ── */
   var GROUP_META = {
-    lockbit:    { tier: 'critical', aka: 'LockBit 3.0', type: 'RaaS' },
-    clop:       { tier: 'critical', aka: 'Cl0p / TA505', type: 'Extortion' },
-    alphv:      { tier: 'critical', aka: 'ALPHV / BlackCat', type: 'RaaS' },
-    blackbasta: { tier: 'critical', aka: 'Black Basta', type: 'RaaS' },
-    play:       { tier: 'high', aka: 'Play', type: 'Extortion' },
-    akira:      { tier: 'high', aka: 'Akira', type: 'RaaS' },
-    rhysida:    { tier: 'high', aka: 'Rhysida', type: 'RaaS' },
-    bianlian:   { tier: 'high', aka: 'BianLian', type: 'Extortion' },
-    medusa:     { tier: 'high', aka: 'Medusa', type: 'RaaS' },
-    hunters:    { tier: 'high', aka: 'Hunters International', type: 'RaaS' },
-    qilin:      { tier: 'high', aka: 'Qilin / Agenda', type: 'RaaS' },
-    dragonforce:{ tier: 'medium', aka: 'DragonForce', type: 'Extortion' },
-    'lapsus$':  { tier: 'critical', aka: 'Lapsus$', type: 'Extortion' },
-    handala:    { tier: 'high', aka: 'Handala Hack', type: 'Hacktivism' },
-    incransom:  { tier: 'medium', aka: 'Incransom', type: 'Extortion' },
-    anubis:     { tier: 'medium', aka: 'Anubis', type: 'Extortion' }
+    lockbit:      { tier: 'critical', aka: 'LockBit 3.0',         type: 'RaaS' },
+    clop:         { tier: 'critical', aka: 'Cl0p / TA505',        type: 'Extortion' },
+    alphv:        { tier: 'critical', aka: 'ALPHV / BlackCat',     type: 'RaaS' },
+    blackcat:     { tier: 'critical', aka: 'ALPHV / BlackCat',     type: 'RaaS' },
+    blackbasta:   { tier: 'critical', aka: 'Black Basta',          type: 'RaaS' },
+    'lapsus$':    { tier: 'critical', aka: 'Lapsus$',              type: 'Extortion' },
+    play:         { tier: 'high', aka: 'Play',                     type: 'Extortion' },
+    akira:        { tier: 'high', aka: 'Akira',                    type: 'RaaS' },
+    rhysida:      { tier: 'high', aka: 'Rhysida',                  type: 'RaaS' },
+    bianlian:     { tier: 'high', aka: 'BianLian',                 type: 'Extortion' },
+    medusa:       { tier: 'high', aka: 'Medusa',                   type: 'RaaS' },
+    hunters:      { tier: 'high', aka: 'Hunters International',    type: 'RaaS' },
+    qilin:        { tier: 'high', aka: 'Qilin / Agenda',           type: 'RaaS' },
+    ransomhub:    { tier: 'high', aka: 'RansomHub',                type: 'RaaS' },
+    '8base':      { tier: 'high', aka: '8Base',                    type: 'Extortion' },
+    royal:        { tier: 'high', aka: 'Royal',                    type: 'RaaS' },
+    blacksuit:    { tier: 'high', aka: 'BlackSuit',                type: 'RaaS' },
+    handala:      { tier: 'high', aka: 'Handala Hack',             type: 'Hacktivism' },
+    toufan:       { tier: 'high', aka: 'Toufan',                   type: 'Hacktivism' },
+    dragonforce:  { tier: 'medium', aka: 'DragonForce',            type: 'Extortion' },
+    incransom:    { tier: 'medium', aka: 'Incransom',              type: 'Extortion' },
+    anubis:       { tier: 'medium', aka: 'Anubis',                 type: 'Extortion' },
+    ransomhouse:  { tier: 'medium', aka: 'RansomHouse',            type: 'Extortion' },
+    cactus:       { tier: 'medium', aka: 'Cactus',                 type: 'RaaS' },
+    snatch:       { tier: 'medium', aka: 'Snatch',                 type: 'Extortion' },
+    trigona:      { tier: 'medium', aka: 'Trigona',                type: 'RaaS' },
+    nokoyawa:     { tier: 'medium', aka: 'Nokoyawa',               type: 'RaaS' },
+    fog:          { tier: 'medium', aka: 'Fog',                    type: 'RaaS' }
   };
 
-  /* ── Escape HTML ── */
+
+  /* ════════════════════════════════════════════════════════════
+   *  UTILITIES
+   * ════════════════════════════════════════════════════════════ */
+
   function esc(s) {
     if (!s) return '';
     var d = document.createElement('div');
@@ -44,13 +90,12 @@
             .replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  /* ── Date formatting ── */
   function fmtDate(dateStr) {
     if (!dateStr) return 'Unknown';
     var d = new Date(dateStr);
     if (isNaN(d.getTime())) return dateStr;
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return m[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
   }
 
   function daysAgo(dateStr) {
@@ -65,28 +110,251 @@
     return Math.floor(diff / 365) + ' years ago';
   }
 
-  /* ── Group tier badge ── */
-  function groupTier(groupName) {
-    var key = (groupName || '').toLowerCase().replace(/[\s_-]+/g, '');
-    var meta = GROUP_META[key];
-    if (meta) return meta.tier;
-    return 'unknown';
-  }
-
-  function groupInfo(groupName) {
-    var key = (groupName || '').toLowerCase().replace(/[\s_-]+/g, '');
+  function groupInfo(name) {
+    var key = (name || '').toLowerCase().replace(/[\s_-]+/g, '');
     return GROUP_META[key] || null;
   }
 
-  /* ── Severity color class ── */
   function tierClass(tier) {
-    if (tier === 'critical') return 'br-tier--critical';
-    if (tier === 'high') return 'br-tier--high';
-    if (tier === 'medium') return 'br-tier--medium';
-    return 'br-tier--unknown';
+    return 'br-tier--' + (tier || 'unknown');
   }
 
-  /* ── Build external investigation links ── */
+
+  /* ════════════════════════════════════════════════════════════
+   *  MODULE: normalize — query parsing & candidate extraction
+   * ════════════════════════════════════════════════════════════ */
+
+  function normalizeQuery(raw) {
+    var q = (raw || '').trim();
+    if (!q) return null;
+
+    /* Strip protocol and www */
+    var cleaned = q.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+    /* Remove trailing slashes / paths */
+    cleaned = cleaned.replace(/\/.*$/, '').toLowerCase();
+
+    var isDomain = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z]{2,})+$/.test(cleaned);
+
+    /* Org name candidate: take domain base or use full query */
+    var orgName = q.toLowerCase().trim();
+    var domainBase = '';
+    if (isDomain) {
+      domainBase = cleaned.replace(/\.[a-z]{2,}(\.[a-z]{2,})?$/, '');
+      orgName = domainBase;
+    }
+
+    return {
+      original: q,
+      normalized: cleaned,
+      isDomain: isDomain,
+      domain: isDomain ? cleaned : '',
+      orgName: orgName,
+      domainBase: domainBase,
+      searchTerm: isDomain ? domainBase : cleaned
+    };
+  }
+
+
+  /* ════════════════════════════════════════════════════════════
+   *  MODULE: match — confidence scoring & false-positive guard
+   * ════════════════════════════════════════════════════════════ */
+
+  function isGenericOnly(query) {
+    var w = query.normalized.replace(/[^a-z0-9]/g, '');
+    return GENERIC_WORDS.indexOf(w) !== -1;
+  }
+
+  function scoreResult(parsed, victim) {
+    var victimLower = (victim.victim || '').toLowerCase();
+    var score = 0;
+    var reason = '';
+    var matchType = 'fuzzy';
+
+    if (parsed.isDomain && parsed.domain) {
+      var desc = (victim.description || '').toLowerCase();
+      if (victimLower.indexOf(parsed.domain) !== -1 || desc.indexOf(parsed.domain) !== -1) {
+        score += 60;
+        reason = 'Exact domain match in victim record';
+        matchType = 'domain';
+      } else if (victimLower.indexOf(parsed.domainBase) !== -1) {
+        score += 40;
+        reason = 'Organization name derived from domain';
+        matchType = 'org-name';
+      }
+    } else {
+      if (victimLower === parsed.normalized) {
+        score += 50;
+        reason = 'Exact name match';
+        matchType = 'exact-name';
+      } else if (victimLower.indexOf(parsed.normalized) !== -1) {
+        score += 35;
+        reason = 'Name contained in victim record';
+        matchType = 'org-name';
+      } else {
+        score += 15;
+        reason = 'Keyword match via search API';
+        matchType = 'fuzzy';
+      }
+    }
+
+    /* Boost for known threat actor */
+    if (groupInfo(victim.group)) score += 5;
+
+    /* Cap fuzzy matches */
+    if (matchType === 'fuzzy' && score > 55) score = 55;
+
+    if (score > 100) score = 100;
+    if (score < 1) score = 1;
+
+    return {
+      score: score,
+      reason: reason,
+      matchType: matchType,
+      level: score >= 75 ? 'high' : score >= 45 ? 'medium' : 'low'
+    };
+  }
+
+
+  /* ════════════════════════════════════════════════════════════
+   *  MODULE: source — RansomLook API + CORS proxy chain
+   * ════════════════════════════════════════════════════════════ */
+
+  function fetchFromRansomLook(searchTerm) {
+    var apiUrl = API_BASE + '/search?q=' + encodeURIComponent(searchTerm);
+
+    function tryProxy(idx) {
+      if (idx >= CORS_PROXIES.length) {
+        return Promise.reject(new Error('Cannot reach the intelligence API. All connection methods failed. Try the external investigation links below.'));
+      }
+      var url = CORS_PROXIES[idx](apiUrl);
+      var controller = new AbortController();
+      var timer = setTimeout(function () { controller.abort(); }, API_TIMEOUT);
+
+      return fetch(url, {
+        signal: controller.signal,
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(function (res) {
+        clearTimeout(timer);
+        if (res.status === 429) throw new Error('Rate limit exceeded. Please wait a moment before searching again.');
+        if (!res.ok) throw new Error('proxy-fail');
+        return res.json();
+      })
+      .then(function (data) {
+        return transformRansomLookResponse(data);
+      })
+      .catch(function (err) {
+        clearTimeout(timer);
+        if (err.message.indexOf('Rate limit') !== -1) throw err;
+        return tryProxy(idx + 1);
+      });
+    }
+
+    return tryProxy(0);
+  }
+
+  function transformRansomLookResponse(data) {
+    if (!data || typeof data !== 'object') return [];
+    var results = [];
+
+    (data.posts || []).forEach(function (p) {
+      results.push({
+        source: 'ransomlook',
+        raw_type: 'ransomware_post',
+        victim: p.post_title || 'Unknown',
+        group: p.group_name || 'Unknown',
+        discovered: p.discovered || '',
+        description: p.description || '',
+        website: null,
+        screenshot: p.screen ? 'https://www.ransomlook.io/static/' + p.screen : null,
+        source_link: p.link ? 'https://www.ransomlook.io' + p.link : null,
+        isLeak: false,
+        confidence: null
+      });
+    });
+
+    (data.leaks || []).forEach(function (l) {
+      results.push({
+        source: 'ransomlook',
+        raw_type: 'data_leak',
+        victim: l.name || 'Unknown Breach',
+        group: 'Data Leak',
+        discovered: l.date || '',
+        description: (l.description || '') + (l.records ? ' (' + l.records.toLocaleString() + ' records)' : ''),
+        website: l.domain || null,
+        screenshot: null,
+        source_link: null,
+        isLeak: true,
+        confidence: null
+      });
+    });
+
+    return results;
+  }
+
+  /*
+   * Future integration point: ransomware.live
+   * When/if their API comes back or Pro key is obtained:
+   *   function fetchFromRansomwareLive(searchTerm) { ... }
+   *   function transformRansomwareLiveResponse(data) { ... }
+   * Merge in buildDossier() with source='ransomware.live'
+   * and add +20 confidence when both sources corroborate.
+   */
+
+
+  /* ════════════════════════════════════════════════════════════
+   *  MODULE: dossier — result aggregation & dossier building
+   * ════════════════════════════════════════════════════════════ */
+
+  function buildDossier(parsed, rawResults) {
+    var scored = rawResults.map(function (r) {
+      r.confidence = scoreResult(parsed, r);
+      return r;
+    });
+
+    scored.sort(function (a, b) {
+      if (b.confidence.score !== a.confidence.score) return b.confidence.score - a.confidence.score;
+      return new Date(b.discovered || 0) - new Date(a.discovered || 0);
+    });
+
+    var groups = {};
+    var earliest = null;
+    var latest = null;
+    var leakCount = 0;
+    var highestConf = scored.length > 0 ? scored[0].confidence : null;
+
+    scored.forEach(function (r) {
+      var g = r.group || 'Unknown';
+      groups[g] = (groups[g] || 0) + 1;
+      if (r.isLeak) leakCount++;
+      var dt = new Date(r.discovered);
+      if (!isNaN(dt.getTime())) {
+        if (!earliest || dt < earliest) earliest = dt;
+        if (!latest || dt > latest) latest = dt;
+      }
+    });
+
+    return {
+      query: parsed,
+      incidents: scored,
+      summary: {
+        total: scored.length,
+        uniqueGroups: Object.keys(groups).length,
+        groupBreakdown: groups,
+        leakCount: leakCount,
+        earliest: earliest,
+        latest: latest,
+        topConfidence: highestConf
+      },
+      isGenericQuery: isGenericOnly(parsed)
+    };
+  }
+
+
+  /* ════════════════════════════════════════════════════════════
+   *  MODULE: render — HTML output
+   * ════════════════════════════════════════════════════════════ */
+
   function buildExternalLinks(query) {
     return [
       { name: 'RansomLook', icon: '🕸️', href: 'https://www.ransomlook.io/search?q=' + encodeURIComponent(query), desc: 'Full victim database with screenshots, group profiles, and threat intelligence' },
@@ -100,394 +368,300 @@
     ];
   }
 
-  /* ── Compute threat summary ── */
-  function computeSummary(victims) {
-    var groups = {};
-    var earliest = null;
-    var latest = null;
-    var leakCount = 0;
-
-    victims.forEach(function (v) {
-      var g = v.group || 'Unknown';
-      groups[g] = (groups[g] || 0) + 1;
-
-      if (v.isLeak) leakCount++;
-
-      var d = v.discovered;
-      if (d) {
-        var dt = new Date(d);
-        if (!isNaN(dt.getTime())) {
-          if (!earliest || dt < earliest) earliest = dt;
-          if (!latest || dt > latest) latest = dt;
-        }
-      }
-    });
-
-    return {
-      totalIncidents: victims.length,
-      uniqueGroups: Object.keys(groups).length,
-      groupBreakdown: groups,
-      leakCount: leakCount,
-      earliest: earliest,
-      latest: latest
-    };
-  }
-
-  /* ── Threat level from summary ── */
-  function threatLevel(summary) {
-    var s = summary.totalIncidents;
-    if (s >= 5) return { label: 'CRITICAL EXPOSURE', cls: 'critical', emoji: '🚨', desc: 'This entity has been targeted by multiple threat actors. Immediate investigation recommended.' };
-    if (s >= 3) return { label: 'HIGH EXPOSURE', cls: 'high', emoji: '🔴', desc: 'Multiple ransomware incidents detected. This entity is a recurring target.' };
-    if (s >= 2) return { label: 'ELEVATED RISK', cls: 'medium', emoji: '🟡', desc: 'Multiple breach claims found. Verify each incident independently.' };
-    if (s >= 1) return { label: 'BREACH DETECTED', cls: 'detected', emoji: '⚠️', desc: 'At least one ransomware group has claimed this entity as a victim.' };
-    return { label: 'NO RESULTS', cls: 'clean', emoji: '✅', desc: 'No ransomware victim claims found for this query.' };
-  }
-
-  /* ── Render: No results ── */
-  function renderNoResults(query) {
-    var links = buildExternalLinks(query);
-    var html = '';
-
-    html += '<div class="br-empty">';
-    html += '  <div class="br-empty__icon">✅</div>';
-    html += '  <h3 class="br-empty__title">No ransomware victim claims found</h3>';
-    html += '  <p class="br-empty__text">No results for "<strong>' + esc(query) + '</strong>" in the ransomware leak site database. This doesn\'t guarantee the organization hasn\'t been breached — only that no tracked ransomware group has publicly claimed them.</p>';
-    html += '</div>';
-
-    html += renderExternalLinks(query);
-    html += renderRecommendations();
-
-    return html;
-  }
-
-  /* ── Render: External links block ── */
   function renderExternalLinks(query) {
     var links = buildExternalLinks(query);
-    var html = '';
-    html += '<div class="br-externals">';
-    html += '  <div class="br-externals__title">🔍 Dig deeper — external investigation</div>';
-    html += '  <div class="br-externals__grid">';
+    var h = '<div class="br-externals">';
+    h += '<div class="br-externals__title">🔍 Dig deeper — external investigation</div>';
+    h += '<div class="br-externals__grid">';
     links.forEach(function (l) {
-      html += '<a href="' + escAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
-      html += '  <div class="ioc-link__header">';
-      html += '    <span class="ioc-link__icon">' + l.icon + '</span>';
-      html += '    <span class="ioc-link__name">' + esc(l.name) + '</span>';
-      html += '    <span class="ioc-link__arrow">↗</span>';
-      html += '  </div>';
-      html += '  <p class="ioc-link__desc">' + esc(l.desc) + '</p>';
-      html += '</a>';
+      h += '<a href="' + escAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
+      h += '<div class="ioc-link__header"><span class="ioc-link__icon">' + l.icon + '</span>';
+      h += '<span class="ioc-link__name">' + esc(l.name) + '</span><span class="ioc-link__arrow">↗</span></div>';
+      h += '<p class="ioc-link__desc">' + esc(l.desc) + '</p></a>';
     });
-    html += '  </div>';
-    html += '</div>';
-    return html;
+    h += '</div></div>';
+    return h;
   }
 
-  /* ── Render: Monetization recommendations ── */
   function renderRecommendations() {
     var recs = (window.IOC_TOOL_RECS || []).filter(function (r) {
       return r.types.indexOf('breach') !== -1;
     });
-    if (recs.length === 0) return '';
-
-    var html = '<div class="ioc-card__recs">';
-    html += '  <div class="ioc-card__recs-title">🛡️ Protect your organization</div>';
+    if (!recs.length) return '';
+    var h = '<div class="ioc-card__recs"><div class="ioc-card__recs-title">🛡️ Protect your organization</div>';
     recs.forEach(function (r) {
-      html += '<a href="' + escAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
-      html += '  <div class="ioc-rec__header">';
-      html += '    <strong class="ioc-rec__name">' + esc(r.name) + '</strong>';
-      if (r.badge) html += '    <span class="ioc-rec__badge">' + esc(r.badge) + '</span>';
-      html += '  </div>';
-      html += '  <p class="ioc-rec__desc">' + esc(r.desc) + '</p>';
-      html += '</a>';
+      h += '<a href="' + escAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
+      h += '<div class="ioc-rec__header"><strong class="ioc-rec__name">' + esc(r.name) + '</strong>';
+      if (r.badge) h += '<span class="ioc-rec__badge">' + esc(r.badge) + '</span>';
+      h += '</div><p class="ioc-rec__desc">' + esc(r.desc) + '</p></a>';
     });
-    html += '</div>';
-    return html;
+    h += '</div>';
+    return h;
   }
 
-  /* ── Render: Main results ── */
-  function renderResults(query, victims) {
-    if (!victims || victims.length === 0) return renderNoResults(query);
+  function renderConfBadge(conf) {
+    if (!conf) return '';
+    var cls = 'br-conf--' + conf.level;
+    var label = conf.level === 'high' ? 'High Confidence' : conf.level === 'medium' ? 'Medium Confidence' : 'Low Confidence';
+    return '<span class="br-conf ' + cls + '" title="Score: ' + conf.score + '/100 — ' + escAttr(conf.reason) + '">' + label + ' (' + conf.score + ')</span>';
+  }
 
-    var summary = computeSummary(victims);
-    var threat = threatLevel(summary);
+  function renderMatchBadge(conf) {
+    if (!conf) return '';
+    var labels = {
+      'domain': '🎯 Domain Match',
+      'exact-name': '🎯 Exact Name',
+      'org-name': '🏢 Org Name Match',
+      'fuzzy': '🔍 Keyword Match'
+    };
+    return '<span class="br-match-type br-match-type--' + conf.matchType + '">' + (labels[conf.matchType] || 'Match') + '</span>';
+  }
 
-    /* Sort by date desc */
-    victims.sort(function (a, b) {
-      var da = new Date(a.discovered || 0);
-      var db = new Date(b.discovered || 0);
-      return db - da;
+  function renderNoResults(query) {
+    var h = '<div class="br-empty">';
+    h += '<div class="br-empty__icon">✅</div>';
+    h += '<h3 class="br-empty__title">No exposure found</h3>';
+    h += '<p class="br-empty__text">No ransomware victim claims found for "<strong>' + esc(query) + '</strong>". ';
+    h += 'This does not guarantee the organization is safe — only that no tracked threat actor has publicly claimed them.</p>';
+    h += '</div>';
+    h += renderExternalLinks(query);
+    h += renderRecommendations();
+    return h;
+  }
+
+  function renderError(query, message) {
+    var h = '<div class="br-error">';
+    h += '<div class="br-error__icon">⚠️</div>';
+    h += '<h3 class="br-error__title">Intelligence Feed Unavailable</h3>';
+    h += '<p class="br-error__text">' + esc(message) + '</p>';
+    h += '<p class="br-error__hint">You can still investigate manually using the links below.</p>';
+    h += '</div>';
+    h += renderExternalLinks(query);
+    h += renderRecommendations();
+    return h;
+  }
+
+  function renderActions() {
+    var actions = [
+      { icon: '🔑', text: 'Review SSO & identity provider logs for unauthorized access' },
+      { icon: '🌐', text: 'Check VPN and remote access logs for anomalous sessions' },
+      { icon: '📧', text: 'Audit email telemetry for phishing or BEC indicators' },
+      { icon: '🖥️', text: 'Query endpoint/EDR for known ransomware IOCs' },
+      { icon: '🔐', text: 'Check credential exposure on Have I Been Pwned' },
+      { icon: '📞', text: 'Engage IR team or MSSP if exposure is confirmed' },
+      { icon: '📋', text: 'Assess regulatory disclosure obligations' }
+    ];
+    var h = '<div class="br-actions">';
+    h += '<div class="br-section-title">🚨 Recommended Actions</div>';
+    h += '<div class="br-actions__list">';
+    actions.forEach(function (a) {
+      h += '<div class="br-action-item"><span class="br-action-item__icon">' + a.icon + '</span>';
+      h += '<span class="br-action-item__text">' + esc(a.text) + '</span></div>';
     });
+    h += '</div></div>';
+    return h;
+  }
 
-    var html = '';
+  /* ── Full dossier output ── */
+  function renderDossier(dossier) {
+    var q = dossier.query;
+    var incidents = dossier.incidents;
+    var summary = dossier.summary;
 
-    /* ── Threat Assessment Banner ── */
-    html += '<div class="br-assessment br-assessment--' + threat.cls + '">';
-    html += '  <div class="br-assessment__header">';
-    html += '    <span class="br-assessment__emoji">' + threat.emoji + '</span>';
-    html += '    <div class="br-assessment__info">';
-    html += '      <span class="br-assessment__label">' + threat.label + '</span>';
-    html += '      <span class="br-assessment__query">Results for: <strong>' + esc(query) + '</strong></span>';
-    html += '    </div>';
-    html += '  </div>';
-    html += '  <p class="br-assessment__desc">' + esc(threat.desc) + '</p>';
-    html += '</div>';
+    if (!incidents.length) return renderNoResults(q.original);
 
-    /* ── Summary Stats ── */
-    html += '<div class="br-summary">';
-    html += '  <div class="br-stat">';
-    html += '    <span class="br-stat__num">' + summary.totalIncidents + '</span>';
-    html += '    <span class="br-stat__label">Incidents</span>';
-    html += '  </div>';
-    html += '  <div class="br-stat">';
-    html += '    <span class="br-stat__num">' + summary.uniqueGroups + '</span>';
-    html += '    <span class="br-stat__label">Threat Groups</span>';
-    html += '  </div>';
-    html += '  <div class="br-stat">';
-    if (summary.leakCount > 0) {
-      html += '    <span class="br-stat__num">' + summary.leakCount + '</span>';
-      html += '    <span class="br-stat__label">Data Leaks</span>';
-    } else {
-      html += '    <span class="br-stat__num">' + (summary.latest ? fmtDate(summary.latest.toISOString()) : 'N/A') + '</span>';
-      html += '    <span class="br-stat__label">Latest</span>';
+    var topConf = summary.topConfidence;
+    var h = '';
+
+    /* A. Assessment Banner */
+    var threatCls = 'detected';
+    var threatLabel = 'EXPOSURE DETECTED';
+    var threatEmoji = '⚠️';
+    var threatDesc = 'At least one threat actor has claimed this entity.';
+
+    if (summary.total >= 5) {
+      threatCls = 'critical'; threatLabel = 'CRITICAL EXPOSURE'; threatEmoji = '🚨';
+      threatDesc = 'This entity has been targeted by multiple threat actors. Immediate investigation recommended.';
+    } else if (summary.total >= 3) {
+      threatCls = 'high'; threatLabel = 'HIGH EXPOSURE'; threatEmoji = '🔴';
+      threatDesc = 'Multiple ransomware incidents detected. This entity is a recurring target.';
+    } else if (summary.total >= 2) {
+      threatCls = 'medium'; threatLabel = 'ELEVATED RISK'; threatEmoji = '🟡';
+      threatDesc = 'Multiple breach claims found. Verify each incident independently.';
     }
-    html += '  </div>';
-    html += '  <div class="br-stat">';
-    html += '    <span class="br-stat__num">' + (summary.earliest ? fmtDate(summary.earliest.toISOString()) : 'N/A') + '</span>';
-    html += '    <span class="br-stat__label">Earliest</span>';
-    html += '  </div>';
-    html += '</div>';
 
-    /* ── Group Breakdown ── */
-    html += '<div class="br-groups">';
-    html += '  <div class="br-section-title">⚔️ Threat Actor Attribution</div>';
-    html += '  <div class="br-groups__grid">';
+    h += '<div class="br-assessment br-assessment--' + threatCls + '">';
+    h += '<div class="br-assessment__header">';
+    h += '<span class="br-assessment__emoji">' + threatEmoji + '</span>';
+    h += '<div class="br-assessment__info">';
+    h += '<span class="br-assessment__label">' + threatLabel + '</span>';
+    h += '<span class="br-assessment__query">Searched: <strong>' + esc(q.original) + '</strong></span>';
+    h += '</div>';
+    if (topConf) h += renderConfBadge(topConf);
+    h += '</div>';
+    h += '<p class="br-assessment__desc">' + esc(threatDesc) + '</p>';
+    h += '</div>';
+
+    /* Disclaimer */
+    h += '<div class="br-disclaimer-inline">';
+    h += '<span class="br-disclaimer-inline__icon">⚖️</span>';
+    h += '<span>' + esc(DISCLAIMER_TEXT) + '</span>';
+    h += '</div>';
+
+    /* Generic query warning */
+    if (dossier.isGenericQuery) {
+      h += '<div class="br-warning">';
+      h += '<span class="br-warning__icon">⚡</span>';
+      h += '<span>This is a generic/common term. Results may include unrelated organizations. Use a specific company name or domain for accurate results.</span>';
+      h += '</div>';
+    }
+
+    /* Summary Stats */
+    h += '<div class="br-summary">';
+    h += '<div class="br-stat"><span class="br-stat__num">' + summary.total + '</span><span class="br-stat__label">Incidents</span></div>';
+    h += '<div class="br-stat"><span class="br-stat__num">' + summary.uniqueGroups + '</span><span class="br-stat__label">Threat Groups</span></div>';
+    h += '<div class="br-stat"><span class="br-stat__num">' + (summary.latest ? fmtDate(summary.latest.toISOString()) : 'N/A') + '</span><span class="br-stat__label">Latest</span></div>';
+    h += '<div class="br-stat"><span class="br-stat__num">' + (summary.earliest ? fmtDate(summary.earliest.toISOString()) : 'N/A') + '</span><span class="br-stat__label">Earliest</span></div>';
+    h += '</div>';
+
+    /* B. Threat Actor Breakdown */
+    h += '<div class="br-groups">';
+    h += '<div class="br-section-title">⚔️ Threat Actor Attribution</div>';
+    h += '<div class="br-groups__grid">';
     var sortedGroups = Object.keys(summary.groupBreakdown).sort(function (a, b) {
       return summary.groupBreakdown[b] - summary.groupBreakdown[a];
     });
     sortedGroups.forEach(function (g) {
       var info = groupInfo(g);
       var tier = info ? info.tier : 'unknown';
-      html += '<div class="br-group-chip ' + tierClass(tier) + '">';
-      html += '  <span class="br-group-chip__name">' + esc(g) + '</span>';
-      html += '  <span class="br-group-chip__count">' + summary.groupBreakdown[g] + '</span>';
-      if (info) {
-        html += '<span class="br-group-chip__type">' + esc(info.type) + '</span>';
-      }
-      html += '</div>';
+      h += '<div class="br-group-chip ' + tierClass(tier) + '">';
+      h += '<span class="br-group-chip__name">' + esc(g) + '</span>';
+      h += '<span class="br-group-chip__count">' + summary.groupBreakdown[g] + '</span>';
+      if (info) h += '<span class="br-group-chip__type">' + esc(info.type) + '</span>';
+      h += '</div>';
     });
-    html += '  </div>';
-    html += '</div>';
+    h += '</div></div>';
 
-    /* ── Timeline / Incident Cards ── */
-    html += '<div class="br-timeline">';
-    html += '  <div class="br-section-title">📋 Incident Timeline</div>';
+    /* C. Incident Timeline */
+    h += '<div class="br-timeline">';
+    h += '<div class="br-section-title">📋 Incident Timeline</div>';
 
-    victims.forEach(function (v, i) {
+    incidents.forEach(function (v) {
       var date = v.discovered || '';
-      var tier = groupTier(v.group);
-      var clsT = tierClass(tier);
+      var info = groupInfo(v.group);
+      var tier = info ? info.tier : 'unknown';
 
-      html += '<div class="br-incident ' + clsT + '">';
+      h += '<div class="br-incident ' + tierClass(tier) + '">';
+      h += '<div class="br-incident__header">';
+      h += '<div class="br-incident__dot"></div>';
+      h += '<div class="br-incident__meta">';
+      h += '<span class="br-incident__date">' + fmtDate(date) + '</span>';
+      if (date) h += '<span class="br-incident__ago">' + daysAgo(date) + '</span>';
+      h += '</div>';
+      if (v.confidence) h += renderMatchBadge(v.confidence);
+      h += '</div>';
 
-      /* Header */
-      html += '  <div class="br-incident__header">';
-      html += '    <div class="br-incident__dot"></div>';
-      html += '    <div class="br-incident__meta">';
-      html += '      <span class="br-incident__date">' + fmtDate(date) + '</span>';
-      if (date) html += '      <span class="br-incident__ago">' + daysAgo(date) + '</span>';
-      html += '    </div>';
-      html += '  </div>';
+      h += '<div class="br-incident__body">';
+      h += '<h3 class="br-incident__victim">' + esc(v.victim || 'Unknown Victim') + '</h3>';
 
-      /* Body */
-      html += '  <div class="br-incident__body">';
-
-      /* Victim name */
-      html += '    <h3 class="br-incident__victim">' + esc(v.victim || 'Unknown Victim') + '</h3>';
-
-      /* Attribution */
-      html += '    <div class="br-incident__attrib">';
+      h += '<div class="br-incident__attrib">';
       if (v.isLeak) {
-        html += '      <span class="br-incident__group"><span class="br-incident__group-icon">💧</span><span>Data Leak</span></span>';
+        h += '<span class="br-incident__group"><span class="br-incident__group-icon">💧</span><span>Data Leak</span></span>';
       } else {
-        html += '      <a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-incident__group">';
-        html += '        <span class="br-incident__group-icon">⚔️</span>';
-        html += '        <span>' + esc(v.group || 'Unknown') + '</span>';
-        html += '      </a>';
+        h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-incident__group">';
+        h += '<span class="br-incident__group-icon">⚔️</span><span>' + esc(v.group || 'Unknown') + '</span></a>';
+        if (info) h += '<span class="br-incident__aka">aka ' + esc(info.aka) + '</span>';
       }
-      html += '    </div>';
+      h += '<span class="br-incident__source">via RansomLook</span>';
+      h += '</div>';
 
-      /* Description */
       if (v.description) {
         var desc = v.description;
         if (desc.length > 300) desc = desc.substring(0, 300) + '…';
-        html += '    <p class="br-incident__desc">' + esc(desc) + '</p>';
+        h += '<p class="br-incident__desc">' + esc(desc) + '</p>';
       }
 
-      /* Evidence links */
-      html += '    <div class="br-incident__evidence">';
+      if (v.confidence && v.confidence.level === 'low') {
+        h += '<div class="br-incident__note">⚡ <em>Low-confidence match. ' + esc(v.confidence.reason) + '. Manual validation recommended.</em></div>';
+      }
+
+      h += '<div class="br-incident__evidence">';
       if (v.website) {
-        html += '      <a href="' + escAttr(/^https?:\/\//.test(v.website) ? v.website : 'https://' + v.website) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--website">🌐 Website</a>';
+        var href = /^https?:\/\//.test(v.website) ? v.website : 'https://' + v.website;
+        h += '<a href="' + escAttr(href) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--website">🌐 Website</a>';
       }
       if (v.screenshot) {
-        html += '      <a href="' + escAttr(v.screenshot) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">📸 Screenshot</a>';
+        h += '<a href="' + escAttr(v.screenshot) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">📸 Screenshot</a>';
+      }
+      if (v.source_link) {
+        h += '<a href="' + escAttr(v.source_link) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">🔗 Source</a>';
       }
       if (v.group && !v.isLeak) {
-        html += '    <a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--group">⚔️ Group Profile</a>';
+        h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--group">⚔️ Group Profile</a>';
       }
-      html += '    </div>';
+      h += '</div>';
 
-      html += '  </div>'; /* body */
-      html += '</div>'; /* incident */
+      h += '</div>';
+      h += '</div>';
     });
+    h += '</div>';
 
-    html += '</div>'; /* timeline */
+    /* D. Recommended Actions */
+    h += renderActions();
 
-    /* ── External investigation links ── */
-    html += renderExternalLinks(query);
+    /* E. External investigation */
+    h += renderExternalLinks(q.original);
 
-    /* ── Product recommendations ── */
-    html += renderRecommendations();
+    /* F. Product recommendations */
+    h += renderRecommendations();
 
-    return html;
+    return h;
   }
 
-  /* ── API call with CORS proxy fallback ── */
-  function searchVictims(query) {
-    var apiUrl = API_BASE + '/search?q=' + encodeURIComponent(query);
 
-    function tryProxy(idx) {
-      if (idx >= CORS_PROXIES.length) {
-        return Promise.reject(new Error('Cannot reach the intelligence API from your browser. All proxy methods failed.'));
-      }
-      var url = CORS_PROXIES[idx](apiUrl);
-      var controller = new AbortController();
-      var timer = setTimeout(function () {
-        controller.abort();
-      }, API_TIMEOUT);
+  /* ════════════════════════════════════════════════════════════
+   *  MODULE: init — main scan handler & DOM bindings
+   * ════════════════════════════════════════════════════════════ */
 
-      return fetch(url, {
-        signal: controller.signal,
-        headers: { 'Accept': 'application/json' }
-      })
-      .then(function (res) {
-        clearTimeout(timer);
-        if (res.status === 429) {
-          throw new Error('Rate limit exceeded. Please wait a moment before searching again.');
-        }
-        if (!res.ok) throw new Error('proxy-fail');
-        return res.json();
-      })
-      .then(function (data) {
-        /* Transform RansomLook response → unified victim array */
-        return transformResults(data);
-      })
-      .catch(function (err) {
-        clearTimeout(timer);
-        if (err.message === 'Rate limit exceeded. Please wait a moment before searching again.') {
-          throw err; /* don't retry rate limits */
-        }
-        /* Try next proxy */
-        return tryProxy(idx + 1);
-      });
-    }
-
-    return tryProxy(0);
-  }
-
-  /* ── Transform RansomLook API response to unified format ── */
-  function transformResults(data) {
-    if (!data || typeof data !== 'object') return [];
-    var victims = [];
-    var posts = data.posts || [];
-    posts.forEach(function (p) {
-      victims.push({
-        victim: p.post_title || 'Unknown',
-        group: p.group_name || 'Unknown',
-        discovered: p.discovered || '',
-        description: p.description || '',
-        website: null,
-        screenshot: p.screen ? 'https://www.ransomlook.io/static/' + p.screen : null,
-        rl_link: p.link || null
-      });
-    });
-    /* Also include leak results */
-    var leaks = data.leaks || [];
-    leaks.forEach(function (l) {
-      victims.push({
-        victim: l.name || 'Unknown Breach',
-        group: 'Data Leak',
-        discovered: l.date || '',
-        description: (l.description || '') + (l.records ? ' (' + l.records.toLocaleString() + ' records)' : ''),
-        website: l.domain || null,
-        isLeak: true
-      });
-    });
-    return victims;
-  }
-
-  /* ── Render error state ── */
-  function renderError(query, message) {
-    var html = '';
-    html += '<div class="br-error">';
-    html += '  <div class="br-error__icon">⚠️</div>';
-    html += '  <h3 class="br-error__title">Intelligence Feed Unavailable</h3>';
-    html += '  <p class="br-error__text">' + esc(message) + '</p>';
-    html += '  <p class="br-error__hint">The ransomware intelligence API may be experiencing high load. You can still investigate manually using the links below.</p>';
-    html += '</div>';
-
-    html += renderExternalLinks(query);
-    html += renderRecommendations();
-
-    return html;
-  }
-
-  /* ── Main scan handler ── */
-  function doScan(query) {
+  function doScan(rawQuery) {
     var resultsEl = document.getElementById('brResults');
     var loadingEl = document.getElementById('brLoading');
 
-    if (!query || query.length < 2) {
-      resultsEl.innerHTML = '<div class="br-error"><p class="br-error__text">Please enter at least 2 characters.</p></div>';
+    var parsed = normalizeQuery(rawQuery);
+    if (!parsed || parsed.normalized.length < 2) {
+      resultsEl.innerHTML = '<div class="br-error"><p class="br-error__text">Enter at least 2 characters — a company name or domain.</p></div>';
       return;
     }
 
     resultsEl.innerHTML = '';
     loadingEl.style.display = '';
 
-    searchVictims(query)
-      .then(function (victims) {
+    fetchFromRansomLook(parsed.searchTerm)
+      .then(function (rawResults) {
         loadingEl.style.display = 'none';
-        resultsEl.innerHTML = renderResults(query, victims);
+        var dossier = buildDossier(parsed, rawResults);
+        resultsEl.innerHTML = renderDossier(dossier);
       })
       .catch(function (err) {
         loadingEl.style.display = 'none';
-        var msg = err.message || 'An unexpected error occurred.';
-        resultsEl.innerHTML = renderError(query, msg);
+        resultsEl.innerHTML = renderError(parsed.original, err.message || 'An unexpected error occurred.');
       });
   }
 
-  /* ── Init ── */
   document.addEventListener('DOMContentLoaded', function () {
     var scanBtn = document.getElementById('brScanBtn');
     var input = document.getElementById('brInput');
-
     if (!scanBtn || !input) return;
 
     scanBtn.addEventListener('click', function () {
-      var q = input.value.trim();
-      doScan(q);
+      doScan(input.value.trim());
       input.select();
     });
 
-    /* Enter to scan */
     input.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        scanBtn.click();
-      }
+      if (e.key === 'Enter') { e.preventDefault(); scanBtn.click(); }
     });
 
-    /* Hint buttons */
     document.querySelectorAll('.br-hint').forEach(function (btn) {
       btn.addEventListener('click', function () {
         input.value = btn.getAttribute('data-q');
