@@ -41,6 +41,18 @@ platforms:
 - id: ironport
   name: Cisco Secure Email
   icon: 📨
+- id: fortinet
+  name: Fortinet FortiGate
+  icon: 🏰
+- id: okta
+  name: Okta IAM
+  icon: 🔐
+- id: k8s
+  name: Kubernetes
+  icon: ☸️
+- id: cicd
+  name: GitHub / CI-CD
+  icon: 🔄
 categories:
 - id: identity
   name: Identity & Access
@@ -13167,3 +13179,3360 @@ items:
   - asyncos
   - updates
   - vulnerability
+
+# ═══════════════════════════════════════════════════════════════
+#  Fortinet FortiGate
+# ═══════════════════════════════════════════════════════════════
+- id: fg-001
+  platform: fortinet
+  category: network
+  severity: critical
+  title: Enforce explicit deny-all as the last firewall policy
+  description: The final policy must be an explicit deny-all with logging enabled. FortiGate has an implicit deny but it does not log — leaving you blind to blocked traffic.
+  reference: Fortinet Best Practices — Security Policy Ordering
+  command: 'config firewall policy
+
+    edit 9999
+
+      set name "deny-all-log"
+
+      set srcintf "any"
+
+      set dstintf "any"
+
+      set srcaddr "all"
+
+      set dstaddr "all"
+
+      set action deny
+
+      set schedule "always"
+
+      set logtraffic all
+
+    next
+
+    end'
+  premium:
+    attackPerspective: Attackers conducting recon scans rely on silent drops to map your perimeter. Without logging on the deny rule, you cannot see brute-force attempts, port scans, or C2 callback failures. In the 2023 Volt Typhoon campaign, defenders who logged denied traffic detected the initial probing 72 hours before exploitation.
+    implementationNotes: '1. Create policy with the highest numeric ID to ensure it stays last
+
+      2. Enable logtraffic "all" not "utm" — you want connection-level logs even without UTM
+
+      3. Schedule a monthly review to ensure no new rules push below the deny-all
+
+      4. Use the policy move command if needed: move firewall policy 9999 after <last-allow-policy>'
+    validationNotes: '# Verify last policy is deny-all:
+
+      show firewall policy | tail -20
+
+
+      # Test: generate traffic from untrusted zone to random port
+
+      execute ping-options source <untrusted-ip>
+
+      execute ping <internal-ip>
+
+      # Should be denied + logged
+
+
+      # Check logs:
+
+      execute log filter category traffic
+
+      execute log filter field action deny
+
+      execute log display'
+    tuningNotes: On high-traffic firewalls, the deny-all log can be noisy. Use log-rate-limiting or forward only to SIEM and filter there. Never disable logging on deny — the noise IS the intelligence.
+    advancedDetection: '# SIEM query to detect scanning patterns in denied traffic
+
+      index=fortigate sourcetype=fgt_traffic action=deny
+
+      | stats dc(dstport) as ports_scanned, count by srcip
+
+      | where ports_scanned > 20
+
+      | sort -ports_scanned'
+    relatedIds:
+    - fg-002
+    - fg-005
+  tags:
+  - firewall
+  - default-deny
+  - logging
+  - perimeter
+  commandLanguage: fortigate-cli
+  commandFull: 'config firewall policy
+
+    edit 9999
+
+      set name "deny-all-log"
+
+      set srcintf "any"
+
+      set dstintf "any"
+
+      set srcaddr "all"
+
+      set dstaddr "all"
+
+      set action deny
+
+      set schedule "always"
+
+      set logtraffic all
+
+      set comments "Explicit deny-all with logging — DO NOT MOVE"
+
+    next
+
+    end
+
+
+    # Verify position:
+
+    show firewall policy | grep -A2 "edit 9999"'
+- id: fg-002
+  platform: fortinet
+  category: network
+  severity: critical
+  title: Enable IPS with block action on all allow policies
+  description: Attach an IPS sensor with action=block to every firewall policy that allows traffic. Without IPS, allowed traffic flows uninspected for exploits and known attacks.
+  reference: Fortinet Best Practices — IPS Configuration
+  command: 'config ips sensor
+
+    edit "strict-ips"
+
+      config entries
+
+        edit 1
+
+          set severity critical high medium
+
+          set action block
+
+          set status enable
+
+        next
+
+      end
+
+    next
+
+    end
+
+
+    config firewall policy
+
+    edit <policy-id>
+
+      set ips-sensor "strict-ips"
+
+    next
+
+    end'
+  premium:
+    attackPerspective: IPS is the primary defense against exploit-based initial access. Without it, CVE exploits for VPN portals (FortiOS CVE-2023-27997), web servers, and SMB services pass through undetected. The 2024 FortiGate zero-day campaigns specifically targeted organizations without IPS inspection enabled on VPN policies.
+    implementationNotes: '1. Create sensor with block for critical+high, alert for medium
+
+      2. Attach to ALL allow policies — not just internet-facing
+
+      3. Enable protocol anomaly detection in sensor settings
+
+      4. Schedule weekly IPS signature updates'
+    validationNotes: '# Verify IPS is active:
+
+      diagnose ips session status
+
+      diagnose ips signature count
+
+      # Test with EICAR download — IPS should block'
+    tuningNotes: Initial deployment may generate false positives on internal applications. Set medium severity to alert-only for week 1, review logs, then promote to block.
+    advancedDetection: '# Detect IPS bypass attempts
+
+      index=fortigate sourcetype=fgt_ips action=detected severity=critical
+
+      | stats count by srcip, attack_name
+
+      | where count > 3'
+    relatedIds:
+    - fg-001
+    - fg-003
+  tags:
+  - ips
+  - intrusion-prevention
+  - exploit
+  - signatures
+  commandLanguage: fortigate-cli
+  commandFull: 'config ips sensor
+
+    edit "strict-ips"
+
+      config entries
+
+        edit 1
+
+          set severity critical high
+
+          set action block
+
+          set status enable
+
+        next
+
+        edit 2
+
+          set severity medium
+
+          set action pass
+
+          set log enable
+
+          set status enable
+
+        next
+
+      end
+
+    next
+
+    end'
+- id: fg-003
+  platform: fortinet
+  category: network
+  severity: critical
+  title: Enable SSL deep inspection on outbound traffic
+  description: Without SSL inspection, 85%+ of internet traffic is invisible. Configure deep inspection with a trusted CA certificate to inspect HTTPS for malware, C2, and data exfiltration.
+  reference: Fortinet Best Practices — SSL/SSH Inspection
+  command: 'config firewall ssl-ssh-profile
+
+    edit "deep-inspect"
+
+      config https
+
+        set ports 443
+
+        set status deep-inspection
+
+      end
+
+      set caname "FortiGate-CA"
+
+    next
+
+    end'
+  premium:
+    attackPerspective: Modern malware exclusively uses HTTPS for C2 communication. Without SSL inspection, your IPS, DLP, and antivirus are blind to 85% of traffic. Cobalt Strike, Sliver, and Brute Ratel all use HTTPS with valid TLS certificates. APT groups like Volt Typhoon used encrypted channels that deep inspection would have caught.
+    implementationNotes: '1. Generate or import a CA certificate for deep inspection
+
+      2. Deploy the CA cert to all endpoints via GPO/MDM
+
+      3. Create an exempt list for healthcare/banking/privacy-sensitive domains
+
+      4. Start with alert-only on a pilot group before enforcing'
+    validationNotes: '# Verify deep inspection is active:
+
+      diagnose test application ssl 1
+
+      # Browse to HTTPS site — verify cert is issued by FortiGate CA'
+    tuningNotes: Add financial institutions, healthcare portals, and government sites to the exempt list. Deep inspection of certificate-pinned apps will break them. Monitor CPU utilization — deep inspection is compute-intensive on older hardware.
+    advancedDetection: '# Detect C2 in decrypted traffic
+
+      index=fortigate sourcetype=fgt_traffic ssl_action="deep-inspection"
+
+      | where dest_category IN ("malware","botnet","phishing")
+
+      | stats count by srcip, dest_fqdn'
+    relatedIds:
+    - fg-002
+    - fg-005
+  tags:
+  - ssl-inspection
+  - tls
+  - deep-inspection
+  - visibility
+  commandLanguage: fortigate-cli
+  commandFull: 'config firewall ssl-ssh-profile
+
+    edit "deep-inspect"
+
+      config https
+
+        set ports 443
+
+        set status deep-inspection
+
+        set client-cert-request bypass
+
+      end
+
+      set caname "FortiGate-CA"
+
+      set untrusted-caname "FortiGate-CA"
+
+      set server-cert-mode re-sign
+
+    next
+
+    end'
+- id: fg-004
+  platform: fortinet
+  category: identity
+  severity: critical
+  title: Enforce MFA on all admin accounts and disable HTTP management
+  description: Require two-factor authentication for all FortiGate admin accounts. Disable HTTP management — use HTTPS only. FortiGate admin portals have been targeted by zero-day attacks.
+  reference: Fortinet PSIRT — Admin Authentication Hardening
+  command: 'config system admin
+
+    edit "admin"
+
+      set two-factor fortitoken-cloud
+
+      set trusthost1 10.0.0.0/24
+
+    next
+
+    end
+
+
+    config system global
+
+      set admin-https-redirect enable
+
+      set admin-sport 8443
+
+    end'
+  premium:
+    attackPerspective: FortiGate management interfaces are the #1 target for initial access. CVE-2024-55591, CVE-2023-27997, and CVE-2022-40684 all targeted the admin portal directly. If an attacker gains admin access to your FortiGate, they own your entire network — they can disable IPS, create VPN backdoors, and intercept all traffic. The 2024 mass exploitation compromised 150,000+ devices.
+    implementationNotes: '1. Enable FortiToken Cloud MFA for ALL admin accounts
+
+      2. Change default HTTPS port from 443 to non-standard (e.g., 8443)
+
+      3. Disable HTTP management entirely
+
+      4. Restrict management access to specific trusted IPs via trusthost
+
+      5. Create read-only audit account for compliance teams'
+    validationNotes: '# Verify MFA is enabled:
+
+      get system admin
+
+      # Check each user has two-factor set
+
+
+      # Verify HTTP is disabled:
+
+      get system global | grep admin-
+
+
+      # Test from untrusted IP — should be denied'
+    tuningNotes: If using SAML/RADIUS for admin auth, ensure the IdP enforces MFA. Local admin accounts should be break-glass only. Rotate admin passwords quarterly.
+    advancedDetection: '# Detect admin login anomalies
+
+      index=fortigate sourcetype=fgt_event subtype=system level=warning action=login
+
+      | stats count by srcip, admin, status
+
+      | where status="failed" AND count > 3'
+    relatedIds:
+    - fg-005
+    - fg-009
+  tags:
+  - admin-access
+  - mfa
+  - management
+  - zero-day
+  commandLanguage: fortigate-cli
+  commandFull: 'config system admin
+
+    edit "admin"
+
+      set two-factor fortitoken-cloud
+
+      set trusthost1 10.0.0.0/24
+
+      set trusthost2 192.168.1.0/24
+
+    next
+
+    end
+
+
+    config system global
+
+      set admin-https-redirect enable
+
+      set admin-sport 8443
+
+      set admin-ssh-port 2222
+
+      set admintimeout 15
+
+    end'
+- id: fg-005
+  platform: fortinet
+  category: network
+  severity: high
+  title: Enable web filtering to block high-risk URL categories
+  description: Block access to malware, phishing, newly-registered, and dynamic DNS domains. FortiGuard URL database covers 300M+ URLs classified into 90+ categories.
+  reference: Fortinet Best Practices — Web Filtering
+  command: 'config webfilter profile
+
+    edit "strict-web"
+
+      config ftgd-wf
+
+        config filters
+
+          edit 1
+
+            set category 26
+
+            set action block
+
+          next
+
+        end
+
+      end
+
+    next
+
+    end'
+  premium:
+    attackPerspective: 80% of phishing and malware delivery uses web redirects through newly-registered or compromised domains. In the SolarWinds attack, the C2 domain was categorized as a CDN — teams that monitored newly-registered domain access caught it earlier.
+    implementationNotes: '1. Block categories: Malware, Phishing, Spam URLs, Dynamic DNS, Newly-registered
+
+      2. Set Potentially Liable and Adult categories to warn
+
+      3. Enable FortiGuard inline cloud scanning for uncategorized URLs
+
+      4. Create bypass groups for IT teams if needed'
+    validationNotes: '# Test web filter:
+
+      diagnose webfilter fortiguard url-rating <test-domain>
+
+      # Should return category and action'
+    tuningNotes: Marketing teams may need social media sites that overlap with risky categories. Create per-group policies rather than global exceptions.
+    advancedDetection: '# Detect users repeatedly hitting blocked sites
+
+      index=fortigate sourcetype=fgt_webfilter action=blocked catdesc="Malware"
+
+      | stats count by srcip, hostname
+
+      | where count > 5'
+    relatedIds:
+    - fg-003
+    - fg-001
+  tags:
+  - web-filtering
+  - url-filtering
+  - phishing
+  - malware
+  commandLanguage: fortigate-cli
+  commandFull: 'config webfilter profile
+
+    edit "strict-web"
+
+      set feature-set flow
+
+      config ftgd-wf
+
+        config filters
+
+          edit 1
+
+            set category 26
+
+            set action block
+
+          next
+
+          edit 2
+
+            set category 61
+
+            set action block
+
+          next
+
+          edit 3
+
+            set category 62
+
+            set action block
+
+          next
+
+        end
+
+      end
+
+    next
+
+    end'
+- id: fg-006
+  platform: fortinet
+  category: patching
+  severity: critical
+  title: Keep FortiOS updated — subscribe to PSIRT advisories
+  description: FortiGate has had more actively exploited zero-days than any other firewall vendor in 2023-2025. Apply patches within 48h for critical CVEs. CISA KEV lists 15+ FortiGate CVEs.
+  reference: Fortinet PSIRT — fortiguard.fortinet.com/psirt
+  command: '# Check current version:
+
+    get system status | grep Version
+
+
+    # Check for updates:
+
+    diagnose autoupdate versions
+
+
+    # Subscribe to PSIRT:
+
+    # https://fortiguard.fortinet.com/psirt'
+  premium:
+    attackPerspective: CVE-2024-55591 (auth bypass), CVE-2023-27997 (RCE via SSL-VPN), CVE-2022-40684 (auth bypass) — each was mass-exploited within days of disclosure. Threat actors including Volt Typhoon and APT28 specifically target unpatched FortiGate devices as initial access vectors.
+    implementationNotes: '1. Subscribe to fortiguard.fortinet.com/psirt for email alerts
+
+      2. CRITICAL patches within 48h, HIGH within 7 days
+
+      3. Test firmware on HA-secondary before production
+
+      4. Keep N-1 firmware backup on the device
+
+      5. Document current firmware in asset inventory'
+    validationNotes: '# Verify current firmware:
+
+      get system status
+
+      # Compare against latest at support.fortinet.com
+
+
+      # Check HA sync status if applicable:
+
+      get system ha status'
+    tuningNotes: If running HA, upgrade secondary first, verify failover, then primary. Never upgrade both simultaneously. Keep auto signature updates on — only firmware updates should be manual.
+    advancedDetection: '# Detect vulnerable firmware in fleet
+
+      index=fortigate sourcetype=fgt_event subtype=system
+
+      | stats latest(firmware) as version by devname
+
+      | eval is_vulnerable=if(version < "7.4.4", "YES", "NO")'
+    relatedIds:
+    - fg-004
+    - fg-002
+  tags:
+  - patching
+  - firmware
+  - zero-day
+  - psirt
+  - cve
+  commandLanguage: fortigate-cli
+  commandFull: '# Full firmware upgrade procedure:
+
+    # Step 1: Backup config
+
+    execute backup config tftp <backup-file> <tftp-server>
+
+
+    # Step 2: Download firmware from support.fortinet.com
+
+    # Step 3: Upgrade secondary (HA)
+
+    execute ha manage 1 admin
+
+    execute restore image tftp <firmware> <server>
+
+
+    # Step 4: Verify after reboot
+
+    get system status | grep Version'
+- id: fg-007
+  platform: fortinet
+  category: network
+  severity: high
+  title: Enable application control to block high-risk apps
+  description: Block proxy avoidance, P2P, unauthorised remote access tools (TeamViewer, AnyDesk, ngrok) that bypass security controls.
+  reference: Fortinet Best Practices — Application Control
+  command: 'config application list
+
+    edit "strict-appctrl"
+
+      config entries
+
+        edit 1
+
+          set category 22
+
+          set action block
+
+        next
+
+      end
+
+    next
+
+    end'
+  premium:
+    attackPerspective: Attackers use legitimate remote access tools to maintain persistence without triggering EDR. In the Conti ransomware playbooks leaked in 2022, AnyDesk was the primary persistence mechanism. Proxy avoidance tools let users bypass all your web filtering and IPS inspection entirely.
+    implementationNotes: '1. Block categories: Proxy, P2P, Remote Access (except approved tools)
+
+      2. Create exceptions for IT-approved remote tools
+
+      3. Set action=monitor for 1 week before blocking
+
+      4. Enable deep app inspection (NGFW mode) for encrypted app detection'
+    validationNotes: '# Verify app control is active:
+
+      diagnose application status
+
+      # Test: try using teamviewer.com — should be blocked'
+    tuningNotes: Some IT teams legitimately use remote access tools. Create per-group policies that allow specific approved tools only for IT host groups.
+    advancedDetection: '# Detect unauthorized remote access tool usage
+
+      index=fortigate sourcetype=fgt_app app_category="Remote.Access"
+
+      | where action!="blocked"
+
+      | stats count by srcip, app, user'
+    relatedIds:
+    - fg-005
+    - fg-003
+  tags:
+  - application-control
+  - remote-access
+  - proxy-avoidance
+  commandLanguage: fortigate-cli
+  commandFull: 'config application list
+
+    edit "strict-appctrl"
+
+      config entries
+
+        edit 1
+
+          set category 22
+
+          set action block
+
+          set log enable
+
+        next
+
+        edit 2
+
+          set category 1
+
+          set action block
+
+          set log enable
+
+        next
+
+      end
+
+    next
+
+    end'
+- id: fg-008
+  platform: fortinet
+  category: logging
+  severity: high
+  title: Forward all logs to SIEM via syslog or FortiAnalyzer
+  description: Configure centralized log forwarding for traffic, IPS, web filter, application, and event logs. Attackers who compromise FortiGate will clear local logs first.
+  reference: Fortinet Best Practices — Log Management
+  command: 'config log syslogd setting
+
+    set status enable
+
+    set server <siem-ip>
+
+    set port 514
+
+    set facility local7
+
+    set format cef
+
+    end'
+  premium:
+    attackPerspective: In the 2023 FortiGate exploitation campaigns, organizations with FortiAnalyzer or SIEM detected compromises within hours. Those relying on local logs lost all evidence when attackers wiped them post-exploitation.
+    implementationNotes: '1. Forward to SIEM via syslog (CEF format for Splunk/Sentinel compatibility)
+
+      2. Or deploy FortiAnalyzer for native Fortinet correlation
+
+      3. Enable all log types: traffic, utm, event, dns
+
+      4. Set severity to Information — you need visibility into allowed traffic too
+
+      5. Ensure log disk is not filling up'
+    validationNotes: '# Verify syslog is sending:
+
+      diagnose log test
+
+      # Check syslog connectivity:
+
+      execute telnet <siem-ip> 514
+
+      # Verify on SIEM side that logs are arriving'
+    tuningNotes: Traffic logs on busy firewalls can exceed 10GB/day. Use log filters to reduce noise but never disable security event forwarding.
+    advancedDetection: '# Detect log forwarding failures (meta-monitoring)
+
+      index=_internal sourcetype=splunkd
+
+      | where source_ip="<fortigate-ip>"
+
+      | timechart span=1h count
+
+      | where count < 100'
+    relatedIds:
+    - fg-001
+    - fg-009
+  tags:
+  - siem
+  - syslog
+  - logging
+  - fortianalyzer
+  commandLanguage: fortigate-cli
+  commandFull: 'config log syslogd setting
+
+    set status enable
+
+    set server <siem-ip>
+
+    set port 514
+
+    set facility local7
+
+    set format cef
+
+    end
+
+
+    config log syslogd filter
+
+    set severity information
+
+    set forward-traffic enable
+
+    set local-traffic enable
+
+    end'
+- id: fg-009
+  platform: fortinet
+  category: network
+  severity: high
+  title: Segment networks with zones and least-privilege inter-zone rules
+  description: Do not put all subnets in a single trust zone. Create zones for servers, workstations, IoT, and OT with explicit allow rules between them.
+  reference: Fortinet Best Practices — Network Segmentation
+  command: 'config system zone
+
+    edit "servers"
+
+      set interface "port3" "port4"
+
+    next
+
+    edit "workstations"
+
+      set interface "port5" "port6"
+
+    next
+
+    edit "iot"
+
+      set interface "port7"
+
+    next
+
+    end'
+  premium:
+    attackPerspective: Flat networks are a ransomware operators paradise. The Colonial Pipeline attack spread across flat OT/IT networks in under 2 hours. Segmentation forces attackers through chokepoints where IPS and logging can detect them. Zone-based policies reduce blast radius from 100% to the compromised zone.
+    implementationNotes: '1. Create zones: Servers, Workstations, IoT, OT, DMZ, Management
+
+      2. Default: deny all inter-zone traffic, then allow specific services
+
+      3. Use VDOMs for true multi-tenancy or hard separation between IT and OT
+
+      4. Apply IPS and app control on ALL inter-zone policies'
+    validationNotes: '# Verify zone configuration:
+
+      get system zone
+
+      show firewall policy | grep -A5 srcintf
+
+
+      # Test inter-zone isolation:
+
+      # From workstation zone, ping IoT zone — should be denied'
+    tuningNotes: Start by logging inter-zone traffic in allow mode for 2 weeks to understand legitimate flows. Then create allow rules for documented flows and switch to implicit deny.
+    advancedDetection: '# Detect lateral movement via inter-zone anomalies
+
+      index=fortigate sourcetype=fgt_traffic srcintf="workstations" dstintf="servers"
+
+      | where dstport NOT IN (443, 22, 3389)
+
+      | stats count by srcip, dstip, dstport'
+    relatedIds:
+    - fg-001
+    - fg-010
+  tags:
+  - segmentation
+  - zones
+  - vdom
+  - lateral-movement
+  commandLanguage: fortigate-cli
+  commandFull: 'config system zone
+
+    edit "servers"
+
+      set interface "port3" "port4"
+
+    next
+
+    edit "workstations"
+
+      set interface "port5" "port6"
+
+    next
+
+    edit "iot"
+
+      set interface "port7"
+
+    next
+
+    edit "management"
+
+      set interface "mgmt"
+
+    next
+
+    end'
+- id: fg-010
+  platform: fortinet
+  category: services
+  severity: high
+  title: Harden SSL-VPN with MFA and geo-restrictions
+  description: FortiGate SSL-VPN is the most targeted attack surface. Require MFA, restrict source countries, limit sessions, and disable split tunneling.
+  reference: Fortinet SSL-VPN Hardening Guide
+  command: 'config vpn ssl settings
+
+    set force-two-factor-auth enable
+
+    set banned-cipher SHA1 MD5 NULL
+
+    set tunnel-ip-pools "SSLVPN_TUNNEL_ADDR1"
+
+    set idle-timeout 1800
+
+    set auth-timeout 28800
+
+    set login-attempt-limit 3
+
+    set login-block-time 300
+
+    end'
+  premium:
+    attackPerspective: FortiGate SSL-VPN has been the entry point for hundreds of breaches. CVE-2023-27997 and CVE-2024-21762 were exploited in the wild within 24 hours. Attackers scan for FortiGate VPN portals as priority targets. The Lapsus$ group specifically targeted VPNs without MFA.
+    implementationNotes: '1. Enforce FortiToken Cloud MFA on all VPN users
+
+      2. Enable client certificate validation for managed devices
+
+      3. Restrict source IPs by geography
+
+      4. Disable split tunneling — force all traffic through VPN
+
+      5. Set idle timeout to 30 min, session timeout to 8 hours
+
+      6. Disable SSL-VPN web portal if not needed'
+    validationNotes: '# Verify MFA is required:
+
+      get vpn ssl settings | grep two-factor
+
+      # Should show: enable
+
+
+      # Check active sessions:
+
+      diagnose vpn ssl list'
+    tuningNotes: If employees travel internationally, use a curated geo-allow list. Consider ZTNA (FortiSASE) as modern replacement — provides per-app access instead of full network access.
+    advancedDetection: '# Detect VPN brute-force
+
+      index=fortigate sourcetype=fgt_event subtype=vpn action=ssl-login-fail
+
+      | stats count by srcip, user
+
+      | where count > 5'
+    relatedIds:
+    - fg-004
+    - fg-011
+  tags:
+  - ssl-vpn
+  - vpn
+  - mfa
+  - remote-access
+  commandLanguage: fortigate-cli
+  commandFull: 'config vpn ssl settings
+
+    set force-two-factor-auth enable
+
+    set banned-cipher SHA1 MD5 NULL
+
+    set dtls-tunnel disable
+
+    set tunnel-ip-pools "SSLVPN_TUNNEL_ADDR1"
+
+    set idle-timeout 1800
+
+    set auth-timeout 28800
+
+    set login-attempt-limit 3
+
+    set login-block-time 300
+
+    end'
+- id: fg-011
+  platform: fortinet
+  category: network
+  severity: high
+  title: Enable DNS filtering to sinkhole C2 and DGA domains
+  description: Use FortiGuard DNS filtering to sinkhole malicious, phishing, and botnet domains at the DNS layer before connections are established.
+  reference: Fortinet Best Practices — DNS Security
+  command: 'config dnsfilter profile
+
+    edit "strict-dns"
+
+      set block-action redirect
+
+      config ftgd-dns
+
+        config filters
+
+          edit 1
+
+            set category 26
+
+            set action block
+
+          next
+
+        end
+
+      end
+
+    next
+
+    end'
+  premium:
+    attackPerspective: DNS is the first step in nearly every attack — malware must resolve a C2 domain before connecting. DGA malware like Emotet generates thousands of random domains daily — DNS filtering with ML-based DGA detection catches this pattern before a TCP connection is even established.
+    implementationNotes: '1. Block categories: Malware, Phishing, Botnet, Spam URLs
+
+      2. Force all DNS through FortiGate by blocking outbound UDP/TCP 53 to other servers
+
+      3. Consider DNS-over-HTTPS blocking to prevent bypass
+
+      4. Enable FortiGuard DNS security service for real-time intelligence'
+    validationNotes: '# Verify DNS filter:
+
+      diagnose dnsfilter cache dump
+
+      diagnose dnsfilter lookup <test-domain>
+
+
+      # Verify DNS is forced through firewall:
+
+      diagnose sniffer packet any "port 53" 4 10'
+    tuningNotes: Internal DNS servers should point to FortiGate as forwarder. Block direct DNS to 8.8.8.8, 1.1.1.1 to prevent bypass.
+    advancedDetection: '# Detect DNS tunnelling
+
+      index=fortigate sourcetype=fgt_dns
+
+      | eval query_len=len(query)
+
+      | where query_len > 50
+
+      | stats count by srcip
+
+      | where count > 100'
+    relatedIds:
+    - fg-005
+    - fg-003
+  tags:
+  - dns
+  - dns-filtering
+  - c2
+  - dga
+  - sinkhole
+  commandLanguage: fortigate-cli
+  commandFull: 'config dnsfilter profile
+
+    edit "strict-dns"
+
+      set block-action redirect
+
+      config ftgd-dns
+
+        config filters
+
+          edit 1
+
+            set category 26
+
+            set action block
+
+          next
+
+          edit 2
+
+            set category 61
+
+            set action block
+
+          next
+
+          edit 3
+
+            set category 62
+
+            set action block
+
+          next
+
+        end
+
+      end
+
+    next
+
+    end'
+- id: fg-012
+  platform: fortinet
+  category: services
+  severity: high
+  title: Enable FortiSandbox or FortiGuard inline sandbox
+  description: Forward suspicious files to sandbox for dynamic analysis. Catches zero-day malware that passes signature-based antivirus by observing file behaviour in a controlled environment.
+  reference: Fortinet Best Practices — Sandbox Integration
+  command: 'config system fortisandbox
+
+    set status enable
+
+    set server "fortisandbox.fortiguard.com"
+
+    set enc-algorithm AES256
+
+    end
+
+
+    config antivirus profile
+
+    edit "strict-av"
+
+      config http
+
+        set options scan avmonitor quarantine
+
+        set outbreak-prevention block
+
+      end
+
+    next
+
+    end'
+  premium:
+    attackPerspective: Signature-based AV catches known malware. Zero-day payloads bypass it entirely. The 2024 QakBot resurgence used novel packers that evaded all signature engines but were caught by behavioural sandbox analysis. Sandbox detonation observes file behaviour — it catches fileless malware, polymorphic payloads, and obfuscated scripts.
+    implementationNotes: '1. Cloud option: FortiGuard inline sandbox (no hardware, per-device licensing)
+
+      2. On-prem: FortiSandbox VM or appliance
+
+      3. Forward all file types except known-safe (images, fonts)
+
+      4. Set verdict timeout to 60s — files held until verdict
+
+      5. Enable CPRL for advanced static analysis'
+    validationNotes: '# Verify sandbox connectivity:
+
+      diagnose test application scanunit 10
+
+      # Submit test EICAR file through HTTP
+
+      # Check verdict in FortiView > Threats'
+    tuningNotes: Large file uploads (>10MB) may delay users. Set size limits and exempt specific applications. Monitor submission queue during peak hours.
+    advancedDetection: '# Track sandbox verdicts
+
+      index=fortigate sourcetype=fgt_virus action=analytics
+
+      | stats count by verdict, srcip, filename
+
+      | where verdict="malicious"'
+    relatedIds:
+    - fg-002
+    - fg-003
+  tags:
+  - sandbox
+  - zero-day
+  - malware
+  - behavioural-analysis
+  commandLanguage: fortigate-cli
+  commandFull: 'config system fortisandbox
+
+    set status enable
+
+    set server "fortisandbox.fortiguard.com"
+
+    set enc-algorithm AES256
+
+    end'
+
+# ═══════════════════════════════════════════════════════════════
+#  Okta IAM
+# ═══════════════════════════════════════════════════════════════
+- id: okta-001
+  platform: okta
+  category: identity
+  severity: critical
+  title: Enforce phishing-resistant MFA (WebAuthn/FIDO2) for all users
+  description: Configure Okta to require phishing-resistant MFA (FIDO2 security keys or platform authenticators) for all users. SMS and TOTP are bypassable by adversary-in-the-middle attacks.
+  reference: Okta Security Best Practices — MFA Configuration
+  command: '# Okta Admin Console: Security > Authenticators
+    # 1. Add: FIDO2 (WebAuthn) as authenticator
+    # 2. Security > Authentication Policies > Default Policy
+    # 3. Add rule: "All Users" > Require MFA > Factor type: Phishing-resistant
+    # 4. Optionally: Disable SMS/Voice as fallback
+    #
+    # Okta API:
+    # POST /api/v1/policies/{policyId}/rules
+    # {"type":"ACCESS_POLICY","conditions":{"people":{"users":{"include":["EVERYONE"]}}},"actions":{"appSignOn":{"access":"ALLOW","verificationMethod":{"factorMode":"2FA","reauthenticateIn":"PT2H","constraints":[{"knowledge":{"reauthenticateIn":"PT2H"},"possession":{"deviceBound":"REQUIRED","phishingResistant":"REQUIRED"}}]}}}}'
+  premium:
+    attackPerspective: The 2023 Okta breach (via social engineering of IT support) and the Twilio/Cloudflare attacks all bypassed SMS-based MFA. Adversary-in-the-middle (AiTM) proxy tools like EvilGinx2 capture TOTP codes in real-time. Only FIDO2/WebAuthn is immune to phishing because the cryptographic challenge is domain-bound — a fake login page cannot intercept it.
+    implementationNotes: '1. Phase 1: Enroll admins in FIDO2 first (2 keys per admin — primary + backup)
+      2. Phase 2: Roll out hardware keys to privileged users (finance, HR, execs)
+      3. Phase 3: Enable platform authenticators (Touch ID, Windows Hello) for all users
+      4. Keep one TOTP-based "break glass" admin account locked in a physical safe
+      5. Disable OTP via SMS/Voice — they are the weakest link'
+    validationNotes: '# Verify authenticator settings:
+      # Okta Admin > Security > Authenticators — FIDO2 should be listed and active
+      # Check enrollment status:
+      # Reports > Authenticator Enrollment — filter by "Not Enrolled"
+      #
+      # Test: try logging in to a test app — MFA prompt should require FIDO2
+      #
+      # API: GET /api/v1/users?filter=status eq "ACTIVE"&search=profile.mfaEnrollment eq null'
+    tuningNotes: Users with accessibility needs may require alternative authenticators (Okta Verify push with number matching). Allow this as an exception but never SMS. Set re-authentication interval to 2 hours for sensitive apps, 12 hours for low-risk.
+    advancedDetection: '# Detect MFA bypass attempts in Okta System Log
+      # Splunk: index=okta sourcetype=okta:events eventType="user.authentication.auth_via_mfa" outcome.result="FAILURE"
+      # | stats count by actor.alternateId, client.ipAddress
+      # | where count > 5
+
+      # Sentinel KQL: OktaSSO
+      # | where eventType_s == "user.authentication.auth_via_mfa" and outcome_result_s == "FAILURE"
+      # | summarize Failures=count() by actor_alternateId_s, client_ipAddress_s
+      # | where Failures > 5'
+    relatedIds:
+    - okta-002
+    - okta-004
+  tags:
+  - mfa
+  - fido2
+  - webauthn
+  - phishing-resistant
+  - authentication
+  commandLanguage: okta-admin
+  commandFull: '# Step 1: Enable FIDO2 authenticator
+    # Admin > Security > Authenticators > Add Authenticator > FIDO2 (WebAuthn)
+    # Settings: User verification = Required, Resident key = Preferred
+
+    # Step 2: Update authentication policy
+    # Admin > Security > Authentication Policies > Default Policy
+    # Add rule: Require Phishing-Resistant factor
+    # Apply to: Everyone
+    # Re-authentication: Every 2 hours for admin apps
+
+    # Step 3: Disable weak factors
+    # Admin > Security > Authenticators > SMS > Deactivate
+    # Admin > Security > Authenticators > Voice > Deactivate'
+- id: okta-002
+  platform: okta
+  category: identity
+  severity: critical
+  title: Restrict admin roles to minimum necessary and enable admin MFA
+  description: Apply least-privilege admin roles. Separate Super Admin from Read-Only Admin, App Admin, and Help Desk Admin. Require separate MFA for admin console access.
+  reference: Okta Security Best Practices — Admin Governance
+  command: '# Okta Admin Console: Security > Administrators
+    # 1. Audit all current admins — remove unnecessary Super Admin grants
+    # 2. Assign granular roles:
+    #    - SOC: Read-Only Admin
+    #    - IT Help Desk: Help Desk Admin (password reset only)
+    #    - App owners: Application Admin (specific apps only)
+    #    - Super Admin: 2-3 break-glass accounts ONLY
+    #
+    # 3. Security > Authentication Policies > Admin Console
+    #    Require: Phishing-resistant MFA + every 1 hour re-auth'
+  premium:
+    attackPerspective: In the 2023 Okta breach, attackers targeted IT support staff to obtain admin session tokens. A Super Admin token gives full control over the tenant — ability to reset any password, disable MFA, create backdoor admin accounts, and exfiltrate the entire user directory. The Lapsus$ group specifically targeted Okta admin access as a gateway to downstream SaaS applications.
+    implementationNotes: '1. Audit: list all users with admin roles — identify over-privileged accounts
+      2. Super Admin should be held by 2-3 named individuals only
+      3. Create "break glass" Super Admin with hardware FIDO2 key stored in safe
+      4. Enable admin session binding to IP — prevents session token theft
+      5. Set admin console session timeout to 1 hour
+      6. Enable admin email notifications for all role changes'
+    validationNotes: '# Verify admin count:
+      # Admin > Security > Administrators — count Super Admins (target: 2-3 max)
+      #
+      # API: GET /api/v1/users?filter=status eq "ACTIVE"
+      # Then: GET /api/v1/users/{userId}/roles for each
+      #
+      # Verify admin MFA policy is set to phishing-resistant:
+      # Security > Authentication Policies > Admin Console'
+    tuningNotes: Okta API tokens inherit the role of the user who created them. Audit API tokens separately and scope them minimally. Rotate API tokens every 90 days or on admin role changes.
+    advancedDetection: '# Detect admin role escalation
+      # Splunk: index=okta eventType="user.account.privilege.grant"
+      # | stats count by actor.alternateId, target.alternateId, outcome.result
+
+      # KQL: OktaSSO
+      # | where eventType_s == "user.account.privilege.grant"
+      # | project TimeGenerated, actor_alternateId_s, target_0_alternateId_s'
+    relatedIds:
+    - okta-001
+    - okta-003
+  tags:
+  - admin
+  - rbac
+  - least-privilege
+  - super-admin
+  commandLanguage: okta-admin
+  commandFull: '# Audit current admins:
+    # GET /api/v1/users?filter=status eq "ACTIVE"
+    # For each user: GET /api/v1/users/{id}/roles
+
+    # Remove unnecessary Super Admin:
+    # DELETE /api/v1/users/{userId}/roles/{roleId}
+
+    # Assign granular role:
+    # POST /api/v1/users/{userId}/roles
+    # {"type":"READ_ONLY_ADMIN"}'
+- id: okta-003
+  platform: okta
+  category: identity
+  severity: critical
+  title: Enable ThreatInsight and block suspicious IPs
+  description: Enable Okta ThreatInsight to automatically detect and block credential-stuffing, brute-force, and password-spraying attacks based on Okta's global threat intelligence.
+  reference: Okta ThreatInsight Documentation
+  command: '# Okta Admin Console: Security > General > Okta ThreatInsight
+    # Set action: "Block and log" (not just log)
+    #
+    # API:
+    # PUT /api/v1/threats/configuration
+    # {"action":"BLOCK_AND_LOG"}'
+  premium:
+    attackPerspective: Okta processes billions of authentication requests monthly. ThreatInsight uses this data to identify IPs conducting credential-stuffing across multiple Okta tenants — if an IP is attacking other Okta customers, it is pre-emptively blocked on yours. Without ThreatInsight, your Okta tenant processes every brute-force attempt, which also consumes your rate limits and degrades performance.
+    implementationNotes: '1. Enable ThreatInsight in "Block and log" mode (not just "Log")
+      2. This blocks known-bad IPs before authentication is attempted
+      3. Add legitimate proxy/VPN IPs to the exempt list if needed
+      4. Combine with rate limiting for defense in depth
+      5. Monitor ThreatInsight events in System Log for intelligence'
+    validationNotes: '# Verify ThreatInsight is active:
+      # Admin > Security > General > Okta ThreatInsight — should show "Block and log"
+      #
+      # Check recent blocks:
+      # Reports > System Log > Filter: eventType = "security.threat.detected"
+      #
+      # API: GET /api/v1/threats/configuration'
+    tuningNotes: ThreatInsight may block corporate VPN exit IPs if they are shared with other tenants experiencing attacks. Add your VPN egress IPs to the ThreatInsight exempt list proactively.
+    advancedDetection: '# Monitor ThreatInsight blocks for patterns
+      index=okta eventType="security.threat.detected"
+      | stats count by client.ipAddress, client.geographicalContext.country
+      | sort -count'
+    relatedIds:
+    - okta-001
+    - okta-005
+  tags:
+  - threatinsight
+  - brute-force
+  - credential-stuffing
+  - threat-intelligence
+  commandLanguage: okta-admin
+  commandFull: '# Enable ThreatInsight:
+    # PUT /api/v1/threats/configuration
+    # Body: {"action":"BLOCK_AND_LOG"}
+
+    # Add VPN exits to exempt list:
+    # Admin > Security > General > ThreatInsight > Exempt Zones
+    # Add your corporate VPN egress IPs'
+- id: okta-004
+  platform: okta
+  category: identity
+  severity: critical
+  title: Configure session management with binding and timeout
+  description: Bind Okta sessions to the client IP and set aggressive timeouts. Stolen session tokens are the primary pivot after initial compromise.
+  reference: Okta Security Best Practices — Session Management
+  command: '# Okta Admin Console: Security > Authentication Policies
+    # Global Session Policy:
+    # Max session lifetime: 12 hours
+    # Max idle time: 30 minutes
+    # Bind session to: IP address
+    # Prompt for MFA: Every sign-in attempt
+    #
+    # For Admin Console:
+    # Max session: 1 hour
+    # Max idle: 15 minutes
+    # Bind to IP + device'
+  premium:
+    attackPerspective: Session token theft is the #1 post-compromise technique for cloud identity attacks. Attackers who steal an Okta session cookie (via browser malware, AiTM proxy, or helpdesk social engineering) can access all SSO applications without re-authenticating. In the 2023 Okta breach, stolen session tokens were used to access downstream customer environments. IP binding invalidates tokens immediately when they are used from a different IP.
+    implementationNotes: '1. Global sessions: max 12 hours, idle 30 minutes, bind to IP
+      2. Admin sessions: max 1 hour, idle 15 minutes, bind to IP + device
+      3. High-risk apps (finance, code repos): require re-auth every 2 hours
+      4. Enable "Prompt for MFA at every sign-in" for sensitive groups
+      5. Watch for session token reuse from different IPs in System Log'
+    validationNotes: '# Verify session policy:
+      # Admin > Security > Authentication Policies > Global Session Policy
+      # Check: max lifetime, idle timeout, factor lifetime
+      #
+      # Test: log in, change IP (VPN switch), verify session is invalidated
+      #
+      # API: GET /api/v1/policies?type=OKTA_SIGN_ON'
+    tuningNotes: IP binding may cause issues for users on mobile networks where IPs rotate frequently. Use ASN-aware binding instead of strict IP for mobile user groups if needed.
+    advancedDetection: '# Detect session hijacking — same session from different IPs
+      index=okta eventType="user.session.start"
+      | stats dc(client.ipAddress) as unique_ips, values(client.ipAddress) as ips by authenticationContext.externalSessionId
+      | where unique_ips > 1'
+    relatedIds:
+    - okta-001
+    - okta-002
+  tags:
+  - session
+  - token-theft
+  - session-binding
+  - timeout
+  commandLanguage: okta-admin
+  commandFull: '# Configure via API:
+    # PUT /api/v1/policies/{globalSessionPolicyId}
+    # Set maxSessionLifetimeMinutes, maxSessionIdleMinutes
+    # Enable usePersistentCookie: false
+    # Enable session binding to IP'
+- id: okta-005
+  platform: okta
+  category: identity
+  severity: high
+  title: Configure Okta System Log forwarding to SIEM
+  description: Forward all Okta System Log events to your SIEM for correlation with endpoint and network data. Okta logs are the authoritative source for identity-based attack detection.
+  reference: Okta Log Streaming Documentation
+  command: '# Option A — Okta Log Streaming (real-time):
+    # Admin > Reports > Log Streaming > Create > Splunk Cloud or AWS EventBridge
+    #
+    # Option B — API polling:
+    # GET /api/v1/logs?since=2024-01-01T00:00:00Z&limit=1000
+    # Poll every 30-60 seconds
+    #
+    # Option C — Splunk Add-on for Okta:
+    # Install from Splunkbase, configure API token'
+  premium:
+    attackPerspective: Okta is the front door to every SaaS application via SSO. Monitoring Okta logs is equivalent to monitoring the main gate. Without SIEM integration, you are blind to MFA bypass, session hijacking, admin abuse, and lateral movement to downstream applications. In most cloud-native breaches, Okta System Log is the ONLY place the attack is visible.
+    implementationNotes: '1. Use Okta Log Streaming (push) for real-time — lower latency than API polling
+      2. If using API polling, set interval to 30 seconds for critical events
+      3. Ensure SIEM parses: actor, target, outcome, client.ipAddress, client.userAgent
+      4. Create correlation rules with endpoint and network data
+      5. Monitor API token health — expired tokens = blind spot'
+    validationNotes: '# Verify logs are arriving in SIEM:
+      # Splunk: index=okta | stats count by eventType | sort -count | head 20
+      #
+      # KQL: OktaSSO | summarize count() by eventType_s | top 20
+      #
+      # Check for gaps: compare Okta System Log event count vs SIEM count'
+    tuningNotes: Okta generates high-volume events for app launches and page views. Filter to security-relevant events in SIEM to reduce storage costs while keeping full fidelity for forensics.
+    advancedDetection: '# Critical Okta events to alert on:
+      # user.session.impersonation.initiate — admin impersonating user
+      # user.account.privilege.grant — role escalation
+      # policy.lifecycle.update — MFA policy change
+      # application.lifecycle.create — new SSO app added
+      # user.mfa.factor.deactivate — MFA removed from user'
+    relatedIds:
+    - okta-003
+    - okta-004
+  tags:
+  - siem
+  - logging
+  - system-log
+  - monitoring
+  commandLanguage: okta-admin
+  commandFull: '# Create API token for SIEM:
+    # Admin > Security > API > Tokens > Create Token
+    # Name: "SIEM-Integration"
+    # Scope: Read-only
+    # Store token securely — it is shown only once
+
+    # Splunk Add-on config:
+    # URL: https://<your-org>.okta.com
+    # Token: <api-token>
+    # Interval: 30 seconds'
+- id: okta-006
+  platform: okta
+  category: identity
+  severity: high
+  title: Restrict API token permissions and rotate tokens quarterly
+  description: Okta API tokens inherit the full permissions of the creating admin. Use service accounts with scoped admin roles for API integrations. Rotate tokens every 90 days.
+  reference: Okta API Security Best Practices
+  command: '# Okta Admin Console:
+    # 1. Create dedicated service account: api-svc@yourdomain.com
+    # 2. Assign minimal role (e.g., Read-Only Admin for SIEM)
+    # 3. Security > API > Tokens — create token as this service account
+    # 4. Set calendar reminder to rotate every 90 days
+    #
+    # List existing tokens:
+    # GET /api/v1/api-tokens'
+  premium:
+    attackPerspective: Leaked or over-privileged API tokens are a common attack vector. If a Super Admin token is compromised, the attacker has full control equivalent to the admin console. In multiple Okta-related breaches, API tokens stored in code repos or CI/CD configs were the initial compromise vector. Scoped tokens limit blast radius.
+    implementationNotes: '1. Create service accounts specifically for API integrations
+      2. Assign the minimum required role (Read-Only for monitoring, App Admin for provisioning)
+      3. Never use Super Admin tokens in automation
+      4. Store tokens in secret managers (Vault, AWS Secrets Manager) — never in code
+      5. Set 90-day rotation schedule with automated alerts
+      6. Enable API token usage alerts in System Log'
+    validationNotes: '# List all API tokens:
+      # Admin > Security > API > Tokens
+      # Review: creating user, creation date, last used
+      #
+      # API: GET /api/v1/api-tokens
+      # Check for tokens older than 90 days or created by Super Admins'
+    tuningNotes: OAuth 2.0 and OIDC integrations are preferred over static API tokens. Migrate to OAuth where possible — tokens have automatic expiry and scoped permissions.
+    advancedDetection: '# Detect API token misuse
+      index=okta eventType="system.api_token.*"
+      | stats count by eventType, actor.alternateId, client.ipAddress
+      | sort -count'
+    relatedIds:
+    - okta-002
+    - okta-005
+  tags:
+  - api
+  - tokens
+  - rotation
+  - service-accounts
+  commandLanguage: okta-admin
+  commandFull: '# Create scoped service account:
+    # POST /api/v1/users (create service user)
+    # POST /api/v1/users/{id}/roles (assign Read-Only Admin)
+    # Sign in as service user > Security > API > Create Token'
+- id: okta-007
+  platform: okta
+  category: identity
+  severity: high
+  title: Configure password policy with breach detection
+  description: Enable Okta password policy with common password rejection, breach detection (checks against known leaked credentials), and minimum 12-character requirement.
+  reference: Okta Password Policy Best Practices
+  command: '# Okta Admin Console: Security > Authentication > Password
+    # Minimum length: 12
+    # Complexity: require uppercase, lowercase, number, symbol
+    # Common password check: Enabled
+    # Breached password detection: Enabled
+    # Lockout: 5 failures = 15 min lockout
+    # Max age: 0 (no expiry — per NIST 800-63B)
+    # History: 12 previous passwords'
+  premium:
+    attackPerspective: NIST 800-63B recommends against forced password rotation (it leads to weaker passwords) and instead recommends checking passwords against breach databases. Okta breached password detection compares user passwords against known compromised credential lists in real-time. This catches password reuse — the #1 cause of account compromises.
+    implementationNotes: '1. Set minimum 12 characters (NIST recommends 8 minimum, but 12 is practical)
+      2. Enable breached password detection — flags passwords found in known breaches
+      3. Disable forced rotation — per NIST 800-63B guidance
+      4. Enable common password dictionary check
+      5. Set lockout after 5 failures for 15 minutes
+      6. Preserve 12 password history to prevent cycling'
+    validationNotes: '# Verify password policy:
+      # Admin > Security > Authentication > Password tab
+      # Verify: breached password detection is ON
+      #
+      # Test: try setting password to "Password123!" — should be rejected as common
+      #
+      # API: GET /api/v1/policies?type=PASSWORD'
+    tuningNotes: If enabling breached password detection on an existing tenant, use "warning" mode first — hundreds of users may have compromised passwords. Notify users before enforcing to avoid mass lockout.
+    advancedDetection: '# Detect accounts with breached passwords
+      index=okta eventType="user.account.update_password" reason="COMPROMISED_PASSWORD"
+      | stats count by actor.alternateId'
+    relatedIds:
+    - okta-001
+    - okta-003
+  tags:
+  - password
+  - breach-detection
+  - nist
+  - credential-stuffing
+  commandLanguage: okta-admin
+  commandFull: '# Configure via API:
+    # PUT /api/v1/policies/{passwordPolicyId}
+    # settings.password.complexity.minLength: 12
+    # settings.password.age.maxAgeDays: 0
+    # settings.password.lockout.maxAttempts: 5
+    # settings.password.lockout.autoUnlockMinutes: 15'
+- id: okta-008
+  platform: okta
+  category: identity
+  severity: high
+  title: Enable Okta FastPass with device trust for zero-trust access
+  description: Deploy Okta Verify with FastPass for passwordless authentication bound to managed devices. Combined with device trust, only compliant corporate devices can access applications.
+  reference: Okta FastPass and Device Trust Documentation
+  command: '# Okta Admin Console:
+    # 1. Security > Authenticators > Okta Verify > Settings
+    #    Enable: Okta FastPass
+    #    Enable: User verification with biometrics
+    # 2. Security > Device Trust > Enable for Windows/macOS
+    # 3. Security > Authentication Policies > Create policy
+    #    Condition: Device Trust = Trusted
+    #    Action: Allow with FastPass (passwordless)
+    # 4. Deploy Okta Verify to endpoints via MDM'
+  premium:
+    attackPerspective: Device trust ensures that even with valid credentials and MFA, access is denied from unmanaged devices. This stops attackers who compromise credentials from using personal devices or VMs to access corporate applications. FastPass provides phishing-resistant authentication without hardware keys — the private key is bound to the device TPM and never leaves it.
+    implementationNotes: '1. Deploy Okta Verify app to all managed devices via MDM (Intune, Jamf)
+      2. Configure device trust integration with your MDM platform
+      3. Enable FastPass with biometric verification (Touch ID, Windows Hello)
+      4. Create authentication policy: Trusted device + FastPass = passwordless
+      5. Untrusted device = require FIDO2 hardware key + password
+      6. Test with pilot group before org-wide deployment'
+    validationNotes: '# Verify device trust is enabled:
+      # Admin > Security > Device Trust — status should be Active
+      #
+      # Check device enrollment:
+      # Admin > Directory > Devices — review managed vs unmanaged
+      #
+      # Test: sign in from managed device — should get FastPass prompt
+      # Test: sign in from unmanaged device — should require FIDO2'
+    tuningNotes: Device trust requires MDM integration (Intune, Jamf, or WS1). Plan 2-4 weeks for MDM certificate deployment before enforcing device trust policies.
+    advancedDetection: '# Detect access from untrusted devices
+      index=okta eventType="policy.evaluate_sign_on"
+      | where "device.managed"="false"
+      | stats count by actor.alternateId, client.device'
+    relatedIds:
+    - okta-001
+    - okta-004
+  tags:
+  - fastpass
+  - device-trust
+  - zero-trust
+  - passwordless
+  commandLanguage: okta-admin
+  commandFull: '# Enable FastPass:
+    # Admin > Security > Authenticators > Okta Verify
+    # Enable FastPass, require biometrics
+
+    # Enable Device Trust:
+    # Admin > Security > Device Trust > Add platform
+    # Configure MDM integration certificate
+
+    # Create Zero Trust policy:
+    # Only allow access if device is managed + user has FastPass'
+- id: okta-009
+  platform: okta
+  category: identity
+  severity: high
+  title: Monitor and restrict Okta network zones
+  description: Define network zones for corporate IPs, VPNs, and known locations. Apply stricter authentication requirements when users sign in from unknown or blocked zones.
+  reference: Okta Network Zones Documentation
+  command: '# Okta Admin Console: Security > Networks
+    # 1. Create zone: "Corporate" — add all office/VPN egress IPs
+    # 2. Create zone: "Blocked Countries" — add embargoed/untrusted geos
+    # 3. Security > Authentication Policies:
+    #    Corporate zone: MFA optional (if device trusted)
+    #    Unknown zone: Require MFA every sign-in
+    #    Blocked zone: Deny access'
+  premium:
+    attackPerspective: Network zones are the first layer of zero-trust context. Attackers operating from foreign VPNs, Tor exit nodes, or hosting providers trigger "unknown zone" policies. In the Scattered Spider attacks on Okta customers, the initial access came from residential proxy IPs that would have been flagged by proper zone configuration.
+    implementationNotes: '1. Define corporate zone with all known egress IPs
+      2. Define blocked zone for countries where you have no operations
+      3. Create authentication policies per zone:
+         - Corporate: standard MFA
+         - Unknown: aggressive MFA + step-up
+         - Blocked: deny
+      4. Add Tor exit nodes and anonymous proxy lists to blocked zone
+      5. Review zone definitions quarterly as network changes'
+    validationNotes: '# Verify zones:
+      # Admin > Security > Networks — list all zones
+      # Check: corporate IPs are correctly listed
+      #
+      # Test: connect from VPN (corporate zone) — standard auth
+      # Test: connect from mobile (unknown zone) — should require MFA'
+    tuningNotes: Remote workers on home ISPs will be in the "unknown" zone by default. Use device trust + Okta FastPass to provide a good experience while maintaining security for remote workers.
+    advancedDetection: '# Detect logins from blocked or suspicious zones
+      index=okta eventType="user.session.start"
+      | where client.geographicalContext.country NOT IN ("US","IL","GB","DE")
+      | stats count by actor.alternateId, client.geographicalContext.country, client.ipAddress'
+    relatedIds:
+    - okta-003
+    - okta-004
+  tags:
+  - network-zones
+  - geo-restriction
+  - zero-trust
+  - location
+  commandLanguage: okta-admin
+  commandFull: '# Create zones via API:
+    # POST /api/v1/zones
+    # Body: {"type":"IP","name":"Corporate","gateways":[{"type":"CIDR","value":"203.0.113.0/24"}]}
+
+    # Create blocked zone:
+    # POST /api/v1/zones
+    # Body: {"type":"IP","name":"Blocked","proxies":[...],"usage":"BLOCKLIST"}'
+- id: okta-010
+  platform: okta
+  category: identity
+  severity: high
+  title: Enable Okta Identity Governance for lifecycle management
+  description: Automate user provisioning, access reviews, and deprovisioning. Orphaned accounts (active Okta accounts for terminated employees) are a critical risk.
+  reference: Okta Identity Governance Best Practices
+  command: '# Okta Admin Console:
+    # 1. Directory > Profile Sources — configure HR system as source of truth
+    # 2. Lifecycle Management > Deactivation:
+    #    When user is deactivated in HR > deactivate in Okta > deprovision all apps
+    # 3. Identity Governance > Access Certifications:
+    #    Schedule quarterly access reviews for all privileged apps
+    # 4. Identity Governance > Access Requests:
+    #    Require manager approval for sensitive app access'
+  premium:
+    attackPerspective: Orphaned accounts are attacker gold. A terminated employee account that remains active in Okta gives full SSO access to every assigned application. In insider threat cases, departing employees have used still-active Okta accounts to exfiltrate data weeks after termination. Automated deprovisioning ensures accounts are disabled within minutes of HR action.
+    implementationNotes: '1. Integrate Okta with HR system (Workday, BambooHR, etc.) as profile source
+      2. Configure automated deactivation: HR termination triggers Okta deactivation within 1 hour
+      3. Set up deprovisioning: Okta deactivation triggers app-level deprovisioning (remove Google, Slack, GitHub access)
+      4. Schedule quarterly access reviews for privileged applications
+      5. Enable access request workflows with manager approval for sensitive apps'
+    validationNotes: '# Verify lifecycle rules:
+      # Admin > Directory > Profile Sources — HR system should be primary
+      #
+      # Test: deactivate test user in HR system
+      # Verify: Okta account deactivated within SLA
+      # Verify: downstream app access revoked
+      #
+      # Audit: Admin > Reports > Deprovisioned Users — check for gaps'
+    tuningNotes: Some shared/service accounts should not be tied to HR lifecycle. Create a separate group for service accounts with manual lifecycle management and dedicated owners.
+    advancedDetection: '# Detect orphaned accounts (active in Okta, terminated in HR)
+      index=okta eventType="user.lifecycle.*"
+      | stats latest(eventType) as last_event by target.alternateId
+      | where last_event != "user.lifecycle.deactivate"
+
+      # Cross-reference with HR system termination list'
+    relatedIds:
+    - okta-002
+    - okta-006
+  tags:
+  - lifecycle
+  - deprovisioning
+  - access-reviews
+  - orphaned-accounts
+  commandLanguage: okta-admin
+  commandFull: '# Configure HR-driven lifecycle:
+    # Admin > Directory > Profile Sources > Add > Workday/BambooHR
+    # Map attributes: status, department, manager
+    # Set deactivation action: Deactivate user + deprovision apps
+
+    # Set up access certification:
+    # Admin > Identity Governance > Access Certifications
+    # Create campaign: quarterly review of all admin-level app assignments'
+
+# ═══════════════════════════════════════════════════════════════
+#  Kubernetes (K8s)
+# ═══════════════════════════════════════════════════════════════
+- id: k8s-001
+  platform: k8s
+  category: container
+  severity: critical
+  title: Enforce Pod Security Standards — Restricted profile
+  description: Apply Kubernetes Pod Security Standards at the namespace level using the "restricted" profile. This prevents privileged containers, host namespace sharing, and root execution.
+  reference: Kubernetes Pod Security Standards — https://kubernetes.io/docs/concepts/security/pod-security-standards/
+  command: |
+    # Label namespace to enforce restricted security profile:
+    kubectl label namespace production \
+      pod-security.kubernetes.io/enforce=restricted \
+      pod-security.kubernetes.io/warn=restricted \
+      pod-security.kubernetes.io/audit=restricted
+
+    # Verify:
+    kubectl get namespace production -o jsonpath='{.metadata.labels}' | jq .
+  premium:
+    attackPerspective: A compromised pod running as root with privileged access can escape to the node. From there, the attacker accesses the kubelet credentials, pivots to the API server, and owns the entire cluster. The "restricted" Pod Security Standard blocks this chain at step one — no privileged containers, no host PID/network, no root execution. Team TNT, Hildegard, and other crypto-mining campaigns specifically exploit unrestricted pod configurations.
+    implementationNotes: '1. Start with "warn" and "audit" modes to identify non-compliant workloads
+      2. Fix violations: set securityContext.runAsNonRoot, drop capabilities, set readOnlyRootFilesystem
+      3. Move to "enforce" mode per namespace (start with production, then staging)
+      4. System namespaces (kube-system) may need "baseline" instead of "restricted"
+      5. Use OPA Gatekeeper or Kyverno for custom policies beyond Pod Security Standards'
+    validationNotes: |
+      # Check namespace labels:
+      kubectl get namespaces -l pod-security.kubernetes.io/enforce=restricted
+
+      # Try deploying a privileged pod (should be rejected):
+      kubectl run test-priv --image=busybox --restart=Never \
+        --overrides='{"spec":{"containers":[{"name":"test","image":"busybox","securityContext":{"privileged":true}}]}}'
+      # Expected: "Error: pods "test-priv" is forbidden"
+
+      # Audit violations:
+      kubectl get events --field-selector reason=FailedCreate -A | grep -i security
+    tuningNotes: Some workloads (CNI plugins, monitoring agents, log collectors) legitimately need elevated privileges. Isolate these in dedicated namespaces with "baseline" or "privileged" profiles and strict RBAC controls on who can deploy to those namespaces.
+    advancedDetection: |
+      # Detect privileged pod creation attempts
+      # Falco rule:
+      - rule: Launch Privileged Container
+        desc: Detect privileged container launch
+        condition: container.privileged=true
+        output: "Privileged container started (user=%user.name pod=%k8s.pod.name image=%container.image.repository)"
+        priority: CRITICAL
+
+      # Splunk (via Kubernetes audit logs):
+      index=k8s sourcetype="kube:apiserver-audit" verb="create" objectRef.resource="pods"
+      | spath "requestObject.spec.containers{}.securityContext.privileged"
+      | where privileged="true"
+    relatedIds:
+    - k8s-002
+    - k8s-004
+  tags:
+  - pod-security
+  - restricted
+  - containers
+  - privilege-escalation
+  commandLanguage: bash
+  commandFull: |
+    # Step 1: Audit current state
+    for ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}'); do
+      echo "=== $ns ==="
+      kubectl get pods -n "$ns" -o json | jq -r '.items[] | .spec.containers[] | select(.securityContext.privileged==true) | .name'
+    done
+
+    # Step 2: Apply restricted profile (warn first)
+    kubectl label namespace production \
+      pod-security.kubernetes.io/warn=restricted \
+      pod-security.kubernetes.io/audit=restricted --overwrite
+
+    # Step 3: After fixing violations, enforce
+    kubectl label namespace production \
+      pod-security.kubernetes.io/enforce=restricted --overwrite
+- id: k8s-002
+  platform: k8s
+  category: container
+  severity: critical
+  title: Implement RBAC least privilege — no cluster-admin for workloads
+  description: Audit and restrict Kubernetes RBAC bindings. Remove unnecessary cluster-admin bindings, use namespace-scoped Roles instead of ClusterRoles, and bind to specific ServiceAccounts.
+  reference: Kubernetes RBAC Best Practices — https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+  command: |
+    # Find all cluster-admin bindings:
+    kubectl get clusterrolebindings -o json | jq -r '.items[] | select(.roleRef.name=="cluster-admin") | .metadata.name + " -> " + (.subjects[]? | .kind + "/" + .name)'
+
+    # Find all pods using default service account:
+    kubectl get pods -A -o json | jq -r '.items[] | select(.spec.serviceAccountName=="default" or .spec.serviceAccountName==null) | .metadata.namespace + "/" + .metadata.name'
+
+    # Create scoped role:
+    kubectl create role app-reader --verb=get,list,watch --resource=pods,services -n production
+    kubectl create rolebinding app-reader-binding --role=app-reader --serviceaccount=production:myapp-sa -n production
+  premium:
+    attackPerspective: Overly permissive RBAC is the Kubernetes equivalent of giving every user admin access. Attackers who compromise a pod with cluster-admin ServiceAccount token can create new pods, read secrets across all namespaces, and deploy cryptominers. In real-world attacks (TeamTNT, Siloscape), the first step after pod compromise is checking ServiceAccount permissions — if cluster-admin, it is game over in minutes.
+    implementationNotes: '1. Audit all ClusterRoleBindings to cluster-admin — should be <5
+      2. Replace ClusterRoles with namespace-scoped Roles where possible
+      3. Create dedicated ServiceAccounts per workload — never use "default"
+      4. Set automountServiceAccountToken: false for pods that do not need API access
+      5. Use kubectl-who-can to audit privilege paths
+      6. Implement just-in-time escalation for developers who need debug access'
+    validationNotes: |
+      # Count cluster-admin bindings (target: ≤5):
+      kubectl get clusterrolebindings -o json | jq '[.items[] | select(.roleRef.name=="cluster-admin")] | length'
+
+      # Check for default SA usage:
+      kubectl get pods -A -o json | jq -r '[.items[] | select(.spec.serviceAccountName=="default")] | length'
+
+      # Verify automountServiceAccountToken:
+      kubectl get pods -A -o json | jq -r '.items[] | select(.spec.automountServiceAccountToken!=false and .spec.serviceAccountName!="default") | .metadata.namespace + "/" + .metadata.name'
+    tuningNotes: Some controllers (cert-manager, ingress-nginx) need cluster-wide permissions. Scope these to the minimum required resources using custom ClusterRoles instead of cluster-admin.
+    advancedDetection: |
+      # Detect RBAC escalation attempts
+      # Kubernetes audit log:
+      index=k8s sourcetype="kube:apiserver-audit" verb="create" objectRef.resource="clusterrolebindings"
+      | spath "requestObject.roleRef.name"
+      | where 'requestObject.roleRef.name'="cluster-admin"
+
+      # Falco: detect secret access from unexpected pods
+      - rule: K8s Secret Accessed
+        desc: Detect pods reading Kubernetes secrets
+        condition: ka.verb="get" and ka.target.resource="secrets" and not ka.target.namespace="kube-system"
+        output: "Secret accessed (user=%ka.user.name secret=%ka.target.name ns=%ka.target.namespace)"
+        priority: WARNING
+    relatedIds:
+    - k8s-001
+    - k8s-005
+  tags:
+  - rbac
+  - least-privilege
+  - service-accounts
+  - cluster-admin
+  commandLanguage: bash
+  commandFull: |
+    # Step 1: Audit cluster-admin bindings
+    kubectl get clusterrolebindings -o json | jq -r '
+      .items[] | select(.roleRef.name=="cluster-admin") |
+      "\(.metadata.name) bound to: \(.subjects[]? | "\(.kind)/\(.name)")"'
+
+    # Step 2: Create scoped role
+    kubectl create role pod-reader --verb=get,list,watch --resource=pods -n production
+
+    # Step 3: Bind to dedicated SA
+    kubectl create serviceaccount myapp-sa -n production
+    kubectl create rolebinding myapp-reader --role=pod-reader --serviceaccount=production:myapp-sa -n production
+
+    # Step 4: Disable auto-mount on pods that don't need API access
+    # In pod spec: automountServiceAccountToken: false
+- id: k8s-003
+  platform: k8s
+  category: container
+  severity: critical
+  title: Encrypt etcd data at rest and restrict etcd access
+  description: Enable encryption at rest for Kubernetes Secrets stored in etcd. By default, Secrets are stored in plaintext in etcd — anyone with etcd access reads all secrets.
+  reference: Kubernetes Encryption at Rest — https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/
+  command: |
+    # Create encryption config:
+    cat > /etc/kubernetes/encryption-config.yaml << 'EOF'
+    apiVersion: apiserver.config.k8s.io/v1
+    kind: EncryptionConfiguration
+    resources:
+      - resources:
+          - secrets
+        providers:
+          - aescbc:
+              keys:
+                - name: key1
+                  secret: <base64-encoded-32-byte-key>
+          - identity: {}
+    EOF
+
+    # Add to API server config:
+    # --encryption-provider-config=/etc/kubernetes/encryption-config.yaml
+
+    # Re-encrypt existing secrets:
+    kubectl get secrets --all-namespaces -o json | kubectl replace -f -
+  premium:
+    attackPerspective: etcd contains every Kubernetes Secret — database passwords, API keys, TLS certificates, service account tokens. Without encryption at rest, anyone with disk access to the etcd data directory reads all secrets in plaintext. Backup tapes, disk snapshots, and decommissioned nodes all become leakage vectors. In cloud provider breaches, etcd data on underlying storage has been a target.
+    implementationNotes: '1. Generate a strong 32-byte encryption key: head -c 32 /dev/urandom | base64
+      2. Create EncryptionConfiguration with aescbc or aesgcm provider
+      3. Update kube-apiserver with --encryption-provider-config flag
+      4. Re-encrypt all existing secrets: kubectl get secrets -A -o json | kubectl replace -f -
+      5. For managed K8s (EKS/GKE/AKS): enable "envelope encryption" with KMS
+      6. Rotate encryption keys annually'
+    validationNotes: |
+      # Verify encryption is active:
+      # Check API server args:
+      kubectl -n kube-system get pod kube-apiserver-* -o jsonpath='{.spec.containers[0].command}' | tr ',' '\n' | grep encryption
+
+      # Verify a secret is encrypted in etcd (requires etcdctl access):
+      ETCDCTL_API=3 etcdctl get /registry/secrets/default/my-secret | hexdump -C
+      # Should show encrypted bytes, NOT plaintext
+
+      # For managed K8s:
+      # EKS: aws eks describe-cluster --name my-cluster | jq .cluster.encryptionConfig
+      # GKE: gcloud container clusters describe my-cluster | grep -A5 databaseEncryption
+    tuningNotes: Use KMS envelope encryption in production — the API server encrypts with a DEK, which is encrypted by the KMS KEK. This allows key rotation without re-encrypting etcd.
+    advancedDetection: |
+      # Detect direct etcd access (bypass API server)
+      # Falco:
+      - rule: Direct etcd Access
+        desc: Detect processes accessing etcd data directory directly
+        condition: fd.name startswith "/var/lib/etcd" and not proc.name in (etcd)
+        output: "Direct etcd access (user=%user.name process=%proc.name file=%fd.name)"
+        priority: CRITICAL
+    relatedIds:
+    - k8s-002
+    - k8s-005
+  tags:
+  - etcd
+  - encryption
+  - secrets
+  - data-at-rest
+  commandLanguage: bash
+  commandFull: |
+    # Generate encryption key:
+    ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
+
+    # Create config:
+    cat > /etc/kubernetes/encryption-config.yaml << EOF
+    apiVersion: apiserver.config.k8s.io/v1
+    kind: EncryptionConfiguration
+    resources:
+      - resources:
+          - secrets
+        providers:
+          - aescbc:
+              keys:
+                - name: key1
+                  secret: ${ENCRYPTION_KEY}
+          - identity: {}
+    EOF
+
+    # Restart API server with the new config
+    # Re-encrypt existing secrets:
+    kubectl get secrets --all-namespaces -o json | kubectl replace -f -
+- id: k8s-004
+  platform: k8s
+  category: container
+  severity: critical
+  title: Enforce NetworkPolicies — default deny all ingress and egress
+  description: Apply default-deny NetworkPolicies to all namespaces. Without NetworkPolicies, any pod can communicate with any other pod in the cluster — flat network is an attacker's dream.
+  reference: Kubernetes Network Policies — https://kubernetes.io/docs/concepts/services-networking/network-policies/
+  command: |
+    # Default deny all ingress and egress for a namespace:
+    cat << 'EOF' | kubectl apply -f -
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: default-deny-all
+      namespace: production
+    spec:
+      podSelector: {}
+      policyTypes:
+      - Ingress
+      - Egress
+    EOF
+
+    # Allow specific traffic (example: frontend -> backend on port 8080):
+    cat << 'EOF' | kubectl apply -f -
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-frontend-to-backend
+      namespace: production
+    spec:
+      podSelector:
+        matchLabels:
+          app: backend
+      ingress:
+      - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+        ports:
+        - protocol: TCP
+          port: 8080
+    EOF
+  premium:
+    attackPerspective: Without NetworkPolicies, Kubernetes has a completely flat network — every pod can reach every other pod on any port. After compromising a single pod, the attacker runs nmap/masscan to discover databases, cache servers, and internal APIs that are never meant to be exposed. Lateral movement in Kubernetes without NetworkPolicies takes seconds, not hours. This is how cryptomining campaigns spread across entire clusters.
+    implementationNotes: '1. Install a CNI that supports NetworkPolicies (Calico, Cilium, Weave Net)
+      2. Apply default-deny-all to every namespace (use a mutating webhook or policy tool)
+      3. Create explicit allow policies for each legitimate traffic flow
+      4. Allow DNS egress to kube-dns for all pods (port 53 UDP/TCP)
+      5. Test with network policy visualization tools (Cilium Hubble, Calico Enterprise)
+      6. Monitor for denied traffic to discover missing allow rules'
+    validationNotes: |
+      # Check CNI supports NetworkPolicies:
+      kubectl get pods -n kube-system | grep -E "calico|cilium|weave"
+
+      # Verify default deny exists in all namespaces:
+      for ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}'); do
+        echo "=== $ns ==="
+        kubectl get networkpolicies -n "$ns" -o name | grep -c default-deny
+      done
+
+      # Test: try to curl between pods that should be blocked
+      kubectl exec -n production pod/frontend -- curl -s --connect-timeout 3 http://database:5432
+      # Should timeout/fail if NetworkPolicy is working
+    tuningNotes: Start with ingress-only deny and add egress-deny later. Egress deny breaks DNS resolution unless you explicitly allow kube-dns. Always include a DNS allow rule in your base policies.
+    advancedDetection: |
+      # Cilium Hubble — monitor dropped network flows:
+      hubble observe --verdict DROPPED --namespace production
+
+      # Calico — flow logs for denied connections:
+      # calicoctl get flowlogs | grep -i denied
+    relatedIds:
+    - k8s-001
+    - k8s-006
+  tags:
+  - network-policy
+  - microsegmentation
+  - lateral-movement
+  - default-deny
+  commandLanguage: bash
+  commandFull: |
+    # Apply default deny to all non-system namespaces:
+    for ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep -v kube-); do
+      kubectl apply -n "$ns" -f - << 'POLICY'
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: default-deny-all
+    spec:
+      podSelector: {}
+      policyTypes:
+      - Ingress
+      - Egress
+    POLICY
+      echo "Applied default-deny to $ns"
+    done
+
+    # Allow DNS for all pods:
+    kubectl apply -f - << 'DNS'
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-dns
+      namespace: production
+    spec:
+      podSelector: {}
+      egress:
+      - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+        ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+      policyTypes:
+      - Egress
+    DNS
+- id: k8s-005
+  platform: k8s
+  category: container
+  severity: critical
+  title: Enable Kubernetes API server audit logging
+  description: Configure the Kubernetes API server audit policy to log all authentication, authorization, and resource modification events. Audit logs are the ONLY source of truth for API-level forensics.
+  reference: Kubernetes Auditing — https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/
+  command: |
+    # Create audit policy:
+    cat > /etc/kubernetes/audit-policy.yaml << 'EOF'
+    apiVersion: audit.k8s.io/v1
+    kind: Policy
+    rules:
+      - level: Metadata
+        resources:
+        - group: ""
+          resources: ["secrets", "configmaps"]
+      - level: RequestResponse
+        resources:
+        - group: ""
+          resources: ["pods", "services"]
+        - group: "apps"
+          resources: ["deployments", "statefulsets"]
+        - group: "rbac.authorization.k8s.io"
+          resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
+      - level: Metadata
+        stages:
+        - ResponseComplete
+    EOF
+
+    # Add to kube-apiserver:
+    # --audit-policy-file=/etc/kubernetes/audit-policy.yaml
+    # --audit-log-path=/var/log/kubernetes/audit.log
+    # --audit-log-maxage=30
+    # --audit-log-maxbackup=10
+    # --audit-log-maxsize=100
+  premium:
+    attackPerspective: Without audit logs, you are blind to API server activity. An attacker creating backdoor RBAC bindings, reading secrets, or modifying deployments leaves NO trace without audit logging. In post-incident investigations, Kubernetes audit logs are the primary evidence source — they capture who did what, when, from which IP, and with which credentials. Multiple real-world K8s breaches could not be fully investigated because audit logging was not enabled.
+    implementationNotes: '1. Create audit policy with appropriate verbosity levels:
+         - Metadata: for secrets/configmaps (do not log secret values!)
+         - RequestResponse: for RBAC changes and deployment modifications
+         - None: for health checks and other noise
+      2. Forward audit logs to SIEM via fluentd/filebeat sidecar
+      3. Set retention: 30 days on disk, 1 year in SIEM
+      4. For managed K8s:
+         - EKS: enable audit logging in cluster config
+         - GKE: enabled by default, forward to Cloud Logging
+         - AKS: enable diagnostic settings for kube-audit'
+    validationNotes: |
+      # Verify audit logging is active:
+      kubectl -n kube-system get pod kube-apiserver-* -o yaml | grep -A3 audit
+
+      # Check audit log exists:
+      ls -la /var/log/kubernetes/audit.log
+
+      # For EKS:
+      aws eks describe-cluster --name my-cluster | jq '.cluster.logging.clusterLogging[] | select(.types[] | contains("audit"))'
+
+      # Test: create a dummy configmap and check audit log
+      kubectl create configmap audit-test --from-literal=test=true
+      tail -5 /var/log/kubernetes/audit.log | jq .
+    tuningNotes: Never log at RequestResponse level for secrets — this writes secret values to the audit log. Use Metadata level for secrets. Exclude high-frequency read-only events (watch, list on events) to reduce log volume.
+    advancedDetection: |
+      # Detect suspicious API server activity
+      # Splunk:
+      index=k8s sourcetype="kube:apiserver-audit"
+      | spath verb | spath "objectRef.resource"
+      | search verb IN ("create","patch","delete") AND objectRef.resource IN ("secrets","clusterrolebindings","serviceaccounts")
+      | stats count by user.username, verb, objectRef.resource, sourceIPs{}
+      | sort -count
+    relatedIds:
+    - k8s-002
+    - k8s-003
+  tags:
+  - audit
+  - logging
+  - api-server
+  - forensics
+  commandLanguage: bash
+  commandFull: |
+    # Create audit policy file
+    cat > /etc/kubernetes/audit-policy.yaml << 'EOF'
+    apiVersion: audit.k8s.io/v1
+    kind: Policy
+    rules:
+      # Don't log secret values, only metadata
+      - level: Metadata
+        resources:
+        - group: ""
+          resources: ["secrets"]
+      # Log RBAC changes in full
+      - level: RequestResponse
+        resources:
+        - group: "rbac.authorization.k8s.io"
+          resources: ["*"]
+      # Log workload changes
+      - level: RequestResponse
+        resources:
+        - group: "apps"
+          resources: ["deployments","daemonsets","statefulsets"]
+      # Log pod operations
+      - level: Request
+        resources:
+        - group: ""
+          resources: ["pods","pods/exec","pods/portforward"]
+      # Metadata for everything else
+      - level: Metadata
+    EOF
+
+    # Update API server manifests and restart
+- id: k8s-006
+  platform: k8s
+  category: container
+  severity: high
+  title: Scan container images and enforce trusted registries
+  description: Require all container images to come from trusted registries and pass vulnerability scanning before deployment. Block images from public registries like Docker Hub in production.
+  reference: Kubernetes Admission Controllers — Image Policy
+  command: |
+    # OPA Gatekeeper constraint to block public images:
+    cat << 'EOF' | kubectl apply -f -
+    apiVersion: constraints.gatekeeper.sh/v1beta1
+    kind: K8sAllowedRepos
+    metadata:
+      name: require-trusted-registry
+    spec:
+      match:
+        kinds:
+        - apiGroups: [""]
+          kinds: ["Pod"]
+        namespaces: ["production","staging"]
+      parameters:
+        repos:
+        - "myregistry.azurecr.io/"
+        - "gcr.io/my-project/"
+    EOF
+
+    # Scan images with Trivy:
+    trivy image --severity HIGH,CRITICAL myregistry.azurecr.io/myapp:latest
+  premium:
+    attackPerspective: Supply-chain attacks through poisoned container images are one of the top Kubernetes attack vectors. Attackers publish malicious images with cryptominers or backdoors on Docker Hub with names similar to popular images (typosquatting). Without registry restrictions, developers can accidentally or intentionally deploy any image from anywhere. The codecov supply chain attack and several npm/PyPI compromises demonstrate that even legitimate registries can serve compromised artifacts.
+    implementationNotes: '1. Set up private container registry (ACR, ECR, GCR, or Harbor)
+      2. Mirror required public images to your private registry
+      3. Install OPA Gatekeeper or Kyverno admission controller
+      4. Create policy: only allow images from your private registry
+      5. Integrate Trivy/Snyk/Aqua scanning in CI/CD pipeline
+      6. Block images with CRITICAL vulnerabilities from deploying
+      7. Re-scan running images weekly for new CVEs'
+    validationNotes: |
+      # Check Gatekeeper constraint status:
+      kubectl get constraints k8sallowedrepos -o yaml | grep -A5 totalViolations
+
+      # Try deploying from Docker Hub (should be blocked):
+      kubectl run test --image=nginx --restart=Never -n production
+      # Expected: admission webhook denied
+
+      # Scan current running images:
+      kubectl get pods -A -o jsonpath='{range .items[*]}{.spec.containers[*].image}{"\n"}{end}' | sort -u | while read img; do
+        trivy image --severity CRITICAL "$img" 2>/dev/null
+      done
+    tuningNotes: Allow initContainers from trusted third-party registries (e.g., Istio sidecar) in your policy. Use digest pinning instead of tags to prevent tag mutation attacks.
+    advancedDetection: |
+      # Detect deployment of images from untrusted registries
+      index=k8s sourcetype="kube:apiserver-audit" verb="create" objectRef.resource="pods"
+      | spath "requestObject.spec.containers{}.image"
+      | where NOT match(image, "^myregistry\.azurecr\.io/")
+    relatedIds:
+    - k8s-001
+    - k8s-004
+  tags:
+  - image-scanning
+  - supply-chain
+  - registry
+  - admission-controller
+  commandLanguage: bash
+  commandFull: |
+    # Install Gatekeeper:
+    kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.15/deploy/gatekeeper.yaml
+
+    # Create constraint template for allowed repos
+    # Then apply constraint limiting to your ACR/GCR/ECR
+
+    # Integrate Trivy in CI:
+    # trivy image --exit-code 1 --severity CRITICAL $IMAGE
+- id: k8s-007
+  platform: k8s
+  category: container
+  severity: high
+  title: Implement runtime security monitoring with Falco
+  description: Deploy Falco as a DaemonSet for real-time runtime security monitoring. Falco detects anomalous syscalls, shell spawning in containers, sensitive file access, and network activity that indicates compromise.
+  reference: Falco — https://falco.org/docs/
+  command: |
+    # Install Falco via Helm:
+    helm repo add falcosecurity https://falcosecurity.github.io/charts
+    helm install falco falcosecurity/falco \
+      --namespace falco --create-namespace \
+      --set falcosidekick.enabled=true \
+      --set falcosidekick.config.slack.webhookurl="https://hooks.slack.com/services/XXX"
+
+    # Verify Falco is running:
+    kubectl get pods -n falco
+
+    # Test: spawn a shell in a running container
+    kubectl exec -it deploy/myapp -- /bin/sh
+    # Check Falco logs for "Terminal shell in container" alert
+  premium:
+    attackPerspective: Static security controls (Pod Security Standards, RBAC, NetworkPolicies) prevent known-bad configurations but cannot detect active exploitation of zero-day vulnerabilities or logic bugs. Falco monitors syscalls in real-time and detects the behavioral indicators of compromise — shell spawning, binary downloads, /etc/shadow reads, outbound connections to C2 servers. This is the Kubernetes equivalent of endpoint detection and response (EDR).
+    implementationNotes: '1. Deploy Falco as DaemonSet (runs on every node)
+      2. Use eBPF driver (preferred) or kernel module
+      3. Enable falcosidekick for alert routing (Slack, SIEM, PagerDuty)
+      4. Tune rules: disable noisy rules first, then enable additional detections
+      5. Custom rules for your workload: detect specific file access, exec patterns
+      6. Forward to SIEM for cross-correlation with network and identity data'
+    validationNotes: |
+      # Verify Falco is running on all nodes:
+      kubectl get daemonset -n falco
+
+      # Trigger a test alert:
+      kubectl exec -it deploy/myapp -- cat /etc/shadow
+      # Check Falco log:
+      kubectl logs -n falco -l app.kubernetes.io/name=falco --tail=20
+
+      # Verify falcosidekick is forwarding:
+      kubectl logs -n falco -l app.kubernetes.io/name=falcosidekick --tail=10
+    tuningNotes: Falco default rules generate significant noise in development clusters. Start with CRITICAL and ERROR priority rules only. Add WARNING rules after tuning false positives for 2 weeks.
+    advancedDetection: |
+      # Custom Falco rule: detect kubectl exec into production pods
+      - rule: Kubectl Exec into Production
+        desc: Detect interactive shell via kubectl exec in production namespace
+        condition: >
+          spawned_process and container and k8s.ns.name="production"
+          and proc.name in (bash, sh, zsh, csh)
+          and proc.pname = "runc:[2:INIT]"
+        output: "Shell spawned in production pod (user=%user.name pod=%k8s.pod.name cmd=%proc.cmdline)"
+        priority: CRITICAL
+        tags: [kubectl, exec, production]
+    relatedIds:
+    - k8s-001
+    - k8s-005
+  tags:
+  - falco
+  - runtime-security
+  - ebpf
+  - syscall
+  - edr
+  commandLanguage: bash
+  commandFull: |
+    # Full Falco install with falcosidekick:
+    helm repo add falcosecurity https://falcosecurity.github.io/charts
+    helm install falco falcosecurity/falco \
+      --namespace falco --create-namespace \
+      --set driver.kind=ebpf \
+      --set falcosidekick.enabled=true \
+      --set falcosidekick.config.slack.webhookurl=$SLACK_WEBHOOK
+
+    # Add custom rules:
+    kubectl create configmap falco-custom-rules \
+      --from-file=custom-rules.yaml \
+      -n falco
+- id: k8s-008
+  platform: k8s
+  category: container
+  severity: high
+  title: Secure the kubelet — disable anonymous auth and enforce authn/authz
+  description: Secure the kubelet API on each node. By default, the kubelet API is accessible without authentication, allowing attackers who reach a node to list pods, exec into containers, and read logs.
+  reference: Kubernetes Kubelet Security — https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/
+  command: |
+    # Kubelet config (/var/lib/kubelet/config.yaml):
+    authentication:
+      anonymous:
+        enabled: false
+      webhook:
+        enabled: true
+    authorization:
+      mode: Webhook
+    readOnlyPort: 0
+    protectKernelDefaults: true
+    streamingConnectionIdleTimeout: 5m
+
+    # Verify:
+    curl -k https://NODE-IP:10250/pods
+    # Should return 401 Unauthorized, NOT pod list
+  premium:
+    attackPerspective: The kubelet API (port 10250) is the most dangerous attack surface on Kubernetes nodes. With anonymous access enabled, any pod or network-adjacent attacker can list all pods, read their logs (including secrets logged accidentally), and execute arbitrary commands inside any container on that node. The Tesla cryptojacking incident exploited an unsecured kubelet API. This is consistently in the top 3 Kubernetes attack vectors.
+    implementationNotes: '1. Set anonymous auth to false in kubelet config
+      2. Enable webhook authentication (validates bearer tokens with API server)
+      3. Set authorization mode to Webhook (checks RBAC permissions)
+      4. Disable read-only port (10255) — it bypasses all authentication
+      5. Set streaming connection timeout to 5 minutes (prevents persistent exec sessions)
+      6. Enable protectKernelDefaults to prevent kernel parameter modification'
+    validationNotes: |
+      # Test from a pod within the cluster:
+      curl -sk https://<node-ip>:10250/pods
+      # Expected: 401 Unauthorized
+
+      # Test read-only port is disabled:
+      curl -s http://<node-ip>:10255/pods
+      # Expected: connection refused
+
+      # Verify kubelet config:
+      kubectl proxy &
+      curl http://localhost:8001/api/v1/nodes/<node-name>/proxy/configz
+    tuningNotes: When switching from anonymous auth to webhook, ensure existing monitoring tools (Prometheus node-exporter, Datadog agent) are updated to use ServiceAccount tokens for kubelet scraping.
+    advancedDetection: |
+      # Detect anonymous kubelet access
+      # Node-level audit log or Falco:
+      - rule: Anonymous Kubelet API Access
+        desc: Detect unauthenticated access to kubelet API
+        condition: >
+          evt.type in (accept, connect) and
+          fd.sport=10250 and
+          not proc.name in (kubelet, kube-proxy)
+        output: "Direct kubelet API access (source=%fd.cip port=%fd.sport)"
+        priority: CRITICAL
+    relatedIds:
+    - k8s-002
+    - k8s-005
+  tags:
+  - kubelet
+  - authentication
+  - node-security
+  - port-10250
+  commandLanguage: yaml
+  commandFull: |
+    # /var/lib/kubelet/config.yaml — full security configuration:
+    apiVersion: kubelet.config.k8s.io/v1beta1
+    kind: KubeletConfiguration
+    authentication:
+      anonymous:
+        enabled: false
+      webhook:
+        enabled: true
+        cacheTTL: 2m0s
+    authorization:
+      mode: Webhook
+      webhook:
+        cacheAuthorizedTTL: 5m0s
+        cacheUnauthorizedTTL: 30s
+    readOnlyPort: 0
+    protectKernelDefaults: true
+    streamingConnectionIdleTimeout: 5m
+    makeIPTablesUtilChains: true
+    eventRecordQPS: 5
+- id: k8s-009
+  platform: k8s
+  category: container
+  severity: high
+  title: Use Secrets management external to Kubernetes
+  description: Replace native Kubernetes Secrets (base64-encoded, not encrypted) with external secret managers (HashiCorp Vault, AWS Secrets Manager, Azure Key Vault) using the External Secrets Operator or CSI Secrets Store Driver.
+  reference: External Secrets Operator — https://external-secrets.io/
+  command: |
+    # Install External Secrets Operator:
+    helm repo add external-secrets https://charts.external-secrets.io
+    helm install external-secrets external-secrets/external-secrets \
+      --namespace external-secrets --create-namespace
+
+    # Create SecretStore (example: AWS Secrets Manager):
+    cat << 'EOF' | kubectl apply -f -
+    apiVersion: external-secrets.io/v1beta1
+    kind: SecretStore
+    metadata:
+      name: aws-secrets
+      namespace: production
+    spec:
+      provider:
+        aws:
+          service: SecretsManager
+          region: us-east-1
+          auth:
+            jwt:
+              serviceAccountRef:
+                name: external-secrets-sa
+    EOF
+
+    # Create ExternalSecret:
+    cat << 'EOF' | kubectl apply -f -
+    apiVersion: external-secrets.io/v1beta1
+    kind: ExternalSecret
+    metadata:
+      name: db-credentials
+      namespace: production
+    spec:
+      refreshInterval: 1h
+      secretStoreRef:
+        name: aws-secrets
+        kind: SecretStore
+      target:
+        name: db-credentials
+      data:
+      - secretKey: password
+        remoteRef:
+          key: prod/database/password
+    EOF
+  premium:
+    attackPerspective: Kubernetes Secrets are base64-encoded, not encrypted. Anyone with RBAC read access to secrets can decode them instantly. In a cluster compromise, the first command attackers run is `kubectl get secrets -A -o json` — this dumps every credential in the cluster. External secret managers provide encryption, access logging, dynamic rotation, and lease-based access that native K8s Secrets cannot.
+    implementationNotes: '1. Choose external secret manager: Vault (self-hosted), AWS SM, Azure KV, GCP SM
+      2. Install External Secrets Operator or CSI Secrets Store Driver
+      3. Create SecretStore per namespace (limits blast radius)
+      4. Migrate existing K8s Secrets to ExternalSecrets one at a time
+      5. Enable automatic rotation (refreshInterval: 1h for sensitive credentials)
+      6. Delete the native K8s Secret after confirming External Secret works
+      7. Restrict RBAC: no user should be able to read K8s Secrets directly'
+    validationNotes: |
+      # Verify External Secrets Operator is running:
+      kubectl get pods -n external-secrets
+
+      # Check ExternalSecret sync status:
+      kubectl get externalsecrets -A
+      # STATUS should show "SecretSynced"
+
+      # Verify the K8s Secret is created:
+      kubectl get secret db-credentials -n production -o yaml
+      # Should exist with data populated from external store
+
+      # Test rotation: change value in external store, wait for refreshInterval
+    tuningNotes: Set refreshInterval based on credential sensitivity — 15 minutes for payment systems, 1 hour for general database credentials, 24 hours for static API keys.
+    advancedDetection: |
+      # Monitor for direct K8s Secret reads (indicates bypass of external secrets):
+      index=k8s sourcetype="kube:apiserver-audit" verb="get" objectRef.resource="secrets"
+      | where NOT match(user.username, "^system:serviceaccount:external-secrets:")
+      | stats count by user.username, objectRef.name, objectRef.namespace
+    relatedIds:
+    - k8s-003
+    - k8s-002
+  tags:
+  - secrets
+  - vault
+  - external-secrets
+  - key-management
+  commandLanguage: bash
+  commandFull: |
+    # Full setup with External Secrets Operator + AWS:
+    helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace
+
+    # Create IAM role for ESO ServiceAccount (IRSA):
+    eksctl create iamserviceaccount --name external-secrets-sa \
+      --namespace production --cluster my-cluster \
+      --attach-policy-arn arn:aws:iam::policy/SecretsManagerReadOnly
+
+    # Create SecretStore and ExternalSecret as shown above
+- id: k8s-010
+  platform: k8s
+  category: container
+  severity: high
+  title: Enable admission controllers — OPA Gatekeeper or Kyverno
+  description: Deploy policy-as-code admission controllers (OPA Gatekeeper or Kyverno) to enforce organizational policies at the API server level. This blocks non-compliant resources before they are created.
+  reference: OPA Gatekeeper — https://open-policy-agent.github.io/gatekeeper/
+  command: |
+    # Install OPA Gatekeeper:
+    kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.15/deploy/gatekeeper.yaml
+
+    # Or install Kyverno:
+    helm repo add kyverno https://kyverno.github.io/kyverno/
+    helm install kyverno kyverno/kyverno --namespace kyverno --create-namespace
+
+    # Example Kyverno policy — require resource limits:
+    cat << 'EOF' | kubectl apply -f -
+    apiVersion: kyverno.io/v1
+    kind: ClusterPolicy
+    metadata:
+      name: require-resource-limits
+    spec:
+      validationFailureAction: Enforce
+      rules:
+      - name: require-limits
+        match:
+          any:
+          - resources:
+              kinds:
+              - Pod
+        validate:
+          message: "CPU and memory limits are required"
+          pattern:
+            spec:
+              containers:
+              - resources:
+                  limits:
+                    memory: "?*"
+                    cpu: "?*"
+    EOF
+  premium:
+    attackPerspective: Pod Security Standards cover a limited set of security constraints. Admission controllers let you enforce any organizational policy — required labels, resource limits, image registries, prohibited volume types, required annotations, and more. Without admission controllers, developers can deploy misconfigured workloads that bypass your security posture. Attackers can also exploit missing resource limits for resource exhaustion attacks (cryptomining consuming all cluster resources).
+    implementationNotes: '1. Choose Gatekeeper (Rego language, more mature) or Kyverno (YAML-based, easier learning curve)
+      2. Start with "audit" mode to identify existing violations
+      3. Essential policies: required labels, resource limits, private registries, no latest tag
+      4. Move to "enforce" mode after resolving violations
+      5. Integrate policy checks in CI/CD pipeline (shift left)
+      6. Use policy libraries: Gatekeeper Library or Kyverno Community Policies'
+    validationNotes: |
+      # Gatekeeper — check constraint violations:
+      kubectl get constraints -o json | jq '.items[] | {name: .metadata.name, violations: .status.totalViolations}'
+
+      # Kyverno — check policy reports:
+      kubectl get policyreports -A
+
+      # Test enforcement: try deploying without resource limits
+      kubectl run test --image=nginx --restart=Never -n production
+      # Expected: denied by admission webhook
+    tuningNotes: Gatekeeper emergency bypass is needed during major incidents — label the namespace with "gatekeeper.sh/admission=ignore" temporarily. Document this as a break-glass procedure.
+    advancedDetection: |
+      # Monitor admission webhook denials:
+      index=k8s sourcetype="kube:apiserver-audit" annotations."admission.k8s.io/denied"=*
+      | stats count by user.username, objectRef.resource, objectRef.namespace
+      | sort -count
+    relatedIds:
+    - k8s-001
+    - k8s-006
+  tags:
+  - admission-controller
+  - opa
+  - kyverno
+  - policy-as-code
+  commandLanguage: bash
+  commandFull: |
+    # Install Kyverno (recommended for easier adoption):
+    helm install kyverno kyverno/kyverno -n kyverno --create-namespace
+
+    # Apply community best-practice policies:
+    kubectl apply -f https://raw.githubusercontent.com/kyverno/policies/main/best-practices/
+
+    # Monitor: kubectl get policyreports -A
+
+# ═══════════════════════════════════════════════════════════════
+#  GitHub & CI/CD Pipeline Security
+# ═══════════════════════════════════════════════════════════════
+- id: cicd-001
+  platform: cicd
+  category: supply-chain
+  severity: critical
+  title: Enforce branch protection with required reviews and status checks
+  description: Configure branch protection rules on main/production branches to require pull request reviews, status checks, and prevent force-pushes. This prevents unauthorized code from reaching production.
+  reference: GitHub Branch Protection — https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-a-branch-protection-rule
+  command: |
+    # GitHub CLI:
+    gh api repos/{owner}/{repo}/branches/main/protection -X PUT \
+      -f required_status_checks='{"strict":true,"contexts":["ci/test","security/scan"]}' \
+      -f enforce_admins=true \
+      -f required_pull_request_reviews='{"required_approving_review_count":2,"dismiss_stale_reviews":true,"require_code_owner_reviews":true}' \
+      -f restrictions=null \
+      -F allow_force_pushes=false \
+      -F allow_deletions=false \
+      -F required_linear_history=true
+
+    # Verify:
+    gh api repos/{owner}/{repo}/branches/main/protection | jq .
+  premium:
+    attackPerspective: Without branch protection, a single compromised developer account can push malicious code directly to main/production. This is exactly how the SolarWinds attack worked — code was injected into the build pipeline. Branch protection with required reviews means an attacker needs to compromise TWO developer accounts, and status checks ensure automated security scanning runs before merge. Force-push prevention protects git history integrity.
+    implementationNotes: '1. Require 2 approving reviews for production branches
+      2. Enable "Dismiss stale reviews" — prevents approving then changing code
+      3. Require code owner reviews for security-sensitive paths
+      4. Enable "Require status checks" — CI/test must pass before merge
+      5. Enable "Require branches to be up to date" — prevents merge skew
+      6. Block force-pushes and branch deletion on protected branches
+      7. Enable "Include administrators" — no admin bypass
+      8. Consider requiring signed commits for high-security repos'
+    validationNotes: |
+      # Check branch protection via API:
+      gh api repos/{owner}/{repo}/branches/main/protection | jq '{
+        reviews: .required_pull_request_reviews.required_approving_review_count,
+        status_checks: .required_status_checks.contexts,
+        enforce_admins: .enforce_admins.enabled,
+        force_push: .allow_force_pushes.enabled
+      }'
+
+      # Test: try direct push to main (should be rejected):
+      git push origin HEAD:main
+      # Expected: remote: error: GH006: Protected branch update failed
+
+      # Verify CODEOWNERS file exists:
+      ls .github/CODEOWNERS
+    tuningNotes: For small teams (2-3 developers), require 1 review instead of 2 to avoid bottlenecks. Use CODEOWNERS to auto-assign reviewers for specific paths. Allow "Require linear history" for cleaner git history.
+    advancedDetection: |
+      # Detect branch protection changes via GitHub Audit Log:
+      # GitHub Enterprise: Settings > Audit Log > Filter: action:protected_branch
+      # Or via API:
+      gh api /orgs/{org}/audit-log?phrase=action:protected_branch.update | jq '.[] | {actor: .actor, repo: .repo, action: .action}'
+
+      # Alert on bypass:
+      # action:protected_branch.policy_override — admin bypassed protection
+    relatedIds:
+    - cicd-002
+    - cicd-003
+  tags:
+  - branch-protection
+  - code-review
+  - force-push
+  - codeowners
+  commandLanguage: bash
+  commandFull: |
+    # Full branch protection setup:
+    gh api repos/{owner}/{repo}/branches/main/protection -X PUT \
+      --input - << 'EOF'
+    {
+      "required_status_checks": {
+        "strict": true,
+        "contexts": ["ci/test", "security/codeql", "security/secret-scan"]
+      },
+      "enforce_admins": true,
+      "required_pull_request_reviews": {
+        "required_approving_review_count": 2,
+        "dismiss_stale_reviews": true,
+        "require_code_owner_reviews": true,
+        "dismissal_restrictions": {}
+      },
+      "restrictions": null,
+      "allow_force_pushes": false,
+      "allow_deletions": false,
+      "required_linear_history": true,
+      "required_conversation_resolution": true
+    }
+    EOF
+
+    # Create CODEOWNERS:
+    echo "* @security-team" > .github/CODEOWNERS
+    echo "*.yml @devops-team @security-team" >> .github/CODEOWNERS
+    echo ".github/ @devops-team" >> .github/CODEOWNERS
+- id: cicd-002
+  platform: cicd
+  category: supply-chain
+  severity: critical
+  title: Enable GitHub Secret Scanning and push protection
+  description: Enable GitHub Secret Scanning with push protection to prevent secrets (API keys, tokens, passwords) from being committed to repositories. Push protection blocks the commit before it reaches the remote.
+  reference: GitHub Secret Scanning — https://docs.github.com/en/code-security/secret-scanning
+  command: |
+    # Enable via GitHub API:
+    gh api repos/{owner}/{repo} -X PATCH \
+      -f security_and_analysis='{"secret_scanning":{"status":"enabled"},"secret_scanning_push_protection":{"status":"enabled"}}'
+
+    # Or organization-wide:
+    gh api orgs/{org} -X PATCH \
+      -f security_and_analysis='{"secret_scanning":{"status":"enabled"},"secret_scanning_push_protection":{"status":"enabled"}}'
+
+    # Check for existing exposed secrets:
+    gh api repos/{owner}/{repo}/secret-scanning/alerts?state=open | jq '.[].secret_type'
+  premium:
+    attackPerspective: Leaked credentials in source code are the #1 cause of cloud breaches. GitHub found over 10 million secrets exposed in repositories in 2023. Attackers continuously scan GitHub for leaked AWS keys, Azure tokens, database credentials, and API keys — automated scanners detect and exploit new leaks within minutes. Push protection stops the leak before it happens by blocking commits containing secrets.
+    implementationNotes: '1. Enable Secret Scanning for all repositories (org-level setting)
+      2. Enable Push Protection — blocks pushes containing detected secrets
+      3. Configure custom patterns for internal secrets (JWT signing keys, internal API keys)
+      4. Review and remediate all existing open alerts
+      5. Rotate any secret that was ever committed — even if removed in a later commit
+      6. Add .gitignore entries for .env files, key files, and credential stores
+      7. Train developers: use environment variables or secret managers, not code'
+    validationNotes: |
+      # Check Secret Scanning is enabled:
+      gh api repos/{owner}/{repo} | jq '.security_and_analysis.secret_scanning'
+      # Expected: {"status":"enabled"}
+
+      # Check push protection:
+      gh api repos/{owner}/{repo} | jq '.security_and_analysis.secret_scanning_push_protection'
+      # Expected: {"status":"enabled"}
+
+      # List existing alerts:
+      gh api repos/{owner}/{repo}/secret-scanning/alerts?state=open | jq length
+      # Target: 0 open alerts
+
+      # Test: try committing a test AWS key pattern
+    tuningNotes: Push protection may block legitimate test tokens or documentation examples. Use the bypass mechanism with audit logging — developers can bypass with justification, but all bypasses are logged for review.
+    advancedDetection: |
+      # Monitor Secret Scanning alerts:
+      gh api repos/{owner}/{repo}/secret-scanning/alerts --paginate | jq '.[] | {
+        type: .secret_type,
+        state: .state,
+        created: .created_at,
+        push_protection_bypassed: .push_protection_bypassed
+      }'
+
+      # Alert on push protection bypasses:
+      # Audit Log: action:secret_scanning_push_protection.bypass
+    relatedIds:
+    - cicd-001
+    - cicd-004
+  tags:
+  - secret-scanning
+  - push-protection
+  - credential-leak
+  - secrets
+  commandLanguage: bash
+  commandFull: |
+    # Enable for entire org:
+    gh api orgs/{org} -X PATCH -f security_and_analysis='{"secret_scanning":{"status":"enabled"},"secret_scanning_push_protection":{"status":"enabled"}}'
+
+    # Add custom secret pattern:
+    gh api orgs/{org}/secret-scanning/custom-patterns -X POST \
+      -f name="Internal API Key" \
+      -f pattern="MYCOMPANY_[a-zA-Z0-9]{32}"
+
+    # Remediate existing alerts:
+    gh api repos/{owner}/{repo}/secret-scanning/alerts?state=open | jq -r '.[].number' | while read n; do
+      echo "Alert $n — rotate and close"
+    done
+- id: cicd-003
+  platform: cicd
+  category: supply-chain
+  severity: critical
+  title: Enable GitHub Code Scanning (CodeQL) for SAST
+  description: Enable CodeQL-based static analysis (SAST) to automatically detect security vulnerabilities (SQLi, XSS, path traversal, code injection) in pull requests before they are merged.
+  reference: GitHub Code Scanning — https://docs.github.com/en/code-security/code-scanning
+  command: |
+    # Create .github/workflows/codeql.yml:
+    name: "CodeQL"
+    on:
+      push:
+        branches: [main]
+      pull_request:
+        branches: [main]
+      schedule:
+        - cron: '0 6 * * 1'  # Weekly Monday 06:00
+
+    jobs:
+      analyze:
+        name: Analyze
+        runs-on: ubuntu-latest
+        permissions:
+          actions: read
+          contents: read
+          security-events: write
+        strategy:
+          matrix:
+            language: [javascript, python]
+        steps:
+        - uses: actions/checkout@v4
+        - uses: github/codeql-action/init@v3
+          with:
+            languages: ${{ matrix.language }}
+        - uses: github/codeql-action/autobuild@v3
+        - uses: github/codeql-action/analyze@v3
+  premium:
+    attackPerspective: SAST catches vulnerabilities before deployment — SQL injection, cross-site scripting, command injection, path traversal, and insecure deserialization. Manual code review misses these at a 60-70% rate. CodeQL uses semantic analysis (not regex matching) to understand data flow, so it catches complex vulnerability patterns like tainted user input flowing through multiple functions to a database query.
+    implementationNotes: '1. Enable CodeQL for all supported languages in the repo
+      2. Add CodeQL as a required status check in branch protection
+      3. Configure severity threshold: block PRs with High/Critical findings
+      4. Run scheduled analysis weekly to catch new query pack detections
+      5. Use custom CodeQL queries for organization-specific vulnerability patterns
+      6. Enable security overview at org level for aggregate visibility'
+    validationNotes: |
+      # Check Code Scanning is active:
+      gh api repos/{owner}/{repo}/code-scanning/alerts?state=open | jq length
+
+      # Verify CodeQL workflow runs:
+      gh run list --workflow=codeql.yml --limit=5
+
+      # Check status checks:
+      gh api repos/{owner}/{repo}/branches/main/protection/required_status_checks | jq .contexts
+      # Should include "CodeQL" or "Analyze"
+    tuningNotes: CodeQL has excellent precision but may have false positives for framework-specific patterns. Use inline suppressions with justification comments rather than disabling queries globally.
+    advancedDetection: |
+      # Trend analysis — are vulnerabilties being introduced faster than fixed?
+      gh api repos/{owner}/{repo}/code-scanning/alerts --paginate | jq '
+        [.[] | {state, created: .created_at[:7]}] |
+        group_by(.created) | map({month: .[0].created, open: [.[] | select(.state=="open")] | length, fixed: [.[] | select(.state=="fixed")] | length})'
+    relatedIds:
+    - cicd-001
+    - cicd-002
+  tags:
+  - codeql
+  - sast
+  - code-scanning
+  - static-analysis
+  commandLanguage: yaml
+  commandFull: |
+    # .github/workflows/codeql.yml
+    name: "CodeQL"
+    on:
+      push:
+        branches: [main]
+      pull_request:
+        branches: [main]
+      schedule:
+        - cron: '0 6 * * 1'
+    jobs:
+      analyze:
+        runs-on: ubuntu-latest
+        permissions:
+          actions: read
+          contents: read
+          security-events: write
+        strategy:
+          fail-fast: false
+          matrix:
+            language: [javascript, python, go]
+        steps:
+        - uses: actions/checkout@v4
+        - uses: github/codeql-action/init@v3
+          with:
+            languages: ${{ matrix.language }}
+            queries: security-extended
+        - uses: github/codeql-action/autobuild@v3
+        - uses: github/codeql-action/analyze@v3
+          with:
+            category: "/language:${{ matrix.language }}"
+- id: cicd-004
+  platform: cicd
+  category: supply-chain
+  severity: critical
+  title: Enable Dependabot for dependency vulnerability scanning
+  description: Enable Dependabot alerts and security updates to automatically detect and patch vulnerable dependencies. Supply chain attacks through compromised dependencies are a top threat vector.
+  reference: GitHub Dependabot — https://docs.github.com/en/code-security/dependabot
+  command: |
+    # Create .github/dependabot.yml:
+    version: 2
+    updates:
+      - package-ecosystem: "npm"
+        directory: "/"
+        schedule:
+          interval: "weekly"
+          day: "monday"
+        open-pull-requests-limit: 10
+        assignees:
+          - "security-team-lead"
+        labels:
+          - "dependencies"
+          - "security"
+
+      - package-ecosystem: "pip"
+        directory: "/"
+        schedule:
+          interval: "weekly"
+
+      - package-ecosystem: "github-actions"
+        directory: "/"
+        schedule:
+          interval: "weekly"
+
+    # Enable Dependabot alerts via API:
+    gh api repos/{owner}/{repo} -X PATCH \
+      -f security_and_analysis='{"dependabot_security_updates":{"status":"enabled"}}'
+  premium:
+    attackPerspective: The average application has 80% third-party code through dependencies. The Log4Shell (CVE-2021-44228), Spring4Shell, and event-stream incidents all demonstrated that a single vulnerable dependency can compromise thousands of organizations. Dependabot detects known vulnerabilities in your dependency tree (including transitive dependencies) and automatically creates PRs with patched versions. Without Dependabot, you are blind to vulnerabilities in code you did not write.
+    implementationNotes: '1. Enable Dependabot alerts at org level
+      2. Enable Dependabot security updates (automatic PRs for security patches)
+      3. Configure dependabot.yml for all ecosystems used (npm, pip, Maven, etc.)
+      4. IMPORTANT: Also scan github-actions ecosystem — compromised Actions are supply chain attacks
+      5. Set open-pull-requests-limit to manage review burden
+      6. Pin Actions to SHA hashes, not tags (prevents tag hijacking)
+      7. Auto-merge minor/patch security updates with automated tests'
+    validationNotes: |
+      # Check Dependabot alerts:
+      gh api repos/{owner}/{repo}/dependabot/alerts?state=open | jq length
+
+      # Check by severity:
+      gh api repos/{owner}/{repo}/dependabot/alerts?state=open | jq 'group_by(.security_advisory.severity) | map({severity: .[0].security_advisory.severity, count: length})'
+
+      # Verify dependabot.yml exists:
+      cat .github/dependabot.yml
+
+      # Check Dependabot PRs:
+      gh pr list --label=dependencies
+    tuningNotes: Dependabot PRs can create review fatigue. Use Dependabot Groups to batch related updates into single PRs. Auto-merge patch-level updates that pass CI to reduce noise.
+    advancedDetection: |
+      # Track dependency vulnerability trends:
+      gh api repos/{owner}/{repo}/dependabot/alerts --paginate | jq '
+        [.[] | {severity: .security_advisory.severity, state, ecosystem: .dependency.package.ecosystem}] |
+        group_by(.severity) | map({severity: .[0].severity, total: length, open: [.[] | select(.state=="open")] | length})'
+    relatedIds:
+    - cicd-003
+    - cicd-006
+  tags:
+  - dependabot
+  - supply-chain
+  - dependencies
+  - vulnerability-scanning
+  commandLanguage: yaml
+  commandFull: |
+    # .github/dependabot.yml — comprehensive config:
+    version: 2
+    updates:
+      - package-ecosystem: "npm"
+        directory: "/"
+        schedule:
+          interval: "weekly"
+          day: "monday"
+        open-pull-requests-limit: 10
+        groups:
+          production-dependencies:
+            dependency-type: "production"
+          development-dependencies:
+            dependency-type: "development"
+            update-types: ["minor", "patch"]
+
+      - package-ecosystem: "github-actions"
+        directory: "/"
+        schedule:
+          interval: "weekly"
+- id: cicd-005
+  platform: cicd
+  category: supply-chain
+  severity: critical
+  title: Secure GitHub Actions — use OIDC, pin Actions by SHA, restrict permissions
+  description: Harden GitHub Actions workflows by using OIDC for cloud provider authentication (no stored secrets), pinning third-party Actions to commit SHAs, and using minimal GITHUB_TOKEN permissions.
+  reference: GitHub Actions Security Hardening — https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+  command: |
+    # 1. Pin Actions to SHA (not tags):
+    # BAD:  uses: actions/checkout@v4
+    # GOOD: uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+    # 2. Use OIDC for AWS (no more AWS_ACCESS_KEY_ID in secrets):
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
+        with:
+          role-to-assume: arn:aws:iam::role/github-actions
+          aws-region: us-east-1
+
+    # 3. Set minimal permissions at workflow level:
+    permissions:
+      contents: read
+  premium:
+    attackPerspective: GitHub Actions are the new attack surface for supply chain compromises. The tj-actions/changed-files compromise (March 2025) injected malicious code by hijacking a popular Action's tag — every repo using that Action was compromised. Pinning to SHA prevents tag-based hijacking. OIDC eliminates long-lived cloud credentials from GitHub Secrets — a compromised workflow gets temporary scoped tokens instead of permanent admin keys. The default GITHUB_TOKEN has write access to the repo — reducing permissions limits blast radius.
+    implementationNotes: '1. Pin ALL third-party Actions to full commit SHA (not tags or branches)
+      2. Use Dependabot to monitor Action updates (package-ecosystem: github-actions)
+      3. Replace stored cloud credentials with OIDC federation:
+         - AWS: configure IAM OIDC provider + role
+         - Azure: configure federated identity credential
+         - GCP: configure Workload Identity Federation
+      4. Set top-level permissions to read-only, escalate per-job as needed
+      5. Disable Actions for forks by default (prevents PRs from running arbitrary code)
+      6. Use required workflows for security scans'
+    validationNotes: |
+      # Check for unpinned Actions:
+      grep -r "uses:" .github/workflows/ | grep -v "@[a-f0-9]\{40\}" | grep -v "\./"
+      # Should return empty — all external Actions pinned to SHA
+
+      # Check workflow permissions:
+      grep -A2 "permissions:" .github/workflows/*.yml
+
+      # Verify OIDC is configured (no stored AWS/Azure/GCP keys):
+      gh secret list | grep -iE "aws_access|azure_client|gcp_service"
+      # Should return empty if OIDC is properly configured
+
+      # Check Actions policy:
+      gh api repos/{owner}/{repo}/actions/permissions | jq .
+    tuningNotes: Pinning to SHA creates update friction. Use Dependabot with github-actions ecosystem to get automatic PRs when Actions release security patches. Renovate Bot is an alternative that can auto-pin to SHA.
+    advancedDetection: |
+      # Detect workflow file changes (potential supply chain attack):
+      # GitHub Audit Log:
+      gh api /orgs/{org}/audit-log?phrase=action:workflows | jq '.[] | select(.action | contains("workflow")) | {actor: .actor, repo: .repo, action: .action}'
+
+      # Alert on Actions configuration changes:
+      # action:org.update_actions_secret
+      # action:repo.actions_enabled
+    relatedIds:
+    - cicd-001
+    - cicd-004
+  tags:
+  - github-actions
+  - oidc
+  - supply-chain
+  - sha-pinning
+  - permissions
+  commandLanguage: yaml
+  commandFull: |
+    # Secure workflow template:
+    name: Secure CI
+    on:
+      push:
+        branches: [main]
+      pull_request:
+        branches: [main]
+
+    # Minimal top-level permissions:
+    permissions:
+      contents: read
+
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        permissions:
+          contents: read
+          id-token: write  # Only if OIDC needed
+
+        steps:
+        # Pinned to SHA:
+        - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+          with:
+            node-version: 20
+
+        # OIDC for AWS (no stored secrets):
+        - uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
+          with:
+            role-to-assume: arn:aws:iam::role/github-actions
+            aws-region: us-east-1
+- id: cicd-006
+  platform: cicd
+  category: supply-chain
+  severity: high
+  title: Harden self-hosted runners — ephemeral, isolated, and monitored
+  description: If using self-hosted GitHub Actions runners, configure them as ephemeral (destroyed after each job), isolated (no shared state), and monitored. Persistent runners accumulate secrets and become lateral movement targets.
+  reference: GitHub Self-Hosted Runner Security — https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners#self-hosted-runner-security
+  command: |
+    # Use ephemeral runners (destroyed after one job):
+    ./config.sh --url https://github.com/org/repo \
+      --token $RUNNER_TOKEN \
+      --ephemeral \
+      --disableupdate \
+      --labels "production,linux"
+
+    # Or use container-based runners (Actions Runner Controller):
+    # Helm install:
+    helm install arc oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller \
+      --namespace arc-systems --create-namespace
+
+    # Runner set:
+    helm install arc-runner-set oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set \
+      --namespace arc-runners --create-namespace \
+      --set githubConfigUrl="https://github.com/org" \
+      --set githubConfigSecret.github_token=$GITHUB_TOKEN \
+      --set containerMode.type="kubernetes" \
+      --set template.spec.containers[0].resources.limits.cpu="2" \
+      --set template.spec.containers[0].resources.limits.memory="4Gi"
+  premium:
+    attackPerspective: Persistent self-hosted runners are one of the highest-risk CI/CD configurations. Every job that runs on a persistent runner leaves artifacts — credentials in environment variables, cached tokens, build outputs with embedded secrets. An attacker who compromises any repository that uses the runner gets access to all accumulated state from previous jobs, including secrets from OTHER repositories. This is a cross-tenant attack in shared runner pools.
+    implementationNotes: '1. Always use --ephemeral flag — runner handles one job then exits
+      2. Use container-based runners (ARC) for true isolation between jobs
+      3. Never register runners at organization level for public repos (arbitrary code execution)
+      4. Group runners by trust level — production and development should never share runners
+      5. Monitor runner registration/deregistration events
+      6. Disable --disableupdate to prevent outdated runner software'
+    validationNotes: |
+      # List runners and check ephemeral status:
+      gh api orgs/{org}/actions/runners | jq '.runners[] | {name, os, status, ephemeral: .ephemeral}'
+
+      # Check for runners registered at org level for public repos:
+      gh api orgs/{org}/actions/runner-groups | jq '.runner_groups[] | select(.allows_public_repositories==true)'
+      # Should return empty
+
+      # Verify ARC runners are healthy:
+      kubectl get pods -n arc-runners
+    tuningNotes: Ephemeral runners have cold-start overhead. Use pre-built runner images with tools pre-installed to reduce startup time. For ARC, use runner scale sets with min/max replicas.
+    advancedDetection: |
+      # Monitor runner lifecycle:
+      gh api /orgs/{org}/audit-log?phrase=action:self_hosted_runners | jq '.[] | {actor, action, runner: .runner_name}'
+
+      # Detect long-running runners (should be ephemeral):
+      gh api orgs/{org}/actions/runners | jq '.runners[] | select(.busy==true) | {name, status}'
+    relatedIds:
+    - cicd-005
+    - cicd-001
+  tags:
+  - self-hosted-runners
+  - ephemeral
+  - arc
+  - isolation
+  commandLanguage: bash
+  commandFull: |
+    # Deploy ARC (Actions Runner Controller) for K8s-based ephemeral runners:
+    helm install arc oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller \
+      --namespace arc-systems --create-namespace
+
+    helm install arc-runner-set oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set \
+      --namespace arc-runners --create-namespace \
+      --set githubConfigUrl="https://github.com/org" \
+      --set githubConfigSecret.github_token=$GITHUB_TOKEN \
+      --set containerMode.type="kubernetes"
+- id: cicd-007
+  platform: cicd
+  category: supply-chain
+  severity: high
+  title: Require signed commits and enforce commit signature verification
+  description: Require GPG or SSH commit signing and enforce signature verification in branch protection. This proves commits were authored by verified developers, preventing impersonation and unauthorized code insertion.
+  reference: GitHub Commit Signing — https://docs.github.com/en/authentication/managing-commit-signature-verification
+  command: |
+    # Enable signature requirement in branch protection:
+    gh api repos/{owner}/{repo}/branches/main/protection/required_signatures -X POST
+
+    # Developer setup — GPG signing:
+    gpg --full-generate-key  # RSA 4096, no expiry
+    gpg --list-secret-keys --keyid-format=long
+    git config --global user.signingkey <KEY_ID>
+    git config --global commit.gpgsign true
+    gpg --armor --export <KEY_ID> | gh gpg-key add -
+
+    # Developer setup — SSH signing (simpler):
+    git config --global gpg.format ssh
+    git config --global user.signingkey ~/.ssh/id_ed25519.pub
+    git config --global commit.gpgsign true
+    gh ssh-key add ~/.ssh/id_ed25519.pub --type signing
+  premium:
+    attackPerspective: Git allows anyone to set any name and email in commits. Without commit signing, an attacker can impersonate a trusted developer by setting their name/email in git config. Signed commits prove cryptographic authorship — the commit contains a GPG/SSH signature that GitHub verifies against the developer's registered public key. This is critical for audit trails, compliance, and detecting unauthorized code changes in forensic investigations.
+    implementationNotes: '1. SSH signing is easier to set up than GPG (recommended for new deployments)
+      2. Have all developers register their signing key on GitHub
+      3. Enable "Require signed commits" in branch protection rules
+      4. Enable Vigilant Mode for developers — marks unsigned commits as "Unverified"
+      5. Automate CI check: reject PRs with unsigned commits
+      6. Use organization-level commit signing policy in GitHub Enterprise'
+    validationNotes: |
+      # Check if signed commits are required:
+      gh api repos/{owner}/{repo}/branches/main/protection/required_signatures | jq .enabled
+      # Expected: true
+
+      # Verify your commits are signed:
+      git log --show-signature -3
+
+      # Check for unsigned commits in recent history:
+      gh api repos/{owner}/{repo}/commits?sha=main&per_page=10 | jq '.[] | {sha: .sha[:7], author: .commit.author.name, verified: .commit.verification.verified}'
+    tuningNotes: Bots and service accounts (Dependabot, GitHub Actions) sign commits automatically with GitHub's key. Ensure your policy allows GitHub's signing key for automated commits.
+    advancedDetection: |
+      # Detect unsigned commits reaching protected branches:
+      gh api repos/{owner}/{repo}/commits?sha=main&per_page=100 | jq '[.[] | select(.commit.verification.verified==false)] | length'
+      # Should be 0
+    relatedIds:
+    - cicd-001
+    - cicd-005
+  tags:
+  - commit-signing
+  - gpg
+  - ssh-signing
+  - verification
+  commandLanguage: bash
+  commandFull: |
+    # Enable signed commits requirement:
+    gh api repos/{owner}/{repo}/branches/main/protection/required_signatures -X POST
+
+    # SSH signing setup (recommended):
+    ssh-keygen -t ed25519 -C "developer@company.com"
+    git config --global gpg.format ssh
+    git config --global user.signingkey ~/.ssh/id_ed25519.pub
+    git config --global commit.gpgsign true
+    gh ssh-key add ~/.ssh/id_ed25519.pub --type signing
+
+    # Verify: git commit -m "test signed commit" && git log --show-signature -1
+- id: cicd-008
+  platform: cicd
+  category: supply-chain
+  severity: high
+  title: Configure GitHub Audit Log streaming to SIEM
+  description: Stream GitHub organization audit logs to your SIEM for security monitoring. Audit logs capture authentication, repository access, admin actions, and security configuration changes.
+  reference: GitHub Audit Log Streaming — https://docs.github.com/en/enterprise-cloud@latest/admin/monitoring-activity-in-your-enterprise/reviewing-audit-logs-for-your-enterprise/streaming-the-audit-log-for-your-enterprise
+  command: |
+    # GitHub Enterprise Cloud — configure audit log streaming:
+    # Organization Settings > Audit Log > Log Streaming > Set up stream
+
+    # Supported destinations:
+    # - Amazon S3
+    # - Azure Blob Storage
+    # - Azure Event Hubs
+    # - Google Cloud Storage
+    # - Splunk
+    # - Datadog
+
+    # API access (all plans):
+    gh api /orgs/{org}/audit-log?per_page=100 | jq '.[] | {action, actor: .actor, created_at}'
+
+    # Automated collection script:
+    # Poll every 5 minutes:
+    while true; do
+      gh api "/orgs/{org}/audit-log?per_page=100&after=$CURSOR" >> audit-log-$(date +%Y%m%d).json
+      sleep 300
+    done
+  premium:
+    attackPerspective: GitHub audit logs are the only record of who accessed what code, changed what settings, and managed which secrets. Without SIEM integration, you cannot detect compromised developer accounts, insider threats, or supply chain attacks. In the GitHub/Heroku OAuth token theft (2022), audit logs were the primary evidence source. Attackers who steal OAuth tokens or PATs can access private repositories silently — audit logs are the only detection mechanism.
+    implementationNotes: '1. Enterprise Cloud: use native log streaming to SIEM
+      2. Pro/Team: use API polling with 5-minute intervals
+      3. Critical events to monitor:
+         - repo.access — unauthorized repo access
+         - org.invite_member — unauthorized member additions
+         - protected_branch.* — branch protection changes
+         - secret_scanning.* — secret scan alerts and bypasses
+         - org.update_actions_secret — secret modifications
+      4. Set up real-time alerts for admin actions and security config changes'
+    validationNotes: |
+      # Verify audit log access:
+      gh api /orgs/{org}/audit-log?per_page=5 | jq length
+      # Should return 5 entries
+
+      # Check streaming health (Enterprise Cloud):
+      # Org Settings > Audit Log > Log Streaming > Check status
+
+      # Verify critical events are captured:
+      gh api "/orgs/{org}/audit-log?phrase=action:org.update_member_repository_permission" | jq length
+    tuningNotes: GitHub audit logs have a 90-day retention. Stream to SIEM with 1-year+ retention for compliance. GitHub API rate limits apply to polling — use conditional requests (If-None-Match header) to reduce API calls.
+    advancedDetection: |
+      # SIEM correlation — detect suspicious GitHub activity:
+      # Splunk:
+      index=github sourcetype=github:audit
+      | where action IN ("repo.access","org.invite_member","protected_branch.update","repo.remove_member")
+      | stats count by actor, action, repo
+      | where count > 5
+    relatedIds:
+    - cicd-001
+    - cicd-002
+  tags:
+  - audit-log
+  - siem
+  - monitoring
+  - compliance
+  commandLanguage: bash
+  commandFull: |
+    # Comprehensive audit log collection:
+    # Poll recent events (last 24h):
+    SINCE=$(date -u -v-24H +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -d '24 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+    gh api "/orgs/{org}/audit-log?per_page=100&created_at=>=$SINCE" --paginate | jq .
+
+    # Set up streaming (Enterprise Cloud):
+    # Settings > Audit Log > Log Streaming > New Stream
+    # Choose SIEM destination and configure credentials
+- id: cicd-009
+  platform: cicd
+  category: supply-chain
+  severity: high
+  title: Implement deploy keys and fine-grained PATs — eliminate broad-scope tokens
+  description: Replace organization-level PATs and SSH keys with repository-scoped deploy keys and fine-grained personal access tokens. Broad-scope tokens are the highest-impact credential to steal.
+  reference: GitHub Deploy Keys — https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys
+  command: |
+    # Generate deploy key (per-repo, read-only by default):
+    ssh-keygen -t ed25519 -f deploy_key_myrepo -C "deploy-key-myrepo"
+
+    # Add as read-only deploy key:
+    gh api repos/{owner}/{repo}/keys -X POST \
+      -f title="CI Deploy Key" \
+      -f key="$(cat deploy_key_myrepo.pub)" \
+      -F read_only=true
+
+    # Create fine-grained PAT (instead of classic PAT):
+    # Settings > Developer Settings > Personal Access Tokens > Fine-grained tokens
+    # Scope: specific repository only
+    # Permissions: minimal (e.g., contents: read, metadata: read)
+    # Expiration: 90 days maximum
+  premium:
+    attackPerspective: Classic PATs with "repo" scope give access to ALL private repositories of the user. A single leaked classic PAT can expose the entire organization's codebase. The Heroku OAuth token theft (2022) exploited this broad access — attackers used stolen integration tokens to access customer private repos. Fine-grained PATs limit access to specific repositories and specific permissions, reducing blast radius from "all repos" to "one repo, read-only."
+    implementationNotes: '1. Audit all existing classic PATs: gh api /orgs/{org}/personal-access-tokens
+      2. Migrate to fine-grained PATs with repository-specific scope
+      3. Use deploy keys for CI/CD (read-only by default)
+      4. Set maximum PAT lifetime to 90 days at org level
+      5. Require admin approval for fine-grained PATs
+      6. Replace user PATs in CI/CD with GITHUB_TOKEN or GitHub App tokens
+      7. Never store PATs in code or CI/CD config files'
+    validationNotes: |
+      # List deploy keys:
+      gh api repos/{owner}/{repo}/keys | jq '.[] | {id, title, read_only, created_at}'
+
+      # Check for classic PATs in org (requires admin):
+      gh api /orgs/{org}/personal-access-tokens?per_page=100 | jq '.[] | {owner: .owner.login, permissions}'
+
+      # Verify no broad-scope classic PATs:
+      # Settings > Developer Settings > Personal Access Tokens > Tokens (classic)
+      # Any token with "repo" scope should be migrated
+    tuningNotes: GitHub Apps provide the best security model for CI/CD — installation tokens are scoped per-repo, auto-expire in 1 hour, and permissions are declared explicitly. Use GitHub Apps instead of PATs where possible.
+    advancedDetection: |
+      # Detect PAT usage from unusual IPs:
+      gh api "/orgs/{org}/audit-log?phrase=action:personal_access_token" | jq '.[] | {actor, action, actor_ip}'
+
+      # Alert on classic PAT creation:
+      # Audit log action: personal_access_token.create
+    relatedIds:
+    - cicd-002
+    - cicd-005
+  tags:
+  - deploy-keys
+  - pat
+  - fine-grained
+  - token-scope
+  commandLanguage: bash
+  commandFull: |
+    # Generate and add deploy key:
+    ssh-keygen -t ed25519 -f deploy_key -N "" -C "deploy-key-$(date +%Y%m%d)"
+    gh api repos/{owner}/{repo}/keys -X POST \
+      -f title="CI Deploy $(date +%Y-%m-%d)" \
+      -f key="$(cat deploy_key.pub)" \
+      -F read_only=true
+
+    # Store private key as GitHub Secret:
+    gh secret set DEPLOY_KEY < deploy_key
+    rm deploy_key  # Don't keep private key on disk
+
+    # Configure fine-grained PAT policy at org level:
+    # Org Settings > Personal Access Tokens > Settings
+    # Restrict classic PATs, require approval for fine-grained
+- id: cicd-010
+  platform: cicd
+  category: supply-chain
+  severity: high
+  title: Implement SBOM generation and artifact attestation
+  description: Generate Software Bill of Materials (SBOM) for every release and create build provenance attestations. SBOMs enable vulnerability tracking across your software supply chain.
+  reference: GitHub Artifact Attestation — https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds
+  command: |
+    # Generate SBOM in GitHub Actions:
+    - uses: anchore/sbom-action@v0
+      with:
+        format: spdx-json
+        output-file: sbom.spdx.json
+
+    # Create build attestation:
+    - uses: actions/attest-build-provenance@v1
+      with:
+        subject-name: ghcr.io/{owner}/{repo}
+        subject-digest: ${{ steps.push.outputs.digest }}
+
+    # Generate SBOM via GitHub API:
+    gh api repos/{owner}/{repo}/dependency-graph/sbom > sbom.json
+
+    # Verify attestation:
+    gh attestation verify oci://ghcr.io/{owner}/{repo}:latest --owner {org}
+  premium:
+    attackPerspective: SBOMs answer the critical question "what's inside your software?" When a new vulnerability like Log4Shell drops, organizations without SBOMs scramble for days to determine if they are affected. With SBOMs, it is a 30-second database query. Build attestations prove WHAT was built, WHERE it was built, and WHO triggered the build — making it impossible for attackers to inject artifacts into the release pipeline without detection. The US Executive Order 14028 requires SBOM generation for software sold to federal agencies.
+    implementationNotes: '1. Generate SBOM for every release build (SPDX or CycloneDX format)
+      2. Store SBOMs alongside release artifacts
+      3. Use GitHub artifact attestation for container images
+      4. Integrate Dependency Review action to block PRs that add vulnerable dependencies
+      5. Set up SBOM-based continuous monitoring for new CVEs
+      6. Share SBOMs with customers as part of security posture transparency'
+    validationNotes: |
+      # Verify SBOM generation:
+      gh api repos/{owner}/{repo}/dependency-graph/sbom | jq '.sbom.packages | length'
+
+      # Check attestations:
+      gh attestation verify oci://ghcr.io/{owner}/{repo}:latest --owner {org}
+
+      # Verify dependency review is enabled:
+      grep -r "dependency-review" .github/workflows/
+
+      # Check SBOM contents:
+      jq '.sbom.packages[] | {name, version: .versionInfo}' sbom.json | head -20
+    tuningNotes: Generate SBOM at build time (more accurate for compiled languages) rather than at source time. Include both direct and transitive dependencies. CycloneDX format has better vulnerability correlation support than SPDX.
+    advancedDetection: |
+      # Continuous SBOM monitoring — detect new vulnerabilities in deployed software:
+      # Compare SBOM package list against NVD/OSV:
+      grype sbom:./sbom.spdx.json --fail-on critical
+
+      # Track SBOM changes between releases:
+      diff <(jq -r '.sbom.packages[].name' sbom-v1.json | sort) \
+           <(jq -r '.sbom.packages[].name' sbom-v2.json | sort)
+    relatedIds:
+    - cicd-004
+    - cicd-003
+  tags:
+  - sbom
+  - attestation
+  - supply-chain
+  - provenance
+  - compliance
+  commandLanguage: yaml
+  commandFull: |
+    # .github/workflows/release.yml — with SBOM and attestation:
+    name: Release
+    on:
+      push:
+        tags: ['v*']
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    jobs:
+      release:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - uses: anchore/sbom-action@v0
+          with:
+            format: spdx-json
+            output-file: sbom.spdx.json
+        - uses: actions/attest-build-provenance@v1
+          with:
+            subject-name: ghcr.io/${{ github.repository }}
+            subject-digest: ${{ steps.push.outputs.digest }}

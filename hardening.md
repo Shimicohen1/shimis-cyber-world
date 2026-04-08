@@ -7,14 +7,14 @@ permalink: /hardening/
 <div class="page-head">
   <div class="label label--elite page-head__label">SCW ELITE</div>
   <h1 class="page-head__title">LockDown</h1>
-  <p class="page-head__desc">805 hardening checks across 14 platforms. Pick your stack, get real commands, check them off, export the report.</p>
+  <p class="page-head__desc">847 hardening checks across 18 platforms. Pick your stack, get real commands, check them off, export the report.</p>
 </div>
 
 <section class="cs-intro reveal">
   <p>CIS Benchmarks, AWS Well-Architected, and real production hardening — distilled into copy-paste commands. Select a platform, work through the list, track your progress.</p>
   <div class="harden-hero-stats">
-    <div class="harden-hero-stat"><span class="harden-hero-stat__num">805</span><span class="harden-hero-stat__label">Checks</span></div>
-    <div class="harden-hero-stat"><span class="harden-hero-stat__num">14</span><span class="harden-hero-stat__label">Platforms</span></div>
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">847</span><span class="harden-hero-stat__label">Checks</span></div>
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">18</span><span class="harden-hero-stat__label">Platforms</span></div>
     <div class="harden-hero-stat"><span class="harden-hero-stat__num">7</span><span class="harden-hero-stat__label">Categories</span></div>
   </div>
   <div class="cs-intro__actions">
