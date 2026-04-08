@@ -219,7 +219,8 @@
 
   function fetchFromRansomLook(searchTerm) {
 
-    function tryProxy(idx) {
+    function tryProxy(idx, retryCount) {
+      retryCount = retryCount || 0;
       if (idx >= CORS_PROXIES.length) {
         return Promise.reject(new Error('Cannot reach the intelligence API. All connection methods failed. Try the external investigation links below.'));
       }
@@ -234,7 +235,14 @@
       .then(function (res) {
         clearTimeout(timer);
         if (res.status === 429) throw new Error('Rate limit exceeded. Please wait a moment before searching again.');
-        if (!res.ok) throw new Error('proxy-fail');
+        if (!res.ok) {
+          /* Azure cold-start: retry once after a brief pause */
+          if (retryCount < 2) {
+            return new Promise(function (resolve) { setTimeout(resolve, 1500); })
+              .then(function () { return tryProxy(idx, retryCount + 1); });
+          }
+          throw new Error('proxy-fail');
+        }
         return res.json();
       })
       .then(function (data) {
@@ -243,11 +251,16 @@
       .catch(function (err) {
         clearTimeout(timer);
         if (err.message.indexOf('Rate limit') !== -1) throw err;
-        return tryProxy(idx + 1);
+        /* Azure cold-start: retry on network errors too */
+        if (retryCount < 2) {
+          return new Promise(function (resolve) { setTimeout(resolve, 1500); })
+            .then(function () { return tryProxy(idx, retryCount + 1); });
+        }
+        return tryProxy(idx + 1, 0);
       });
     }
 
-    return tryProxy(0);
+    return tryProxy(0, 0);
   }
 
   function transformRansomLookResponse(data) {

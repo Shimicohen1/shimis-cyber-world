@@ -126,4 +126,4 @@ window.IOC_TOOL_RECS = [
   {% endfor %}
 ];
 </script>
-<script src="/assets/js/breach-radar.js?v=4" defer></script>
+<script src="/assets/js/breach-radar.js?v=5" defer></script>
