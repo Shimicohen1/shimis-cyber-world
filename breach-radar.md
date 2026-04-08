@@ -36,10 +36,10 @@ permalink: /breach-radar/
       <button id="brScanBtn" class="btn btn--primary br-scan-btn">Scan</button>
     </div>
     <div class="br-input-hints">
-      <span>Try: <button class="br-hint" data-q="microsoft">microsoft</button></span>
+      <span>Try: <button class="br-hint" data-q="microsoft.com">microsoft.com</button></span>
+      <span><button class="br-hint" data-q="boeing">boeing</button></span>
       <span><button class="br-hint" data-q="hospital">hospital</button></span>
-      <span><button class="br-hint" data-q="bank">bank</button></span>
-      <span><button class="br-hint" data-q="university">university</button></span>
+      <span><button class="br-hint" data-q="MOVEit">MOVEit</button></span>
     </div>
   </div>
 
@@ -118,7 +118,7 @@ permalink: /breach-radar/
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=9">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=10">
 <script>
 window.IOC_TOOL_RECS = [
   {% for rec in site.data.monetization.tool_recommendations %}
@@ -126,4 +126,4 @@ window.IOC_TOOL_RECS = [
   {% endfor %}
 ];
 </script>
-<script src="/assets/js/breach-radar.js?v=2" defer></script>
+<script src="/assets/js/breach-radar.js?v=3" defer></script>
