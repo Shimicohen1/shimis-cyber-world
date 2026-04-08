@@ -20,3 +20,4 @@ _backup/
 *.pem
 *.key
 session.json
+.linkedin-secret
