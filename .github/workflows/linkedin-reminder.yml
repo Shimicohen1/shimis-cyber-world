@@ -1,0 +1,25 @@
+name: LinkedIn Company Page Reminder
+
+on:
+  schedule:
+    - cron: '0 8 11 4 *'   # April 11, 08:00 UTC (11:00 Israel)
+  workflow_dispatch:
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send reminder email
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+        run: |
+          curl -s -X POST 'https://api.brevo.com/v3/smtp/email' \
+            -H "api-key: $BREVO_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "sender": {"name": "SCW Automation", "email": "shimicyberworld@gmail.com"},
+              "to": [{"email": "shimicyberworld@gmail.com"}],
+              "subject": "🔔 Reminder: Check LinkedIn Community Management API approval",
+              "htmlContent": "<h2>LinkedIn Company Page Posting</h2><p>Check if the <b>Community Management API</b> product was approved on your LinkedIn Dev App.</p><p><b>Steps if approved:</b></p><ol><li>Run <code>./refresh-linkedin.sh</code> to get a new token with org scope</li><li>Run <code>echo \"urn:li:organization:112773961\" | gh secret set LINKEDIN_ORG_URN</code></li><li>Delete this reminder workflow: <code>.github/workflows/linkedin-reminder.yml</code></li></ol><p><a href=\"https://www.linkedin.com/developers/apps\">Go to LinkedIn Developer Apps →</a></p>"
+            }'
+          echo "✅ Reminder email sent"
