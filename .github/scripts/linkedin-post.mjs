@@ -172,34 +172,61 @@ const HOOK_PATTERNS = [
   (t, score) => `${score === 'CRITICAL' ? '🔴' : '📡'} ${t}\n\nFresh from our threat intelligence feed.`,
 ];
 
-/* ── Tag → contextual tool/resource recommendation mapping ── */
-const TAG_RECOMMENDATIONS = {
-  // Internal tools
-  'ransomware':  { text: '🔎 Check if your org is exposed → BreachRadar (free)', url: '/breach-radar/' },
-  'darkweb':     { text: '🔎 Dark web exposure check → BreachRadar', url: '/breach-radar/' },
-  'threat-intel':{ text: '📡 Real-time threat feeds → shimiscyberworld.com', url: '/' },
-  'malware':     { text: '🔎 Scan your IOCs across 22 platforms → ThreatLens (free)', url: '/ioc-scanner/' },
-  'phishing':    { text: '🎣 Suspicious link? Check it instantly → GoFish (free)', url: '/gofish/' },
-  'vulnerability':{ text: '🛡️ Hardening checks for 18 platforms → LockDown (free)', url: '/hardening/' },
-  'cve':         { text: '🛡️ 847 hardening checks across 18 platforms → LockDown', url: '/hardening/' },
-  'detection':   { text: '📋 KQL, Sigma & Splunk rules → Detection Vault', url: '/detections/' },
-  'incident-response': { text: '🚨 Step-by-step IR playbooks → WarRoom', url: '/playbooks/' },
-  // Affiliate tools (CJ)
-  'vpn':         { text: '🔐 Protect your traffic → NordVPN (recommended)', url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
-  'privacy':     { text: '🔐 Privacy-first browsing → Proton VPN', url: 'https://www.jdoqocy.com/click-101720928-15834536' },
-  'password':    { text: '🔑 Upgrade your password manager → Proton Pass', url: 'https://www.kqzyfj.com/click-101720928-15831601' },
-  'credentials': { text: '🔑 Credential theft? Get a real password manager → Proton Pass', url: 'https://www.kqzyfj.com/click-101720928-15831601' },
+/* ── Tag → SCW Elite tool recommendation (our tools) ── */
+const TOOL_RECOMMENDATIONS = {
+  'ransomware':       { text: '🔎 Check if your org is exposed → BreachRadar (free)', url: '/breach-radar/' },
+  'darkweb':          { text: '🔎 Dark web exposure check → BreachRadar', url: '/breach-radar/' },
+  'malware':          { text: '🔎 Scan your IOCs across 22 platforms → ThreatLens (free)', url: '/ioc-scanner/' },
+  'phishing':         { text: '🎣 Suspicious link? Check it instantly → GoFish (free)', url: '/gofish/' },
+  'vulnerability':    { text: '🛡️ Hardening checks for 18 platforms → LockDown (free)', url: '/hardening/' },
+  'cve':              { text: '🛡️ 847 hardening checks across 18 platforms → LockDown', url: '/hardening/' },
+  'detection':        { text: '📋 KQL, Sigma & Splunk rules → Detection Vault', url: '/detections/' },
+  'incident-response':{ text: '🚨 Step-by-step IR playbooks → WarRoom', url: '/playbooks/' },
 };
+const DEFAULT_TOOL = { text: '🛡️ Free security tools → BreachRadar, ThreatLens, LockDown, GoFish', url: '/tools/' };
 
-/* ── Default recommendation when no tag matches ── */
-const DEFAULT_REC = { text: '🛡️ Free tools for defenders → BreachRadar, ThreatLens, LockDown', url: '/tools/' };
+/* ── Tag → MONETIZED product recommendation (affiliate / revenue) ── */
+const MONETIZED_RECS = [
+  // CJ Affiliate partners — each entry has tags that trigger it, plus a weight for rotation
+  { tags: ['ransomware','malware','threat-intel','darkweb','apt','backdoor','c2','trojan','botnet','exploit','zero-day'],
+    text: '🔐 Protect your network → NordVPN Threat Protection',
+    url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
+  { tags: ['phishing','social-engineering','email','spam','bec','scam','fraud'],
+    text: '🔐 Encrypted email & privacy → Proton VPN',
+    url: 'https://www.jdoqocy.com/click-101720928-15834536' },
+  { tags: ['credentials','password','identity','brute-force','authentication','mfa','2fa','iam','okta','active-directory','kerberos','ldap'],
+    text: '🔑 Secure your credentials → Proton Pass (password manager)',
+    url: 'https://www.kqzyfj.com/click-101720928-15831601' },
+  { tags: ['vpn','privacy','network','surveillance','tracking','proxy','tor','encryption','data-leak','data-breach','exposure'],
+    text: '🔐 Stay private online → Surfshark VPN',
+    url: 'https://www.kqzyfj.com/click-101720928-15438560' },
+];
 
-function getRecommendation(tags) {
+/* ── Fallback monetized rec — rotates daily so the feed stays varied ── */
+const FALLBACK_MONETIZED = [
+  { text: '🔐 Protect your network → NordVPN Threat Protection', url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
+  { text: '🔐 Encrypted browsing for teams → Proton VPN', url: 'https://www.jdoqocy.com/click-101720928-15834536' },
+  { text: '🔑 Stop credential theft → Proton Pass', url: 'https://www.kqzyfj.com/click-101720928-15831601' },
+  { text: '🌐 Company-wide VPN → Surfshark for Teams', url: 'https://www.kqzyfj.com/click-101720928-15438560' },
+];
+
+function getToolRecommendation(tags) {
   const tagList = (tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
   for (const tag of tagList) {
-    if (TAG_RECOMMENDATIONS[tag]) return TAG_RECOMMENDATIONS[tag];
+    if (TOOL_RECOMMENDATIONS[tag]) return TOOL_RECOMMENDATIONS[tag];
   }
-  return DEFAULT_REC;
+  return DEFAULT_TOOL;
+}
+
+function getMonetizedRecommendation(tags) {
+  const tagList = (tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
+  // Find the best match by checking tag overlap
+  for (const rec of MONETIZED_RECS) {
+    if (tagList.some(t => rec.tags.includes(t))) return rec;
+  }
+  // No tag match → rotate daily through fallback list
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  return FALLBACK_MONETIZED[dayOfYear % FALLBACK_MONETIZED.length];
 }
 
 function buildHashtags(meta) {
@@ -265,10 +292,12 @@ function formatLinkedInPost(meta, fileName) {
     whySection = whySection.slice(0, 347).replace(/\s+\S*$/, '') + '...';
   }
 
-  // ── 4. CONTEXTUAL RECOMMENDATION ──
-  const rec = getRecommendation(meta.tags);
-  const recUrl = rec.url.startsWith('http') ? rec.url : `${SITE_URL}${rec.url}`;
-  const recLine = `${rec.text}\n${recUrl}`;
+  // ── 4. CONTEXTUAL RECOMMENDATIONS (SCW tool + monetized partner) ──
+  const toolRec = getToolRecommendation(meta.tags);
+  const toolUrl = toolRec.url.startsWith('http') ? toolRec.url : `${SITE_URL}${toolRec.url}`;
+  const monRec = getMonetizedRecommendation(meta.tags);
+
+  const recBlock = `${toolRec.text}\n${toolUrl}\n\n${monRec.text}\n${monRec.url}`;
 
   // ── 5. CTAs ──
   const cta = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -284,7 +313,7 @@ function formatLinkedInPost(meta, fileName) {
 ${analysis}
 ${whySection}
 
-${recLine}
+${recBlock}
 
 ${cta}
 
@@ -295,7 +324,7 @@ ${hashtags}`;
     // Trim analysis to fit
     const overflow = text.length - 2700;
     analysis = analysis.slice(0, Math.max(100, analysis.length - overflow)) + '...';
-    text = `${hook}\n\n${analysis}\n${whySection}\n\n${recLine}\n\n${cta}\n\n${hashtags}`;
+    text = `${hook}\n\n${analysis}\n${whySection}\n\n${recBlock}\n\n${cta}\n\n${hashtags}`;
   }
 
   return { text, postUrl, title };
