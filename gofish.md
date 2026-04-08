@@ -86,7 +86,7 @@ permalink: /gofish/
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=8">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=9">
 <script>
 window.IOC_TOOL_RECS = [
   {% for rec in site.data.monetization.tool_recommendations %}

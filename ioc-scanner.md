@@ -111,7 +111,7 @@ permalink: /ioc-scanner/
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=10">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=9">
 
 <!-- Source data for JS -->
 <script>

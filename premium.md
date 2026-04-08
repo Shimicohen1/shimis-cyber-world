@@ -117,6 +117,22 @@ permalink: /premium/
 </div>
 </div>
 </a>
+
+<a href="/breach-radar/" class="elite-card">
+<div class="elite-card__glow"></div>
+<div class="elite-card__content">
+<div class="elite-card__head">
+<span class="elite-card__icon">📡</span>
+<span class="elite-card__status elite-card__status--live">LIVE</span>
+</div>
+<h3>BreachRadar</h3>
+<p>Search if a domain or company has been claimed by ransomware groups. Live data from 329+ dark web leak sites.</p>
+<div class="elite-card__meta">
+<span>329+ groups</span>
+<span>Live API</span>
+</div>
+</div>
+</a>
 </div>
 
 </section>
