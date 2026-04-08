@@ -3,12 +3,15 @@
  * 
  * Picks the best post from today's _posts/ and publishes
  * a formatted update to LinkedIn via the REST API.
+ * Posts to personal profile, and optionally to Company Page.
  * 
  * Runs daily via GitHub Actions at 10:00 Israel time.
  * 
  * Required secrets:
- *   LINKEDIN_ACCESS_TOKEN — OAuth 2.0 token with w_member_social scope
+ *   LINKEDIN_ACCESS_TOKEN — OAuth 2.0 token with w_member_social (+ w_organization_social for company)
  *   LINKEDIN_PERSON_URN   — e.g. "urn:li:person:AbCdEf123"
+ * Optional:
+ *   LINKEDIN_ORG_URN      — e.g. "urn:li:organization:112773961" (Company Page)
  */
 
 import fs from 'fs';
@@ -16,6 +19,7 @@ import path from 'path';
 
 const TOKEN = process.env.LINKEDIN_ACCESS_TOKEN;
 const PERSON_URN = process.env.LINKEDIN_PERSON_URN;
+const ORG_URN = process.env.LINKEDIN_ORG_URN || '';
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, '_posts');
 const STATE_FILE = path.join(ROOT, '.github', 'linkedin-state.json');
@@ -328,10 +332,9 @@ ${hashtags}`;
  *  LINKEDIN API
  * ═══════════════════════════════════════════════════════════ */
 
-async function postToLinkedIn(text, articleUrl, articleTitle) {
-  // LinkedIn UGC Post API (v2)
+async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle) {
   const payload = {
-    author: PERSON_URN,
+    author: authorUrn,
     lifecycleState: 'PUBLISHED',
     specificContent: {
       'com.linkedin.ugc.ShareContent': {
@@ -367,7 +370,6 @@ async function postToLinkedIn(text, articleUrl, articleTitle) {
   }
 
   const data = await res.json();
-  console.log(`✅ Posted to LinkedIn: ${data.id}`);
   return data.id;
 }
 
@@ -394,7 +396,22 @@ async function main() {
   const { text, postUrl, title } = formatLinkedInPost(best.meta, best.file);
   console.log(`\n--- LinkedIn Post Preview ---\n${text}\n---\n`);
 
-  await postToLinkedIn(text, postUrl, title);
+  // Post to personal profile
+  const personalId = await postToLinkedIn(PERSON_URN, text, postUrl, title);
+  console.log(`✅ Posted to personal profile: ${personalId}`);
+
+  // Post to Company Page (if configured)
+  if (ORG_URN) {
+    try {
+      const orgId = await postToLinkedIn(ORG_URN, text, postUrl, title);
+      console.log(`✅ Posted to Company Page: ${orgId}`);
+    } catch (err) {
+      // Don't fail the whole run if company post fails
+      console.error(`⚠️  Company Page post failed (continuing): ${err.message}`);
+    }
+  } else {
+    console.log('ℹ️  No LINKEDIN_ORG_URN — skipping Company Page post.');
+  }
 
   // Update state
   state.postedFiles.push(best.file);
