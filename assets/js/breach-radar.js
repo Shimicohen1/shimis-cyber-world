@@ -264,7 +264,8 @@
         description: p.description || '',
         website: null,
         screenshot: p.screen ? 'https://www.ransomlook.io/' + p.screen : null,
-        source_link: p.link && p.link.startsWith('/') ? 'https://www.ransomlook.io' + p.link : p.link || null,
+        source_link: p.link && p.link.startsWith('/') ? 'https://www.ransomlook.io' + p.link : null,
+        onion_link: p.link && p.link.indexOf('.onion') !== -1 ? p.link : null,
         isLeak: false,
         confidence: null
       });
@@ -592,6 +593,9 @@
       }
       if (v.source_link) {
         h += '<a href="' + escAttr(v.source_link) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">🔗 Source</a>';
+      }
+      if (v.onion_link) {
+        h += '<span class="br-evidence-btn br-evidence-btn--onion" title="' + escAttr(v.onion_link) + '">🧅 .onion (Tor only)</span>';
       }
       if (v.group && !v.isLeak) {
         h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--group">⚔️ Group Profile</a>';
