@@ -47,7 +47,7 @@ sources:
     descs:
       ip: "Multi-blacklist check — scans 30+ IP reputation databases at once"
     urls:
-      ip: "https://www.ipvoid.com/ip-blacklist-check/"
+      ip: "https://www.ipvoid.com/ip-blacklist-check/?ip={value}"
 
   - name: Censys
     icon: "🔎"
@@ -82,7 +82,7 @@ sources:
     descs:
       domain: "DNS recon — map subdomains, MX records, TXT records, hosting info"
     urls:
-      domain: "https://dnsdumpster.com/"
+      domain: "https://dnsdumpster.com/?domain={value}"
 
   - name: Whois
     icon: "📋"
@@ -154,7 +154,7 @@ sources:
     descs:
       url: "Community-verified phishing database — check if URL is a known phish"
     urls:
-      url: "https://phishtank.org/phish_search.php?verified=u&active=y"
+      url: "https://phishtank.org/phish_search.php?verified=u&active=y&url={value}"
 
   # ── Email ──
   - name: Have I Been Pwned
@@ -203,7 +203,7 @@ sources:
     descs:
       email: "Account discovery — checks 120+ websites to see where this email has registered accounts (social media, shopping, forums, dating, gaming)"
     urls:
-      email: "https://github.com/megadose/holehe"
+      email: "https://epieos.com/?q={value}&t=email"
 
   - name: Google (Dork)
     icon: "🔍"
@@ -212,3 +212,38 @@ sources:
       email: "Public exposure — Google search for this email in leaked documents, paste sites, forums, social profiles, and company directories"
     urls:
       email: "https://www.google.com/search?q=%22{value}%22"
+
+  # ── Multi-type (additional) ──
+  - name: Pulsedive
+    icon: "💓"
+    types: [ip, domain, url]
+    descs:
+      ip: "Community threat intelligence — risk score, passive DNS, linked indicators, WHOIS history"
+      domain: "Risk scoring, related indicators, open-source threat feed matches"
+      url: "URL risk analysis, hosting details, linked IOCs"
+    urls:
+      ip: "https://pulsedive.com/indicator/?ioc={value}"
+      domain: "https://pulsedive.com/indicator/?ioc={value}"
+      url: "https://pulsedive.com/indicator/?ioc={value}"
+
+  - name: URLhaus
+    icon: "🏠"
+    types: [url, domain]
+    descs:
+      url: "Abuse.ch malware URL database — check if this URL distributes malware, see payload details and hosting info"
+      domain: "Domain lookup — any URLs on this domain distributing malware? Hosting history and payload families"
+    urls:
+      url: "https://urlhaus.abuse.ch/browse.php?search={value}"
+      domain: "https://urlhaus.abuse.ch/browse.php?search={value}"
+
+  - name: InQuest
+    icon: "🔬"
+    types: [hash, domain, ip]
+    descs:
+      hash: "Deep file inspection — DFI analysis, embedded IOCs, malicious macros, YARA rule matches"
+      domain: "Domain reputation — associated malware samples, DNS records, certificate data"
+      ip: "IP reputation — linked malware samples, hosting analysis, threat associations"
+    urls:
+      hash: "https://labs.inquest.net/iocdb/search/sha256/{value}"
+      domain: "https://labs.inquest.net/iocdb/search/domain/{value}"
+      ip: "https://labs.inquest.net/iocdb/search/ip/{value}"

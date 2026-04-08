@@ -16,11 +16,11 @@ permalink: /premium/
 <!-- ── Stats bar: proof ── -->
 <div class="elite-stats reveal">
 <div class="elite-stat">
-<span class="elite-stat__num">748</span>
+<span class="elite-stat__num">805</span>
 <span class="elite-stat__label">Hardening Checks</span>
 </div>
 <div class="elite-stat">
-<span class="elite-stat__num">11</span>
+<span class="elite-stat__num">14</span>
 <span class="elite-stat__label">Platforms</span>
 </div>
 <div class="elite-stat">
@@ -28,7 +28,7 @@ permalink: /premium/
 <span class="elite-stat__label">Detection Rules</span>
 </div>
 <div class="elite-stat">
-<span class="elite-stat__num">15+</span>
+<span class="elite-stat__num">22</span>
 <span class="elite-stat__label">Threat Intel Sources</span>
 </div>
 </div>
@@ -45,10 +45,10 @@ permalink: /premium/
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>LockDown</h3>
-<p>748 security hardening checks. 11 platforms. Real commands you copy-paste, not theory you read. Track progress, export everything.</p>
+<p>805 security hardening checks. 14 platforms — including CrowdStrike, Palo Alto, and Cisco. Real commands you copy-paste, not theory you read.</p>
 <div class="elite-card__meta">
-<span>11 platforms</span>
-<span>748 items</span>
+<span>14 platforms</span>
+<span>805 items</span>
 <span>Copy & export</span>
 </div>
 </div>
@@ -113,9 +113,9 @@ permalink: /premium/
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>ThreatLens</h3>
-<p>Bulk IOC lookup across 18 threat intel platforms. IPs, domains, hashes, URLs — auto-detected.</p>
+<p>Bulk IOC lookup across 22 threat intel platforms. IPs, domains, hashes, URLs — auto-detected.</p>
 <div class="elite-card__meta">
-<span>15+ sources</span>
+<span>22 sources</span>
 <span>Auto-detect</span>
 </div>
 </div>

@@ -32,6 +32,15 @@ platforms:
 - id: m365-power
   name: Power Platform
   icon: ⚡
+- id: crowdstrike
+  name: CrowdStrike Falcon
+  icon: 🦅
+- id: paloalto
+  name: Palo Alto Networks
+  icon: 🔥
+- id: ironport
+  name: Cisco Secure Email
+  icon: 📨
 categories:
 - id: identity
   name: Identity & Access
@@ -12034,3 +12043,1127 @@ items:
   title: All entitlement management packages that apply to guests have expirations or access reviews configured in their assignment policies
   description: '[Zero Trust] Access control | Risk: Medium | Cost: Medium | How-to: Configure expiration and access reviews for guest access packages.'
   reference: ZT.21929 — CIS M365 / Zero Trust — Entra ID
+
+# ═══════════════════════════════════════════════════════════════
+#  CrowdStrike Falcon
+# ═══════════════════════════════════════════════════════════════
+- id: cs-001
+  platform: crowdstrike
+  category: services
+  severity: critical
+  title: Enable sensor anti-tamper protection
+  description: Prevent local admins and malware from disabling or uninstalling the Falcon sensor. Enable Sensor Tamper Protection in the prevention policy.
+  reference: CrowdStrike Falcon Best Practices — Sensor Hardening
+  command: '# Falcon console: Host setup > Sensor update policies
+    # Enable "Sensor Tamper Protection" toggle
+    # Or via PSFalcon:
+    Set-CsPreventionPolicy -Id <policy_id> -Settings @{sensor_anti_tamper=@{enabled=$true}}'
+  tags:
+  - edr
+  - tamper-protection
+  - endpoint
+- id: cs-002
+  platform: crowdstrike
+  category: services
+  severity: critical
+  title: Set sensor update policy to auto-update (N-1)
+  description: Configure Falcon sensors to auto-update to N-1 (one version behind latest) for stability while staying current on detection content.
+  reference: CrowdStrike Falcon Best Practices — Sensor Updates
+  command: '# Falcon console: Host setup > Sensor update policies
+    # Set build: N-1 (recommended)
+    # Assign policy to all host groups'
+  tags:
+  - edr
+  - patching
+  - sensor
+- id: cs-003
+  platform: crowdstrike
+  category: services
+  severity: critical
+  title: Enable all prevention policy detections in "Prevent" mode
+  description: Ensure prevention policies are set to Prevent (not Detect-only) for malware, exploits, and suspicious processes. Detect-only mode logs threats but does not block them.
+  reference: CrowdStrike Falcon Prevention Policy Guide
+  command: '# Falcon console: Configure > Prevention Policies
+    # For each category (Malware, Exploits, Suspicious Processes):
+    # Toggle ALL items from "Detect" to "Prevent"
+    #
+    # Via PSFalcon PowerShell:
+    Get-CsPreventionPolicy | Select Id,Name,Prevention_settings'
+  tags:
+  - edr
+  - malware
+  - prevention
+  - exploit
+- id: cs-004
+  platform: crowdstrike
+  category: services
+  severity: critical
+  title: Enable cloud-based machine learning (cloud ML) at aggressive level
+  description: Set Cloud ML to aggressive or extra aggressive for both on-sensor and cloud-based ML detections. This maximises detection coverage against unknown threats.
+  reference: CrowdStrike Falcon ML Configuration
+  command: '# Falcon console: Configure > Prevention Policies > Machine Learning
+    # On-Sensor ML: Aggressive
+    # Cloud ML: Aggressive
+    # Apply to all host groups'
+  tags:
+  - edr
+  - machine-learning
+  - detection
+- id: cs-005
+  platform: crowdstrike
+  category: identity
+  severity: critical
+  title: Enforce MFA for Falcon console access
+  description: Enable multi-factor authentication for all Falcon console users. A compromised admin credential without MFA allows an attacker to disable protections enterprise-wide.
+  reference: CrowdStrike Falcon Console Security
+  command: '# Falcon console: Settings > Users > User Management
+    # Enforce MFA for all users
+    # Support > API Clients: revoke unused API keys
+    # Enable SAML SSO with your IdP for centralized access control'
+  tags:
+  - authentication
+  - mfa
+  - console-security
+- id: cs-006
+  platform: crowdstrike
+  category: identity
+  severity: high
+  title: Apply least-privilege RBAC roles for console users
+  description: Use granular RBAC roles (Read-only Analyst, Responder, Admin) instead of granting full admin to SOC staff. Limit API client scopes to only required permissions.
+  reference: CrowdStrike Falcon RBAC Best Practices
+  command: '# Falcon console: Settings > Users > Roles
+    # Assign roles per function:
+    # - SOC L1: Falcon Analyst (read, triage)
+    # - SOC L2: Falcon Responder (+ contain, RTR)
+    # - Admin only: Falcon Administrator
+    #
+    # API clients: scope to minimum required (e.g., Detections Read-only)'
+  tags:
+  - rbac
+  - least-privilege
+  - access-control
+- id: cs-007
+  platform: crowdstrike
+  category: services
+  severity: critical
+  title: Enable Real Time Response (RTR) with audit logging
+  description: RTR allows remote shell access to endpoints for live investigation. Enable it with full audit logging and restrict admin-level RTR commands to senior responders only.
+  reference: CrowdStrike Falcon RTR Configuration
+  command: '# Falcon console: Configure > Response Policies
+    # Enable Real Time Response
+    # Set "Admin RTR" to restricted group only
+    # Ensure RTR Audit Logging is enabled
+    # Configure RTR session timeout (recommended: 30 min)'
+  tags:
+  - incident-response
+  - rtr
+  - remote-access
+  - audit
+- id: cs-008
+  platform: crowdstrike
+  category: network
+  severity: high
+  title: Enable Falcon Firewall Management policies
+  description: Deploy host-based firewall rules via Falcon to control lateral movement. Block unnecessary inbound SMB, RDP, and WinRM between workstations.
+  reference: CrowdStrike Falcon Firewall Management
+  command: '# Falcon console: Network > Firewall Management
+    # Create rule group:
+    # 1. Block inbound SMB (TCP 445) between workstations
+    # 2. Block inbound RDP (TCP 3389) except from jump servers
+    # 3. Block inbound WinRM (TCP 5985/5986) except from SCCM
+    # Assign to workstation host groups'
+  tags:
+  - firewall
+  - lateral-movement
+  - smb
+  - rdp
+- id: cs-009
+  platform: crowdstrike
+  category: services
+  severity: high
+  title: Enable USB device control
+  description: Block unauthorized USB mass-storage devices to prevent data exfiltration and malware delivery via removable media.
+  reference: CrowdStrike Falcon Device Control
+  command: '# Falcon console: Configure > Device Control Policies
+    # Default action: Block all USB mass-storage
+    # Create exception list for approved devices by vendor ID
+    # Enable notifications to end users on block events'
+  tags:
+  - usb
+  - data-exfiltration
+  - device-control
+- id: cs-010
+  platform: crowdstrike
+  category: logging
+  severity: high
+  title: Enable extended visibility (full command-line logging)
+  description: Configure the sensor to capture full process command-line arguments, script content, and DNS queries. This is critical for threat hunting and forensics.
+  reference: CrowdStrike Falcon Data Collection
+  command: '# Falcon console: Configure > Prevention Policies > Sensor Visibility
+    # Enable: Enhanced Visibility
+    # Enable: Script-Based Execution Monitoring
+    # Enable: DNS Monitoring
+    # Enable: Command Line Visibility'
+  tags:
+  - telemetry
+  - command-line
+  - dns
+  - visibility
+- id: cs-011
+  platform: crowdstrike
+  category: logging
+  severity: high
+  title: Configure SIEM integration (Falcon Data Replicator or Streaming API)
+  description: Forward Falcon detections and audit logs to your SIEM for correlation. Use Falcon Data Replicator (FDR) for full telemetry or the Streaming API for real-time alerts.
+  reference: CrowdStrike Falcon SIEM Integration Guide
+  command: '# Option A — Streaming API (real-time alerts):
+    # Falcon console: Support > API Clients
+    # Create client with "Event Streams" scope
+    # Configure your SIEM connector (Splunk TA, Sentinel connector)
+    #
+    # Option B — Falcon Data Replicator (full telemetry):
+    # Contact CrowdStrike to enable FDR
+    # Configure S3 bucket or SQS queue for delivery'
+  tags:
+  - siem
+  - logging
+  - streaming
+  - integration
+- id: cs-012
+  platform: crowdstrike
+  category: services
+  severity: high
+  title: Enable Falcon Identity Protection (if licensed)
+  description: Activate Identity Threat Detection to monitor Active Directory for credential attacks, lateral movement via pass-the-hash, golden ticket, and DCSync.
+  reference: CrowdStrike Falcon Identity Protection
+  command: '# Falcon console: Identity Protection > Configuration
+    # Deploy Identity sensor on domain controllers
+    # Enable detections: Pass-the-Hash, Kerberoasting, DCSync
+    # Set action: Alert + Block for critical detections
+    # Integrate with prevention policies for automated response'
+  tags:
+  - identity
+  - active-directory
+  - lateral-movement
+  - kerberos
+- id: cs-013
+  platform: crowdstrike
+  category: services
+  severity: high
+  title: Configure automated containment for critical-severity detections
+  description: Set up automated network containment for hosts with critical-severity detections. Contained hosts can only communicate with the Falcon cloud, cutting off attacker access.
+  reference: CrowdStrike Falcon Containment
+  command: '# Falcon console: Configure > Response Policies
+    # Enable "Automated Containment"
+    # Trigger: Critical severity detections
+    # Action: Network contain host
+    # Tip: Test with a pilot group before enabling org-wide
+    #
+    # Via API:
+    # POST /devices/entities/devices-actions/v2
+    # action_name: contain'
+  tags:
+  - containment
+  - automation
+  - incident-response
+- id: cs-014
+  platform: crowdstrike
+  category: services
+  severity: medium
+  title: Enable Falcon OverWatch managed threat hunting
+  description: Activate OverWatch for 24/7 human-driven threat hunting. OverWatch analysts proactively hunt for hands-on-keyboard intrusions across your environment.
+  reference: CrowdStrike OverWatch
+  command: '# Contact CrowdStrike account team to enable OverWatch
+    # Ensure sensor deployment covers all critical hosts
+    # Configure notification routing for OverWatch escalations
+    # Review weekly OverWatch reports in Falcon console'
+  tags:
+  - threat-hunting
+  - managed-service
+  - overwatch
+- id: cs-015
+  platform: crowdstrike
+  category: encryption
+  severity: medium
+  title: Enable sensor proxy with TLS inspection exclusions
+  description: If traffic flows through a TLS-inspecting proxy, add CrowdStrike cloud domains to the exclusion list to prevent sensor communication failures.
+  reference: CrowdStrike Falcon Network Requirements
+  command: '# Exclude from TLS inspection:
+    # ts01-b.cloudsink.net
+    # lfodown01-b.cloudsink.net
+    # *.crowdstrike.com
+    #
+    # Sensor proxy config (Linux):
+    # /opt/CrowdStrike/falconctl -s --aph=<proxy_host> --app=<proxy_port>
+    #
+    # Verify connectivity:
+    # /opt/CrowdStrike/falconctl -g --aph'
+  tags:
+  - proxy
+  - tls
+  - network
+  - connectivity
+- id: cs-016
+  platform: crowdstrike
+  category: services
+  severity: critical
+  title: Deploy sensor to all endpoints (100% coverage)
+  description: Unmanaged hosts are blind spots. Deploy the Falcon sensor to every server, workstation, and cloud instance. Use Discover to identify unmanaged assets.
+  reference: CrowdStrike Sensor Deployment Guide
+  command: '# Check coverage gaps:
+    # Falcon console: Host setup > Discover > Unmanaged Assets
+    #
+    # Linux install:
+    # sudo dpkg -i falcon-sensor_*.deb
+    # sudo /opt/CrowdStrike/falconctl -s --cid=<CID>
+    # sudo systemctl start falcon-sensor
+    #
+    # Windows (GPO/SCCM):
+    # CrowdStrike.exe /install /quiet CID=<CID>'
+  tags:
+  - deployment
+  - coverage
+  - asset-management
+- id: cs-017
+  platform: crowdstrike
+  category: services
+  severity: high
+  title: Enable exploit mitigation for critical applications
+  description: Activate exploit prevention policies targeting browsers, Office, Java, PDF readers, and other commonly exploited applications.
+  reference: CrowdStrike Falcon Exploit Prevention
+  command: '# Falcon console: Configure > Prevention Policies > Exploit Mitigation
+    # Enable for all application families:
+    # - Browsers (Chrome, Edge, Firefox)
+    # - Microsoft Office
+    # - Java / JRE
+    # - PDF readers
+    # - Scripting engines (PowerShell, wscript, cscript)
+    # Set action: Prevent (not Detect-only)'
+  tags:
+  - exploit
+  - prevention
+  - browser
+  - office
+- id: cs-018
+  platform: crowdstrike
+  category: services
+  severity: high
+  title: Configure IOA (Indicator of Attack) custom rules
+  description: Create custom IOA rules to detect organisation-specific threats — for example, execution from non-standard directories, unsigned binaries, or known attacker TTPs.
+  reference: CrowdStrike Falcon Custom IOA Rules
+  command: '# Falcon console: Configure > Custom IOA Rules
+    # Example rule — detect execution from temp folder:
+    # Type: Process Creation
+    # Image Path: .*\\Temp\\.*\.exe
+    # Action: Detect
+    #
+    # Example rule — detect renamed system utilities:
+    # Original Filename: cmd.exe
+    # Image Path NOT: .*\\System32\\cmd.exe
+    # Action: Detect + Prevent'
+  tags:
+  - custom-rules
+  - ioa
+  - detection
+  - threat-hunting
+- id: cs-019
+  platform: crowdstrike
+  category: patching
+  severity: high
+  title: Enable Falcon Spotlight for vulnerability management
+  description: Use Falcon Spotlight to identify vulnerabilities on all managed endpoints without running scans. Prioritise by exploitability (KEV), not just CVSS score.
+  reference: CrowdStrike Falcon Spotlight
+  command: '# Falcon console: Exposure Management > Spotlight
+    # Dashboard: review top vulnerabilities by ExPRT rating
+    # Prioritise: CISA KEV (Known Exploited Vulnerabilities)
+    # Export: CSV of critical vulns for remediation tracking
+    # Integration: push to JIRA/ServiceNow for ticketing'
+  tags:
+  - vulnerability-management
+  - spotlight
+  - cve
+  - patching
+- id: cs-020
+  platform: crowdstrike
+  category: logging
+  severity: medium
+  title: Enable audit logging for all console actions
+  description: Monitor admin actions in the Falcon console — policy changes, user additions, detection dismissals. Forward audit logs to SIEM for tamper evidence.
+  reference: CrowdStrike Falcon Audit Logs
+  command: '# Falcon console: Settings > Audit Logs
+    # Review: policy changes, user management, API key creation
+    # Forward via Streaming API to SIEM
+    #
+    # Via API:
+    # GET /audits/entities/audits/v1
+    # Filter by action_type, user, timestamp'
+  tags:
+  - audit
+  - compliance
+  - admin-activity
+- id: cs-021
+  platform: crowdstrike
+  category: network
+  severity: high
+  title: Enable Falcon for Cloud workload protection
+  description: Deploy the Falcon sensor to cloud workloads (EC2, Azure VMs, GKE nodes) and containers. Enable cloud-native IOAs for serverless and container runtime threats.
+  reference: CrowdStrike Falcon Cloud Security
+  command: '# Kubernetes DaemonSet deployment:
+    # helm repo add crowdstrike https://crowdstrike.github.io/falcon-helm
+    # helm install falcon-sensor crowdstrike/falcon-sensor \
+    #   --set falcon.cid=<CID> \
+    #   --set node.enabled=true
+    #
+    # Enable Container Detections in prevention policy
+    # Enable Image Assessment scanning in CI/CD pipeline'
+  tags:
+  - cloud
+  - containers
+  - kubernetes
+  - workload-protection
+- id: cs-022
+  platform: crowdstrike
+  category: services
+  severity: medium
+  title: Exclude performance-sensitive paths (not security-sensitive)
+  description: Add targeted exclusions only for verified performance-impacting paths (e.g., database data dirs, build outputs). Never exclude temp, downloads, or user-writable paths.
+  reference: CrowdStrike Falcon Exclusion Best Practices
+  command: '# Falcon console: Configure > Prevention Policies > Exclusions
+    # Safe to exclude (performance):
+    #   /var/lib/mysql/data/
+    #   /var/lib/postgresql/
+    #   C:\Program Files\SQL Server\DATA\
+    #
+    # NEVER exclude:
+    #   %TEMP%, %APPDATA%, Downloads, Desktop
+    #   /tmp, /dev/shm, /var/tmp
+    #
+    # Review exclusions quarterly — attackers abuse stale exclusions'
+  tags:
+  - exclusions
+  - performance
+  - tuning
+
+# ═══════════════════════════════════════════════════════════════
+#  Palo Alto Networks
+# ═══════════════════════════════════════════════════════════════
+- id: pa-001
+  platform: paloalto
+  category: network
+  severity: critical
+  title: Deny all traffic by default (explicit deny rule)
+  description: Ensure the final rule in the security policy is an explicit deny-all with logging. Palo Alto has an implicit deny but it does not log — you need visibility into dropped traffic.
+  reference: Palo Alto Networks Best Practice — Security Policy
+  command: '# PAN-OS CLI:
+    set rulebase security rules deny-all from any to any application any action deny
+    set rulebase security rules deny-all log-end yes
+    set rulebase security rules deny-all log-setting default
+    # Move to bottom:
+    move rulebase security rules deny-all bottom'
+  tags:
+  - firewall
+  - default-deny
+  - security-policy
+- id: pa-002
+  platform: paloalto
+  category: network
+  severity: critical
+  title: Enable Threat Prevention (IPS) on all allowed rules
+  description: Attach a Threat Prevention profile (Antivirus, Anti-Spyware, Vulnerability Protection) to every allow rule. Without this, allowed traffic flows uninspected.
+  reference: Palo Alto Networks Best Practice — Threat Prevention
+  command: '# PAN-OS CLI:
+    set rulebase security rules <rule-name> profile-setting profiles virus strict
+    set rulebase security rules <rule-name> profile-setting profiles spyware strict
+    set rulebase security rules <rule-name> profile-setting profiles vulnerability strict
+    # Or attach a Security Profile Group:
+    set rulebase security rules <rule-name> profile-setting group strict-security'
+  tags:
+  - ips
+  - threat-prevention
+  - antivirus
+  - anti-spyware
+- id: pa-003
+  platform: paloalto
+  category: network
+  severity: critical
+  title: Enable WildFire for zero-day malware analysis
+  description: Forward unknown files to WildFire for cloud sandbox analysis. Set action to block on WildFire verdict and ensure all file types are forwarded.
+  reference: Palo Alto Networks Best Practice — WildFire
+  command: '# PAN-OS CLI:
+    set rulebase security rules <rule-name> profile-setting profiles wildfire-analysis default
+    # WildFire profile — forward all file types:
+    set profiles wildfire-analysis default rules rule1 direction both
+    set profiles wildfire-analysis default rules rule1 analysis public-cloud
+    set profiles wildfire-analysis default rules rule1 file-type any
+    commit'
+  tags:
+  - wildfire
+  - sandbox
+  - zero-day
+  - malware
+- id: pa-004
+  platform: paloalto
+  category: network
+  severity: critical
+  title: Enable SSL/TLS decryption for outbound traffic
+  description: Without SSL decryption, 80%+ of traffic is invisible — malware and C2 traffic hide in HTTPS. Enable forward proxy decryption with proper CA certificate distribution.
+  reference: Palo Alto Networks Best Practice — SSL Decryption
+  command: '# PAN-OS CLI:
+    # 1. Generate or import forward trust CA certificate
+    # 2. Create decryption policy:
+    set rulebase decryption rules decrypt-outbound from trust to untrust
+    set rulebase decryption rules decrypt-outbound action decrypt
+    set rulebase decryption rules decrypt-outbound type ssl-forward-proxy
+    # 3. Add no-decrypt exceptions for healthcare, finance, privacy'
+  tags:
+  - ssl-decryption
+  - tls
+  - forward-proxy
+  - visibility
+- id: pa-005
+  platform: paloalto
+  category: network
+  severity: high
+  title: Enable URL Filtering with block list for high-risk categories
+  description: Block access to known malicious, phishing, command-and-control, malware, and newly-registered domain categories. Log all URL categories.
+  reference: Palo Alto Networks Best Practice — URL Filtering
+  command: '# PAN-OS CLI:
+    set profiles url-filtering strict-url action block category malware
+    set profiles url-filtering strict-url action block category phishing
+    set profiles url-filtering strict-url action block category command-and-control
+    set profiles url-filtering strict-url action block category dynamic-dns
+    set profiles url-filtering strict-url action block category newly-registered-domain
+    set profiles url-filtering strict-url action alert category unknown
+    # Attach to allow rules via security profile group'
+  tags:
+  - url-filtering
+  - phishing
+  - c2
+  - web-security
+- id: pa-006
+  platform: paloalto
+  category: identity
+  severity: critical
+  title: Enforce MFA for management access (HTTPS/SSH)
+  description: Require multi-factor authentication for all administrative access to the firewall. Integrate with RADIUS/TACACS+ with MFA or SAML IdP.
+  reference: Palo Alto Networks Admin Guide — Authentication
+  command: '# PAN-OS CLI:
+    # Configure SAML authentication profile with IdP MFA:
+    set authentication-profile mfa-admins method saml
+    set authentication-profile mfa-admins method saml idp-server-profile <idp-name>
+    # Apply to admin accounts:
+    set mgt-config users <admin> authentication-profile mfa-admins
+    # Restrict management access to trusted IPs:
+    set deviceconfig system permitted-ip <management-subnet>'
+  tags:
+  - mfa
+  - admin-access
+  - authentication
+- id: pa-007
+  platform: paloalto
+  category: identity
+  severity: high
+  title: Configure User-ID for application-aware policies
+  description: Enable User-ID mapping so security policies apply to users/groups, not just IP addresses. Integrate with Active Directory, Syslog, or GlobalProtect.
+  reference: Palo Alto Networks User-ID Configuration
+  command: '# PAN-OS CLI:
+    set user-id-agent setup <dc-name> host <dc-ip>
+    set user-id-agent setup <dc-name> port 5007
+    # Enable User-ID on zones:
+    set zone trust enable-user-identification yes
+    # Create user-based rules:
+    set rulebase security rules user-web source-user domain\security-group'
+  tags:
+  - user-id
+  - identity
+  - active-directory
+  - zero-trust
+- id: pa-008
+  platform: paloalto
+  category: network
+  severity: high
+  title: Enable DNS Security to block C2 and DGA domains
+  description: DNS Security uses machine learning to identify C2 domains, DNS tunnelling, and domain generation algorithms (DGA) in real time.
+  reference: Palo Alto Networks DNS Security
+  command: '# PAN-OS CLI:
+    set profiles spyware dns-security strict-dns botnet-domains lists default-paloalto-dns action sinkhole
+    set profiles spyware dns-security strict-dns botnet-domains dns-security-categories pan-dns-sec-malware action sinkhole
+    set profiles spyware dns-security strict-dns botnet-domains dns-security-categories pan-dns-sec-c2 action sinkhole
+    set profiles spyware dns-security strict-dns botnet-domains sinkhole ipv4-address pan-sinkhole-default-ip
+    commit'
+  tags:
+  - dns
+  - c2
+  - dga
+  - sinkhole
+- id: pa-009
+  platform: paloalto
+  category: network
+  severity: high
+  title: Enable GlobalProtect VPN with HIP checks
+  description: Deploy GlobalProtect with Host Information Profiling (HIP) to enforce endpoint posture — require disk encryption, OS patches, and EDR before granting access.
+  reference: Palo Alto Networks GlobalProtect HIP
+  command: '# PAN-OS CLI:
+    # Create HIP object requiring disk encryption + patch level:
+    set profiles hip-objects compliant-endpoint host-info criteria disk-encryption is-installed yes
+    set profiles hip-objects compliant-endpoint patch-management criteria is-installed yes
+    # Create HIP profile:
+    set profiles hip-profiles corp-compliance match compliant-endpoint
+    # Apply to GP gateway security rules'
+  tags:
+  - vpn
+  - globalprotect
+  - hip
+  - zero-trust
+- id: pa-010
+  platform: paloalto
+  category: logging
+  severity: high
+  title: Forward all logs to SIEM via syslog or Cortex Data Lake
+  description: Configure log forwarding for traffic, threat, URL, WildFire, and authentication logs. Use CEF or LEEF format for SIEM compatibility.
+  reference: Palo Alto Networks Log Forwarding
+  command: '# PAN-OS CLI:
+    set shared log-settings syslog siem-server server <siem-ip>
+    set shared log-settings syslog siem-server transport UDP
+    set shared log-settings syslog siem-server port 514
+    set shared log-settings syslog siem-server format BSD
+    # Forward all log types:
+    set shared log-settings profiles default match-list threat send-syslog siem-server
+    set shared log-settings profiles default match-list traffic send-syslog siem-server
+    set shared log-settings profiles default match-list url send-syslog siem-server
+    commit'
+  tags:
+  - siem
+  - syslog
+  - logging
+  - monitoring
+- id: pa-011
+  platform: paloalto
+  category: services
+  severity: high
+  title: Disable unused management protocols (Telnet, HTTP, SNMP v1/v2)
+  description: Only allow HTTPS and SSH for management. Disable Telnet, HTTP, SNMPv1/v2 (use v3), and other insecure protocols on the management interface.
+  reference: Palo Alto Networks Management Hardening
+  command: '# PAN-OS CLI:
+    set deviceconfig system service disable-telnet yes
+    set deviceconfig system service disable-http yes
+    # Use SNMPv3 only:
+    set deviceconfig system snmp-setting access-setting version v3
+    # Restrict management to specific interface:
+    set deviceconfig system type static
+    set deviceconfig system permitted-ip <mgmt-network/cidr>
+    commit'
+  tags:
+  - management
+  - hardening
+  - telnet
+  - snmp
+- id: pa-012
+  platform: paloalto
+  category: encryption
+  severity: high
+  title: Enforce TLS 1.2+ for management and GlobalProtect portals
+  description: Disable TLS 1.0 and 1.1 on all management and SSL/TLS service profiles. Enforce TLS 1.2 or 1.3 with strong cipher suites.
+  reference: Palo Alto Networks TLS Configuration
+  command: '# PAN-OS CLI:
+    set shared ssl-tls-service-profile mgmt-tls-profile protocol-settings min-version tls1-2
+    set shared ssl-tls-service-profile mgmt-tls-profile protocol-settings max-version max
+    # Apply to GlobalProtect portal/gateway:
+    set network interface ethernet <iface> portal ssl-tls-service-profile mgmt-tls-profile
+    commit'
+  tags:
+  - tls
+  - encryption
+  - management
+  - cipher-suites
+- id: pa-013
+  platform: paloalto
+  category: network
+  severity: high
+  title: Enable Zone Protection profiles against flood attacks
+  description: Apply Zone Protection profiles to protect against SYN flood, UDP flood, ICMP flood, and IP spoofing at the zone level.
+  reference: Palo Alto Networks Zone Protection
+  command: '# PAN-OS CLI:
+    set network profiles zone-protection-profile edge-protect flood tcp-syn enable yes
+    set network profiles zone-protection-profile edge-protect flood tcp-syn alert-rate 10000
+    set network profiles zone-protection-profile edge-protect flood tcp-syn activate-rate 50000
+    set network profiles zone-protection-profile edge-protect flood tcp-syn maximal-rate 100000
+    set network profiles zone-protection-profile edge-protect flood udp enable yes
+    set network profiles zone-protection-profile edge-protect flood icmp enable yes
+    # Apply to untrust zone:
+    set zone untrust network zone-protection-profile edge-protect
+    commit'
+  tags:
+  - ddos
+  - flood-protection
+  - zone-protection
+  - network
+- id: pa-014
+  platform: paloalto
+  category: services
+  severity: high
+  title: Use App-ID based rules instead of port-based
+  description: Replace legacy port-based rules with App-ID rules. App-ID identifies applications regardless of port, protocol, or encryption.
+  reference: Palo Alto Networks App-ID Best Practice
+  command: '# Instead of:
+    #   allow tcp/443 from trust to untrust
+    # Use:
+    set rulebase security rules web-browsing application web-browsing ssl
+    set rulebase security rules web-browsing from trust to untrust action allow
+    #
+    # Identify unused port-based rules:
+    # Monitor > App Scope > Rule Usage
+    # Migrate port rules to App-ID using Policy Optimizer'
+  tags:
+  - app-id
+  - application-control
+  - policy
+  - zero-trust
+- id: pa-015
+  platform: paloalto
+  category: network
+  severity: critical
+  title: Block known bad IP feeds via External Dynamic Lists (EDL)
+  description: Subscribe to threat intelligence feeds and block known malicious IPs, domains, and URLs using External Dynamic Lists. Palo Alto provides built-in EDLs and supports custom feeds.
+  reference: Palo Alto Networks EDL Configuration
+  command: '# PAN-OS CLI — built-in Palo Alto EDL:
+    set rulebase security rules block-bad-ips source edl panw-bulletproof-ip-list
+    set rulebase security rules block-bad-ips action deny
+    # Custom EDL:
+    set external-list my-threat-feed type ip source-url https://feeds.example.com/ips.txt
+    set external-list my-threat-feed type ip refresh-rate hour 1
+    commit'
+  tags:
+  - threat-intel
+  - edl
+  - blocklist
+  - ioc
+- id: pa-016
+  platform: paloalto
+  category: patching
+  severity: critical
+  title: Keep PAN-OS and content updates current
+  description: Apply PAN-OS security patches promptly and enable automatic content updates (Applications & Threats, WildFire, Antivirus). Palo Alto firewalls have been targeted by CVEs.
+  reference: Palo Alto Networks Update Best Practices
+  command: '# PAN-OS CLI:
+    # Check current version:
+    show system info | match sw-version
+    # Schedule automatic content updates:
+    set deviceconfig system update-schedule threats recurring every-30-mins action download-and-install
+    set deviceconfig system update-schedule wildfire recurring every-minute action download-and-install
+    set deviceconfig system update-schedule anti-virus recurring hourly action download-and-install
+    # Check for PAN-OS updates:
+    request system software check
+    commit'
+  tags:
+  - patching
+  - updates
+  - pan-os
+  - content-updates
+- id: pa-017
+  platform: paloalto
+  category: logging
+  severity: medium
+  title: Enable configuration audit trail and commit locking
+  description: Track who changed what in the firewall config. Enable commit locking so concurrent admins cannot overwrite each other. Export config diffs for auditing.
+  reference: Palo Alto Networks Configuration Audit
+  command: '# PAN-OS CLI:
+    # View recent config changes:
+    show config audit
+    # Enable commit lock before making changes:
+    request commit-lock add comment "ticket-12345"
+    # Compare running vs candidate config:
+    show config diff
+    # Export audit log via syslog to SIEM'
+  tags:
+  - audit
+  - configuration
+  - change-management
+  - compliance
+- id: pa-018
+  platform: paloalto
+  category: network
+  severity: high
+  title: Segment internal networks with inter-zone policies
+  description: Do not place all internal subnets in a single trust zone. Create separate zones for servers, workstations, DMZ, and IoT. Apply least-privilege rules between zones.
+  reference: Palo Alto Networks Network Segmentation
+  command: '# PAN-OS CLI:
+    # Create zones:
+    set zone servers network layer3 ethernet1/3
+    set zone workstations network layer3 ethernet1/4
+    set zone iot network layer3 ethernet1/5
+    # Inter-zone rules — only needed traffic:
+    set rulebase security rules srv-to-ws from servers to workstations application ms-ds-smbv3 action allow
+    set rulebase security rules deny-iot-to-srv from iot to servers action deny log-end yes
+    commit'
+  tags:
+  - segmentation
+  - zones
+  - micro-segmentation
+  - zero-trust
+- id: pa-019
+  platform: paloalto
+  category: services
+  severity: high
+  title: Enable Panorama central management (multi-firewall)
+  description: Use Panorama for centralised policy management, log aggregation, and software updates across all Palo Alto firewalls. Reduces config drift and enables consistent security posture.
+  reference: Palo Alto Networks Panorama Best Practices
+  command: '# On each managed firewall:
+    set deviceconfig system panorama-server <panorama-ip>
+    set deviceconfig system panorama-server-2 <panorama-ip-2>
+    commit
+    # On Panorama:
+    # Create device groups and template stacks
+    # Push shared security policies
+    # Use commit-all to deploy across all firewalls'
+  tags:
+  - panorama
+  - central-management
+  - policy
+  - multi-firewall
+- id: pa-020
+  platform: paloalto
+  category: network
+  severity: high
+  title: Enable file blocking for high-risk file types
+  description: Block transmission of executable file types (PE, ELF, MSI, BAT, PS1, HTA, JAR) across all allowed rules. Alert on Office macro-enabled files.
+  reference: Palo Alto Networks File Blocking Profile
+  command: '# PAN-OS CLI:
+    set profiles file-blocking strict-file-block rules block-executables application any file-type exe,dll,msi,bat,cmd,ps1,hta,jar,elf direction both action block
+    set profiles file-blocking strict-file-block rules alert-macros application any file-type docm,xlsm,pptm direction both action alert
+    # Attach to allow rules via security profile group
+    commit'
+  tags:
+  - file-blocking
+  - malware
+  - executables
+  - macro
+
+# ═══════════════════════════════════════════════════════════════
+#  Cisco Secure Email (IronPort)
+# ═══════════════════════════════════════════════════════════════
+- id: iron-001
+  platform: ironport
+  category: network
+  severity: critical
+  title: Enable DMARC enforcement (reject policy)
+  description: Configure DMARC verification to reject emails that fail SPF and DKIM alignment. This blocks email spoofing and BEC attacks targeting your users.
+  reference: Cisco Secure Email — DMARC Verification
+  command: '# ESA CLI:
+    ironport> mailpolicies > dmarc
+    # Enable DMARC verification on incoming mail policy
+    # Action on p=reject: Reject
+    # Action on p=quarantine: Quarantine
+    # Send aggregate reports: Yes
+    #
+    # Verify:
+    ironport> dmarc_verification
+    DMARC verification is enabled.'
+  tags:
+  - dmarc
+  - email-security
+  - spoofing
+  - bec
+- id: iron-002
+  platform: ironport
+  category: network
+  severity: critical
+  title: Enable SPF verification on all incoming mail
+  description: Verify SPF records for all inbound email. Hard-fail results should be dropped or quarantined to prevent sender address forgery.
+  reference: Cisco Secure Email — SPF Verification
+  command: '# ESA CLI:
+    ironport> mailpolicies > mail_flow_policies
+    # Edit incoming mail policy:
+    # SPF/SIDF Verification: Enabled
+    # SPF Hard Fail action: Drop or Quarantine
+    # SPF Soft Fail action: Tag subject [SPF-SOFTFAIL]
+    #
+    # Content filter for SPF failures:
+    ironport> filters > add
+    # Condition: SPF Status = Fail
+    # Action: Quarantine to "SPF-Failures" quarantine'
+  tags:
+  - spf
+  - email-authentication
+  - spoofing
+- id: iron-003
+  platform: ironport
+  category: network
+  severity: critical
+  title: Enable DKIM signing and verification
+  description: Sign outgoing emails with DKIM to prove authenticity and verify DKIM signatures on incoming emails to detect tampering.
+  reference: Cisco Secure Email — DKIM Configuration
+  command: '# ESA CLI — Outgoing DKIM signing:
+    ironport> mailpolicies > signing_profiles
+    # Create signing profile:
+    # Domain: yourdomain.com
+    # Selector: s1
+    # Key size: 2048-bit RSA
+    #
+    # Incoming DKIM verification:
+    ironport> mailpolicies > verification_profiles
+    # Enable DKIM verification on incoming policy
+    # Action on failure: Tag header + log'
+  tags:
+  - dkim
+  - email-authentication
+  - signing
+- id: iron-004
+  platform: ironport
+  category: services
+  severity: critical
+  title: Enable Advanced Malware Protection (AMP) file analysis
+  description: Enable Cisco AMP integration to sandbox suspicious attachments. Files with unknown disposition are sent to Threat Grid for detonation and analysis.
+  reference: Cisco Secure Email — AMP for Email
+  command: '# ESA CLI:
+    ironport> securityservices > amp
+    # Enable File Reputation: Yes
+    # Enable File Analysis (Threat Grid): Yes
+    # File types to scan: All (executables, documents, archives)
+    # Action on malicious verdict: Drop + notify admin
+    # Retrospective alerting: Enabled'
+  tags:
+  - amp
+  - malware
+  - sandbox
+  - threat-grid
+- id: iron-005
+  platform: ironport
+  category: services
+  severity: critical
+  title: Enable Outbreak Filters for zero-day email threats
+  description: Outbreak Filters quarantine suspicious messages during emerging outbreaks before signature updates are available. They use adaptive, rule-based heuristics.
+  reference: Cisco Secure Email — Outbreak Filters
+  command: '# ESA CLI:
+    ironport> securityservices > outbreak_filters
+    # Enable Outbreak Filters: Yes
+    # Adaptive Rules: Enabled
+    # URL Rewriting: Enabled (rewrites suspicious URLs)
+    # Max quarantine retention: 24 hours
+    # URL threat timeout: 10 minutes
+    # Default action: Quarantine with URL rewriting'
+  tags:
+  - outbreak-filters
+  - zero-day
+  - quarantine
+  - heuristics
+- id: iron-006
+  platform: ironport
+  category: network
+  severity: high
+  title: Configure anti-spam engine with aggressive settings
+  description: Set Cisco Anti-Spam engine to aggressive with positively identified spam dropped and suspected spam quarantined. Tune thresholds to minimise false negatives.
+  reference: Cisco Secure Email — Anti-Spam Configuration
+  command: '# ESA CLI:
+    ironport> securityservices > anti_spam
+    # Enable IronPort Anti-Spam: Yes
+    # Positively Identified Spam action: Drop
+    # Suspected Spam action: Quarantine
+    # Spam threshold (positive): 90
+    # Spam threshold (suspect): 50
+    # Enable: Intelligent Multi-Scan (IMS) for additional ML scanning'
+  tags:
+  - anti-spam
+  - spam-filtering
+  - email-security
+- id: iron-007
+  platform: ironport
+  category: encryption
+  severity: high
+  title: Enforce TLS for email delivery to partner domains
+  description: Configure mandatory TLS for email delivery to critical business partners and customers. Use opportunistic TLS for all other domains.
+  reference: Cisco Secure Email — TLS Configuration
+  command: '# ESA CLI:
+    ironport> mailpolicies > destination_controls
+    # Default: TLS Preferred (opportunistic)
+    # Add partner domains:
+    # Domain: partner.com
+    # TLS: Required
+    # TLS Version: TLS 1.2+
+    # Certificate verification: Required
+    #
+    # Monitor TLS failures:
+    ironport> tls_status
+    # Check for delivery failures due to TLS'
+  tags:
+  - tls
+  - encryption
+  - email-delivery
+  - partner-security
+- id: iron-008
+  platform: ironport
+  category: services
+  severity: high
+  title: Enable URL filtering and click-time URL evaluation
+  description: Scan URLs in email bodies and rewrite them to pass through Cisco cloud at click time. This catches URLs that are clean at delivery but turn malicious later.
+  reference: Cisco Secure Email — URL Filtering
+  command: '# ESA CLI:
+    ironport> securityservices > url_filtering
+    # Enable URL Filtering: Yes
+    # URL Category-based actions in content filters:
+    # - Malware: Block
+    # - Phishing: Block
+    # - Untrusted: Rewrite URL for click-time evaluation
+    # Enable Web Interaction Tracking: Yes (monitor who clicked)'
+  tags:
+  - url-filtering
+  - phishing
+  - click-time
+  - url-rewriting
+- id: iron-009
+  platform: ironport
+  category: services
+  severity: high
+  title: Configure content filters for sensitive data (DLP)
+  description: Create content filters to detect and block outbound emails containing credit card numbers, SSNs, medical records, or source code. Log violations for compliance.
+  reference: Cisco Secure Email — Content Filters / DLP
+  command: '# ESA CLI:
+    ironport> mailpolicies > outgoing > content_filters
+    # Create filter: "Block-PII-Outbound"
+    # Condition: Body contains regex for:
+    #   Credit cards: \b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5]...|3[47]...)\b
+    #   SSN: \b\d{3}-\d{2}-\d{4}\b
+    # Action: Quarantine to "DLP-Review"
+    # Notify: dlp-team@yourdomain.com
+    # Enable Cisco DLP engine for HIPAA/PCI/GDPR dictionaries'
+  tags:
+  - dlp
+  - compliance
+  - data-loss-prevention
+  - pii
+- id: iron-010
+  platform: ironport
+  category: identity
+  severity: high
+  title: Configure sender reputation filtering (SBRS)
+  description: Use SenderBase Reputation Score to automatically throttle or block email from low-reputation senders. Most spam and phishing originates from IPs with negative SBRS.
+  reference: Cisco Secure Email — SenderBase Reputation
+  command: '# ESA CLI:
+    ironport> mailpolicies > hat_overview
+    # Configure HAT (Host Access Table):
+    # SBRS -10 to -4: REJECT (known bad senders)
+    # SBRS -4 to -1: THROTTLE (25 messages/hour limit)
+    # SBRS -1 to +3: ACCEPT with full scanning
+    # SBRS +3 to +10: TRUSTED (reduced scanning)
+    #
+    # Review: ironport> senderbase_status'
+  tags:
+  - reputation
+  - senderbase
+  - sbrs
+  - spam
+- id: iron-011
+  platform: ironport
+  category: logging
+  severity: high
+  title: Enable message tracking and mail logs
+  description: Enable full message tracking for compliance and incident investigation. Retain logs for at least 90 days and forward to SIEM.
+  reference: Cisco Secure Email — Logging and Tracking
+  command: '# ESA CLI:
+    ironport> systemadministration > log_subscriptions
+    # Enable: Mail Logs (text, level Info)
+    # Enable: Message Tracking (for GUI search)
+    # Log retention: 90 days minimum
+    #
+    # Forward to SIEM:
+    ironport> systemadministration > log_subscriptions
+    # Add syslog subscription:
+    # Type: Consolidated Event Logs
+    # Server: <siem-ip>:514
+    # Format: CEF'
+  tags:
+  - logging
+  - message-tracking
+  - siem
+  - compliance
+- id: iron-012
+  platform: ironport
+  category: encryption
+  severity: high
+  title: Enable S/MIME or Cisco Email Encryption for sensitive messages
+  description: Configure automatic email encryption for outbound messages containing sensitive content. Use policy-based encryption triggered by DLP rules or subject-line keywords.
+  reference: Cisco Secure Email — Encryption Service
+  command: '# ESA CLI:
+    ironport> securityservices > email_encryption
+    # Enable Cisco Email Encryption: Yes
+    # Encryption profile: AES-256
+    # Key server: Cisco Registered Envelope Service (CRES)
+    #
+    # Create content filter trigger:
+    # Condition: Subject contains "[ENCRYPT]" OR DLP match
+    # Action: Encrypt message using CRES
+    # Decryption: Recipient opens via secure portal'
+  tags:
+  - encryption
+  - email-encryption
+  - s-mime
+  - dlp
+- id: iron-013
+  platform: ironport
+  category: identity
+  severity: critical
+  title: Restrict admin access and enable role-based access control
+  description: Limit CLI and GUI admin access to specific IP ranges. Use role-based access to separate operator, read-only, and full admin roles.
+  reference: Cisco Secure Email — Admin Access Hardening
+  command: '# ESA CLI:
+    ironport> systemadministration > network_access
+    # Restrict management access to:
+    # IP range: <management-subnet>/24
+    #
+    # Create read-only operator:
+    ironport> userconfig
+    # Add user: soc-analyst
+    # Role: Operator (read-only)
+    # Full admin: separate account with MFA via RADIUS/LDAP
+    #
+    # Disable unused services:
+    ironport> networkconfig > disable telnet'
+  tags:
+  - admin-access
+  - rbac
+  - management
+  - hardening
+- id: iron-014
+  platform: ironport
+  category: services
+  severity: high
+  title: Enable forged email detection (cousin domain protection)
+  description: Detect and quarantine emails where the display name impersonates executives or VIPs but the actual sender address is from an external domain.
+  reference: Cisco Secure Email — Forged Email Detection
+  command: '# ESA CLI:
+    ironport> mailpolicies > incoming > content_filters
+    # Create filter: "Executive-Impersonation"
+    # Condition: Header From display name matches executive names
+    #   AND envelope sender is NOT @yourdomain.com
+    # Action: Quarantine or prepend [EXTERNAL - Name Spoofing] to subject
+    #
+    # Use Forged Email Detection (FED) dictionary:
+    # Add all C-suite / VIP names to FED dictionary'
+  tags:
+  - bec
+  - impersonation
+  - executive-protection
+  - forged-email
+- id: iron-015
+  platform: ironport
+  category: patching
+  severity: high
+  title: Keep AsyncOS updated to the latest stable version
+  description: Apply AsyncOS security patches promptly. Cisco ESA vulnerabilities have been actively exploited. Subscribe to Cisco PSIRT advisories for the Secure Email product.
+  reference: Cisco Security Advisory — Secure Email
+  command: '# ESA CLI:
+    # Check current version:
+    ironport> version
+    # Check for updates:
+    ironport> upgrade
+    # View available versions and select latest stable
+    # Schedule upgrade during maintenance window
+    #
+    # Subscribe to advisories:
+    # https://tools.cisco.com/security/center/publicationListing.x
+    # Product: Cisco Secure Email'
+  tags:
+  - patching
+  - asyncos
+  - updates
+  - vulnerability

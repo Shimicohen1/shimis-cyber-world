@@ -13,7 +13,7 @@ permalink: /gofish/
 <section class="cs-intro reveal">
   <div class="ioc-how-it-works">
     <div class="ioc-step"><span class="ioc-step__num">1</span><span class="ioc-step__text">Paste a suspicious URL or SMS message</span></div>
-    <div class="ioc-step"><span class="ioc-step__num">2</span><span class="ioc-step__text">GoFish analyzes 20+ phishing indicators in real-time</span></div>
+    <div class="ioc-step"><span class="ioc-step__num">2</span><span class="ioc-step__text">GoFish analyzes 25+ phishing indicators in real-time</span></div>
     <div class="ioc-step"><span class="ioc-step__num">3</span><span class="ioc-step__text">Get a risk score, red flags, and verification links</span></div>
   </div>
   <div class="cs-intro__actions">
@@ -94,4 +94,4 @@ window.IOC_TOOL_RECS = [
   {% endfor %}
 ];
 </script>
-<script src="/assets/js/gofish.js?v=5" defer></script>
+<script src="/assets/js/gofish.js?v=6" defer></script>

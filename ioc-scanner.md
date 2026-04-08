@@ -7,7 +7,7 @@ permalink: /ioc-scanner/
 <div class="page-head">
   <div class="label label--cyan page-head__label">SCW TOOLS</div>
   <h1 class="page-head__title">ThreatLens</h1>
-  <p class="page-head__desc">Paste any indicator — IPs, domains, hashes, URLs, emails — and get instant lookup links across 18 threat intelligence platforms with clear descriptions of what each source checks.</p>
+  <p class="page-head__desc">Paste any indicator — IPs, domains, hashes, URLs, emails — and get instant lookup links across 22 threat intelligence platforms with clear descriptions of what each source checks.</p>
 </div>
 
 <section class="cs-intro reveal">
