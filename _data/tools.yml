@@ -110,7 +110,7 @@ categories:
     items:
       - title: "Hack The Box"
         description: "Real-world hacking challenges and enterprise security training. Proving grounds for serious operators."
-        url: "https://www.hackthebox.com/"
+        url: "https://hacktheboxltd.sjv.io/DWLa2a"
         tags: [labs, training, ctf]
         status: Recommended
         sponsored: true

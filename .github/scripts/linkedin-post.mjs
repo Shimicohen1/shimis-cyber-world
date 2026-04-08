@@ -204,6 +204,9 @@ const MONETIZED_RECS = [
   { tags: ['ransomware','malware','apt','backdoor','c2','trojan','botnet','exploit','zero-day'],
     text: '🔐 Protect your network → NordVPN Threat Protection',
     url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
+  { tags: ['pentest','ctf','red-team','offensive','training','labs','oscp','certification','learning','career','blue-team','soc','dfir','detection'],
+    text: '🎯 Level up your skills → Hack The Box (10-20% off)',
+    url: 'https://hacktheboxltd.sjv.io/DWLa2a' },
 ];
 
 /* ── SCW Elite — promoted when no monetized partner fits ── */
