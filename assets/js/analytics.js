@@ -39,7 +39,8 @@ document.addEventListener('click', function (e) {
     href.indexOf('partnerize') !== -1 ||
     href.indexOf('anrdoezrs.net') !== -1 ||
     href.indexOf('kqzyfj.com') !== -1 ||
-    href.indexOf('jdoqocy.com') !== -1
+    href.indexOf('jdoqocy.com') !== -1 ||
+    href.indexOf('sjv.io') !== -1
   ) {
     gtag('event', 'affiliate_click', {
       link_url: href,
