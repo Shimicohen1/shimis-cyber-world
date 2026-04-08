@@ -266,8 +266,8 @@
         discovered: p.discovered || '',
         description: p.description || '',
         website: null,
-        screenshot: p.screen ? 'https://www.ransomlook.io/static/' + p.screen : null,
-        source_link: p.link ? 'https://www.ransomlook.io' + p.link : null,
+        screenshot: p.screen ? 'https://www.ransomlook.io/' + p.screen : null,
+        source_link: p.link && p.link.startsWith('/') ? 'https://www.ransomlook.io' + p.link : p.link || null,
         isLeak: false,
         confidence: null
       });
