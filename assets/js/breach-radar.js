@@ -353,21 +353,24 @@
    *  MODULE: render — HTML output
    * ════════════════════════════════════════════════════════════ */
 
-  function buildExternalLinks(query) {
-    return [
-      { name: 'RansomLook', icon: '🕸️', href: 'https://www.ransomlook.io/search?q=' + encodeURIComponent(query), desc: 'Full victim database with screenshots, group profiles, and threat intelligence' },
-      { name: 'Have I Been Pwned', icon: '🔐', href: 'https://haveibeenpwned.com/DomainSearch?d=' + encodeURIComponent(query), desc: 'Check if employee emails from this domain appeared in data breaches' },
-      { name: 'IntelX', icon: '🔎', href: 'https://intelx.io/?s=' + encodeURIComponent(query), desc: 'Search leaked databases, paste sites, and dark web forums' },
-      { name: 'Shodan', icon: '🌐', href: 'https://www.shodan.io/search?query=hostname%3A' + encodeURIComponent(query), desc: 'Discover exposed services and infrastructure for this domain' },
-      { name: 'VirusTotal', icon: '🦠', href: 'https://www.virustotal.com/gui/domain/' + encodeURIComponent(query), desc: 'Domain reputation, DNS history, and associated malware' },
-      { name: 'TG: BreachDetect', icon: '📡', href: 'https://t.me/breachdetect', desc: 'Telegram channel monitoring real-time breach announcements' },
-      { name: 'TG: Venarix', icon: '📡', href: 'https://t.me/venarix', desc: 'Dark web monitoring and threat actor intelligence channel' },
-      { name: 'URLScan', icon: '📸', href: 'https://urlscan.io/search/#domain%3A' + encodeURIComponent(query), desc: 'Visual snapshots and infrastructure analysis' }
+  function buildExternalLinks(query, isDomain) {
+    var links = [
+      { name: 'RansomLook', icon: '🕸️', href: 'https://www.ransomlook.io/recent', desc: 'Browse recent ransomware victim posts, group profiles, and threat intelligence' }
     ];
+    if (isDomain) {
+      links.push({ name: 'Have I Been Pwned', icon: '🔐', href: 'https://haveibeenpwned.com/DomainSearch', desc: 'Check if employee emails from this domain appeared in known data breaches (requires login)' });
+      links.push({ name: 'Shodan', icon: '🌐', href: 'https://www.shodan.io/search?query=hostname%3A' + encodeURIComponent(query), desc: 'Discover exposed services, open ports, and infrastructure for this domain' });
+      links.push({ name: 'VirusTotal', icon: '🦠', href: 'https://www.virustotal.com/gui/domain/' + encodeURIComponent(query), desc: 'Domain reputation, DNS history, and associated malware detections' });
+      links.push({ name: 'URLScan', icon: '📸', href: 'https://urlscan.io/search/#domain%3A' + encodeURIComponent(query), desc: 'Visual page snapshots and infrastructure analysis for this domain' });
+    } else {
+      links.push({ name: 'Shodan', icon: '🌐', href: 'https://www.shodan.io/search?query=org%3A%22' + encodeURIComponent(query) + '%22', desc: 'Discover exposed infrastructure associated with this organization' });
+    }
+    links.push({ name: 'Google Dorking', icon: '🔍', href: 'https://www.google.com/search?q=%22' + encodeURIComponent(query) + '%22+ransomware+OR+breach+OR+leak', desc: 'Search for public breach reports, news articles, and CERT advisories' });
+    return links;
   }
 
-  function renderExternalLinks(query) {
-    var links = buildExternalLinks(query);
+  function renderExternalLinks(query, isDomain) {
+    var links = buildExternalLinks(query, isDomain);
     var h = '<div class="br-externals">';
     h += '<div class="br-externals__title">🔍 Dig deeper — external investigation</div>';
     h += '<div class="br-externals__grid">';
@@ -415,26 +418,26 @@
     return '<span class="br-match-type br-match-type--' + conf.matchType + '">' + (labels[conf.matchType] || 'Match') + '</span>';
   }
 
-  function renderNoResults(query) {
+  function renderNoResults(query, isDomain) {
     var h = '<div class="br-empty">';
     h += '<div class="br-empty__icon">✅</div>';
     h += '<h3 class="br-empty__title">No exposure found</h3>';
     h += '<p class="br-empty__text">No ransomware victim claims found for "<strong>' + esc(query) + '</strong>". ';
     h += 'This does not guarantee the organization is safe — only that no tracked threat actor has publicly claimed them.</p>';
     h += '</div>';
-    h += renderExternalLinks(query);
+    h += renderExternalLinks(query, isDomain);
     h += renderRecommendations();
     return h;
   }
 
-  function renderError(query, message) {
+  function renderError(query, message, isDomain) {
     var h = '<div class="br-error">';
     h += '<div class="br-error__icon">⚠️</div>';
     h += '<h3 class="br-error__title">Intelligence Feed Unavailable</h3>';
     h += '<p class="br-error__text">' + esc(message) + '</p>';
     h += '<p class="br-error__hint">You can still investigate manually using the links below.</p>';
     h += '</div>';
-    h += renderExternalLinks(query);
+    h += renderExternalLinks(query, isDomain);
     h += renderRecommendations();
     return h;
   }
@@ -466,7 +469,7 @@
     var incidents = dossier.incidents;
     var summary = dossier.summary;
 
-    if (!incidents.length) return renderNoResults(q.original);
+    if (!incidents.length) return renderNoResults(q.original, q.isDomain);
 
     var topConf = summary.topConfidence;
     var h = '';
@@ -611,7 +614,7 @@
     h += renderActions();
 
     /* E. External investigation */
-    h += renderExternalLinks(q.original);
+    h += renderExternalLinks(q.original, q.isDomain);
 
     /* F. Product recommendations */
     h += renderRecommendations();
@@ -645,7 +648,7 @@
       })
       .catch(function (err) {
         loadingEl.style.display = 'none';
-        resultsEl.innerHTML = renderError(parsed.original, err.message || 'An unexpected error occurred.');
+        resultsEl.innerHTML = renderError(parsed.original, err.message || 'An unexpected error occurred.', parsed.isDomain);
       });
   }
 
