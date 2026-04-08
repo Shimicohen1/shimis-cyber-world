@@ -19,14 +19,11 @@
    *  CONSTANTS
    * ════════════════════════════════════════════════════════════ */
 
-  var API_BASE = 'https://www.ransomlook.io/api';
   var PROXY_BASE = 'https://scw-newsletter.azurewebsites.net';
   var API_TIMEOUT = 25000;
 
   var CORS_PROXIES = [
-    function (term) { return PROXY_BASE + '/ransomlook?q=' + encodeURIComponent(term); },
-    function (term) { return 'https://corsproxy.io/?' + encodeURIComponent(API_BASE + '/search?q=' + encodeURIComponent(term)); },
-    function (term) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(API_BASE + '/search?q=' + encodeURIComponent(term)); }
+    function (term) { return PROXY_BASE + '/ransomlook?q=' + encodeURIComponent(term); }
   ];
 
   /* Words too generic to match alone — guard against false positives */
