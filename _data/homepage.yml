@@ -25,52 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: "AI Uncovers Thousands of Zero-Days: Cloud Security at Risk"
-    text: AI models are now discovering thousands of zero-day vulnerabilities, posing a significant threat to cloud security.
-    detail: Anthropic's Claude 'Mythos' AI has identified a massive number of zero-day flaws impacting major systems. This highlights the need for proactive cloud security measures and rapid patching to mitigate risks associated with AI-driven vulnerability discovery. Organizations should enhance their threat monitoring and incident response capabilities.
-    link: https://www.cisa.gov/news-events/advisories/aa22-287a
-    link_label: CISA Cloud Security Advisory
-    badge: signal
-    tags:
-      - ai
-      - vulnerability
-      - cloud-security
-      - zero-day
-  - title: Iran-Linked Actors Escalate Attacks on Critical Infrastructure PLCs
-    text: Iranian threat actors are increasingly targeting Programmable Logic Controllers (PLCs) in US critical infrastructure sectors.
-    detail: Multiple agencies warn of Iran-linked APTs probing and exploiting PLCs in energy, water, and industrial systems. These attacks aim at disruption, not just financial gain. Defenders must strengthen OT security, segment networks, and implement robust access controls for industrial control systems.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-100a
-    link_label: CISA ICS Advisory
+  - title: Iranian State-Sponsored Actors Target US Critical Infrastructure
+    text: Iran-linked groups are actively targeting US critical infrastructure, focusing on PLCs.
+    detail: Multiple US agencies have warned of Iranian APTs probing and attacking Programmable Logic Controllers (PLCs) in energy, water, and industrial sectors. These attacks aim to disrupt operations. Organizations should audit PLC security, segment networks, and implement robust access controls to mitigate these risks.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-059a
+    link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - plc
-      - iran
-      - apt
-  - title: Global Cybercrime Losses Skyrocket to $20.9 Billion
-    text: Cybercrime losses surged 26% to $20.9 billion in 2025, according to the FBI's latest report.
-    detail: The FBI's IC3 report indicates a dramatic increase in cybercrime financial impact. This trend underscores the growing sophistication of scams and malware. Individuals and businesses must prioritize cybersecurity hygiene, employee training, and robust fraud detection mechanisms.
-    link: https://www.ic3.gov/Media/News/2023/230316
+  - title: AI-Driven Vulnerability Discovery Accelerates
+    text: AI models are uncovering thousands of zero-day vulnerabilities, impacting cloud security.
+    detail: AI, like Anthropic's Claude 'Mythos', is proving highly effective at discovering zero-day vulnerabilities at scale, impacting cloud environments. This highlights the need for proactive threat hunting, advanced vulnerability management, and rapid patching strategies to counter AI-assisted attack discovery.
+    link: https://owasp.org/www-project-top-10-ai-security-risks/
+    link_label: OWASP AI Security Risks
+    badge: signal
+    tags:
+      - threat-intel
+      - ai
+      - vulnerability
+      - cloud-security
+  - title: Cybercrime Financial Losses Continue to Surge
+    text: Cybercrime losses reached $21 billion in 2025, a significant increase.
+    detail: The FBI reported a dramatic rise in cybercrime losses, reaching nearly $21 billion in 2025. This trend underscores the growing financial impact of online fraud and attacks. Businesses and individuals must prioritize robust security measures, employee training, and fraud detection systems.
+    link: https://www.ic3.gov/Media/PDF/AnnualReport/2023_IC3_Report.pdf
     link_label: FBI IC3 Report
     badge: signal
     tags:
-      - cybercrime
-      - financial-fraud
       - threat-intel
-      - malware
-  - title: Emerging Lua Malware 'LucidRook' Targets Taiwan with Spear-Phishing
-    text: New Lua-based malware 'LucidRook' is being deployed via spear-phishing campaigns targeting Taiwanese organizations.
-    detail: Taiwanese NGOs and universities are under targeted attack by 'LucidRook'. This highlights the persistent threat of tailored spear-phishing. Organizations should implement advanced email filtering, user awareness training, and endpoint detection and response (EDR) to counter such threats.
-    link: https://www.cisecurity.org/fundamentals/spear-phishing-awareness
-    link_label: CISA Spear-Phishing Guidance
+      - cybercrime
+      - financial-loss
+  - title: Exploitation of IoT Devices for DDoS Attacks
+    text: New evasive botnets like Masjesu are leveraging compromised IoT devices for DDoS.
+    detail: The emergence of sophisticated, evasive botnets like Masjesu targeting IoT devices for DDoS attacks presents a growing threat. Organizations need to secure their IoT deployments by implementing strong authentication, regular firmware updates, and network segmentation to prevent device compromise.
+    link: https://www.mitre.org/capabilities/cybersecurity/attack-techniques/ddos
+    link_label: MITRE DDoS Techniques
     badge: signal
     tags:
+      - threat-intel
+      - ddos
+      - iot
       - malware
-      - lua
-      - spear-phishing
-      - taiwan
-      - red-team
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
