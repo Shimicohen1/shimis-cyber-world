@@ -25,50 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iran-Linked Actors Escalate Attacks on Critical Infrastructure
-    text: Iranian-backed groups are increasingly targeting US critical infrastructure, particularly PLCs.
-    detail: Multiple advisories highlight Iranian actors probing and exploiting Programmable Logic Controllers (PLCs) in energy, water, and industrial sectors. This focus on Operational Technology (OT) poses a significant risk of disruption. Organizations should strengthen OT security, implement network segmentation, and monitor for anomalous PLC activity.
-    link: https://www.cisa.gov/news-events/directives/cd-2023-01
-    link_label: CISA Directive on OT Security
+  - title: Iran Escalates Critical Infrastructure Attacks
+    text: Iranian actors are increasingly targeting US critical infrastructure, focusing on PLCs.
+    detail: Multiple advisories warn of Iran-linked groups probing and exploiting PLCs in US energy, water, and industrial sectors. Organizations should review PLC security, segment networks, and monitor for suspicious activity targeting operational technology.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-077a
+    link_label: CISA Advisory
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - plc
-      - iran
   - title: AI Uncovers Thousands of Zero-Day Vulnerabilities
-    text: AI models are identifying a massive number of zero-day vulnerabilities in major systems.
-    detail: AI, like Anthropic's Claude, is proving highly effective in discovering thousands of previously unknown zero-day vulnerabilities. This breakthrough necessitates a proactive approach to vulnerability management, emphasizing rapid patching and robust threat hunting to counter potential exploitation of these novel flaws.
-    link: https://www.nist.gov/cyberframework/zero-day-vulnerabilities
-    link_label: NIST on Zero-Day Vulnerabilities
+    text: AI models are identifying a massive number of zero-day vulnerabilities in cloud systems.
+    detail: Recent reports indicate AI, like Anthropic's Claude, has discovered thousands of zero-days affecting major cloud systems. This highlights the need for robust AI-driven vulnerability discovery tools and proactive patching strategies for cloud environments.
+    link: https://owasp.org/www-project-top-10-ai-security/
+    link_label: OWASP AI Security
     badge: signal
     tags:
       - threat-intel
       - vulnerability
-      - ai-security
-      - zero-day
-  - title: Sophisticated OSINT Tools Emerge for User Data Analysis
-    text: New OSINT tools can now extract detailed user information from shared links.
-    detail: Tools like SharedTrace are emerging, allowing cybersecurity professionals to glean usernames, avatars, and user IDs from shared links across platforms like TikTok and Discord. This capability underscores the need for robust privacy settings and heightened awareness of digital footprint exposure.
-    link: https://owasp.org/www-community/OSINT
-    link_label: OWASP OSINT Guidance
-    badge: signal
-    tags:
-      - osint
-      - tools
-      - privacy
-      - data-leak
-  - title: Global Cybercrime Losses Continue to Surge
-    text: Cybercrime losses are escalating rapidly, with a significant increase reported in 2025.
-    detail: Cybercrime losses have seen a substantial 26% surge, reaching $20.9 billion in 2025. This alarming trend highlights the growing sophistication and financial impact of cyber threats. Organizations must prioritize robust cybersecurity defenses and incident response planning to mitigate escalating financial risks.
+      - cloud
+      - ai
+  - title: Global Cybercrime Losses Surge Dramatically
+    text: Cybercrime losses in 2025 jumped 26% to $20.9 billion, driven by widespread scams.
+    detail: The FBI's IC3 report shows a significant increase in cybercrime financial losses, underscoring the growing sophistication of scams targeting individuals and businesses. Enhanced user education, robust security controls, and prompt reporting are crucial defenses.
     link: https://www.ic3.gov/
-    link_label: FBI Internet Crime Complaint Center
+    link_label: FBI IC3
     badge: signal
     tags:
       - threat-intel
       - cybercrime
-      - financial-impact
-      - data-breach
+      - scams
+  - title: Emergence of Sophisticated Lua Malware
+    text: New Lua-based malware like 'LucidRook' is being used in targeted spear-phishing campaigns.
+    detail: Malware families written in Lua, such as 'LucidRook,' are appearing in targeted attacks, particularly against Taiwanese organizations. Defenders must strengthen email security, train users on phishing awareness, and ensure endpoint detection and response (EDR) capabilities are up-to-date.
+    link: https://www.mitre.org/about/news/mitre-engenuity-releases-attack-iq-2023-report
+    link_label: MITRE ATT&CK
+    badge: signal
+    tags:
+      - threat-intel
+      - malware
+      - spear-phishing
+      - lua
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
