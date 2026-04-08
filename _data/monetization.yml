@@ -178,6 +178,9 @@ toolkit_banners:
       - name: "Surfshark"
         url: "https://www.kqzyfj.com/click-101720928-15438560"
         button: "Get Surfshark →"
+      - name: "Proton Pass"
+        url: "https://www.kqzyfj.com/click-101720928-15831601"
+        button: "Get Proton Pass →"
   - after_category: "Training & Labs"
     type: "affiliate"
     title: "Train like attackers think"
@@ -222,3 +225,8 @@ tool_recommendations:
     url: "https://www.anrdoezrs.net/click-101720928-13756265"
     badge: "Recommended"
     types: [email]
+  - name: "Hack The Box"
+    desc: "Practice real-world attacks and defenses. Hands-on hacking labs for all skill levels."
+    url: "https://hacktheboxltd.sjv.io/DWLa2a"
+    badge: "Train Up"
+    types: [cve, hash, domain]
