@@ -25,48 +25,53 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian State-Sponsored Actors Target US Critical Infrastructure
-    text: Iran-linked groups are actively targeting US critical infrastructure, focusing on PLCs.
-    detail: Multiple US agencies have warned of Iranian APTs probing and attacking Programmable Logic Controllers (PLCs) in energy, water, and industrial sectors. These attacks aim to disrupt operations. Organizations should audit PLC security, segment networks, and implement robust access controls to mitigate these risks.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-059a
-    link_label: CISA Advisory
+  - title: Iranian Actors Target Critical Infrastructure with PLC Exploits
+    text: Iran-linked groups are probing and exploiting PLCs in US critical infrastructure.
+    detail: A concerning trend shows Iranian actors specifically targeting Programmable Logic Controllers (PLCs) in US critical infrastructure sectors, including energy and water. These attacks aim for disruption and damage, moving beyond typical ransomware. Cybersecurity teams should prioritize hardening OT environments and monitoring for unusual PLC activity.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-309a
+    link_label: CISA Advisory on Iranian PLC Targeting
     badge: signal
     tags:
       - threat-intel
       - critical-infrastructure
       - plc
-  - title: AI-Driven Vulnerability Discovery Accelerates
-    text: AI models are uncovering thousands of zero-day vulnerabilities, impacting cloud security.
-    detail: AI, like Anthropic's Claude 'Mythos', is proving highly effective at discovering zero-day vulnerabilities at scale, impacting cloud environments. This highlights the need for proactive threat hunting, advanced vulnerability management, and rapid patching strategies to counter AI-assisted attack discovery.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: OWASP AI Security Risks
+      - iran
+  - title: Russian Hackers Hijack Routers for Global Espionage and DNS Hijacking
+    text: Russian actors are compromising home and small office routers for spying and DNS hijacking.
+    detail: Multiple reports highlight Russian state-sponsored actors, including APT28, actively compromising routers globally. The objective is to hijack DNS settings for surveillance and espionage campaigns against individuals and organizations in the UK and US. Defenders must implement router security best practices, including strong passwords and firmware updates.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-317a
+    link_label: CISA Advisory on Russian Malicious Cyber Activity
     badge: signal
     tags:
       - threat-intel
-      - ai
+      - espionage
+      - dns-hijacking
+      - router-security
+      - russia
+  - title: AI Models Uncover Thousands of Zero-Day Vulnerabilities
+    text: AI models like Claude are identifying thousands of previously unknown software vulnerabilities.
+    detail: Advanced AI models, such as Anthropic's Claude (codenamed 'Mythos'), are proving highly effective at discovering zero-day vulnerabilities across major systems, including cloud environments. This underscores the need for robust vulnerability management and rapid patching strategies, as the attack surface is constantly expanding with AI-driven discovery.
+    link: https://owasp.org/www-project-top-10-ai-security-risks/
+    link_label: OWASP Top 10 AI Security Risks
+    badge: signal
+    tags:
+      - threat-intel
       - vulnerability
+      - ai-security
+      - zero-day
       - cloud-security
-  - title: Cybercrime Financial Losses Continue to Surge
-    text: Cybercrime losses reached $21 billion in 2025, a significant increase.
-    detail: The FBI reported a dramatic rise in cybercrime losses, reaching nearly $21 billion in 2025. This trend underscores the growing financial impact of online fraud and attacks. Businesses and individuals must prioritize robust security measures, employee training, and fraud detection systems.
-    link: https://www.ic3.gov/Media/PDF/AnnualReport/2023_IC3_Report.pdf
-    link_label: FBI IC3 Report
+  - title: Cybercrime Losses Skyrocket, Driven by Sophisticated Fraud Schemes
+    text: Cybercrime losses surged to nearly $21 billion in 2025, fueled by organized fraud.
+    detail: The FBI's latest reports indicate a dramatic increase in cybercrime losses, reaching an estimated $21 billion in 2025. This escalation is driven by organized international fraud rings, advance-fee scams targeting specific demographics like timeshare owners, and large-scale BEC operations. Businesses and individuals must enhance their defenses against social engineering and financial fraud.
+    link: https://www.ic3.gov/Media/PDF/AnnualReport/2023_IC3Report.pdf
+    link_label: FBI Internet Crime Report
     badge: signal
     tags:
       - threat-intel
       - cybercrime
-      - financial-loss
-  - title: Exploitation of IoT Devices for DDoS Attacks
-    text: New evasive botnets like Masjesu are leveraging compromised IoT devices for DDoS.
-    detail: The emergence of sophisticated, evasive botnets like Masjesu targeting IoT devices for DDoS attacks presents a growing threat. Organizations need to secure their IoT deployments by implementing strong authentication, regular firmware updates, and network segmentation to prevent device compromise.
-    link: https://www.mitre.org/capabilities/cybersecurity/attack-techniques/ddos
-    link_label: MITRE DDoS Techniques
-    badge: signal
-    tags:
-      - threat-intel
-      - ddos
-      - iot
-      - malware
+      - financial-fraud
+      - organized-crime
+      - reporting
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
