@@ -7,7 +7,7 @@ permalink: /breach-radar/
 <div class="page-head">
   <div class="label label--signal page-head__label">SCW ELITE</div>
   <h1 class="page-head__title">BreachRadar</h1>
-  <p class="page-head__desc">Search if a company or domain has been claimed by ransomware groups or appeared on dark web leak sites. Live data from 550+ tracked threat actors.</p>
+  <p class="page-head__desc">Search if a company or domain has been claimed by ransomware groups or appeared on dark web leak sites. Live data from 558 tracked threat actors.</p>
 </div>
 
 <section class="cs-intro reveal">
@@ -84,22 +84,22 @@ permalink: /breach-radar/
     <div class="br-source-card">
       <span class="br-source-card__icon">🕸️</span>
       <strong>Ransomware Leak Sites</strong>
-      <p>550+ ransomware and extortion groups tracked across .onion and clearnet leak sites. Updated continuously.</p>
+      <p>558 ransomware and extortion groups tracked across .onion and clearnet leak sites via RansomLook. Over 30,000 victim posts indexed.</p>
     </div>
     <div class="br-source-card">
-      <span class="br-source-card__icon">📡</span>
-      <strong>Telegram Channels</strong>
-      <p>Dark web monitoring channels including @breachdetect, @ransomwarelive, and @venarix for real-time breach notifications.</p>
+      <span class="br-source-card__icon">💧</span>
+      <strong>Data Leak Monitoring</strong>
+      <p>4,400+ documented data leaks cross-referenced with victim claims. Includes leak size, record counts, and exposure timelines.</p>
+    </div>
+    <div class="br-source-card">
+      <span class="br-source-card__icon">🔗</span>
+      <strong>Threat Actor Intelligence</strong>
+      <p>29 threat actors profiled with crypto addresses, ransom notes, and relay status. Group profiles link directly to RansomLook.</p>
     </div>
     <div class="br-source-card">
       <span class="br-source-card__icon">🔍</span>
-      <strong>Infostealer Data</strong>
-      <p>Cross-references with infostealer malware databases to identify compromised credentials associated with targeted domains.</p>
-    </div>
-    <div class="br-source-card">
-      <span class="br-source-card__icon">📰</span>
-      <strong>Press Coverage</strong>
-      <p>Links to media reports, CERT advisories, and public disclosures related to each incident for full context.</p>
+      <strong>External Investigation Links</strong>
+      <p>Each scan result includes direct links to Have I Been Pwned, Shodan, VirusTotal, IntelX, and Telegram monitoring channels for deeper investigation.</p>
     </div>
   </div>
 </section>
@@ -110,7 +110,7 @@ permalink: /breach-radar/
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
     <h2 class="cs-cta__title">Knowledge is your first line of defense.</h2>
-    <p class="cs-cta__text">BreachRadar is powered by <a href="https://www.ransomlook.io" target="_blank" rel="noopener noreferrer">RansomLook</a> — open-source ransomware intelligence tracking 550+ groups and 30,000+ victim posts. Data is refreshed continuously.</p>
+    <p class="cs-cta__text">BreachRadar is powered by <a href="https://www.ransomlook.io" target="_blank" rel="noopener noreferrer">RansomLook</a> — open-source ransomware intelligence tracking 558 groups and 30,000+ victim posts. Data is refreshed continuously.</p>
     <div class="cs-cta__actions">
       <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--primary">ThreatLens →</a>
       <a href="{{ '/gofish/' | relative_url }}" class="btn btn--ghost">GoFish →</a>
