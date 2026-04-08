@@ -44,11 +44,38 @@ function parseFrontMatter(content) {
 
   const meta = {};
   const lines = match[1].split('\n');
+  let currentKey = null;
+  let currentArray = null;
+
   for (const line of lines) {
+    // YAML array item (  - "value")
+    const arrayItem = line.match(/^\s+-\s+"?([^"]*)"?\s*$/);
+    if (arrayItem && currentKey) {
+      currentArray.push(arrayItem[1]);
+      continue;
+    }
+
+    // Flush any accumulated array
+    if (currentKey && currentArray.length) {
+      meta[currentKey] = currentArray.join('\n');
+      currentKey = null;
+      currentArray = null;
+    }
+
+    // Key with no inline value → start of array/block
+    const blockStart = line.match(/^(\w[\w_]*)\s*:\s*$/);
+    if (blockStart) {
+      currentKey = blockStart[1];
+      currentArray = [];
+      continue;
+    }
+
+    // Regular key: value
     const kv = line.match(/^(\w[\w_]*)\s*:\s*(.+)$/);
     if (kv) {
+      currentKey = null;
+      currentArray = null;
       let val = kv[2].trim();
-      // Strip surrounding quotes
       if ((val.startsWith('"') && val.endsWith('"')) ||
           (val.startsWith("'") && val.endsWith("'"))) {
         val = val.slice(1, -1);
@@ -56,6 +83,11 @@ function parseFrontMatter(content) {
       meta[kv[1]] = val;
     }
   }
+  // Flush final array if any
+  if (currentKey && currentArray && currentArray.length) {
+    meta[currentKey] = currentArray.join('\n');
+  }
+
   meta._body = match[2].trim();
   return meta;
 }
@@ -113,45 +145,158 @@ function selectBestPost(state) {
 }
 
 /* ═══════════════════════════════════════════════════════════
- *  FORMAT FOR LINKEDIN
+ *  LINKEDIN POST FORMATTING — THOUGHT LEADERSHIP STYLE
+ *
+ *  Structure (optimized for LinkedIn algorithm + engagement):
+ *    1. Hook (first 2 lines — visible before "...see more")
+ *    2. Expert analysis (2-3 short paragraphs, scannable)
+ *    3. Why It Matters (actionable insight)
+ *    4. Contextual tool/resource recommendation
+ *    5. CTAs — Telegram follow + site tools
+ *    6. Hashtags (3-5, mix of broad + niche)
+ *
+ *  Key rules:
+ *    - Keep ≤ 2,800 chars total (sweet spot for engagement)
+ *    - Short paragraphs (1-2 sentences each)
+ *    - Line breaks between sections (scannable)
+ *    - Strategic emoji (section headers only, not spam)
+ *    - No Markdown (doesn't render on LinkedIn)
  * ═══════════════════════════════════════════════════════════ */
+
+/* ── Hook generators — rotate patterns to keep feed fresh ── */
+const HOOK_PATTERNS = [
+  (t, score) => `${score === 'CRITICAL' ? '🔴' : '🚨'} ${t}\n\nThis is what you need to know right now.`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴' : '⚡'} ${t}\n\nHere's why your security team should pay attention.`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴' : '🛡️'} ${t}\n\nA quick breakdown for defenders and decision-makers.`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴' : '🔍'} ${t}\n\nThe details most people will miss — but shouldn't.`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴' : '📡'} ${t}\n\nFresh from our threat intelligence feed.`,
+];
+
+/* ── Tag → contextual tool/resource recommendation mapping ── */
+const TAG_RECOMMENDATIONS = {
+  // Internal tools
+  'ransomware':  { text: '🔎 Check if your org is exposed → BreachRadar (free)', url: '/breach-radar/' },
+  'darkweb':     { text: '🔎 Dark web exposure check → BreachRadar', url: '/breach-radar/' },
+  'threat-intel':{ text: '📡 Real-time threat feeds → shimiscyberworld.com', url: '/' },
+  'malware':     { text: '🔎 Scan your IOCs across 22 platforms → ThreatLens (free)', url: '/ioc-scanner/' },
+  'phishing':    { text: '🎣 Suspicious link? Check it instantly → GoFish (free)', url: '/gofish/' },
+  'vulnerability':{ text: '🛡️ Hardening checks for 18 platforms → LockDown (free)', url: '/hardening/' },
+  'cve':         { text: '🛡️ 847 hardening checks across 18 platforms → LockDown', url: '/hardening/' },
+  'detection':   { text: '📋 KQL, Sigma & Splunk rules → Detection Vault', url: '/detections/' },
+  'incident-response': { text: '🚨 Step-by-step IR playbooks → WarRoom', url: '/playbooks/' },
+  // Affiliate tools (CJ)
+  'vpn':         { text: '🔐 Protect your traffic → NordVPN (recommended)', url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
+  'privacy':     { text: '🔐 Privacy-first browsing → Proton VPN', url: 'https://www.jdoqocy.com/click-101720928-15834536' },
+  'password':    { text: '🔑 Upgrade your password manager → Proton Pass', url: 'https://www.kqzyfj.com/click-101720928-15831601' },
+  'credentials': { text: '🔑 Credential theft? Get a real password manager → Proton Pass', url: 'https://www.kqzyfj.com/click-101720928-15831601' },
+};
+
+/* ── Default recommendation when no tag matches ── */
+const DEFAULT_REC = { text: '🛡️ Free tools for defenders → BreachRadar, ThreatLens, LockDown', url: '/tools/' };
+
+function getRecommendation(tags) {
+  const tagList = (tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
+  for (const tag of tagList) {
+    if (TAG_RECOMMENDATIONS[tag]) return TAG_RECOMMENDATIONS[tag];
+  }
+  return DEFAULT_REC;
+}
+
+function buildHashtags(meta) {
+  const tagList = (meta.tags || '').replace(/[\[\]]/g, '').split(',')
+    .map(t => t.trim()).filter(Boolean);
+
+  // Map raw tags to clean LinkedIn hashtags
+  const mapped = tagList
+    .map(t => t.replace(/[- ]/g, '').replace(/^#/, ''))
+    .filter(t => t.length > 2 && t.length < 25);
+
+  // Always include core hashtags, then add from post tags
+  const core = ['cybersecurity', 'infosec', 'threatintelligence'];
+  const all = [...new Set([...mapped.slice(0, 3), ...core])];
+  return all.slice(0, 6).map(h => `#${h}`).join(' ');
+}
+
+function stripMarkdown(text) {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')   // [text](url) → text
+    .replace(/\*\*([^*]+)\*\*/g, '$1')          // **bold** → bold
+    .replace(/\*([^*]+)\*/g, '$1')              // *italic* → italic
+    .replace(/^#+\s*/gm, '')                     // ## heading → heading
+    .replace(/^[-*]\s+/gm, '• ')                // - item → • item
+    .replace(/`([^`]+)`/g, '$1')                // `code` → code
+    .trim();
+}
 
 function formatLinkedInPost(meta, fileName) {
   const title = meta.title || 'Security Update';
-  const body = meta._body || '';
-  
-  // Take first 2 paragraphs (LinkedIn has ~3000 char limit for good engagement)
-  const paragraphs = body.split('\n\n').filter(p => p.trim());
-  const preview = paragraphs.slice(0, 2).join('\n\n');
+  const body = stripMarkdown(meta._body || '');
+  const score = (meta.score || 'MEDIUM').toUpperCase();
 
-  // Build post URL from filename
-  // 2026-04-08-telegram-1323386230-248498.md → /2026/04/08/telegram-1323386230-248498
+  // Build post URL
   const slug = fileName.replace(/\.md$/, '').replace(/^(\d{4})-(\d{2})-(\d{2})-/, '$1/$2/$3/');
   const postUrl = `${SITE_URL}/${slug}`;
 
-  // Extract tags for hashtags
-  const tagMatch = meta.tags || '';
-  const tags = tagMatch.replace(/[\[\]]/g, '').split(',')
-    .map(t => t.trim())
-    .filter(t => t)
-    .slice(0, 5)
-    .map(t => `#${t.replace(/[- ]/g, '').replace(/^#/, '')}`);
+  // ── 1. HOOK (first 2 lines — critical for "see more" click) ──
+  const hookIdx = Math.floor(Math.random() * HOOK_PATTERNS.length);
+  const hook = HOOK_PATTERNS[hookIdx](title, score);
 
-  // Truncate preview to ~1200 chars to leave room for title + hashtags
-  let truncatedPreview = preview;
-  if (truncatedPreview.length > 1200) {
-    truncatedPreview = truncatedPreview.slice(0, 1197) + '...';
+  // ── 2. EXPERT ANALYSIS (2-3 short paragraphs) ──
+  const paragraphs = body.split('\n\n').filter(p => p.trim().length > 40);
+  // Take first paragraph, trim to ~400 chars for a tight read
+  let analysis = paragraphs[0] || '';
+  if (analysis.length > 500) {
+    analysis = analysis.slice(0, 497).replace(/\s+\S*$/, '') + '...';
   }
 
-  const text = `🔒 ${title}
+  // ── 3. WHY IT MATTERS ──
+  let whySection = '';
+  if (meta.why_it_matters) {
+    // Parse YAML array-like string
+    const whyRaw = meta.why_it_matters;
+    whySection = `\n🎯 Why This Matters:\n${whyRaw}`;
+  } else if (meta.excerpt) {
+    // Fallback: use excerpt as the "why"
+    const ex = meta.excerpt.length > 200 ? meta.excerpt.slice(0, 197) + '...' : meta.excerpt;
+    whySection = `\n🎯 Key Takeaway:\n${ex}`;
+  }
+  // Trim why section
+  if (whySection.length > 350) {
+    whySection = whySection.slice(0, 347).replace(/\s+\S*$/, '') + '...';
+  }
 
-${truncatedPreview}
+  // ── 4. CONTEXTUAL RECOMMENDATION ──
+  const rec = getRecommendation(meta.tags);
+  const recUrl = rec.url.startsWith('http') ? rec.url : `${SITE_URL}${rec.url}`;
+  const recLine = `${rec.text}\n${recUrl}`;
 
-📖 Read more on Shimi's Cyber World:
-${postUrl}
+  // ── 5. CTAs ──
+  const cta = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📡 Join 2,000+ security pros on our Telegram channel → https://t.me/shimiscyberworld
+💻 Free tools: BreachRadar · ThreatLens · LockDown · GoFish → ${SITE_URL}/tools/`;
 
-${tags.join(' ')}
-#cybersecurity #infosec`;
+  // ── 6. HASHTAGS ──
+  const hashtags = buildHashtags(meta);
+
+  // ── ASSEMBLE ──
+  let text = `${hook}
+
+${analysis}
+${whySection}
+
+${recLine}
+
+${cta}
+
+${hashtags}`;
+
+  // Safety: LinkedIn has a 3000 char limit. Keep under 2800 for clean rendering
+  if (text.length > 2800) {
+    // Trim analysis to fit
+    const overflow = text.length - 2700;
+    analysis = analysis.slice(0, Math.max(100, analysis.length - overflow)) + '...';
+    text = `${hook}\n\n${analysis}\n${whySection}\n\n${recLine}\n\n${cta}\n\n${hashtags}`;
+  }
 
   return { text, postUrl, title };
 }
