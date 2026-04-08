@@ -126,9 +126,9 @@ permalink: /premium/
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>BreachRadar</h3>
-<p>Search if a domain or company has been claimed by ransomware groups. Live data from 329+ dark web leak sites.</p>
+<p>Search if a domain or company has been claimed by ransomware groups. Live data from 550+ dark web leak sites.</p>
 <div class="elite-card__meta">
-<span>329+ groups</span>
+<span>550+ groups</span>
 <span>Live API</span>
 </div>
 </div>

@@ -1,9 +1,14 @@
-/* BreachRadar v1 — Dark Web Breach Intelligence Scanner */
+/* BreachRadar v2 — Dark Web Breach Intelligence Scanner */
 (function () {
   'use strict';
 
-  var API_BASE = 'https://api.ransomware.live/v2';
-  var API_TIMEOUT = 20000;
+  var API_BASE = 'https://www.ransomlook.io/api';
+  var API_TIMEOUT = 25000;
+  var CORS_PROXIES = [
+    function (u) { return u; }, /* direct first — works if CORS ever enabled */
+    function (u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
+    function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); }
+  ];
 
   /* ── Known ransomware group metadata ── */
   var GROUP_META = {
@@ -84,7 +89,7 @@
   /* ── Build external investigation links ── */
   function buildExternalLinks(query) {
     return [
-      { name: 'Ransomware.live', icon: '🕸️', href: 'https://www.ransomware.live/search?q=' + encodeURIComponent(query), desc: 'Full victim database with screenshots and negotiation tracking' },
+      { name: 'RansomLook', icon: '🕸️', href: 'https://www.ransomlook.io/search?q=' + encodeURIComponent(query), desc: 'Full victim database with screenshots, group profiles, and threat intelligence' },
       { name: 'Have I Been Pwned', icon: '🔐', href: 'https://haveibeenpwned.com/DomainSearch?d=' + encodeURIComponent(query), desc: 'Check if employee emails from this domain appeared in data breaches' },
       { name: 'IntelX', icon: '🔎', href: 'https://intelx.io/?s=' + encodeURIComponent(query), desc: 'Search leaked databases, paste sites, and dark web forums' },
       { name: 'Shodan', icon: '🌐', href: 'https://www.shodan.io/search?query=hostname%3A' + encodeURIComponent(query), desc: 'Discover exposed services and infrastructure for this domain' },
@@ -98,20 +103,17 @@
   /* ── Compute threat summary ── */
   function computeSummary(victims) {
     var groups = {};
-    var countries = {};
     var earliest = null;
     var latest = null;
-    var hasInfostealer = false;
-    var hasPress = false;
-    var totalUpdates = 0;
+    var leakCount = 0;
 
     victims.forEach(function (v) {
       var g = v.group || 'Unknown';
       groups[g] = (groups[g] || 0) + 1;
 
-      if (v.country) countries[v.country] = (countries[v.country] || 0) + 1;
+      if (v.isLeak) leakCount++;
 
-      var d = v.attackdate || v.discovered;
+      var d = v.discovered;
       if (d) {
         var dt = new Date(d);
         if (!isNaN(dt.getTime())) {
@@ -119,25 +121,15 @@
           if (!latest || dt > latest) latest = dt;
         }
       }
-
-      if (v.infostealer && typeof v.infostealer === 'object' && Object.keys(v.infostealer).length > 0) {
-        hasInfostealer = true;
-      }
-      if (v.press && v.press.length > 0) hasPress = true;
-      if (v.updates && v.updates.length > 0) totalUpdates += v.updates.length;
     });
 
     return {
       totalIncidents: victims.length,
       uniqueGroups: Object.keys(groups).length,
       groupBreakdown: groups,
-      countriesAffected: Object.keys(countries).length,
-      countries: countries,
+      leakCount: leakCount,
       earliest: earliest,
-      latest: latest,
-      hasInfostealer: hasInfostealer,
-      hasPress: hasPress,
-      totalUpdates: totalUpdates
+      latest: latest
     };
   }
 
@@ -221,8 +213,8 @@
 
     /* Sort by date desc */
     victims.sort(function (a, b) {
-      var da = new Date(a.attackdate || a.discovered || 0);
-      var db = new Date(b.attackdate || b.discovered || 0);
+      var da = new Date(a.discovered || 0);
+      var db = new Date(b.discovered || 0);
       return db - da;
     });
 
@@ -251,8 +243,13 @@
     html += '    <span class="br-stat__label">Threat Groups</span>';
     html += '  </div>';
     html += '  <div class="br-stat">';
-    html += '    <span class="br-stat__num">' + summary.countriesAffected + '</span>';
-    html += '    <span class="br-stat__label">Countries</span>';
+    if (summary.leakCount > 0) {
+      html += '    <span class="br-stat__num">' + summary.leakCount + '</span>';
+      html += '    <span class="br-stat__label">Data Leaks</span>';
+    } else {
+      html += '    <span class="br-stat__num">' + (summary.latest ? fmtDate(summary.latest.toISOString()) : 'N/A') + '</span>';
+      html += '    <span class="br-stat__label">Latest</span>';
+    }
     html += '  </div>';
     html += '  <div class="br-stat">';
     html += '    <span class="br-stat__num">' + (summary.earliest ? fmtDate(summary.earliest.toISOString()) : 'N/A') + '</span>';
@@ -286,10 +283,9 @@
     html += '  <div class="br-section-title">📋 Incident Timeline</div>';
 
     victims.forEach(function (v, i) {
-      var date = v.attackdate || v.discovered || '';
+      var date = v.discovered || '';
       var tier = groupTier(v.group);
       var clsT = tierClass(tier);
-      var victimId = v.victim ? btoa(unescape(encodeURIComponent(v.victim + '@' + (v.group || '').toLowerCase()))) : '';
 
       html += '<div class="br-incident ' + clsT + '">';
 
@@ -310,17 +306,13 @@
 
       /* Attribution */
       html += '    <div class="br-incident__attrib">';
-      html += '      <a href="https://www.ransomware.live/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-incident__group">';
-      html += '        <span class="br-incident__group-icon">⚔️</span>';
-      html += '        <span>' + esc(v.group || 'Unknown') + '</span>';
-      html += '      </a>';
-      if (v.country) {
-        html += '    <span class="br-incident__country" title="' + escAttr(v.country) + '">';
-        html += '      🌍 ' + esc(v.country);
-        html += '    </span>';
-      }
-      if (v.activity) {
-        html += '    <span class="br-incident__sector">' + esc(v.activity) + '</span>';
+      if (v.isLeak) {
+        html += '      <span class="br-incident__group"><span class="br-incident__group-icon">💧</span><span>Data Leak</span></span>';
+      } else {
+        html += '      <a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-incident__group">';
+        html += '        <span class="br-incident__group-icon">⚔️</span>';
+        html += '        <span>' + esc(v.group || 'Unknown') + '</span>';
+        html += '      </a>';
       }
       html += '    </div>';
 
@@ -331,61 +323,16 @@
         html += '    <p class="br-incident__desc">' + esc(desc) + '</p>';
       }
 
-      /* Infostealer data */
-      if (v.infostealer && typeof v.infostealer === 'object') {
-        var iKeys = Object.keys(v.infostealer);
-        if (iKeys.length > 0) {
-          html += '    <div class="br-incident__infostealer">';
-          html += '      <span class="br-incident__infostealer-icon">💀</span>';
-          html += '      <span>Infostealer data detected: ';
-          var iLabels = [];
-          iKeys.forEach(function (k) {
-            var val = v.infostealer[k];
-            if (val && val > 0) iLabels.push(esc(k) + ': ' + val);
-          });
-          html += iLabels.join(', ') || 'present';
-          html += '</span>';
-          html += '    </div>';
-        }
-      }
-
-      /* Press / media coverage */
-      if (v.press && v.press.length > 0) {
-        html += '    <div class="br-incident__press">';
-        html += '      <span class="br-incident__press-title">📰 Press Coverage:</span>';
-        v.press.slice(0, 3).forEach(function (p) {
-          var title = p.title || p.url || 'Article';
-          var url = p.url || '#';
-          html += '      <a href="' + escAttr(url) + '" target="_blank" rel="noopener noreferrer" class="br-incident__press-link">' + esc(title) + ' ↗</a>';
-        });
-        if (v.press.length > 3) {
-          html += '      <span class="br-incident__press-more">+' + (v.press.length - 3) + ' more</span>';
-        }
-        html += '    </div>';
-      }
-
-      /* Updates (ransom timeline) */
-      if (v.updates && v.updates.length > 0) {
-        html += '    <div class="br-incident__updates">';
-        html += '      <span class="br-incident__updates-title">📝 Ransom Updates:</span>';
-        v.updates.slice(0, 3).forEach(function (u) {
-          html += '      <div class="br-incident__update">';
-          if (u.date) html += '<span class="br-incident__update-date">' + fmtDate(u.date) + '</span>';
-          if (u.title) html += '<span>' + esc(u.title) + '</span>';
-          html += '      </div>';
-        });
-        html += '    </div>';
-      }
-
       /* Evidence links */
       html += '    <div class="br-incident__evidence">';
       if (v.website) {
-        html += '      <a href="' + escAttr(v.website) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--website">🌐 Website</a>';
+        html += '      <a href="' + escAttr(/^https?:\/\//.test(v.website) ? v.website : 'https://' + v.website) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--website">🌐 Website</a>';
       }
-      var rlSlug = v.victim ? encodeURIComponent(v.victim) : '';
-      html += '      <a href="https://www.ransomware.live/search?q=' + escAttr(rlSlug) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">📸 Screenshots & Evidence</a>';
-      if (v.group) {
-        html += '    <a href="https://www.ransomware.live/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--group">⚔️ Group Profile</a>';
+      if (v.screenshot) {
+        html += '      <a href="' + escAttr(v.screenshot) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">📸 Screenshot</a>';
+      }
+      if (v.group && !v.isLeak) {
+        html += '    <a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--group">⚔️ Group Profile</a>';
       }
       html += '    </div>';
 
@@ -404,16 +351,21 @@
     return html;
   }
 
-  /* ── API call ── */
+  /* ── API call with CORS proxy fallback ── */
   function searchVictims(query) {
-    return new Promise(function (resolve, reject) {
+    var apiUrl = API_BASE + '/search?q=' + encodeURIComponent(query);
+
+    function tryProxy(idx) {
+      if (idx >= CORS_PROXIES.length) {
+        return Promise.reject(new Error('Cannot reach the intelligence API from your browser. All proxy methods failed.'));
+      }
+      var url = CORS_PROXIES[idx](apiUrl);
       var controller = new AbortController();
       var timer = setTimeout(function () {
         controller.abort();
-        reject(new Error('Request timed out. The intelligence server may be temporarily unavailable.'));
       }, API_TIMEOUT);
 
-      fetch(API_BASE + '/searchvictims/' + encodeURIComponent(query), {
+      return fetch(url, {
         signal: controller.signal,
         headers: { 'Accept': 'application/json' }
       })
@@ -422,19 +374,55 @@
         if (res.status === 429) {
           throw new Error('Rate limit exceeded. Please wait a moment before searching again.');
         }
-        if (!res.ok) {
-          throw new Error('Server returned ' + res.status + '. Try again shortly.');
-        }
+        if (!res.ok) throw new Error('proxy-fail');
         return res.json();
       })
       .then(function (data) {
-        resolve(Array.isArray(data) ? data : []);
+        /* Transform RansomLook response → unified victim array */
+        return transformResults(data);
       })
       .catch(function (err) {
         clearTimeout(timer);
-        reject(err);
+        if (err.message === 'Rate limit exceeded. Please wait a moment before searching again.') {
+          throw err; /* don't retry rate limits */
+        }
+        /* Try next proxy */
+        return tryProxy(idx + 1);
+      });
+    }
+
+    return tryProxy(0);
+  }
+
+  /* ── Transform RansomLook API response to unified format ── */
+  function transformResults(data) {
+    if (!data || typeof data !== 'object') return [];
+    var victims = [];
+    var posts = data.posts || [];
+    posts.forEach(function (p) {
+      victims.push({
+        victim: p.post_title || 'Unknown',
+        group: p.group_name || 'Unknown',
+        discovered: p.discovered || '',
+        description: p.description || '',
+        website: null,
+        screenshot: p.screen ? 'https://www.ransomlook.io/static/' + p.screen : null,
+        rl_link: p.link || null
       });
     });
+    /* Also include leak results */
+    var leaks = data.leaks || [];
+    leaks.forEach(function (l) {
+      victims.push({
+        victim: l.name || 'Unknown Breach',
+        group: 'Data Leak',
+        discovered: l.date || '',
+        description: (l.description || '') + (l.records ? ' (' + l.records.toLocaleString() + ' records)' : ''),
+        website: l.domain || null,
+        isLeak: true
+      });
+    });
+    return victims;
   }
 
   /* ── Render error state ── */
@@ -474,13 +462,6 @@
       .catch(function (err) {
         loadingEl.style.display = 'none';
         var msg = err.message || 'An unexpected error occurred.';
-        if (err.name === 'AbortError') {
-          msg = 'Request timed out. The intelligence server may be temporarily unavailable.';
-        }
-        /* CORS fallback: if the API doesn't support CORS, direct user to manual investigation */
-        if (msg.indexOf('NetworkError') !== -1 || msg.indexOf('Failed to fetch') !== -1 || msg.indexOf('CORS') !== -1) {
-          msg = 'Cannot reach the intelligence API from your browser. This may be due to network restrictions or the API not supporting browser requests.';
-        }
         resultsEl.innerHTML = renderError(query, msg);
       });
   }

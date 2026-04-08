@@ -7,7 +7,7 @@ permalink: /breach-radar/
 <div class="page-head">
   <div class="label label--signal page-head__label">SCW ELITE</div>
   <h1 class="page-head__title">BreachRadar</h1>
-  <p class="page-head__desc">Search if a company or domain has been claimed by ransomware groups or appeared on dark web leak sites. Live data from 329+ tracked threat actors.</p>
+  <p class="page-head__desc">Search if a company or domain has been claimed by ransomware groups or appeared on dark web leak sites. Live data from 550+ tracked threat actors.</p>
 </div>
 
 <section class="cs-intro reveal">
@@ -84,7 +84,7 @@ permalink: /breach-radar/
     <div class="br-source-card">
       <span class="br-source-card__icon">🕸️</span>
       <strong>Ransomware Leak Sites</strong>
-      <p>329+ ransomware and extortion groups tracked across .onion and clearnet leak sites. Updated every 15 minutes.</p>
+      <p>550+ ransomware and extortion groups tracked across .onion and clearnet leak sites. Updated continuously.</p>
     </div>
     <div class="br-source-card">
       <span class="br-source-card__icon">📡</span>
@@ -110,7 +110,7 @@ permalink: /breach-radar/
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
     <h2 class="cs-cta__title">Knowledge is your first line of defense.</h2>
-    <p class="cs-cta__text">BreachRadar is powered by <a href="https://www.ransomware.live" target="_blank" rel="noopener noreferrer">Ransomware.live</a> API — the largest open tracker of ransomware group activity. Data is refreshed continuously.</p>
+    <p class="cs-cta__text">BreachRadar is powered by <a href="https://www.ransomlook.io" target="_blank" rel="noopener noreferrer">RansomLook</a> — open-source ransomware intelligence tracking 550+ groups and 30,000+ victim posts. Data is refreshed continuously.</p>
     <div class="cs-cta__actions">
       <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--primary">ThreatLens →</a>
       <a href="{{ '/gofish/' | relative_url }}" class="btn btn--ghost">GoFish →</a>
@@ -126,4 +126,4 @@ window.IOC_TOOL_RECS = [
   {% endfor %}
 ];
 </script>
-<script src="/assets/js/breach-radar.js?v=1" defer></script>
+<script src="/assets/js/breach-radar.js?v=2" defer></script>
