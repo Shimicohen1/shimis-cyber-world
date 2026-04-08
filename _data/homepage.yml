@@ -25,11 +25,11 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian APTs Escalate Attacks on US Critical Infrastructure
-    text: Iran-linked actors are increasingly targeting US critical infrastructure, particularly PLCs, with disruptive intent.
-    detail: Recent advisories highlight a concerning trend of Iranian threat actors probing and targeting Programmable Logic Controllers (PLCs) in sectors like energy and water. These attacks aim to disrupt operations, not just steal data. Organizations should bolster defenses for OT environments and monitor for early indicators of compromise.
-    link: https://www.cisa.gov/news-events/directives/cd-2023-04
-    link_label: CISA Advisory on Iranian Threats
+  - title: Iran-Linked Actors Escalate Attacks on Critical Infrastructure
+    text: Iranian-backed groups are increasingly targeting US critical infrastructure, particularly PLCs.
+    detail: Multiple advisories highlight Iranian actors probing and exploiting Programmable Logic Controllers (PLCs) in energy, water, and industrial sectors. This focus on Operational Technology (OT) poses a significant risk of disruption. Organizations should strengthen OT security, implement network segmentation, and monitor for anomalous PLC activity.
+    link: https://www.cisa.gov/news-events/directives/cd-2023-01
+    link_label: CISA Directive on OT Security
     badge: signal
     tags:
       - threat-intel
@@ -37,38 +37,38 @@ quick_signals:
       - plc
       - iran
   - title: AI Uncovers Thousands of Zero-Day Vulnerabilities
-    text: AI models are now identifying thousands of zero-day vulnerabilities, signaling a new era in vulnerability discovery.
-    detail: AI's prowess in uncovering zero-days, as demonstrated by Anthropic's Claude, presents both opportunities and challenges for cybersecurity. While it aids defense by finding flaws, it also means attackers may soon leverage similar AI capabilities. Organizations must prioritize rapid patching and robust exploit mitigation strategies.
-    link: https://www.nist.gov/blogs/cybersecurity-insights/artificial-intelligence-and-cybersecurity-challenges-and-opportunities
-    link_label: NIST on AI & Cybersecurity
+    text: AI models are identifying a massive number of zero-day vulnerabilities in major systems.
+    detail: AI, like Anthropic's Claude, is proving highly effective in discovering thousands of previously unknown zero-day vulnerabilities. This breakthrough necessitates a proactive approach to vulnerability management, emphasizing rapid patching and robust threat hunting to counter potential exploitation of these novel flaws.
+    link: https://www.nist.gov/cyberframework/zero-day-vulnerabilities
+    link_label: NIST on Zero-Day Vulnerabilities
     badge: signal
     tags:
-      - ai-security
+      - threat-intel
       - vulnerability
+      - ai-security
       - zero-day
-      - threat-intel
-  - title: Rise of Sophisticated AI-Generated Misinformation Campaigns
-    text: Visual misinformation is becoming more sophisticated, highlighting the need for advanced fact-checking tools and critical analysis.
-    detail: The proliferation of AI-generated content, including deepfakes and fabricated data, poses a significant challenge to information integrity. Relying solely on manual verification is becoming insufficient. Organizations and individuals should adopt AI-powered fact-checking tools and foster critical media literacy to combat this growing threat.
-    link: https://www.fbi.gov/how-we-can-help-you/safety-resources/scams-and-safety/common-scams-and-crimes/disinformation-and-misinformation
-    link_label: FBI on Disinformation
+  - title: Sophisticated OSINT Tools Emerge for User Data Analysis
+    text: New OSINT tools can now extract detailed user information from shared links.
+    detail: Tools like SharedTrace are emerging, allowing cybersecurity professionals to glean usernames, avatars, and user IDs from shared links across platforms like TikTok and Discord. This capability underscores the need for robust privacy settings and heightened awareness of digital footprint exposure.
+    link: https://owasp.org/www-community/OSINT
+    link_label: OWASP OSINT Guidance
     badge: signal
     tags:
-      - misinformation
-      - ai-security
       - osint
-      - threat-intel
-  - title: Data Breach Incidents Involving AI Platforms Surge
-    text: AI platforms are becoming targets, with recent breaches exposing sensitive user prompts and personal data.
-    detail: The increasing reliance on AI services, particularly in consumer-facing applications like AI companions, introduces new data breach vectors. Incidents exposing user prompts and sensitive information underscore the importance of robust data security and privacy controls for AI service providers and users alike.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
-    badge: signal
-    tags:
-      - data-breach
-      - ai-security
+      - tools
       - privacy
       - data-leak
+  - title: Global Cybercrime Losses Continue to Surge
+    text: Cybercrime losses are escalating rapidly, with a significant increase reported in 2025.
+    detail: Cybercrime losses have seen a substantial 26% surge, reaching $20.9 billion in 2025. This alarming trend highlights the growing sophistication and financial impact of cyber threats. Organizations must prioritize robust cybersecurity defenses and incident response planning to mitigate escalating financial risks.
+    link: https://www.ic3.gov/
+    link_label: FBI Internet Crime Complaint Center
+    badge: signal
+    tags:
+      - threat-intel
+      - cybercrime
+      - financial-impact
+      - data-breach
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
