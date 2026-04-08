@@ -91,6 +91,8 @@ async function generateHardeningChecks(state) {
     lin: 'Linux (Ubuntu/RHEL)', windows: 'Windows Server', aws: 'AWS',
     gcp: 'Google Cloud', 'm365': 'Microsoft 365', azure: 'Azure',
     cs: 'CrowdStrike Falcon', pa: 'Palo Alto Networks', iron: 'Cisco Secure Email',
+    fg: 'Fortinet FortiGate', okta: 'Okta IAM', k8s: 'Kubernetes',
+    cicd: 'GitHub & CI/CD Pipeline',
   };
 
   const categories = ['identity', 'network', 'logging', 'encryption', 'services', 'patching'];
@@ -115,9 +117,20 @@ OUTPUT FORMAT — produce ONLY the YAML items array, no headers:
   description: <one sentence explaining what and why>
   reference: <real CIS Benchmark / vendor doc reference>
   command: '<real CLI command or console steps — multi-line OK>'
+  premium:
+    attackPerspective: <2-3 sentences from the attacker viewpoint — WHY this misconfiguration is exploited and real-world examples>
+    implementationNotes: '<numbered step-by-step implementation guide, 4-6 steps>'
+    validationNotes: '<CLI commands or console steps to verify the check is properly applied>'
+    tuningNotes: <1-2 sentences on tuning and edge cases to watch for>
+    advancedDetection: '<SIEM query or detection rule to detect violations — Splunk, KQL, or Sigma format>'
+    relatedIds:
+    - <related check ID 1>
+    - <related check ID 2>
   tags:
   - tag1
   - tag2
+  commandLanguage: <bash|powershell|yaml|cli>
+  commandFull: '<extended version of command with full implementation steps>'
 \`\`\`
 
 RULES:
@@ -126,7 +139,11 @@ RULES:
 3. Vary severity (mix of critical, high, and medium)
 4. Focus on actionable security hardening — not theoretical advice
 5. Do NOT duplicate any check that already exists in the file
-6. Start IDs from ${selectedPrefixes[0]}-${String(platformIds[selectedPrefixes[0]] + 1).padStart(3, '0')}`;
+6. Start IDs from ${selectedPrefixes[0]}-${String(platformIds[selectedPrefixes[0]] + 1).padStart(3, '0')}
+7. EVERY check MUST include a full premium block with attackPerspective, implementationNotes, validationNotes, tuningNotes, advancedDetection, and relatedIds
+8. attackPerspective must reference real-world attacks or threat actors when possible
+9. advancedDetection must be a working SIEM query (Splunk SPL, KQL, or Sigma)
+10. commandFull must be a complete implementation guide`;
 
   const response = await gemini(prompt, 0.8);
   const yamlText = extractYaml(response);
