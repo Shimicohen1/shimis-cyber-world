@@ -181,7 +181,7 @@ toolkit_banners:
 # When adding new affiliate partners, add them here too for tool placement.
 tool_recommendations:
   - name: "NordVPN"
-    desc: "Encrypt your traffic and block malicious domains. Threat Protection included."
+    desc: "Encrypt your traffic, block malicious domains, and monitor the dark web for credential leaks."
     url: "https://www.anrdoezrs.net/click-101720928-13756265"
     badge: "Our Pick"
     types: [ip, domain, url, hash, phishing, breach]
@@ -200,8 +200,8 @@ tool_recommendations:
     url: "https://www.kqzyfj.com/click-101720928-15831601"
     badge: "Our Pick"
     types: [email, breach]
-  - name: "NordVPN"
-    desc: "Prevent credential leaks with Dark Web Monitor. Get alerts if your data appears online."
+  - name: "NordVPN Dark Web Monitor"
+    desc: "Get alerts if your credentials appear on the dark web. Included with NordVPN."
     url: "https://www.anrdoezrs.net/click-101720928-13756265"
     badge: "Recommended"
-    types: [email, breach]
+    types: [email]
