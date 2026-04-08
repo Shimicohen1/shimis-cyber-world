@@ -1,0 +1,38 @@
+name: Weekly Content Enrichment
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'   # Every Sunday at 06:00 UTC (09:00 Israel)
+  workflow_dispatch:        # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run weekly enrichment
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node .github/scripts/weekly-enrich.mjs
+
+      - name: Commit enriched content
+        run: |
+          git config user.name "SCW Feed Bot"
+          git config user.email "shimicyberworld@gmail.com"
+          git add _data/ assets/js/ hardening.md premium.md ioc-scanner.md gofish.md .github/enrich-state.json
+          if git diff --cached --quiet; then
+            echo "No new content generated"
+          else
+            WEEK=$(date +%V)
+            git commit -m "feat: weekly content enrichment — week $WEEK [automated]"
+            git push
+          fi

@@ -27,7 +27,8 @@
     'binance', 'coinbase', 'stripe', 'venmo', 'zelle', 'mastercard', 'visa',
     'microsoft', 'apple', 'google', 'amazon', 'facebook', 'meta', 'netflix',
     'spotify', 'dropbox', 'adobe', 'zoom', 'slack', 'github', 'linkedin',
-    'whatsapp', 'telegram', 'instagram',
+    'whatsapp', 'telegram', 'instagram', 'tiktok', 'twitter', 'x.com',
+    'wix', 'fiverr', 'shopify', 'docusign', 'notion', 'openai', 'chatgpt',
     'fedex', 'ups', 'dhl', 'usps', 'royalmail', 'dpd', 'hermes',
     'irs', 'hmrc', 'gov'
   ];

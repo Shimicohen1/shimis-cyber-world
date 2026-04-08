@@ -67,7 +67,17 @@
     snatch:       { tier: 'medium', aka: 'Snatch',                 type: 'Extortion' },
     trigona:      { tier: 'medium', aka: 'Trigona',                type: 'RaaS' },
     nokoyawa:     { tier: 'medium', aka: 'Nokoyawa',               type: 'RaaS' },
-    fog:          { tier: 'medium', aka: 'Fog',                    type: 'RaaS' }
+    fog:          { tier: 'medium', aka: 'Fog',                    type: 'RaaS' },
+    cicada3301:   { tier: 'high',   aka: 'Cicada3301',             type: 'RaaS' },
+    embargo:      { tier: 'high',   aka: 'Embargo',                type: 'RaaS' },
+    incransom:    { tier: 'medium', aka: 'INC Ransom',             type: 'RaaS' },
+    lynx:         { tier: 'medium', aka: 'Lynx',                   type: 'Extortion' },
+    scattered:    { tier: 'high',   aka: 'Scattered Spider',       type: 'Extortion' },
+    'scattered spider': { tier: 'high', aka: 'Scattered Spider',   type: 'Extortion' },
+    killsec:      { tier: 'medium', aka: 'KillSec',                type: 'Extortion' },
+    termite:      { tier: 'medium', aka: 'Termite',                type: 'RaaS' },
+    safepay:      { tier: 'medium', aka: 'SafePay',                type: 'RaaS' },
+    meow:         { tier: 'medium', aka: 'Meow',                   type: 'Extortion' }
   };
 
 
@@ -279,6 +289,25 @@
         screenshot: p.screen ? 'https://www.ransomlook.io/' + p.screen : null,
         source_link: p.link && p.link.startsWith('/') ? 'https://www.ransomlook.io' + p.link : null,
         onion_link: p.link && p.link.indexOf('.onion') !== -1 ? p.link : null,
+        isLeak: false,
+        confidence: null
+      });
+    });
+
+    /* Groups — extract threat actor intel that mentions the search term */
+    (data.groups || []).forEach(function (g) {
+      if (!g.name && !g.meta) return;
+      results.push({
+        source: 'ransomlook',
+        raw_type: 'threat_actor_intel',
+        victim: 'Mentioned in threat actor profile',
+        group: g.name || 'Unknown',
+        discovered: '',
+        description: g.meta || '',
+        website: null,
+        screenshot: null,
+        source_link: g.name ? 'https://www.ransomlook.io/group/' + encodeURIComponent(g.name) : null,
+        onion_link: null,
         isLeak: false,
         confidence: null
       });
@@ -581,6 +610,11 @@
       h += '<div class="br-incident__attrib">';
       if (v.isLeak) {
         h += '<span class="br-incident__group"><span class="br-incident__group-icon">💧</span><span>Data Leak</span></span>';
+      } else if (v.raw_type === 'threat_actor_intel') {
+        h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-incident__group">';
+        h += '<span class="br-incident__group-icon">🧠</span><span>' + esc(v.group || 'Unknown') + '</span></a>';
+        if (info) h += '<span class="br-incident__aka">aka ' + esc(info.aka) + '</span>';
+        h += '<span class="br-incident__type-tag" style="background:var(--accent-purple,#9b59b6);color:#fff;padding:2px 8px;border-radius:4px;font-size:.75rem;margin-left:6px">Threat Actor Intel</span>';
       } else {
         h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-incident__group">';
         h += '<span class="br-incident__group-icon">⚔️</span><span>' + esc(v.group || 'Unknown') + '</span></a>';
