@@ -20,12 +20,13 @@
    * ════════════════════════════════════════════════════════════ */
 
   var API_BASE = 'https://www.ransomlook.io/api';
+  var PROXY_BASE = 'https://scw-newsletter.azurewebsites.net';
   var API_TIMEOUT = 25000;
 
   var CORS_PROXIES = [
-    function (u) { return u; },
-    function (u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
-    function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); }
+    function (term) { return PROXY_BASE + '/ransomlook?q=' + encodeURIComponent(term); },
+    function (term) { return 'https://corsproxy.io/?' + encodeURIComponent(API_BASE + '/search?q=' + encodeURIComponent(term)); },
+    function (term) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(API_BASE + '/search?q=' + encodeURIComponent(term)); }
   ];
 
   /* Words too generic to match alone — guard against false positives */
@@ -220,13 +221,12 @@
    * ════════════════════════════════════════════════════════════ */
 
   function fetchFromRansomLook(searchTerm) {
-    var apiUrl = API_BASE + '/search?q=' + encodeURIComponent(searchTerm);
 
     function tryProxy(idx) {
       if (idx >= CORS_PROXIES.length) {
         return Promise.reject(new Error('Cannot reach the intelligence API. All connection methods failed. Try the external investigation links below.'));
       }
-      var url = CORS_PROXIES[idx](apiUrl);
+      var url = CORS_PROXIES[idx](searchTerm);
       var controller = new AbortController();
       var timer = setTimeout(function () { controller.abort(); }, API_TIMEOUT);
 
