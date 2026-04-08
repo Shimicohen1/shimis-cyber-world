@@ -32,7 +32,7 @@ permalink: /ioc-scanner/
   <div class="ioc-input-area">
     <textarea id="iocInput" class="ioc-textarea" rows="8" placeholder="Paste IOCs here — one per line or comma-separated.&#10;&#10;Examples:&#10;  8.8.8.8&#10;  evil-domain.com&#10;  44d88612fea8a8f36de82e1278abb02f&#10;  https://malicious-site.xyz/payload&#10;  attacker@evil.com&#10;&#10;Supports: IPv4, IPv6, domains, MD5, SHA1, SHA256, URLs, emails" spellcheck="false"></textarea>
     <div class="ioc-input-actions">
-      <button id="iocScanBtn" class="btn btn--primary">🔍 Scan IOCs</button>
+      <button id="iocScanBtn" class="btn btn--primary">🔍 Scan</button>
       <button id="iocClearBtn" class="btn btn--ghost">Clear</button>
       <label class="ioc-toggle">
         <input type="checkbox" id="iocDefang" checked>
@@ -46,7 +46,7 @@ permalink: /ioc-scanner/
     <div class="dl-stats__grid">
       <div class="dl-stat">
         <span class="dl-stat__number" id="iocTotalCount">0</span>
-        <span class="dl-stat__label">Total IOCs</span>
+        <span class="dl-stat__label">Total Scanned</span>
       </div>
       <div class="dl-stat">
         <span class="dl-stat__number" id="iocUniqueCount">0</span>
@@ -132,5 +132,12 @@ window.IOC_SOURCES = [
   }{% unless forloop.last %},{% endunless %}
 {% endfor %}
 ];
+
+/* Tool-embedded product recommendations (data-driven from monetization.yml) */
+window.IOC_TOOL_RECS = [
+{% for rec in site.data.monetization.tool_recommendations %}
+  { name: {{ rec.name | jsonify }}, desc: {{ rec.desc | jsonify }}, url: {{ rec.url | jsonify }}, badge: {{ rec.badge | jsonify }}, types: {{ rec.types | jsonify }} }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+];
 </script>
-<script src="/assets/js/ioc-scanner.js?v=6" defer></script>
+<script src="/assets/js/ioc-scanner.js?v=7" defer></script>

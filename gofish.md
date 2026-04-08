@@ -87,4 +87,11 @@ permalink: /gofish/
 </section>
 
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=8">
-<script src="/assets/js/gofish.js?v=4" defer></script>
+<script>
+window.IOC_TOOL_RECS = [
+  {% for rec in site.data.monetization.tool_recommendations %}
+  { name: {{ rec.name | jsonify }}, desc: {{ rec.desc | jsonify }}, url: {{ rec.url | jsonify }}, badge: {{ rec.badge | jsonify }}, types: {{ rec.types | jsonify }} }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+</script>
+<script src="/assets/js/gofish.js?v=5" defer></script>

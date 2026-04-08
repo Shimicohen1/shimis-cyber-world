@@ -1197,6 +1197,61 @@
   margin: 0;
 }
 
+/* Tool-embedded product recommendations */
+.ioc-card__recs {
+  padding: .8rem 1rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.ioc-card__recs-title {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .5rem;
+  color: var(--acid);
+}
+.ioc-rec {
+  display: block;
+  padding: .5rem .7rem;
+  margin-bottom: .35rem;
+  border-radius: .4rem;
+  background: rgba(0,255,135,.04);
+  border: 1px solid rgba(0,255,135,.12);
+  text-decoration: none;
+  color: inherit;
+  transition: background .15s, border-color .15s;
+}
+.ioc-rec:hover {
+  background: rgba(0,255,135,.1);
+  border-color: rgba(0,255,135,.3);
+}
+.ioc-rec__header {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .15rem;
+}
+.ioc-rec__name {
+  font-size: .82rem;
+  color: var(--text);
+}
+.ioc-rec__badge {
+  font-size: .65rem;
+  padding: .1rem .4rem;
+  border-radius: .2rem;
+  background: rgba(0,255,135,.15);
+  color: var(--acid);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.ioc-rec__desc {
+  font-size: .75rem;
+  color: var(--gray);
+  margin: 0;
+  line-height: 1.4;
+}
+
 /* How it works steps */
 .ioc-how-it-works {
   display: flex;
@@ -1276,6 +1331,11 @@
 [data-theme="light"] .ioc-card__actions { background: rgba(8,145,178,.04); }
 [data-theme="light"] .ioc-card__actions-text { color: #555; }
 [data-theme="light"] .ioc-card__section-title { color: #1a1a2e; }
+[data-theme="light"] .ioc-rec { background: rgba(8,145,178,.04); border-color: rgba(8,145,178,.12); }
+[data-theme="light"] .ioc-rec:hover { background: rgba(8,145,178,.1); border-color: rgba(8,145,178,.3); }
+[data-theme="light"] .ioc-rec__badge { background: rgba(8,145,178,.12); color: #0891b2; }
+[data-theme="light"] .ioc-rec__desc { color: #666; }
+[data-theme="light"] .ioc-card__recs-title { color: #0891b2; }
 [data-theme="light"] .ioc-link {
   background: #f4f4f8;
   border-color: rgba(0,0,0,.08);

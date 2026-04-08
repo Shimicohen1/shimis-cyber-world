@@ -175,3 +175,33 @@ toolkit_banners:
     desc: "SCW Elite tools: IOC Scanner, Detection Vault, Threat Playbooks, and more."
     url: "/premium/"
     button: "Explore SCW Elite →"
+
+# ── Tool-Embedded Recommendations ─────────────────────────
+# Shown inside ThreatLens/GoFish results, matched by indicator type.
+# When adding new affiliate partners, add them here too for tool placement.
+tool_recommendations:
+  - name: "NordVPN"
+    desc: "Encrypt your traffic and block malicious domains. Threat Protection included."
+    url: "https://www.anrdoezrs.net/click-101720928-13756265"
+    badge: "Our Pick"
+    types: [ip, domain, url, hash, phishing]
+  - name: "Proton VPN"
+    desc: "Swiss no-logs VPN with NetShield malware filter and Secure Core routing."
+    url: "https://www.jdoqocy.com/click-101720928-15834536"
+    badge: "Recommended"
+    types: [ip, domain, url, hash, phishing]
+  - name: "Surfshark"
+    desc: "VPN + CleanWeb blocks malware, ads, and trackers. Unlimited devices."
+    url: "https://www.kqzyfj.com/click-101720928-15438560"
+    badge: "Great Value"
+    types: [ip, domain, url, phishing]
+  - name: "Proton Pass"
+    desc: "End-to-end encrypted passwords with 2FA and email aliases. Stop credential reuse."
+    url: "https://www.kqzyfj.com/click-101720928-15831601"
+    badge: "Our Pick"
+    types: [email]
+  - name: "NordVPN"
+    desc: "Prevent credential leaks with Dark Web Monitor. Get alerts if your data appears online."
+    url: "https://www.anrdoezrs.net/click-101720928-13756265"
+    badge: "Recommended"
+    types: [email]

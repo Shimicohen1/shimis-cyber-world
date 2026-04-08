@@ -508,6 +508,25 @@
       html += '</div>';
     }
 
+    /* ── Contextual product recommendations (data-driven) ── */
+    var recs = (window.IOC_TOOL_RECS || []).filter(function (r) {
+      return r.types.indexOf('phishing') !== -1;
+    });
+    if (recs.length > 0 && totalScore > 0) {
+      html += '<div class="ioc-card__recs">';
+      html += '  <div class="ioc-card__recs-title">🛡️ Protect yourself</div>';
+      recs.forEach(function (r) {
+        html += '<a href="' + escapeAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
+        html += '  <div class="ioc-rec__header">';
+        html += '    <strong class="ioc-rec__name">' + esc(r.name) + '</strong>';
+        if (r.badge) html += '    <span class="ioc-rec__badge">' + esc(r.badge) + '</span>';
+        html += '  </div>';
+        html += '  <p class="ioc-rec__desc">' + esc(r.desc) + '</p>';
+        html += '</a>';
+      });
+      html += '</div>';
+    }
+
     results.innerHTML = html;
   }
 
@@ -521,6 +540,8 @@
 
     scanBtn.addEventListener('click', function () {
       render(input.value);
+      /* Auto-select input text so user can immediately type a new query */
+      input.select();
     });
 
     if (clearBtn) {
