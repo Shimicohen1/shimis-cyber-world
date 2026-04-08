@@ -122,17 +122,18 @@
     var seen = {};
     var results = [];
     var dupes = 0;
+    var unrecognized = 0;
 
     tokens.forEach(function (token) {
       var info = detectType(token);
-      if (!info) return;
+      if (!info) { unrecognized++; return; }
       var key = info.raw.toLowerCase();
       if (seen[key]) { dupes++; return; }
       seen[key] = true;
       results.push(info);
     });
 
-    return { iocs: results, dupes: dupes, total: tokens.length };
+    return { iocs: results, dupes: dupes, total: results.length + dupes, recognized: results.length, unrecognized: unrecognized };
   }
 
   /* ── Build lookup links ── */
@@ -172,7 +173,7 @@
     /* Stats */
     var types = {};
     parsed.iocs.forEach(function (i) { types[i.lookup] = true; });
-    document.getElementById('iocTotalCount').textContent = parsed.total;
+    document.getElementById('iocTotalCount').textContent = parsed.recognized;
     document.getElementById('iocUniqueCount').textContent = parsed.iocs.length;
     document.getElementById('iocTypeCount').textContent = Object.keys(types).length;
     document.getElementById('iocDupeCount').textContent = parsed.dupes;
@@ -245,8 +246,8 @@
         }
 
         /* Known breach databases */
-        html += '<div class="ioc-card__section-title">🗄️ Known major breaches (check if this email appears)</div>';
-        html += '<div class="ioc-card__breach-note">These are the largest known data breaches. Use <strong>Have I Been Pwned</strong> above to check exactly which ones contain this email.</div>';
+        html += '<div class="ioc-card__section-title">🗄️ Known major breaches</div>';
+        html += '<div class="ioc-card__breach-note">These are the largest known data breaches where emails are commonly found. Use the <strong>Have I Been Pwned</strong> link above to check which ones actually contain this email.</div>';
         html += '<div class="ioc-card__breach-grid">';
         KNOWN_BREACHES.forEach(function (b) {
           html += '<div class="ioc-breach-item">';
@@ -283,6 +284,25 @@
         html += '<div class="ioc-card__actions">';
         html += '  <div class="ioc-card__actions-title">💡 Recommended actions</div>';
         html += '  <p class="ioc-card__actions-text">' + escapeHtml(actionsText) + '</p>';
+        html += '</div>';
+      }
+
+      /* ── Contextual product recommendations (data-driven) ── */
+      var recs = (window.IOC_TOOL_RECS || []).filter(function (r) {
+        return r.types.indexOf(ioc.lookup) !== -1;
+      });
+      if (recs.length > 0) {
+        html += '<div class="ioc-card__recs">';
+        html += '  <div class="ioc-card__recs-title">🛡️ Protect yourself</div>';
+        recs.forEach(function (r) {
+          html += '<a href="' + escapeAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
+          html += '  <div class="ioc-rec__header">';
+          html += '    <strong class="ioc-rec__name">' + escapeHtml(r.name) + '</strong>';
+          if (r.badge) html += '    <span class="ioc-rec__badge">' + escapeHtml(r.badge) + '</span>';
+          html += '  </div>';
+          html += '  <p class="ioc-rec__desc">' + escapeHtml(r.desc) + '</p>';
+          html += '</a>';
+        });
         html += '</div>';
       }
 
@@ -389,6 +409,8 @@
       if (!text) return;
       var parsed = parseInput(text);
       render(parsed);
+      /* Auto-select input text so user can immediately type a new query */
+      input.select();
     });
 
     if (clearBtn) {
