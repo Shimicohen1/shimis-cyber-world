@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
-    text: Bug bounty platforms are overwhelmed by AI-generated vulnerability reports, impacting triage efficiency.
-    detail: HackerOne has paused services due to an influx of AI-generated submissions, making it difficult to distinguish novel findings from automated noise. Organizations should prioritize internal validation processes for security findings and consider AI detection tools to manage submission queues effectively.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-265a
-    link_label: CISA AI Security Guidance
+  - title: LLM Interfaces Vulnerable to Credential and Data Exposure
+    text: AI chat interfaces, particularly those with RAG extensions, are becoming targets for cloud credential theft.
+    detail: The 'text-generation-webui' vulnerability highlights the risks associated with LLM interfaces and their extensions. Ensure RAG extensions are updated and review access controls for any cloud credentials utilized by these AI tools to prevent unauthorized access and potential data breaches.
+    link: https://owasp.org/www-project-top-10-ai-security/
+    link_label: OWASP Top 10 for LLM Applications
     badge: signal
     tags:
       - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: Ransomware Groups Intensify Focus on Business Services Sector
-    text: Business services are experiencing a significant surge in ransomware attacks.
-    detail: Intelligence indicates a coordinated increase in ransomware operations targeting the business services sector. Companies in this industry must reinforce their defenses, implement robust backup strategies, and ensure prompt patching of known vulnerabilities to mitigate the growing threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-309a
-    link_label: CISA Ransomware Guidance
-    badge: signal
-    tags:
-      - ransomware
-      - threat-intel
-      - business-services
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to be actively exploited.
-    detail: Recent advisories highlight critical SSRF and RCE vulnerabilities in various software, including CMS platforms, developer tools, and API labs. Organizations must prioritize patching these types of vulnerabilities, implement strict input validation, and segment networks to limit potential exploit impact.
-    link: https://owasp.org/www-project-top-ten/
-    link_label: OWASP Top 10
+      - vulnerability
+      - cloud-identity
+  - title: SSRF and RCE Vulnerabilities Plague Open-Source Tools
+    text: Multiple open-source platforms like Backstage, Alchemy CMS, and Jeecgboot JimuReport show critical SSRF and RCE flaws.
+    detail: Attackers are exploiting SSRF in tools like Backstage and API labs, alongside RCE vulnerabilities in CMS and reporting tools. Prioritize patching these widely used open-source components, especially those with known CVEs, and implement network segmentation to limit the blast radius of successful exploits.
+    link: https://cve.mitre.org/about/risk-scoring.html
+    link_label: Understanding CVE Risk
     badge: signal
     tags:
       - vulnerability
       - rce
       - ssrf
-      - patch-management
-  - title: New Threat Actor 'TiMc' Emerges on Dark Web
-    text: A new threat actor, TiMc, has been identified operating on the dark web.
-    detail: The emergence of novel threat actors like TiMc underscores the dynamic nature of cyber threats. Continuous monitoring of dark web intelligence and threat actor TTPs is crucial for proactive defense and understanding evolving attack vectors.
-    link: https://www.mitre.org/threat-intelligence
-    link_label: MITRE ATT&CK
+      - open-source
+  - title: Emerging Threat Actors and Ransomware Operations Active
+    text: New threat actor TiMc identified; Kairos ransomware site defacement raises questions.
+    detail: The cybersecurity landscape is dynamic, with new actors like TiMc appearing and established ransomware groups like Kairos showing unusual activity. Stay informed on emerging threats through threat intelligence feeds and be prepared for potential shifts in ransomware tactics, including decoys or diversions.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness
+    link_label: Ransomware Awareness
     badge: signal
     tags:
-      - darkweb
       - threat-intel
-      - new-actor
+      - ransomware
+      - darkweb
+  - title: Business Services Sector Targeted by Ransomware Groups
+    text: Business services are experiencing a surge in ransomware attacks, indicating targeted campaigns.
+    detail: The business services sector is under increased pressure from ransomware groups, with a notable uptick in attacks. Organizations in this sector should reinforce their defenses, including robust backups, employee training on phishing, and network monitoring for early detection of malicious activity.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-289a
+    link_label: Ransomware Guidance
+    badge: signal
+    tags:
+      - ransomware
+      - threat-intel
+      - business-services
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
