@@ -420,21 +420,151 @@ HARD RULES:
 }
 
 /* ═══════════════════════════════════════════════════════════
+ *  GEMINI IMAGE GENERATION — contextual LinkedIn visual
+ * ═══════════════════════════════════════════════════════════ */
+
+async function generateImage(title, tags) {
+  if (!GEMINI_API_KEY) return null;
+
+  const tagStr = (tags || '').replace(/[\[\]]/g, '');
+  const prompt = `Create a professional cybersecurity-themed digital illustration for a LinkedIn post.
+
+Topic: ${title}
+Tags: ${tagStr}
+
+Style requirements:
+- Dark background with blue and cyan neon accent lighting
+- Abstract tech elements: circuit board traces, data streams, digital shields, network nodes
+- Modern, clean, corporate-appropriate
+- NO text, NO words, NO letters, NO numbers anywhere in the image
+- NO faces, NO people, NO hands
+- Atmospheric and dramatic lighting
+- 1024x1024 square format`;
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            responseModalities: ['IMAGE', 'TEXT'],
+          }
+        })
+      }
+    );
+
+    if (!res.ok) {
+      console.warn(`⚠️  Gemini Image API ${res.status} — posting without image`);
+      return null;
+    }
+
+    const data = await res.json();
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const imagePart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
+
+    if (!imagePart) {
+      console.warn('⚠️  Gemini returned no image — posting without image');
+      return null;
+    }
+
+    const imageBuffer = Buffer.from(imagePart.inlineData.data, 'base64');
+    const mimeType = imagePart.inlineData.mimeType;
+    console.log(`🖼️  Generated image: ${(imageBuffer.length / 1024).toFixed(0)}KB (${mimeType})`);
+    return { buffer: imageBuffer, mimeType };
+  } catch (err) {
+    console.warn(`⚠️  Image generation error: ${err.message} — posting without image`);
+    return null;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+ *  LINKEDIN IMAGE UPLOAD — register + upload binary
+ * ═══════════════════════════════════════════════════════════ */
+
+async function uploadImageToLinkedIn(imageBuffer, mimeType) {
+  // Step 1: Register upload
+  const registerRes = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      registerUploadRequest: {
+        owner: PERSON_URN,
+        recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
+        serviceRelationships: [{
+          identifier: 'urn:li:userGeneratedContent',
+          relationshipType: 'OWNER',
+        }],
+      }
+    })
+  });
+
+  if (!registerRes.ok) {
+    const err = await registerRes.text();
+    throw new Error(`LinkedIn register upload ${registerRes.status}: ${err}`);
+  }
+
+  const registerData = await registerRes.json();
+  const uploadUrl = registerData.value
+    ?.uploadMechanism?.['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']
+    ?.uploadUrl;
+  const asset = registerData.value?.asset;
+
+  if (!uploadUrl || !asset) {
+    throw new Error('LinkedIn register upload: missing uploadUrl or asset');
+  }
+
+  // Step 2: Upload binary
+  const uploadRes = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${TOKEN}`,
+      'Content-Type': mimeType,
+    },
+    body: imageBuffer,
+  });
+
+  if (!uploadRes.ok && uploadRes.status !== 201) {
+    const err = await uploadRes.text();
+    throw new Error(`LinkedIn image upload ${uploadRes.status}: ${err}`);
+  }
+
+  console.log(`📤 Image uploaded to LinkedIn: ${asset}`);
+  return asset;
+}
+
+/* ═══════════════════════════════════════════════════════════
  *  LINKEDIN API
  * ═══════════════════════════════════════════════════════════ */
 
-async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle, thumbnailUrl) {
-  /* TEXT-ONLY post — no link preview card.
-   * LinkedIn algorithm suppresses posts with ARTICLE media (external links).
-   * Text-only posts get 2-3x more reach. The article URL is in the text body. */
+async function postToLinkedIn(authorUrn, text, imageAsset) {
+  /* IMAGE post when asset available, TEXT-ONLY otherwise.
+   * Native image posts get ~18% more engagement than text-only.
+   * Article/link posts are suppressed — URL stays in text body. */
+  const shareContent = {
+    shareCommentary: { text },
+  };
+
+  if (imageAsset) {
+    shareContent.shareMediaCategory = 'IMAGE';
+    shareContent.media = [{
+      status: 'READY',
+      media: imageAsset,
+    }];
+  } else {
+    shareContent.shareMediaCategory = 'NONE';
+  }
+
   const payload = {
     author: authorUrn,
     lifecycleState: 'PUBLISHED',
     specificContent: {
-      'com.linkedin.ugc.ShareContent': {
-        shareCommentary: { text },
-        shareMediaCategory: 'NONE',
-      }
+      'com.linkedin.ugc.ShareContent': shareContent,
     },
     visibility: {
       'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC'
@@ -495,9 +625,20 @@ async function main() {
 
   console.log(`\n--- LinkedIn Post Preview (${text.length} chars) ---\n${text}\n---\n`);
 
+  // Generate image (graceful fallback to text-only if it fails)
+  let imageAsset = null;
+  const imageData = await generateImage(best.meta.title, best.meta.tags);
+  if (imageData) {
+    try {
+      imageAsset = await uploadImageToLinkedIn(imageData.buffer, imageData.mimeType);
+    } catch (err) {
+      console.warn(`⚠️  Image upload failed: ${err.message} — posting text-only`);
+    }
+  }
+
   // Post to personal profile
-  const personalId = await postToLinkedIn(PERSON_URN, text, postUrl, title, image);
-  console.log(`✅ Posted to personal profile: ${personalId}`);
+  const personalId = await postToLinkedIn(PERSON_URN, text, imageAsset);
+  console.log(`✅ Posted to personal profile${imageAsset ? ' (with image)' : ' (text-only)'}: ${personalId}`);
 
   // Company Page posting disabled — personal profile only.
   // Will be handled by a separate workflow once Community Management API is approved.
