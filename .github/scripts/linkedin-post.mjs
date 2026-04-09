@@ -354,40 +354,33 @@ async function generateWithGemini(meta, fileName, postUrl) {
   const title = meta.title || 'Security Update';
   const body = stripMarkdown(meta._body || '').slice(0, 1500);
   const score = (meta.score || 'MEDIUM').toUpperCase();
-  const whyItMatters = meta.why_it_matters || meta.excerpt || '';
   const tags = (meta.tags || '').replace(/[\[\]]/g, '');
-  
-  // Check for affiliate rec
-  const monRec = getMonetizedRecommendation(meta.tags);
-  let affiliateLine = '';
-  if (monRec !== SCW_ELITE_REC) {
-    affiliateLine = `\nIf appropriate, naturally weave in this recommendation (don't force it):\n${monRec.text} — ${monRec.url}`;
-  }
 
-  const prompt = `You are writing a LinkedIn post for Shimi, a cybersecurity professional who curates threat intelligence at Shimi's Cyber World. He REPORTS and ANALYZES news — he does NOT participate in the events he covers. Write as a commentator sharing a story he found, NOT as someone who was there.
+  const prompt = `Write a LinkedIn post for Shimi's Cyber World — a cyber threat intelligence community. Shimi REPORTS news he found. He was NOT at any event and did NOT experience anything personally.
 
-ARTICLE TITLE: ${title}
-SEVERITY: ${score}
-KEY CONTENT:
+ARTICLE: ${title}
+CONTENT:
 ${body}
-${affiliateLine}
 
-RULES (strict):
-1. Hook: First 2 lines (under 210 characters) must grab attention. State what happened + why it matters. This is what shows before "see more"
-2. You are REPORTING, not participating. Never say "I was at" or "I just experienced"
-3. Maximum 3-4 short paragraphs after the hook. 1-2 sentences each
-4. One brief opinion: what should security professionals think about?
-5. End with ONE short question to spark comments
-6. Footer on separate lines:
-   📄 ${postUrl}
-   📡 https://t.me/shimiscyberworld
-7. Last line: #ShimisCyberWorld #cybersecurity (+ 1 topic hashtag max). Only 3 hashtags total
-8. Plain text only. NO markdown, NO bold, NO link syntax
-9. NO emojis except the 2 footer markers (📄 📡)
-10. STRICT LENGTH: 500-800 characters total. This is critical — shorter posts get more engagement on LinkedIn. Cut ruthlessly
-11. Do NOT recommend any product unless the affiliate line above explicitly provides one
-12. Do NOT use cliché phrases or filler words. Every sentence must add value
-13. Sound like a real person — direct, opinionated, concise`;
+FORMAT (follow exactly):
+[Hook — 1-2 lines, state the news fact]
+
+[2-3 short paragraphs, 1-2 sentences each]
+
+[1 question to spark comments]
+
+📄 ${postUrl}
+📡 https://t.me/shimiscyberworld
+#ShimisCyberWorld #cybersecurity #[one topic tag]
+
+HARD RULES:
+- NEVER write "I just reviewed", "I was at", "Here's my take", "Bottom line". Write in third person about the news
+- ZERO emojis anywhere except the two footer markers (📄 📡). No 🎯 🔐 👍 or any other emoji
+- EXACTLY 3 hashtags on the last line. Not 4, not 5 — exactly 3
+- Total post MUST be 500-700 characters. Count carefully. If over 700, remove content
+- NO product recommendations, NO affiliate links, NO "stay private" or "protect yourself" product plugs
+- NO sections labeled "Bottom line" or "Key takeaway" — just flow naturally
+- Plain text only, no formatting`;
 
   try {
     const res = await fetch(
@@ -399,7 +392,7 @@ RULES (strict):
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 500,
+            maxOutputTokens: 350,
           }
         })
       }
@@ -420,21 +413,41 @@ RULES (strict):
 
     // Clean up and validate
     let text = generated.trim();
+
+    // Strip any emojis Gemini snuck in (keep only 📄 and 📡)
+    text = text.replace(/(?!📄|📡)[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1FA00}-\u{1FAFF}\u{FE00}-\u{FE0F}\u{200D}]/gu, '');
     
     // Ensure footer links are present (add if AI forgot them)
     if (!text.includes('t.me/shimiscyberworld')) {
-      text += `\n\n📡 Daily updates: https://t.me/shimiscyberworld`;
+      text += `\n📡 https://t.me/shimiscyberworld`;
     }
     if (!text.includes(postUrl)) {
-      text = text.replace(/📡/, `📄 Full analysis: ${postUrl}\n📡`);
+      text = text.replace(/📡/, `📄 ${postUrl}\n📡`);
     }
     if (!text.includes('#ShimisCyberWorld')) {
-      text += '\n\n#ShimisCyberWorld #cybersecurity #infosec';
+      text += '\n#ShimisCyberWorld #cybersecurity #infosec';
     }
 
-    // Safety trim — hard cap at 1500 chars
-    if (text.length > 1500) {
-      text = text.slice(0, 1500).replace(/\s+\S*$/, '') + '...';
+    // Remove affiliate/product lines that Gemini might inject
+    text = text.replace(/.*(?:stay private|protect yourself|surfshark|proton pass|nordvpn|kqzyfj\.com|tkqlhce\.com).*/gi, '');
+    // Clean up double blank lines from removals
+    text = text.replace(/\n{3,}/g, '\n\n');
+
+    // Enforce max length — trim body paragraphs if over 900 chars (keep hook + footer)
+    if (text.length > 900) {
+      const lines = text.split('\n');
+      // Find footer start (📄 line)
+      const footerIdx = lines.findIndex(l => l.startsWith('📄'));
+      if (footerIdx > 2) {
+        const hook = lines.slice(0, 2).join('\n');
+        const footer = lines.slice(footerIdx).join('\n');
+        let body = lines.slice(2, footerIdx).filter(l => l.trim());
+        // Remove paragraphs from the end until under limit
+        while (body.length > 1 && (hook + '\n\n' + body.join('\n\n') + '\n\n' + footer).length > 900) {
+          body.pop();
+        }
+        text = hook + '\n\n' + body.join('\n\n') + '\n\n' + footer;
+      }
     }
 
     return text;
