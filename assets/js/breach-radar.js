@@ -19,7 +19,7 @@
    *  CONSTANTS
    * ════════════════════════════════════════════════════════════ */
 
-  var PROXY_BASE = 'https://scw-newsletter.azurewebsites.net';
+  var PROXY_BASE = 'https://scw-nl.azurewebsites.net';
   var API_TIMEOUT = 25000;
 
   var CORS_PROXIES = [

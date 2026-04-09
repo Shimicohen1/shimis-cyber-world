@@ -7,7 +7,7 @@
 
 (function () {
   // ── API endpoint (Azure Container Instance) ──
-  var NEWSLETTER_API = "https://scw-newsletter.azurewebsites.net/newsletter";
+  var NEWSLETTER_API = "https://scw-nl.azurewebsites.net/newsletter";
 
   // Find all newsletter forms on the page
   var forms = document.querySelectorAll(".js-newsletter-form");

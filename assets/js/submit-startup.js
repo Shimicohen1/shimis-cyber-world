@@ -5,7 +5,7 @@
   var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
   if (!form) return;
 
-  var API_URL = "https://scw-newsletter.azurewebsites.net/community-submit";
+  var API_URL = "https://scw-nl.azurewebsites.net/community-submit";
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
