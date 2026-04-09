@@ -25,53 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Iranian Actors Target Critical Infrastructure with PLC Exploits
-    text: Iran-linked groups are probing and exploiting PLCs in US critical infrastructure.
-    detail: A concerning trend shows Iranian actors specifically targeting Programmable Logic Controllers (PLCs) in US critical infrastructure sectors, including energy and water. These attacks aim for disruption and damage, moving beyond typical ransomware. Cybersecurity teams should prioritize hardening OT environments and monitoring for unusual PLC activity.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-309a
-    link_label: CISA Advisory on Iranian PLC Targeting
+  - title: BPO Supply Chain Attacks Accelerating
+    text: Threat actor UNC6783 is exploiting BPO providers as launchpads for major enterprise breaches.
+    detail: UNC6783 is strategically targeting Business Process Outsourcing (BPO) firms to gain initial access into larger corporate networks. This supply chain vector bypasses traditional defenses. Organizations must rigorously vet third-party vendor security and implement strict access controls for BPO-provided services.
+    link: https://www.cisa.gov/news-events/advisories/aa23-285a
+    link_label: CISA Supply Chain Guidance
     badge: signal
     tags:
+      - supply-chain
       - threat-intel
-      - critical-infrastructure
-      - plc
-      - iran
-  - title: Russian Hackers Hijack Routers for Global Espionage and DNS Hijacking
-    text: Russian actors are compromising home and small office routers for spying and DNS hijacking.
-    detail: Multiple reports highlight Russian state-sponsored actors, including APT28, actively compromising routers globally. The objective is to hijack DNS settings for surveillance and espionage campaigns against individuals and organizations in the UK and US. Defenders must implement router security best practices, including strong passwords and firmware updates.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-317a
-    link_label: CISA Advisory on Russian Malicious Cyber Activity
+      - bpo
+  - title: Ransomware Groups Intensify Business Services Sector Attacks
+    text: The Business Services sector is experiencing a significant surge in ransomware attacks.
+    detail: Intelligence indicates a coordinated ramp-up in ransomware activity targeting the Business Services industry, with 18 attacks reported in a single week. Companies in this sector should prioritize robust endpoint detection and response, regular data backups, and comprehensive employee security awareness training.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-345a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
+      - ransomware
       - threat-intel
-      - espionage
-      - dns-hijacking
-      - router-security
-      - russia
-  - title: AI Models Uncover Thousands of Zero-Day Vulnerabilities
-    text: AI models like Claude are identifying thousands of previously unknown software vulnerabilities.
-    detail: Advanced AI models, such as Anthropic's Claude (codenamed 'Mythos'), are proving highly effective at discovering zero-day vulnerabilities across major systems, including cloud environments. This underscores the need for robust vulnerability management and rapid patching strategies, as the attack surface is constantly expanding with AI-driven discovery.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: OWASP Top 10 AI Security Risks
+      - business-services
+  - title: New macOS Malware Evades Defenses via Script Editor
+    text: macOS malware is evolving, leveraging built-in Script Editor to bypass security.
+    detail: A new 'ClickFix-style' macOS attack is bypassing traditional defenses by utilizing the native Script Editor. This highlights the need for advanced endpoint security solutions that monitor script execution and application behavior, not just signature-based detection. Users should exercise caution with downloaded scripts.
+    link: https://attack.mitre.org/techniques/T1059/004/
+    link_label: "MITRE ATT&CK: Scripting"
     badge: signal
     tags:
+      - malware
+      - macos
       - threat-intel
-      - vulnerability
+      - evasion
+  - title: AI-Generated Reports Overwhelm Bug Bounty Platforms
+    text: AI-generated vulnerability reports are flooding bug bounty programs, causing triage chaos.
+    detail: Platforms like HackerOne are struggling to manage a surge of AI-produced vulnerability submissions, impacting remediation efforts. This trend necessitates AI-aware triage processes and tools to distinguish genuine findings from automated noise. Security teams should refine their intake strategies to filter and validate reports.
+    link: https://owasp.org/www-project-generative-ai-security/
+    link_label: OWASP Generative AI Security
+    badge: signal
+    tags:
       - ai-security
-      - zero-day
-      - cloud-security
-  - title: Cybercrime Losses Skyrocket, Driven by Sophisticated Fraud Schemes
-    text: Cybercrime losses surged to nearly $21 billion in 2025, fueled by organized fraud.
-    detail: The FBI's latest reports indicate a dramatic increase in cybercrime losses, reaching an estimated $21 billion in 2025. This escalation is driven by organized international fraud rings, advance-fee scams targeting specific demographics like timeshare owners, and large-scale BEC operations. Businesses and individuals must enhance their defenses against social engineering and financial fraud.
-    link: https://www.ic3.gov/Media/PDF/AnnualReport/2023_IC3Report.pdf
-    link_label: FBI Internet Crime Report
-    badge: signal
-    tags:
+      - bug-bounty
       - threat-intel
-      - cybercrime
-      - financial-fraud
-      - organized-crime
-      - reporting
+      - vulnerability-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
