@@ -167,13 +167,16 @@ function selectBestPost(state) {
  *    - No Markdown (doesn't render on LinkedIn)
  * ═══════════════════════════════════════════════════════════ */
 
-/* ── Hook generators — rotate patterns to keep feed fresh ── */
+/* ── Hook generators — conversational, opinion-driven, question-based ── */
+/* LinkedIn rewards: personal voice, curiosity gaps, questions, hot takes */
 const HOOK_PATTERNS = [
-  (t, score) => `${score === 'CRITICAL' ? '🔴' : '🚨'} ${t}\n\nThis is what you need to know right now.`,
-  (t, score) => `${score === 'CRITICAL' ? '🔴' : '⚡'} ${t}\n\nHere's why your security team should pay attention.`,
-  (t, score) => `${score === 'CRITICAL' ? '🔴' : '🛡️'} ${t}\n\nA quick breakdown for defenders and decision-makers.`,
-  (t, score) => `${score === 'CRITICAL' ? '🔴' : '🔍'} ${t}\n\nThe details most people will miss — but shouldn't.`,
-  (t, score) => `${score === 'CRITICAL' ? '🔴' : '📡'} ${t}\n\nFresh from our threat intelligence feed.`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴' : ''} ${t}\n\nHere's what most people are missing about this one:`,
+  (t, score) => `${t}\n\nThis caught my attention today — and it should catch yours too.`,
+  (t, score) => `${t}\n\nI just reviewed the technical details. Here's my take:`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴 ' : ''}${t}\n\nThis one makes me uncomfortable. Let me explain:`,
+  (t, score) => `${t}\n\nAre you affected? Let me break it down:`,
+  (t, score) => `${t}\n\nI see this pattern over and over again. Here's why it matters:`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴 ' : ''}${t}\n\nMost teams won't catch this until it's too late.`,
 ];
 
 /* ── Tag → SCW Elite tool recommendation (our tools) ── */
@@ -264,55 +267,53 @@ function formatLinkedInPost(meta, fileName) {
   const slug = fileName.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '');
   const postUrl = `${SITE_URL}/posts/${slug}/`;
 
-  // ── 1. HOOK (first 2 lines — critical for "see more" click) ──
+  // ── 1. HOOK (first 2 lines — must create curiosity before "...see more") ──
   const hookIdx = Math.floor(Math.random() * HOOK_PATTERNS.length);
   const hook = HOOK_PATTERNS[hookIdx](title, score);
 
-  // ── 2. EXPERT ANALYSIS (2-3 short paragraphs) ──
+  // ── 2. PLAIN-LANGUAGE SUMMARY (conversational, no jargon dump) ──
   const paragraphs = body.split('\n\n').filter(p => p.trim().length > 40);
-  // Take first paragraph, trim to ~400 chars for a tight read
   let analysis = paragraphs[0] || '';
-  if (analysis.length > 500) {
-    analysis = analysis.slice(0, 497).replace(/\s+\S*$/, '') + '...';
+  // Trim to ~350 chars — shorter = more readable on mobile
+  if (analysis.length > 400) {
+    analysis = analysis.slice(0, 397).replace(/\s+\S*$/, '') + '...';
   }
 
-  // ── 3. WHY IT MATTERS ──
+  // ── 3. WHY IT MATTERS (short, punchy) ──
   let whySection = '';
   if (meta.why_it_matters) {
-    // Parse YAML array-like string
     const whyRaw = meta.why_it_matters;
-    whySection = `\n🎯 Why This Matters:\n${whyRaw}`;
+    const whyClean = whyRaw.length > 250 ? whyRaw.slice(0, 247).replace(/\s+\S*$/, '') + '...' : whyRaw;
+    whySection = `\n🎯 Bottom line:\n${whyClean}`;
   } else if (meta.excerpt) {
-    // Fallback: use excerpt as the "why"
-    const ex = meta.excerpt.length > 200 ? meta.excerpt.slice(0, 197) + '...' : meta.excerpt;
-    whySection = `\n🎯 Key Takeaway:\n${ex}`;
-  }
-  // Trim why section
-  if (whySection.length > 350) {
-    whySection = whySection.slice(0, 347).replace(/\s+\S*$/, '') + '...';
+    const ex = meta.excerpt.length > 180 ? meta.excerpt.slice(0, 177) + '...' : meta.excerpt;
+    whySection = `\n🎯 Bottom line:\n${ex}`;
   }
 
-  // ── 4. SINGLE CONTEXTUAL RECOMMENDATION ──
-  // Only ONE rec per post: affiliate if tags match, otherwise SCW tool.
-  // Never show both — keeps the personal feed credible.
+  // ── 4. ENGAGEMENT QUESTION — drives comments ──
+  const QUESTIONS = [
+    'Have you seen this in your environment?',
+    'Is your team prepared for this?',
+    'How would your org handle this?',
+    'What\'s your take — overhyped or underestimated?',
+    'Are you patched? Drop a 👍 if yes.',
+    'What\'s the first thing you\'d check?',
+  ];
+  const question = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+
+  // ── 5. SINGLE RECOMMENDATION (only if affiliate matches) ──
   const monRec = getMonetizedRecommendation(meta.tags);
-  let recLine;
+  let recLine = '';
   if (monRec !== SCW_ELITE_REC) {
-    // Affiliate naturally fits — use it
-    recLine = `${monRec.text}\n${monRec.url}`;
-  } else {
-    // No affiliate fit — show relevant SCW tool
-    const toolRec = getToolRecommendation(meta.tags);
-    const toolUrl = toolRec.url.startsWith('http') ? toolRec.url : `${SITE_URL}${toolRec.url}`;
-    recLine = `${toolRec.text}\n${toolUrl}`;
+    recLine = `\n${monRec.text}\n${monRec.url}`;
   }
+  // If no affiliate match — skip the rec entirely. Keeps it clean.
 
-  // ── 5. FOOTER — Telegram channel ──
-  const cta = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📡 Join 2,000+ security pros on Telegram → https://t.me/shimiscyberworld`;
+  // ── 6. FOOTER — article link + Telegram (compact, no divider) ──
+  const footer = `📄 Full analysis: ${postUrl}\n📡 Daily updates: https://t.me/shimiscyberworld`;
 
-  // ── 6. HASHTAGS (include #ShimisCyberWorld) ──
-  const hashtags = '#ShimisCyberWorld ' + buildHashtags(meta);
+  // ── 7. HASHTAGS (max 4 — fewer = better reach) ──
+  const hashtags = '#ShimisCyberWorld ' + buildHashtags(meta).split(' ').slice(0, 3).join(' ');
 
   // ── ASSEMBLE ──
   let text = `${hook}
@@ -320,18 +321,22 @@ function formatLinkedInPost(meta, fileName) {
 ${analysis}
 ${whySection}
 
+${question}
 ${recLine}
 
-${cta}
+${footer}
 
 ${hashtags}`;
 
-  // Safety: LinkedIn has a 3000 char limit. Keep under 2800 for clean rendering
-  if (text.length > 2800) {
-    // Trim analysis to fit
-    const overflow = text.length - 2700;
+  // Clean up excessive blank lines  
+  text = text.replace(/\n{3,}/g, '\n\n').trim();
+
+  // Safety: LinkedIn has a 3000 char limit. Keep under 2500 for clean rendering
+  if (text.length > 2500) {
+    const overflow = text.length - 2400;
     analysis = analysis.slice(0, Math.max(100, analysis.length - overflow)) + '...';
-    text = `${hook}\n\n${analysis}\n${whySection}\n\n${recLine}\n\n${cta}\n\n${hashtags}`;
+    text = `${hook}\n\n${analysis}\n${whySection}\n\n${question}\n${recLine}\n\n${footer}\n\n${hashtags}`;
+    text = text.replace(/\n{3,}/g, '\n\n').trim();
   }
 
   return { text, postUrl, title, image: meta.image || meta.cover_image || '' };
@@ -342,23 +347,16 @@ ${hashtags}`;
  * ═══════════════════════════════════════════════════════════ */
 
 async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle, thumbnailUrl) {
-  const mediaObj = {
-    status: 'READY',
-    originalUrl: articleUrl,
-    title: { text: articleTitle },
-  };
-  if (thumbnailUrl) {
-    mediaObj.description = { text: articleTitle };
-    mediaObj.thumbnails = [{ url: thumbnailUrl }];
-  }
+  /* TEXT-ONLY post — no link preview card.
+   * LinkedIn algorithm suppresses posts with ARTICLE media (external links).
+   * Text-only posts get 2-3x more reach. The article URL is in the text body. */
   const payload = {
     author: authorUrn,
     lifecycleState: 'PUBLISHED',
     specificContent: {
       'com.linkedin.ugc.ShareContent': {
         shareCommentary: { text },
-        shareMediaCategory: 'ARTICLE',
-        media: [mediaObj]
+        shareMediaCategory: 'NONE',
       }
     },
     visibility: {
