@@ -25,29 +25,29 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Reports Flood Bug Bounty Platforms
-    text: AI-generated vulnerability reports are overwhelming bug bounty platforms, hindering effective triage.
-    detail: HackerOne has paused services due to a surge in AI-generated submissions, making it difficult to distinguish genuine threats from noise. Cybersecurity professionals should prioritize developing robust AI detection and filtering mechanisms for their own vulnerability management processes.
+  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
+    text: Bug bounty platforms are overwhelmed by AI-generated vulnerability reports, impacting triage efficiency.
+    detail: HackerOne has paused services due to an influx of AI-generated submissions, making it difficult to distinguish novel findings from automated noise. Organizations should prioritize internal validation processes for security findings and consider AI detection tools to manage submission queues effectively.
     link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-265a
-    link_label: AI Security Guidance
+    link_label: CISA AI Security Guidance
     badge: signal
     tags:
       - ai-security
-      - threat-intel
       - bug-bounty
-  - title: Ransomware Groups Target Business Services Sector
-    text: The Business Services sector is experiencing a sharp increase in ransomware attacks.
-    detail: Recent intelligence indicates a coordinated ramp-up of ransomware activity targeting businesses in this sector. Organizations should reinforce their defenses, focusing on endpoint protection, regular backups, and comprehensive incident response plans.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-333a
-    link_label: Ransomware Protection
+      - threat-intel
+  - title: Ransomware Groups Intensify Focus on Business Services Sector
+    text: Business services are experiencing a significant surge in ransomware attacks.
+    detail: Intelligence indicates a coordinated increase in ransomware operations targeting the business services sector. Companies in this industry must reinforce their defenses, implement robust backup strategies, and ensure prompt patching of known vulnerabilities to mitigate the growing threat.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-309a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: SSRF and RCE Vulnerabilities Persist Across Tools
-    text: SSRF and RCE vulnerabilities continue to be prevalent in various software tools.
-    detail: Multiple recent advisories highlight Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws in development tools, CMS, and API labs. Prioritize patching and input validation for all third-party components and custom applications.
+  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to be actively exploited.
+    detail: Recent advisories highlight critical SSRF and RCE vulnerabilities in various software, including CMS platforms, developer tools, and API labs. Organizations must prioritize patching these types of vulnerabilities, implement strict input validation, and segment networks to limit potential exploit impact.
     link: https://owasp.org/www-project-top-ten/
     link_label: OWASP Top 10
     badge: signal
@@ -55,17 +55,17 @@ quick_signals:
       - vulnerability
       - rce
       - ssrf
-      - secure-development
-  - title: New Threat Actors Emerge with Sophisticated Tactics
-    text: Emerging threat actors like TiMc and UNC6783 employ novel techniques for infiltration.
-    detail: The cybersecurity landscape sees the rise of new actors, including UNC6783 targeting BPOs for ticket heists and TiMc appearing on the dark web. Stay updated on emerging TTPs and proactively hunt for signs of these actors in your environment.
-    link: https://attack.mitre.org/groups/
-    link_label: MITRE ATT&CK Groups
+      - patch-management
+  - title: New Threat Actor 'TiMc' Emerges on Dark Web
+    text: A new threat actor, TiMc, has been identified operating on the dark web.
+    detail: The emergence of novel threat actors like TiMc underscores the dynamic nature of cyber threats. Continuous monitoring of dark web intelligence and threat actor TTPs is crucial for proactive defense and understanding evolving attack vectors.
+    link: https://www.mitre.org/threat-intelligence
+    link_label: MITRE ATT&CK
     badge: signal
     tags:
+      - darkweb
       - threat-intel
-      - emerging-threats
-      - apt
+      - new-actor
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
