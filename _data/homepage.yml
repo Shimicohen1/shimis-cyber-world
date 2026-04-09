@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
+  - title: AI-Generated Content Flooding Bug Bounty Platforms
+    text: Bug bounty platforms are overwhelmed by AI-generated vulnerability reports, impacting triage efficiency.
+    detail: HackerOne has paused services due to a surge in AI-created submissions, making it difficult to distinguish genuine findings. Security teams should prioritize manual verification and enhance AI detection capabilities to filter out noise and focus on real threats.
+    link: https://www.cyberthreatintelligence.com/blog/hackerone-halts-bug-bounties-amid-ai-remediation-chaos
+    link_label: Cyber Threat Intelligence Report
+    badge: signal
+    tags:
+      - bug-bounty
+      - ai-security
+      - threat-intel
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Ransomware actors are increasingly targeting the business services sector, with a notable surge in attacks observed.
-    detail: Business services are becoming a prime target for ransomware operations, with a significant increase in attacks reported. Organizations in this sector should prioritize robust endpoint protection, network segmentation, and regular, isolated backups to mitigate the growing threat of data encryption and extortion. Proactive threat hunting and incident response planning are crucial.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-309a
-    link_label: CISA Ransomware Guidance
+    text: The Business Services sector is experiencing a significant increase in targeted ransomware attacks.
+    detail: Intelligence indicates a coordinated surge in ransomware activity targeting this sector. Organizations should bolster their defenses with robust backup strategies, endpoint detection and response (EDR), and regular security awareness training to mitigate the growing threat.
+    link: https://www.darkfeed.io/reports/business-services-sector-under-fire
+    link_label: DARKFEED Intelligence
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerabilities Flood Bug Bounty Platforms
-    text: Bug bounty platforms are overwhelmed by a surge in AI-generated vulnerability reports, impacting triage and remediation efforts.
-    detail: The rise of AI-generated vulnerability submissions presents a significant challenge for bug bounty programs and security teams. Organizations should implement stricter validation processes for incoming reports, focusing on reproducibility and genuine exploitability. Investing in AI-assisted tools for vulnerability analysis can help manage the increased volume and improve detection accuracy.
-    link: https://owasp.org/www-project-top-10-ai-security/
-    link_label: OWASP Top 10 AI Security
+  - title: New Threat Actor 'TiMc' Emerges on Dark Web
+    text: A novel threat actor, TiMc, has been identified, signaling a potential new player in cybercrime.
+    detail: The emergence of new threat actors like TiMc requires vigilance. Monitor dark web forums and threat intelligence feeds for early indicators of their tactics, techniques, and procedures (TTPs) to proactively adapt defenses and anticipate emerging attack vectors.
+    link: https://www.darkfeed.io/blog/timc-emerges-new-threat-actor-spotted-in-the-wild
+    link_label: DARKFEED Alert
     badge: signal
     tags:
-      - ai-security
-      - bug-bounty
       - threat-intel
-  - title: SSRF Vulnerabilities Remain a Critical Threat Vector
-    text: Server-Side Request Forgery (SSRF) vulnerabilities continue to be exploited, posing risks to internal systems and cloud credentials.
-    detail: Recent advisories highlight ongoing SSRF vulnerabilities in various tools and platforms, underscoring the persistent risk of exposing internal systems and cloud resources. Developers and security teams must implement strict input validation, egress filtering, and network segmentation to prevent unauthorized access and data exfiltration. Regularly auditing code for SSRF flaws is essential.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Guidance
+      - darkweb
+      - emerging-threats
+  - title: Critical Vulnerabilities in Open Source Software Persist
+    text: Multiple recent advisories highlight critical flaws in popular open-source applications.
+    detail: Vulnerabilities in platforms like OrangeHRM, Discourse, and Backstage underscore the persistent risks in open-source software. Implement a robust software supply chain security program, including SBOMs and regular vulnerability scanning, to manage these ongoing threats.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=OrangeHRM
+    link_label: NVD Search
     badge: signal
     tags:
-      - ssrf
       - vulnerability
-      - web-application-security
-  - title: OSINT Techniques Expand Identity Exposure Risks
-    text: Advanced OSINT techniques, particularly targeting phone numbers, can rapidly expose extensive personal and professional identities.
-    detail: The proliferation of OSINT tools and techniques, especially those leveraging phone number data, presents a significant challenge for individual privacy and corporate security. Users should be acutely aware of their digital footprint and implement strong privacy settings across all online platforms. Organizations must train employees on OSINT risks and enhance their own threat intelligence gathering.
-    link: https://www.nist.gov/cyberframework/user-stories/2023/05/leveraging-open-source-intelligence-osint-cybersecurity
-    link_label: NIST OSINT Framework
-    badge: signal
-    tags:
-      - osint
-      - data-breach
-      - identity-management
+      - open-source
+      - cve
+      - supply-chain
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
