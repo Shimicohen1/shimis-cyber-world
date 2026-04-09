@@ -1,0 +1,47 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:scw="https://shimiscyberworld.com/ns/1.0">
+  <generator uri="https://shimiscyberworld.com/" version="2.0">SCW Feed Engine</generator>
+  <link href="{{ '/feed.xml' | absolute_url }}" rel="self" type="application/atom+xml" />
+  <link href="{{ site.url }}" rel="alternate" type="text/html" />
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <id>{{ '/feed.xml' | absolute_url }}</id>
+  <title type="html">{{ site.title | xml_escape }}</title>
+  <subtitle>{{ site.description | xml_escape }}</subtitle>
+  {% assign posts = site.posts | where_exp: "post", "post.hidden != true" %}
+  {% for post in posts limit:50 %}
+  <entry>
+    <title type="html">{{ post.title | xml_escape }}</title>
+    <link href="{{ post.url | absolute_url }}" rel="alternate" type="text/html" title="{{ post.title | xml_escape }}" />
+    <published>{{ post.date | date_to_xmlschema }}</published>
+    <updated>{{ post.date | date_to_xmlschema }}</updated>
+    <id>{{ post.url | absolute_url | remove: "/" }}</id>
+    <content type="html" xml:base="{{ post.url | absolute_url }}"><![CDATA[{{ post.content }}]]></content>
+    <author><name>{{ site.title | xml_escape }}</name></author>
+    {% for tag in post.tags %}<category term="{{ tag }}" />
+    {% endfor %}
+    <summary type="html"><![CDATA[{{ post.summary | default: post.excerpt | strip_html | truncate: 180 }}]]></summary>
+    {% if post.image %}<media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="{{ post.image }}" />
+    <media:content medium="image" url="{{ post.image }}" xmlns:media="http://search.yahoo.com/mrss/" />{% endif %}
+    {% comment %}── SCW Extended Fields ──{% endcomment %}
+    {% if post.score %}<scw:score>{{ post.score }}</scw:score>{% endif %}
+    {% if post.event_type %}<scw:event_type>{{ post.event_type }}</scw:event_type>{% endif %}
+    {% if post.tlp %}<scw:tlp>{{ post.tlp }}</scw:tlp>{% endif %}
+    {% if post.source_name %}<scw:source_name>{{ post.source_name | xml_escape }}</scw:source_name>{% endif %}
+    {% if post.telegram_url %}<scw:telegram_url>{{ post.telegram_url }}</scw:telegram_url>{% endif %}
+    {% if post.source_url and post.source_url != "" %}<scw:source_url>{{ post.source_url }}</scw:source_url>{% endif %}
+    {% if post.organizations %}{% for org in post.organizations %}
+    <scw:organization name="{{ org.name | xml_escape }}"{% if org.domain %} domain="{{ org.domain }}"{% endif %}{% if org.role %} role="{{ org.role }}"{% endif %} />{% endfor %}{% endif %}
+    {% if post.threat_actors %}{% for actor in post.threat_actors %}
+    <scw:threat_actor>{{ actor | xml_escape }}</scw:threat_actor>{% endfor %}{% endif %}
+    {% if post.countries %}{% for country in post.countries %}
+    <scw:country>{{ country }}</scw:country>{% endfor %}{% endif %}
+    {% if post.iocs %}{% for ioc in post.iocs %}
+    <scw:ioc id="{{ ioc.id | xml_escape }}" type="{{ ioc.type | xml_escape }}"{% if ioc.indicator %} indicator="{{ ioc.indicator | xml_escape }}"{% endif %} />{% endfor %}{% endif %}
+    {% if post.mitre_attack %}{% for m in post.mitre_attack %}
+    <scw:mitre id="{{ m.id }}" name="{{ m.name | xml_escape }}" tactic="{{ m.tactic | xml_escape }}" />{% endfor %}{% endif %}
+  </entry>
+  {% endfor %}
+</feed>
