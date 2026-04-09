@@ -375,9 +375,9 @@ HARD RULES:
 
     // Strip ALL emojis, then restore only the footer markers
     text = text.replace(/[\p{Extended_Pictographic}]/gu, '');
-    // Restore footer emoji markers
-    text = text.replace(/(\s*)Full analysis:/m, '\n📄 Full analysis:');
-    text = text.replace(/(\s*)(Daily updates:|https:\/\/t\.me)/m, '\n📡 $2');
+    // Restore footer emoji markers — match various Gemini formats
+    text = text.replace(/^[ \t]*(Full analysis:?\s*)?(?=https?:\/\/shimiscyberworld\.com)/m, '📄 ');
+    text = text.replace(/^[ \t]*(Daily updates:?\s*)?(?=https?:\/\/t\.me)/m, '📡 ');
     
     // Ensure footer links are present (add if AI forgot them)
     if (!text.includes('t.me/shimiscyberworld')) {
