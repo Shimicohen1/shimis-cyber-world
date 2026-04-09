@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI is flooding bug bounty programs, straining triage and remediation efforts.
-    detail: "HackerOne's pause on bug bounties highlights a growing challenge: distinguishing genuine vulnerabilities from AI-generated noise. Organizations must enhance AI detection capabilities and refine submission validation processes to manage this influx effectively and maintain program integrity."
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ai-cybersecurity-considerations
-    link_label: AI Cybersecurity Considerations
+  - title: LLM Interfaces and RAG Extensions Pose Cloud Credential Risks
+    text: AI chat interfaces with RAG extensions are vulnerable to cloud credential theft.
+    detail: The 'text-generation-webui' and its RAG extensions are susceptible to credential theft, potentially exposing cloud infrastructure. Organizations should audit access controls and monitor for unusual network activity. Regularly update LLM interfaces and extensions to patch known vulnerabilities.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery_(SSRF)
+    link_label: OWASP SSRF Guidance
     badge: signal
     tags:
       - ai-security
-      - threat-intel
-      - bug-bounty
-  - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: Business services are a prime target for ransomware groups with a notable attack surge.
-    detail: The business services sector is experiencing a significant increase in ransomware attacks. Organizations in this sector should prioritize robust endpoint protection, regular data backups, and comprehensive incident response plans to mitigate the growing threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness-month
-    link_label: Ransomware Awareness
+      - cloud-security
+      - vulnerability
+  - title: Discourse Vulnerabilities Highlight Need for Prompt Patching
+    text: Multiple recent Discourse flaws highlight the need for prompt patching and configuration review.
+    detail: Recent advisories reveal vulnerabilities in Discourse related to email settings, subscriptions, and draft topic exposure. Administrators must ensure timely patching and review configurations for group email tests and subscription management to prevent unauthorized access and potential data leakage.
+    link: https://blog.discourse.org/security/
+    link_label: Discourse Security Updates
+    badge: signal
+    tags:
+      - web-application-security
+      - vulnerability
+      - patch-management
+  - title: Ransomware Groups Target Business Services Sector Aggressively
+    text: The business services sector is experiencing a significant surge in ransomware attacks.
+    detail: Intelligence indicates a coordinated ramp-up in ransomware activity targeting the business services industry. Companies in this sector should enhance their endpoint security, implement robust backup strategies, and conduct regular phishing awareness training to mitigate evolving threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: SSRF and RCE flaws continue to be prevalent in various software and tools.
-    detail: Recent advisories highlight ongoing Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in widely used software like Backstage, Alchemy CMS, and API tools. Proactive patching and strict input validation are crucial defenses.
-    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Guide
+  - title: SSRF and RCE Vulnerabilities Common in Developer Tools
+    text: Developer tools like Backstage and Alchemy CMS exhibit critical SSRF and RCE flaws.
+    detail: Critical SSRF and RCE vulnerabilities found in developer frameworks and CMS platforms underscore the importance of secure coding practices and dependency management. Regularly scan code and dependencies for known vulnerabilities and apply vendor patches promptly.
+    link: https://owasp.org/www-project-top-ten/
+    link_label: OWASP Top 10
     badge: signal
     tags:
+      - developer-tools
       - vulnerability
       - rce
       - ssrf
-      - patch-management
-  - title: OSINT Techniques Unlock Sensitive Personal and Corporate Data
-    text: Open-source intelligence methods can reveal extensive personal and business-related information.
-    detail: The power of OSINT is demonstrated by the ability to link single phone numbers to personal identities and online accounts. Security teams must implement stricter data access controls and enhance employee training on information sharing risks.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
-    badge: signal
-    tags:
-      - osint
-      - data-breach
-      - identity-protection
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
