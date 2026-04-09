@@ -41,6 +41,6 @@ jobs:
         run: |
           git config user.name "SCW Feed Bot"
           git config user.email "shimicyberworld@gmail.com"
-          git add .github/linkedin-state.json
-          git diff --staged --quiet || git commit -m "chore: update LinkedIn post state"
+          git add .github/linkedin-state.json _posts/
+          git diff --staged --quiet || git commit -m "chore: update LinkedIn post state + AI image"
           git push
