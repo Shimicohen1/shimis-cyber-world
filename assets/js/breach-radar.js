@@ -238,8 +238,9 @@
       var controller = new AbortController();
       var timer = setTimeout(function () { controller.abort(); }, API_TIMEOUT);
 
-      /* Retry delays: 3s → 5s → 8s (Azure cold-start can take 10-15s) */
-      var retryDelays = [3000, 5000, 8000];
+      /* Retry delays: 2s → 4s → 7s → 10s (Azure cold-start can take 10-15s) */
+      var retryDelays = [2000, 4000, 7000, 10000];
+      var maxRetries = 4;
 
       return fetch(url, {
         signal: controller.signal,
@@ -249,8 +250,8 @@
         clearTimeout(timer);
         if (res.status === 429) throw new Error('Rate limit exceeded. Please wait a moment before searching again.');
         if (!res.ok) {
-          if (retryCount < 3) {
-            return new Promise(function (resolve) { setTimeout(resolve, retryDelays[retryCount] || 3000); })
+          if (retryCount < maxRetries) {
+            return new Promise(function (resolve) { setTimeout(resolve, retryDelays[retryCount] || 5000); })
               .then(function () { return tryProxy(idx, retryCount + 1); });
           }
           throw new Error('proxy-fail');
@@ -263,8 +264,8 @@
       .catch(function (err) {
         clearTimeout(timer);
         if (err.message.indexOf('Rate limit') !== -1) throw err;
-        if (retryCount < 3) {
-          return new Promise(function (resolve) { setTimeout(resolve, retryDelays[retryCount] || 3000); })
+        if (retryCount < maxRetries) {
+          return new Promise(function (resolve) { setTimeout(resolve, retryDelays[retryCount] || 5000); })
             .then(function () { return tryProxy(idx, retryCount + 1); });
         }
         return tryProxy(idx + 1, 0);
@@ -719,7 +720,15 @@
       });
   }
 
+  /* Pre-warm the Azure Function App on page load.
+     Consumption plan sleeps after ~20 min — this wakes it before the user clicks Scan. */
+  function prewarm() {
+    fetch(PROXY_BASE + '/health', { mode: 'cors' }).catch(function () {});
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    prewarm();
+
     var scanBtn = document.getElementById('brScanBtn');
     var input = document.getElementById('brInput');
     if (!scanBtn || !input) return;
