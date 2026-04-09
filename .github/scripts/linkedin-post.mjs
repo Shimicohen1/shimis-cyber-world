@@ -309,7 +309,7 @@ function formatLinkedInPost(meta, fileName) {
 
   // ── 5. FOOTER — Company Page + Telegram channel ──
   const cta = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📡 Follow Shimi's Cyber World → https://www.linkedin.com/company/shimi-s-cyber-world
+📡 Follow Shimi's Cyber World → https://www.linkedin.com/company/112773961
 📡 Join 2,000+ security pros on Telegram → https://t.me/shimiscyberworld`;
 
   // ── 6. HASHTAGS ──
