@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI Models Present New Attack Vectors
-    text: AI models are becoming targets, with vulnerabilities allowing credential theft and potential misuse.
-    detail: The `text-generation-webui` platform's RAG extensions are vulnerable to cloud credential theft. Cybersecurity professionals should audit AI infrastructure for exposed credentials and review access controls for AI models and their extensions to prevent unauthorized access and potential data breaches.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLM Applications
-    badge: signal
-    tags:
-      - ai-security
-      - cloud-security
-      - threat-intel
-  - title: Open Source Software Remains a Prime Target
-    text: Numerous critical vulnerabilities are being discovered across popular open-source platforms.
-    detail: Discourse, OrangeHRM, Backstage, and Alchemy CMS are among recent platforms with critical flaws, ranging from file reads to RCE. Organizations must prioritize patching and vulnerability management for all open-source components, leveraging CVE data and vendor advisories to stay ahead of exploits.
-    link: https://www.cisa.gov/news-events/advisories/aa23-285a
-    link_label: CISA Known Exploited Vulnerabilities Catalog
-    badge: signal
-    tags:
-      - vulnerability-management
-      - open-source
-      - patching
-  - title: Ransomware Actors Diversify Tactics and Targets
-    text: New ransomware groups and evolving tactics highlight persistent threats to businesses.
-    detail: The emergence of TiMc and continued activity against the Business Services sector, coupled with the defacement of the Kairos ransomware site, indicate a dynamic threat landscape. Organizations should reinforce ransomware defenses, including robust backups and incident response plans, and monitor threat intelligence for emerging actors.
-    link: https://www.mitre.org/cybersecurity-dialogues/threat-actors/ransomware
-    link_label: MITRE Ransomware Insights
+  - title: Ransomware Groups Actively Targeting Business Services
+    text: A surge in ransomware attacks specifically targeting the Business Services sector has been observed.
+    detail: DARKFEED intelligence highlights a coordinated increase in ransomware activity against the Business Services sector. Organizations in this industry should review their incident response plans and enhance endpoint security measures to mitigate potential impacts from these targeted campaigns.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-089a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: OSINT Techniques Expand to Identity and Data Exposure
-    text: Phone numbers and public data sources are increasingly used for identity linkage and potential breaches.
-    detail: A deep dive into Indian phone number OSINT reveals its potential for uncovering personal identities and linked accounts. Security teams should educate users on the risks of oversharing personal information online and implement data loss prevention (DLP) strategies to mitigate risks associated with OSINT-driven reconnaissance.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI-generated vulnerability reports are creating a significant triage and remediation challenge for bug bounty platforms.
+    detail: HackerOne's reported pause in services due to an influx of AI-generated submissions underscores a growing trend. Cybersecurity teams must develop robust validation processes for AI-assisted security research and focus on genuine, exploitable vulnerabilities.
+    link: https://owasp.org/www-project-ai-security-and-privacy/
+    link_label: OWASP AI Security
     badge: signal
     tags:
-      - osint
-      - identity-management
-      - data-breach
+      - ai-security
+      - bug-bounty
+      - threat-intel
+  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities continue to be prevalent.
+    detail: Multiple recent disclosures highlight ongoing risks from SSRF and RCE flaws in various software, including content management systems and developer tools. Prioritize patching and implement input validation and least privilege principles to defend against these common attack vectors.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF
+    badge: signal
+    tags:
+      - vulnerability
+      - rce
+      - ssrf
+      - patching
+  - title: New Threat Actor 'TiMc' Identified in Dark Web Activity
+    text: A new threat actor, codenamed 'TiMc', has been detected operating in the cyber threat landscape.
+    detail: The emergence of new threat actors like TiMc, as flagged by DARKFEED, necessitates continuous monitoring of dark web channels and threat intelligence feeds. Understanding their tactics, techniques, and procedures (TTPs) is crucial for proactive defense strategies.
+    link: https://www.mitre.org/threat-actor-attribution
+    link_label: MITRE ATT&CK
+    badge: signal
+    tags:
+      - threat-intel
+      - darkweb
+      - new-actor
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
