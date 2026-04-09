@@ -349,6 +349,7 @@ async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle, thumbna
   };
   if (thumbnailUrl) {
     mediaObj.description = { text: articleTitle };
+    mediaObj.thumbnails = [{ url: thumbnailUrl }];
   }
   const payload = {
     author: authorUrn,
