@@ -307,13 +307,12 @@ function formatLinkedInPost(meta, fileName) {
     recLine = `${toolRec.text}\n${toolUrl}`;
   }
 
-  // ── 5. FOOTER — Company Page + Telegram channel ──
+  // ── 5. FOOTER — Telegram channel ──
   const cta = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📡 Follow Shimi's Cyber World → https://www.linkedin.com/company/112773961
 📡 Join 2,000+ security pros on Telegram → https://t.me/shimiscyberworld`;
 
-  // ── 6. HASHTAGS ──
-  const hashtags = buildHashtags(meta);
+  // ── 6. HASHTAGS (include #ShimisCyberWorld) ──
+  const hashtags = '#ShimisCyberWorld ' + buildHashtags(meta);
 
   // ── ASSEMBLE ──
   let text = `${hook}
