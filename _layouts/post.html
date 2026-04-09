@@ -167,19 +167,22 @@ layout: default
     {% comment %} Affiliate recs removed from post pages to reduce clutter.
          Affiliates are promoted via Telegram feed + LinkedIn only. {% endcomment %}
 
-    {% comment %}── SCW Elite Bot CTA ──{% endcomment %}
+    {% comment %}── SCW Intel Bot CTA ──{% endcomment %}
     <div class="post-bot-cta">
-      <span class="post-bot-cta__icon">�</span>
+      <span class="post-bot-cta__icon">🔍</span>
       <div class="post-bot-cta__text">
         {% if page.tags contains 'vulnerability' or page.tags contains 'cve' %}
-        <strong>Search this threat by org or CVE</strong>
-        <span>Use our Intel Bot to search by organization, get IOC exports, or set watchlist alerts — straight to your Telegram.</span>
+        <strong>Get the full picture on this threat</strong>
+        <span>Search by organization or CVE, get structured IOCs for your SIEM, and set watchlist alerts — delivered to your Telegram in seconds.</span>
+        {% elsif page.tags contains 'ransomware' or page.tags contains 'data-breach' %}
+        <strong>Is your vendor affected?</strong>
+        <span>Search by organization name or domain. Set up watchlist alerts and get notified instantly when your third parties appear in a breach.</span>
         {% else %}
-        <strong>Track this organization in your watchlist</strong>
-        <span>Get instant alerts when vendors or threat actors appear in our feed. Search by org, country, or threat group — free via Telegram.</span>
+        <strong>Stay ahead of this threat</strong>
+        <span>Search threats by organization, threat actor, or country. Get weekly briefs with IOCs and MITRE ATT&CK mapping — straight to your Telegram.</span>
         {% endif %}
       </div>
-      <a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener" class="btn btn--accent btn--sm">Open Intel Bot →</a>
+      <a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener" class="btn btn--accent btn--sm">Try Intel Bot →</a>
     </div>
 
     {% comment %}── Mid-Post AdSense Slot ──{% endcomment %}
