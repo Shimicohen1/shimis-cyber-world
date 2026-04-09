@@ -25,48 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Groups Actively Targeting Business Services Sector
-    text: Business services are experiencing a significant surge in ransomware attacks, indicating a growing trend.
-    detail: Recent intelligence highlights a coordinated effort by ransomware groups to target the business services sector, with a notable increase in attacks. Cybersecurity professionals should prioritize vulnerability assessments and strengthen defenses for systems within this industry to mitigate potential disruptions and data breaches.
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI is flooding bug bounty programs with noise, disrupting triage and remediation.
+    detail: Platforms like HackerOne are pausing services due to an influx of AI-generated vulnerability reports. Cybersecurity professionals must develop strategies to filter and validate AI-assisted submissions, ensuring genuine threats are prioritized over automated noise. This trend highlights the need for advanced AI detection and analysis tools.
     link: https://www.cisa.gov/news-events/cybersecurity-advisories
     link_label: CISA Advisories
+    badge: signal
+    tags:
+      - ai-security
+      - threat-intel
+      - bug-bounty
+  - title: Ransomware Groups Aggressively Target Business Services Sector
+    text: The business services sector is experiencing a significant surge in ransomware attacks.
+    detail: Recent intelligence indicates a coordinated increase in ransomware activity targeting the business services industry. Organizations in this sector should bolster their defenses, focusing on robust backup strategies, network segmentation, and comprehensive incident response plans to mitigate the growing threat.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: Bug bounty platforms are struggling with an influx of AI-generated vulnerability reports, impacting triage.
-    detail: The proliferation of AI-generated content is now affecting the cybersecurity landscape, with bug bounty platforms facing a deluge of submissions that are difficult to verify. Organizations should establish robust internal processes for validating security findings and consider AI detection tools to manage this emerging challenge.
-    link: https://owasp.org/www-project-generative-ai-security/
-    link_label: OWASP Generative AI Security
-    badge: signal
-    tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery and Remote Code Execution flaws continue to be prevalent.
-    detail: Multiple recent advisories highlight ongoing critical vulnerabilities like SSRF and RCE across various software, including developer tools and CMS platforms. It is imperative for organizations to maintain up-to-date patch management for all software, with a particular focus on these high-impact vulnerability classes.
-    link: https://nvd.nist.gov/vuln/categories
-    link_label: NVD Vulnerability Categories
+  - title: SSRF and RCE Vulnerabilities Continue to Plague Open Source Tools
+    text: Critical SSRF and RCE flaws are frequently discovered in popular open-source software.
+    detail: Multiple recent advisories highlight severe Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in widely-used open-source projects like Discourse, Backstage, and Alchemy CMS. Maintaining up-to-date patching and diligently reviewing dependency security is crucial for mitigating these risks.
+    link: https://owasp.org/www-project-top-ten/
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - vulnerability
+      - open-source
       - rce
       - ssrf
-      - patch-management
-  - title: OSINT on Phone Numbers Unlocks Identity and Account Details
-    text: Indian phone numbers are proving to be a rich source for OSINT, revealing personal and account data.
-    detail: Open-Source Intelligence (OSINT) techniques are increasingly leveraging publicly available data, such as phone numbers, to uncover extensive personal and professional information. Individuals and organizations should be aware of their digital footprint and implement measures to protect sensitive data accessible through such methods.
-    link: https://www.mitre.org/technologies/attack/resources/attack-matrix
-    link_label: MITRE ATT&CK Matrix
+  - title: OSINT Techniques Unlock Sensitive Indian Identity Data
+    text: Indian phone numbers are proving to be a rich source for identity-based OSINT.
+    detail: New OSINT research reveals that Indian (+91) phone numbers can expose extensive personal and professional data, including linked accounts and businesses. Users should be aware of their digital footprint and consider privacy-enhancing measures to protect against information aggregation.
+    link: https://www.sans.org/information-security-policy/osint-policy-guidelines/
+    link_label: OSINT Policy Guidelines
     badge: signal
     tags:
       - osint
-      - data-breach
-      - identity
-      - threat-intel
+      - privacy
+      - data-leak
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
