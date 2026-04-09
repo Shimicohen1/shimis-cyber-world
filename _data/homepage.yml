@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: LLM Interfaces Present New Cloud Credential Risks
-    text: AI chat interfaces with RAG extensions are vulnerable to cloud credential theft.
-    detail: The text-generation-webui, particularly with RAG extensions like superbooga, has a vulnerability allowing for potential cloud credential theft. Cybersecurity professionals should audit LLM deployments for such extensions and implement strict access controls and credential management practices to mitigate this emerging threat.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Security Risks
+  - title: AI-Generated Vulnerability Reports Overwhelming Bug Bounty Platforms
+    text: Bug bounty platforms face challenges triaging AI-generated vulnerability submissions.
+    detail: HackerOne has paused services due to a surge of AI-generated reports, highlighting the growing challenge of distinguishing real threats from automated noise. Security teams must develop strategies to filter and validate AI-assisted submissions to maintain effective vulnerability management processes.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ai-cybersecurity-risks-and-how-mitigate-them
+    link_label: AI & Cybersecurity Risks
     badge: signal
     tags:
       - ai-security
-      - cloud-security
-      - vulnerability
-  - title: SSRF Exploitation Targets Developer Tooling
-    text: Developer tools like Backstage and API labs are susceptible to SSRF attacks.
-    detail: Recent advisories highlight SSRF vulnerabilities in developer frameworks such as Backstage and API tools like atototo. These flaws enable attackers to probe internal systems via URL manipulation. Teams should prioritize patching these tools and implement network segmentation and input validation to prevent unauthorized access.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery_(SSRF)
-    link_label: SSRF Attack Vectors
+      - threat-intel
+      - bug-bounty
+  - title: Ransomware Groups Intensify Attacks on Business Services Sector
+    text: Business services are experiencing a significant rise in ransomware attacks.
+    detail: Intelligence indicates a coordinated increase in ransomware activity targeting the business services sector, with 18 attacks reported recently. Organizations in this sector should review their defenses, ensure regular backups are immutable, and conduct incident response drills.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-what-you-can-do
+    link_label: Ransomware Defense
     badge: signal
     tags:
-      - ssrf
-      - developer-tools
-      - vulnerability
-  - title: Supply Chain Risks Magnified by YAML Dependencies
-    text: RCE vulnerabilities are emerging from insecure handling of YAML dependencies.
-    detail: The Docling Core vulnerability, stemming from its PyYAML dependency, underscores the critical risk of insecure third-party libraries. Organizations must rigorously vet and manage software dependencies, especially those handling untrusted data formats like YAML, to prevent supply chain attacks and RCE.
-    link: https://owasp.org/www-community/vulnerabilities/Dependency_vulnerabilities
-    link_label: Dependency Management
-    badge: signal
-    tags:
-      - supply-chain
-      - rce
-      - dependency-management
-  - title: New Threat Actor 'TiMc' Emerges on Dark Web
-    text: A new threat actor, TiMc, has been identified operating in the cybercrime landscape.
-    detail: The emergence of new threat actors like TiMc, as flagged by DARKFEED, highlights the dynamic nature of cyber threats. CISOs and security teams should enhance threat intelligence gathering to monitor nascent groups and adapt defensive strategies to counter evolving attack methodologies.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/understanding-threat-actors-and-their-tactics
-    link_label: Understanding Threat Actors
+      - ransomware
+      - threat-intel
+      - business-services
+  - title: "Evasion Techniques: Threat Actors Weaponizing Emojis for Stealth"
+    text: Attackers are using emojis to bypass security controls and obfuscate communications.
+    detail: Sophisticated threat actors are leveraging emojis for stealthy communication and to evade detection, moving beyond simple phishing tactics. Security awareness training should be updated to include recognizing these novel evasion methods, and endpoint detection solutions should be tuned for such patterns.
+    link: https://owasp.org/www-community/vulnerabilities/Social_engineering
+    link_label: Social Engineering Risks
     badge: signal
     tags:
       - threat-intel
-      - darkweb
-      - new-actor
+      - evasion
+      - communication-security
+  - title: Critical SSRF and RCE Vulnerabilities Plague Open-Source Software
+    text: Multiple critical SSRF and RCE flaws are being discovered in widely used open-source tools.
+    detail: Recent disclosures highlight critical Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in open-source projects like Backstage, Alchemy CMS, and Docling Core. Prioritize patching and dependency management for these and similar tools to mitigate exploitation risks.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=basic&results_type=overview&query=SSRF+RCE
+    link_label: SSRF & RCE Vulnerabilities
+    badge: signal
+    tags:
+      - vulnerability
+      - rce
+      - ssrf
+      - open-source
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
