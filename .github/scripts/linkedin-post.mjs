@@ -528,18 +528,8 @@ async function main() {
   const personalId = await postToLinkedIn(PERSON_URN, text, postUrl, title, image);
   console.log(`✅ Posted to personal profile: ${personalId}`);
 
-  // Post to Company Page (if configured)
-  if (ORG_URN) {
-    try {
-      const orgId = await postToLinkedIn(ORG_URN, text, postUrl, title, image);
-      console.log(`✅ Posted to Company Page: ${orgId}`);
-    } catch (err) {
-      // Don't fail the whole run if company post fails
-      console.error(`⚠️  Company Page post failed (continuing): ${err.message}`);
-    }
-  } else {
-    console.log('ℹ️  No LINKEDIN_ORG_URN — skipping Company Page post.');
-  }
+  // Company Page posting disabled — personal profile only.
+  // Will be handled by a separate workflow once Community Management API is approved.
 
   // Update state
   state.postedFiles.push(best.file);
