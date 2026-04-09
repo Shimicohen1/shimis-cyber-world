@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Content Flooding Bug Bounty Platforms
-    text: Bug bounty platforms are overwhelmed by AI-generated vulnerability reports, impacting triage and remediation.
-    detail: "HackerOne's recent pause highlights a growing challenge: distinguishing genuine security findings from AI-generated noise. Professionals should prioritize verifying submitted vulnerabilities and consider AI detection tools to streamline review processes and focus on actionable intelligence."
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-075a
-    link_label: CISA - AI Security Guidance
-    badge: signal
-    tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: The Business Services sector is experiencing a significant surge in ransomware attacks.
-    detail: Intelligence indicates a coordinated effort targeting this sector, with 18 attacks reported recently. Organizations in this industry must bolster defenses, focusing on robust backup strategies, network segmentation, and rapid incident response planning to mitigate potential impacts.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-100a
-    link_label: CISA - Ransomware Guidance
+    text: Business services sector sees a significant surge in ransomware attacks.
+    detail: Intelligence indicates a coordinated increase in ransomware activity targeting the business services sector. Organizations in this industry should prioritize robust endpoint protection, regular backups, and comprehensive incident response plans to mitigate potential disruptions and data loss.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-284a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
       - ransomware
-      - business-services
       - threat-intel
+      - business-services
   - title: SSRF Vulnerabilities Remain a Critical Threat Vector
-    text: Multiple recent advisories highlight Server-Side Request Forgery (SSRF) flaws in various tools.
-    detail: Flaws in tools like Backstage and the atototo API lab expose internal systems via URL redirects and improper input validation. Developers and security teams should implement strict input validation, egress filtering, and network access controls to prevent unauthorized requests and data exposure.
+    text: Server-Side Request Forgery (SSRF) flaws continue to expose internal systems.
+    detail: Multiple recent advisories highlight SSRF vulnerabilities in various tools and platforms, enabling attackers to probe and access internal networks. Developers and security teams must rigorously validate user-supplied URLs and implement strict access controls to prevent unauthorized requests.
     link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: OWASP - SSRF Attacks
+    link_label: SSRF Attack Overview
     badge: signal
     tags:
-      - ssrf
       - vulnerability
-      - web-application-security
-  - title: Supply Chain Risks in Open-Source Components
-    text: Vulnerabilities in open-source components like PyYAML and Ruby eval pose significant risks.
-    detail: Recent advisories for Docling Core and Alchemy CMS demonstrate how dependencies on vulnerable libraries or insecure coding practices can lead to RCE. Continuous monitoring of software dependencies, prompt patching, and secure coding reviews are essential for mitigating these supply chain risks.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-23885
-    link_label: NVD - Alchemy CMS RCE
+      - ssrf
+      - web-security
+  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
+    text: AI-generated submissions are overwhelming bug bounty platforms, impacting triage.
+    detail: Bug bounty platforms are struggling with a deluge of AI-generated vulnerability reports, complicating verification and remediation efforts. Organizations relying on bug bounties should refine their submission guidelines and explore AI detection tools to manage this new challenge effectively.
+    link: https://www.mitre.org/about/news/mitre-engenuity-center-emerging-threats-discusses-ai-and-cybersecurity
+    link_label: AI & Cybersecurity
     badge: signal
     tags:
-      - supply-chain
-      - open-source
+      - ai-security
+      - threat-intel
+      - bug-bounty
+  - title: Remote Code Execution (RCE) Bugs in Software Dependencies
+    text: RCE vulnerabilities linked to third-party library dependencies are prevalent.
+    detail: Recent findings show RCE flaws stemming from vulnerable dependencies, such as PyYAML, impacting various software projects. Maintaining an up-to-date Software Bill of Materials (SBOM) and employing dependency scanning tools are crucial for identifying and mitigating these risks.
+    link: https://www.nist.gov/blogs/cybersecurity-awareness/software-bill-materials-sbom-understanding-and-why-it-matters
+    link_label: Understanding SBOMs
+    badge: signal
+    tags:
       - vulnerability
       - rce
+      - supply-chain
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
