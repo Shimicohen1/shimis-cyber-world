@@ -152,28 +152,24 @@ permalink: /premium/
 <p class="elite-bot__desc">Your personal cyber threat radar. Search threats by organization, domain, threat actor, or country. Set up a watchlist and get instant Telegram alerts when your vendors or clients appear in the feed. IOC exports, MITRE ATT&CK mapping, and weekly briefs — delivered straight to your chat.</p>
 <div class="elite-bot__products">
 <div class="elite-bot__product">
-<strong>🔍 Threat Search</strong>
-<span>Free</span>
+<strong>🆓 Free Preview</strong>
+<span>/latest (titles) · /sample (teaser)</span>
 </div>
 <div class="elite-bot__product">
-<strong>🔔 Watchlist (3 orgs)</strong>
-<span>Free</span>
+<strong>📊 Single Threat Brief</strong>
+<span>500 ⭐ (~$10)</span>
 </div>
 <div class="elite-bot__product">
-<strong>📊 Threat Intel Brief</strong>
-<span>150 ⭐</span>
+<strong>🎯 Single IOC Export</strong>
+<span>1,000 ⭐ (~$20)</span>
 </div>
 <div class="elite-bot__product">
-<strong>🎯 IOC Export Pack</strong>
-<span>250 ⭐</span>
+<strong>🔍 SCW Pro (monthly)</strong>
+<span>2,000 ⭐/mo (~$40) — search + brief + 5 watchlist</span>
 </div>
 <div class="elite-bot__product">
-<strong>🔔 Watchlist Pro (20 orgs)</strong>
-<span>400 ⭐/mo</span>
-</div>
-<div class="elite-bot__product">
-<strong>🔒 Elite Monthly (all included)</strong>
-<span>750 ⭐/mo</span>
+<strong>🔒 SCW Elite (monthly)</strong>
+<span>4,000 ⭐/mo (~$80) — everything + IOC + 25 watchlist</span>
 </div>
 </div>
 <a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot →</a>
