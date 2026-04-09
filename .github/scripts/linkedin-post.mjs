@@ -21,10 +21,13 @@ const TOKEN = process.env.LINKEDIN_ACCESS_TOKEN;
 const PERSON_URN = process.env.LINKEDIN_PERSON_URN;
 const ORG_URN = process.env.LINKEDIN_ORG_URN || '';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const GH_IMAGES_PAT = process.env.GH_IMAGES_PAT || '';
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, '_posts');
 const STATE_FILE = path.join(ROOT, '.github', 'linkedin-state.json');
 const SITE_URL = 'https://shimiscyberworld.com';
+const IMAGES_REPO = 'Shimicohen1/scw-post-images';
+const IMAGES_BASE_URL = `https://raw.githubusercontent.com/${IMAGES_REPO}/main`;
 
 /* ═══════════════════════════════════════════════════════════
  *  STATE — track posted articles to avoid duplicates
@@ -539,6 +542,61 @@ async function uploadImageToLinkedIn(imageBuffer, mimeType) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+ *  PUSH IMAGE TO SCW-POST-IMAGES REPO
+ * ═══════════════════════════════════════════════════════════ */
+
+async function pushImageToRepo(imageBuffer, slug) {
+  if (!GH_IMAGES_PAT) {
+    console.warn('⚠️  No GH_IMAGES_PAT — skipping image repo push');
+    return null;
+  }
+
+  const filePath = `linkedin/${slug}.png`;
+  const b64Content = imageBuffer.toString('base64');
+
+  // Check if file already exists (to get its SHA for update)
+  let sha;
+  try {
+    const checkRes = await fetch(
+      `https://api.github.com/repos/${IMAGES_REPO}/contents/${filePath}`,
+      { headers: { 'Authorization': `token ${GH_IMAGES_PAT}` } }
+    );
+    if (checkRes.ok) {
+      const existing = await checkRes.json();
+      sha = existing.sha;
+    }
+  } catch { /* file doesn't exist — that's fine */ }
+
+  const body = {
+    message: `Add image: ${slug}`,
+    content: b64Content,
+  };
+  if (sha) body.sha = sha;
+
+  const res = await fetch(
+    `https://api.github.com/repos/${IMAGES_REPO}/contents/${filePath}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GH_IMAGES_PAT}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.text();
+    console.warn(`⚠️  GitHub image push failed ${res.status}: ${err.slice(0, 200)}`);
+    return null;
+  }
+
+  const imageUrl = `${IMAGES_BASE_URL}/${filePath}`;
+  console.log(`📦 Image pushed to repo: ${imageUrl}`);
+  return imageUrl;
+}
+
+/* ═══════════════════════════════════════════════════════════
  *  LINKEDIN API
  * ═══════════════════════════════════════════════════════════ */
 
@@ -634,6 +692,10 @@ async function main() {
     } catch (err) {
       console.warn(`⚠️  Image upload failed: ${err.message} — posting text-only`);
     }
+
+    // Also push to scw-post-images repo for website use
+    const slug = best.file.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '');
+    await pushImageToRepo(imageData.buffer, slug);
   }
 
   // Post to personal profile
