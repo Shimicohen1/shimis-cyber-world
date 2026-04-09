@@ -147,32 +147,57 @@ permalink: /premium/
 <!-- ── Telegram Bot: direct access ── -->
 <section class="elite-bot reveal">
 <div class="elite-bot__card">
-<div class="elite-bot__icon">�</div>
+<div class="elite-bot__icon">🔍</div>
 <h2 class="elite-bot__title">SCW Intel Bot</h2>
-<p class="elite-bot__desc">Your personal cyber threat radar. Search threats by organization, domain, threat actor, or country. Set up a watchlist and get instant Telegram alerts when your vendors or clients appear in the feed. IOC exports, MITRE ATT&CK mapping, and weekly briefs — delivered straight to your chat.</p>
+<p class="elite-bot__desc">Real-time threat intelligence, straight to your Telegram. Search by organization, threat actor, or country. Monitor your vendors with watchlist alerts. Get weekly briefs with severity rankings, IOCs ready for your SIEM, and MITRE ATT&CK mapping — all in one bot.</p>
+
+<div class="elite-bot__features">
+<div class="elite-bot__feature">
+<strong>🔍 Instant Threat Search</strong>
+<span>Search by org name, domain, APT group, or country code. Results in seconds with severity scores and event context.</span>
+</div>
+<div class="elite-bot__feature">
+<strong>🔔 Watchlist Alerts</strong>
+<span>Add your vendors or clients by domain. Get an instant Telegram alert whenever they appear in a breach, ransomware event, or vulnerability disclosure.</span>
+</div>
+<div class="elite-bot__feature">
+<strong>📊 Weekly Threat Briefs</strong>
+<span>Automated weekly report ranked by severity — critical, high, medium. Key IOCs and MITRE ATT&CK techniques included.</span>
+</div>
+<div class="elite-bot__feature">
+<strong>🎯 IOC Exports</strong>
+<span>Structured IOC data (CVEs, indicators, affected products) ready to copy-paste into your SIEM or threat platform.</span>
+</div>
+</div>
+
+<h3 class="elite-bot__pricing-title">Plans</h3>
 <div class="elite-bot__products">
 <div class="elite-bot__product">
-<strong>🆓 Free Preview</strong>
-<span>/latest (titles) · /sample (teaser)</span>
+<strong>🆓 Free</strong>
+<span>Threat previews + weekly teaser</span>
 </div>
+<div class="elite-bot__product elite-bot__product--highlight">
+<strong>🔍 SCW Pro</strong>
+<span>2,000 ⭐/mo (~$40)</span>
+<span class="elite-bot__product-detail">Search · Weekly Brief · 5 Watchlist</span>
+</div>
+<div class="elite-bot__product elite-bot__product--highlight">
+<strong>🔒 SCW Elite</strong>
+<span>4,000 ⭐/mo (~$80)</span>
+<span class="elite-bot__product-detail">Everything · IOC Export · 25 Watchlist</span>
+</div>
+</div>
+<div class="elite-bot__products" style="margin-top: 0.5rem;">
 <div class="elite-bot__product">
-<strong>📊 Single Threat Brief</strong>
+<strong>📊 Single Brief</strong>
 <span>500 ⭐ (~$10)</span>
 </div>
 <div class="elite-bot__product">
 <strong>🎯 Single IOC Export</strong>
 <span>1,000 ⭐ (~$20)</span>
 </div>
-<div class="elite-bot__product">
-<strong>🔍 SCW Pro (monthly)</strong>
-<span>2,000 ⭐/mo (~$40) — search + brief + 5 watchlist</span>
 </div>
-<div class="elite-bot__product">
-<strong>🔒 SCW Elite (monthly)</strong>
-<span>4,000 ⭐/mo (~$80) — everything + IOC + 25 watchlist</span>
-</div>
-</div>
-<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot →</a>
+<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Try Intel Bot →</a>
 </div>
 </section>
 
