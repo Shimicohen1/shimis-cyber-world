@@ -292,17 +292,24 @@ function formatLinkedInPost(meta, fileName) {
     whySection = whySection.slice(0, 347).replace(/\s+\S*$/, '') + '...';
   }
 
-  // ── 4. CONTEXTUAL RECOMMENDATIONS (SCW tool + monetized partner) ──
-  const toolRec = getToolRecommendation(meta.tags);
-  const toolUrl = toolRec.url.startsWith('http') ? toolRec.url : `${SITE_URL}${toolRec.url}`;
+  // ── 4. SINGLE CONTEXTUAL RECOMMENDATION ──
+  // Only ONE rec per post: affiliate if tags match, otherwise SCW tool.
+  // Never show both — keeps the personal feed credible.
   const monRec = getMonetizedRecommendation(meta.tags);
+  let recLine;
+  if (monRec !== SCW_ELITE_REC) {
+    // Affiliate naturally fits — use it
+    recLine = `${monRec.text}\n${monRec.url}`;
+  } else {
+    // No affiliate fit — show relevant SCW tool
+    const toolRec = getToolRecommendation(meta.tags);
+    const toolUrl = toolRec.url.startsWith('http') ? toolRec.url : `${SITE_URL}${toolRec.url}`;
+    recLine = `${toolRec.text}\n${toolUrl}`;
+  }
 
-  const recBlock = `${toolRec.text}\n${toolUrl}\n\n${monRec.text}\n${monRec.url}`;
-
-  // ── 5. CTAs ──
+  // ── 5. FOOTER — just Telegram channel, no tool spam ──
   const cta = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📡 Join 2,000+ security pros on our Telegram channel → https://t.me/shimiscyberworld
-💻 Free tools: BreachRadar · ThreatLens · LockDown · GoFish → ${SITE_URL}/tools/`;
+📡 Join 2,000+ security pros on our Telegram channel → https://t.me/shimiscyberworld`;
 
   // ── 6. HASHTAGS ──
   const hashtags = buildHashtags(meta);
@@ -313,7 +320,7 @@ function formatLinkedInPost(meta, fileName) {
 ${analysis}
 ${whySection}
 
-${recBlock}
+${recLine}
 
 ${cta}
 
@@ -324,7 +331,7 @@ ${hashtags}`;
     // Trim analysis to fit
     const overflow = text.length - 2700;
     analysis = analysis.slice(0, Math.max(100, analysis.length - overflow)) + '...';
-    text = `${hook}\n\n${analysis}\n${whySection}\n\n${recBlock}\n\n${cta}\n\n${hashtags}`;
+    text = `${hook}\n\n${analysis}\n${whySection}\n\n${recLine}\n\n${cta}\n\n${hashtags}`;
   }
 
   return { text, postUrl, title };
