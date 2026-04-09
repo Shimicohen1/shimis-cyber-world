@@ -649,6 +649,37 @@ async function postToLinkedIn(authorUrn, text, imageAsset) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+ *  UPDATE POST FRONT MATTER — swap Unsplash → AI image
+ * ═══════════════════════════════════════════════════════════ */
+
+function updatePostImage(fileName, imageUrl) {
+  const filePath = path.join(POSTS_DIR, fileName);
+  try {
+    let content = fs.readFileSync(filePath, 'utf8');
+
+    // Replace image: and cover_image: values in front matter
+    content = content.replace(
+      /^(image:\s*)"[^"]*"/m,
+      `$1"${imageUrl}"`
+    );
+    content = content.replace(
+      /^(cover_image:\s*)"[^"]*"/m,
+      `$1"${imageUrl}"`
+    );
+    // Mark as AI-generated image (suppresses credit line)
+    content = content.replace(
+      /^(image_pool_used:\s*).*/m,
+      '$1true'
+    );
+
+    fs.writeFileSync(filePath, content);
+    console.log(`🔄 Post image updated to AI image: ${fileName}`);
+  } catch (err) {
+    console.warn(`⚠️  Could not update post image: ${err.message}`);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
  *  MAIN
  * ═══════════════════════════════════════════════════════════ */
 
@@ -685,6 +716,7 @@ async function main() {
 
   // Generate image (graceful fallback to text-only if it fails)
   let imageAsset = null;
+  let repoImageUrl = null;
   const imageData = await generateImage(best.meta.title, best.meta.tags);
   if (imageData) {
     try {
@@ -695,7 +727,12 @@ async function main() {
 
     // Also push to scw-post-images repo for website use
     const slug = best.file.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '');
-    await pushImageToRepo(imageData.buffer, slug);
+    repoImageUrl = await pushImageToRepo(imageData.buffer, slug);
+
+    // Update post front matter to use AI image instead of Unsplash
+    if (repoImageUrl) {
+      updatePostImage(best.file, repoImageUrl);
+    }
   }
 
   // Post to personal profile
