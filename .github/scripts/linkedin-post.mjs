@@ -368,31 +368,26 @@ async function generateWithGemini(meta, fileName, postUrl) {
 
 ARTICLE TITLE: ${title}
 SEVERITY: ${score}
-TAGS: ${tags}
 KEY CONTENT:
 ${body}
-
-WHY IT MATTERS:
-${whyItMatters}
 ${affiliateLine}
 
 RULES (strict):
-1. Hook: First 2 lines must create curiosity. Be direct — state the news, then give your take
-2. You are REPORTING this story, not living it. Use phrases like "This just dropped", "Interesting development", "Worth paying attention to" — NOT "I just experienced" or "I was at"
-3. Short paragraphs — 1-2 sentences max. Mobile-first
-4. Add a brief professional opinion: what should defenders think about?
-5. End with ONE short engagement question
-6. Footer — put these on separate lines at the end:
+1. Hook: First 2 lines (under 210 characters) must grab attention. State what happened + why it matters. This is what shows before "see more"
+2. You are REPORTING, not participating. Never say "I was at" or "I just experienced"
+3. Maximum 3-4 short paragraphs after the hook. 1-2 sentences each
+4. One brief opinion: what should security professionals think about?
+5. End with ONE short question to spark comments
+6. Footer on separate lines:
    📄 ${postUrl}
    📡 https://t.me/shimiscyberworld
-7. Last line: #ShimisCyberWorld #cybersecurity #infosec (+ 1 topic hashtag max)
-8. NO markdown (no ** bold, no []() links). Plain text only
-9. NO emojis in the hook. Max 3 emojis total in the entire post (footer markers are fine)
-10. STRICT LENGTH: 600-1000 characters total. Shorter is better. If over 1000, cut aggressively
-11. Do NOT mention "AI" or "automated"
-12. Do NOT use cliché phrases: "In today's threat landscape", "It's crucial", "wake-up call", "hammered home"
-13. Do NOT recommend any product unless the affiliate line above explicitly provides one
-14. Sound like a real person on LinkedIn, not a press release`;
+7. Last line: #ShimisCyberWorld #cybersecurity (+ 1 topic hashtag max). Only 3 hashtags total
+8. Plain text only. NO markdown, NO bold, NO link syntax
+9. NO emojis except the 2 footer markers (📄 📡)
+10. STRICT LENGTH: 500-800 characters total. This is critical — shorter posts get more engagement on LinkedIn. Cut ruthlessly
+11. Do NOT recommend any product unless the affiliate line above explicitly provides one
+12. Do NOT use cliché phrases or filler words. Every sentence must add value
+13. Sound like a real person — direct, opinionated, concise`;
 
   try {
     const res = await fetch(
