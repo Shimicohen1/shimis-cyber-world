@@ -170,34 +170,7 @@ permalink: /premium/
 </div>
 </div>
 
-<h3 class="elite-bot__pricing-title">Plans</h3>
-<div class="elite-bot__products">
-<div class="elite-bot__product">
-<strong>🆓 Free</strong>
-<span>Threat previews + weekly teaser</span>
-</div>
-<div class="elite-bot__product elite-bot__product--highlight">
-<strong>🔍 SCW Pro</strong>
-<span>2,000 ⭐/mo (~$40)</span>
-<span class="elite-bot__product-detail">Search · Weekly Brief · 5 Watchlist</span>
-</div>
-<div class="elite-bot__product elite-bot__product--highlight">
-<strong>🔒 SCW Elite</strong>
-<span>4,000 ⭐/mo (~$80)</span>
-<span class="elite-bot__product-detail">Everything · IOC Export · 25 Watchlist</span>
-</div>
-</div>
-<div class="elite-bot__products" style="margin-top: 0.5rem;">
-<div class="elite-bot__product">
-<strong>📊 Single Brief</strong>
-<span>500 ⭐ (~$10)</span>
-</div>
-<div class="elite-bot__product">
-<strong>🎯 Single IOC Export</strong>
-<span>1,000 ⭐ (~$20)</span>
-</div>
-</div>
-<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Try Intel Bot →</a>
+<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot — View Plans & Start Free →</a>
 </div>
 </section>
 
