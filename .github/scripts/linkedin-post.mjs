@@ -307,9 +307,10 @@ function formatLinkedInPost(meta, fileName) {
     recLine = `${toolRec.text}\n${toolUrl}`;
   }
 
-  // ── 5. FOOTER — just Telegram channel, no tool spam ──
+  // ── 5. FOOTER — Telegram channel + Company Page mention ──
+  const orgMention = ORG_URN ? `@[Shimi's Cyber World](${ORG_URN})` : "Shimi's Cyber World";
   const cta = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📡 Join 2,000+ security pros on our Telegram channel → https://t.me/shimiscyberworld`;
+📡 Follow ${orgMention} and join 2,000+ security pros on our Telegram channel → https://t.me/shimiscyberworld`;
 
   // ── 6. HASHTAGS ──
   const hashtags = buildHashtags(meta);
