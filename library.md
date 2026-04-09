@@ -11,7 +11,7 @@ permalink: /library/
 </div>
 
 <div class="vault-disclaimer">
-  <p>📋 These resources are shared for <strong>educational and informational purposes only</strong>. All documents remain the intellectual property of their original authors and organizations. Credits are included within each document. If you are a rights holder and would like a resource removed, please <a href="mailto:shimi@shimiscyberworld.com">contact us</a> — we'll act within 48 hours.</p>
+  <p><span class="scw-icon" data-icon="clipboard"></span> These resources are shared for <strong>educational and informational purposes only</strong>. All documents remain the intellectual property of their original authors and organizations. Credits are included within each document. If you are a rights holder and would like a resource removed, please <a href="mailto:shimi@shimiscyberworld.com">contact us</a> — we'll act within 48 hours.</p>
 </div>
 
 <!-- Search & Filter Bar -->

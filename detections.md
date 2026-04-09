@@ -86,12 +86,12 @@ permalink: /detections/
       {% endif %}
 
       <div class="dl-rule__code">
-        <button class="dl-copy-btn" title="Copy to clipboard">📋</button>
+        <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
         <pre><code>{{ rule.query | strip | xml_escape }}</code></pre>
       </div>
 
       {% if rule.notes %}
-      <p class="dl-rule__notes"><strong>💡 Note:</strong> {{ rule.notes }}</p>
+      <p class="dl-rule__notes"><strong><span class="scw-icon" data-icon="zap"></span> Note:</strong> {{ rule.notes }}</p>
       {% endif %}
     </div>
     {% endfor %}

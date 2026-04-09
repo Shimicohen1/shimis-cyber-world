@@ -7,7 +7,7 @@ permalink: /rss/
 <div class="rss-page">
 
 <div class="rss-hero">
-  <div class="rss-hero__icon">📡</div>
+  <div class="rss-hero__icon" data-icon="radar"></div>
   <h1 class="rss-hero__title">Subscribe via RSS</h1>
   <p class="rss-hero__desc">Get every SCW post delivered to your favorite feed reader — no algorithms, no missed updates.</p>
 </div>
@@ -16,7 +16,7 @@ permalink: /rss/
   <label class="rss-feed-url__label">Feed URL</label>
   <div class="rss-feed-url__row">
     <input type="text" id="rssFeedUrl" class="rss-feed-url__input" value="{{ '/feed.xml' | absolute_url }}" readonly>
-    <button id="rssCopyBtn" class="btn btn--primary rss-feed-url__btn" onclick="navigator.clipboard.writeText(document.getElementById('rssFeedUrl').value).then(function(){var b=document.getElementById('rssCopyBtn');b.textContent='✅ Copied!';setTimeout(function(){b.textContent='Copy URL'},1500)})">Copy URL</button>
+    <button id="rssCopyBtn" class="btn btn--primary rss-feed-url__btn" onclick="navigator.clipboard.writeText(document.getElementById('rssFeedUrl').value).then(function(){var b=document.getElementById('rssCopyBtn');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy URL'},1500)})">Copy URL</button>
   </div>
 </div>
 
@@ -24,22 +24,22 @@ permalink: /rss/
   <h2 class="rss-readers__title">Open in a feed reader</h2>
   <div class="rss-readers__grid">
     <a href="https://feedly.com/i/subscription/feed/{{ '/feed.xml' | absolute_url }}" target="_blank" rel="noopener noreferrer" class="rss-reader-card">
-      <span class="rss-reader-card__icon">🟢</span>
+      <span class="rss-reader-card__icon" style="color:#34d399;">&#9679;</span>
       <strong>Feedly</strong>
       <span>Most popular feed reader</span>
     </a>
     <a href="https://www.inoreader.com/?add_feed={{ '/feed.xml' | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer" class="rss-reader-card">
-      <span class="rss-reader-card__icon">🔵</span>
+      <span class="rss-reader-card__icon" style="color:#3b82f6;">&#9679;</span>
       <strong>Inoreader</strong>
       <span>Power-user features</span>
     </a>
     <a href="https://newsblur.com/?url={{ '/feed.xml' | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer" class="rss-reader-card">
-      <span class="rss-reader-card__icon">🟡</span>
+      <span class="rss-reader-card__icon" style="color:#eab308;">&#9679;</span>
       <strong>NewsBlur</strong>
       <span>Open source reader</span>
     </a>
     <a href="{{ '/feed.xml' | absolute_url }}" class="rss-reader-card">
-      <span class="rss-reader-card__icon">📄</span>
+      <span class="rss-reader-card__icon" data-icon="file"></span>
       <strong>Raw Feed</strong>
       <span>Copy URL into any reader</span>
     </a>
@@ -64,7 +64,7 @@ permalink: /rss/
       LinkedIn
     </a>
     <a href="#newsletter" class="rss-also__link rss-also__link--email">
-      ✉ Email Newsletter
+      <svg class="scw-icon" style="width:14px;height:14px;vertical-align:-1px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Email Newsletter
     </a>
   </div>
 </div>

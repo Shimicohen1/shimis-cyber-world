@@ -19,9 +19,10 @@
     url: 'URL', email: 'Email Address'
   };
 
-  var TYPE_ICONS = {
-    ip: '🌐', hash: '#️⃣', domain: '🔗', url: '🔗', email: '📧'
-  };
+  var TYPE_ICONS = (function() {
+    var _i = function(n) { return typeof scwIcon === 'function' ? scwIcon(n) : ''; };
+    return { ip: _i('cloud'), hash: '#', domain: _i('link'), url: _i('link'), email: _i('file') };
+  })();
 
   var TYPE_BADGE = {
     ip: 'signal', hash: 'live', domain: 'drop',
@@ -47,35 +48,36 @@
   };
 
   /* What could be exposed — shown for email type */
+  var _ico = function(n) { return typeof scwIcon === 'function' ? scwIcon(n) : ''; };
   var EMAIL_EXPOSURE_ITEMS = [
-    { icon: '🔑', label: 'Passwords', desc: 'Plaintext or hashed passwords from breached databases' },
-    { icon: '📱', label: 'Phone numbers', desc: 'Mobile/home numbers linked to accounts' },
-    { icon: '🏠', label: 'Physical address', desc: 'Home or work addresses from account profiles' },
-    { icon: '🌐', label: 'IP addresses', desc: 'Login IPs revealing your location and ISP' },
-    { icon: '💳', label: 'Financial data', desc: 'Partial credit cards, bank details, purchase history' },
-    { icon: '👤', label: 'Personal info', desc: 'Full name, date of birth, gender, employer' },
-    { icon: '💬', label: 'Private messages', desc: 'DMs, chat logs, forum posts, support tickets' },
-    { icon: '🔗', label: 'Connected accounts', desc: 'Other services linked via this email (OAuth, SSO)' }
+    { icon: _ico('lock'), label: 'Passwords', desc: 'Plaintext or hashed passwords from breached databases' },
+    { icon: _ico('file'), label: 'Phone numbers', desc: 'Mobile/home numbers linked to accounts' },
+    { icon: _ico('shield'), label: 'Physical address', desc: 'Home or work addresses from account profiles' },
+    { icon: _ico('cloud'), label: 'IP addresses', desc: 'Login IPs revealing your location and ISP' },
+    { icon: _ico('lock'), label: 'Financial data', desc: 'Partial credit cards, bank details, purchase history' },
+    { icon: _ico('search'), label: 'Personal info', desc: 'Full name, date of birth, gender, employer' },
+    { icon: _ico('file'), label: 'Private messages', desc: 'DMs, chat logs, forum posts, support tickets' },
+    { icon: _ico('link'), label: 'Connected accounts', desc: 'Other services linked via this email (OAuth, SSO)' }
   ];
 
   /* Known major breach databases — shown for email type to give context */
   var KNOWN_BREACHES = [
-    { name: 'LinkedIn', year: 2021, records: '700M', data: 'Email, name, phone, job title, employer, location, profile URL', icon: '💼' },
-    { name: 'Facebook', year: 2021, records: '533M', data: 'Email, phone, name, DOB, location, relationship status', icon: '📘' },
-    { name: 'Twitter / X', year: 2023, records: '200M', data: 'Email, name, username, phone, profile data, followers', icon: '🐦' },
-    { name: 'Adobe', year: 2013, records: '153M', data: 'Email, encrypted passwords, password hints, usernames', icon: '🎨' },
-    { name: 'Canva', year: 2019, records: '137M', data: 'Email, username, name, city, country, bcrypt password hash', icon: '🖼️' },
-    { name: 'Dropbox', year: 2012, records: '68M', data: 'Email, bcrypt/SHA-1 password hashes', icon: '📦' },
-    { name: 'Telegram', year: 2024, records: '41M', data: 'Phone numbers, usernames, user IDs', icon: '✈️' },
-    { name: 'Deezer', year: 2019, records: '229M', data: 'Email, name, DOB, gender, city, country, IP', icon: '🎵' },
-    { name: 'MyFitnessPal', year: 2018, records: '144M', data: 'Email, username, IP, SHA-1 password hashes', icon: '💪' },
-    { name: 'Dubsmash', year: 2018, records: '162M', data: 'Email, username, bcrypt password hash, phone, DOB', icon: '🎤' },
-    { name: 'Wattpad', year: 2020, records: '271M', data: 'Email, username, name, DOB, bcrypt password hash, IP', icon: '📖' },
-    { name: 'Zynga', year: 2019, records: '173M', data: 'Email, username, phone, SHA-1 password hashes', icon: '🎮' },
-    { name: 'MGM Resorts', year: 2020, records: '142M', data: 'Name, email, phone, DOB, home address, driver license', icon: '🏨' },
-    { name: 'Exactis', year: 2018, records: '340M', data: 'Name, email, phone, address, interests, family details, habits', icon: '📊' },
-    { name: 'Collection #1-5', year: 2019, records: '2.2B', data: 'Email + password combos aggregated from thousands of breaches', icon: '📁' },
-    { name: 'COMB', year: 2021, records: '3.2B', data: 'Largest credential compilation — email + plaintext passwords from many breaches', icon: '💀' }
+    { name: 'LinkedIn', year: 2021, records: '700M', data: 'Email, name, phone, job title, employer, location, profile URL', icon: _ico('link') },
+    { name: 'Facebook', year: 2021, records: '533M', data: 'Email, phone, name, DOB, location, relationship status', icon: _ico('search') },
+    { name: 'Twitter / X', year: 2023, records: '200M', data: 'Email, name, username, phone, profile data, followers', icon: _ico('radar') },
+    { name: 'Adobe', year: 2013, records: '153M', data: 'Email, encrypted passwords, password hints, usernames', icon: _ico('crosshair') },
+    { name: 'Canva', year: 2019, records: '137M', data: 'Email, username, name, city, country, bcrypt password hash', icon: _ico('crosshair') },
+    { name: 'Dropbox', year: 2012, records: '68M', data: 'Email, bcrypt/SHA-1 password hashes', icon: _ico('cloud') },
+    { name: 'Telegram', year: 2024, records: '41M', data: 'Phone numbers, usernames, user IDs', icon: _ico('radar') },
+    { name: 'Deezer', year: 2019, records: '229M', data: 'Email, name, DOB, gender, city, country, IP', icon: _ico('bar-chart') },
+    { name: 'MyFitnessPal', year: 2018, records: '144M', data: 'Email, username, IP, SHA-1 password hashes', icon: _ico('shield') },
+    { name: 'Dubsmash', year: 2018, records: '162M', data: 'Email, username, bcrypt password hash, phone, DOB', icon: _ico('file') },
+    { name: 'Wattpad', year: 2020, records: '271M', data: 'Email, username, name, DOB, bcrypt password hash, IP', icon: _ico('file') },
+    { name: 'Zynga', year: 2019, records: '173M', data: 'Email, username, phone, SHA-1 password hashes', icon: _ico('crosshair') },
+    { name: 'MGM Resorts', year: 2020, records: '142M', data: 'Name, email, phone, DOB, home address, driver license', icon: _ico('shield') },
+    { name: 'Exactis', year: 2018, records: '340M', data: 'Name, email, phone, address, interests, family details, habits', icon: _ico('bar-chart') },
+    { name: 'Collection #1-5', year: 2019, records: '2.2B', data: 'Email + password combos aggregated from thousands of breaches', icon: _ico('file') },
+    { name: 'COMB', year: 2021, records: '3.2B', data: 'Largest credential compilation — email + plaintext passwords from many breaches', icon: _ico('lock') }
   ];
 
   /* ── Defang / refang ── */
@@ -214,14 +216,14 @@
       /* ── Risk context ── */
       if (riskText) {
         html += '<div class="ioc-card__risk">';
-        html += '  <div class="ioc-card__risk-title">⚠️ Why this matters</div>';
+        html += '  <div class="ioc-card__risk-title">' + (typeof scwIcon === 'function' ? scwIcon('bell') : '') + ' Why this matters</div>';
         html += '  <p class="ioc-card__risk-text">' + escapeHtml(riskText) + '</p>';
         html += '</div>';
       }
 
       /* ── Email-specific: What could be exposed ── */
       if (ioc.lookup === 'email') {
-        html += '<div class="ioc-card__section-title">🚨 What could be exposed</div>';
+        html += '<div class="ioc-card__section-title">' + (typeof scwIcon === 'function' ? scwIcon('bell') : '') + ' What could be exposed</div>';
         html += '<div class="ioc-card__exposure-grid">';
         EMAIL_EXPOSURE_ITEMS.forEach(function (item) {
           html += '<div class="ioc-exposure-item">';
@@ -238,7 +240,7 @@
         var emailDomain = ioc.raw.split('@')[1];
         if (emailDomain) {
           html += '<div class="ioc-card__domain-note">';
-          html += '  <span class="ioc-card__domain-note-icon">🏢</span>';
+          html += '  <span class="ioc-card__domain-note-icon">' + (typeof scwIcon === 'function' ? scwIcon('shield') : '') + '</span>';
           html += '  <span>Domain <strong>' + escapeHtml(emailDomain) + '</strong> — ';
           html += 'all accounts registered under this domain may share the same breach exposure. ';
           html += 'Check if other employees or personal accounts use the same domain.</span>';
@@ -246,7 +248,7 @@
         }
 
         /* Known breach databases */
-        html += '<div class="ioc-card__section-title">🗄️ Known major breaches</div>';
+        html += '<div class="ioc-card__section-title">' + (typeof scwIcon === 'function' ? scwIcon('file') : '') + ' Known major breaches</div>';
         html += '<div class="ioc-card__breach-note">These are the largest known data breaches where emails are commonly found. Use the <strong>Have I Been Pwned</strong> link above to check which ones actually contain this email.</div>';
         html += '<div class="ioc-card__breach-grid">';
         KNOWN_BREACHES.forEach(function (b) {
@@ -263,7 +265,7 @@
       }
 
       /* ── Source links with descriptions ── */
-      html += '<div class="ioc-card__section-title">🔍 What each source checks</div>';
+      html += '<div class="ioc-card__section-title">' + (typeof scwIcon === 'function' ? scwIcon('search') : '') + ' What each source checks</div>';
       html += '<div class="ioc-card__links">';
       links.forEach(function (l) {
         html += '<a href="' + escapeAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
@@ -282,7 +284,7 @@
       /* ── Next steps ── */
       if (actionsText) {
         html += '<div class="ioc-card__actions">';
-        html += '  <div class="ioc-card__actions-title">💡 Recommended actions</div>';
+        html += '  <div class="ioc-card__actions-title">' + (typeof scwIcon === 'function' ? scwIcon('zap') : '') + ' Recommended actions</div>';
         html += '  <p class="ioc-card__actions-text">' + escapeHtml(actionsText) + '</p>';
         html += '</div>';
       }
@@ -293,7 +295,7 @@
       });
       if (recs.length > 0) {
         html += '<div class="ioc-card__recs">';
-        html += '  <div class="ioc-card__recs-title">🛡️ Protect yourself</div>';
+        html += '  <div class="ioc-card__recs-title">' + (typeof scwIcon === 'function' ? scwIcon('shield') : '') + ' Protect yourself</div>';
         recs.forEach(function (r) {
           html += '<a href="' + escapeAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
           html += '  <div class="ioc-rec__header">';
@@ -367,8 +369,8 @@
     });
     navigator.clipboard.writeText(lines.join('\n')).then(function () {
       var btn = document.getElementById('iocCopyAll');
-      btn.textContent = '✅ Copied!';
-      setTimeout(function () { btn.textContent = '📋 Copy All'; }, 1500);
+      btn.innerHTML = (typeof scwIcon === 'function' ? scwIcon('check') : '') + ' Copied!';
+      setTimeout(function () { btn.innerHTML = (typeof scwIcon === 'function' ? scwIcon('clipboard') : '') + ' Copy All'; }, 1500);
     });
   }
 

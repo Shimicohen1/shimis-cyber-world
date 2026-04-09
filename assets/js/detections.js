@@ -67,10 +67,10 @@
 
     var text = code.textContent;
     navigator.clipboard.writeText(text).then(function () {
-      btn.textContent = '✅';
+      btn.innerHTML = typeof scwIcon === 'function' ? scwIcon('check') : '✓';
       btn.classList.add('copied');
       setTimeout(function () {
-        btn.textContent = '📋';
+        btn.innerHTML = typeof scwIcon === 'function' ? scwIcon('clipboard') : '';
         btn.classList.remove('copied');
       }, 1500);
     });

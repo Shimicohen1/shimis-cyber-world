@@ -12,7 +12,7 @@ permalink: /premium/
 <h1 class="elite-hero__title">Security tools that<br><span>actually work.</span></h1>
 <p class="elite-hero__sub">Built by practitioners. No theory, no filler — just tools you can use right now.</p>
 <div style="margin-top:1rem;padding:.75rem 1.25rem;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:.85rem;color:var(--gray);text-align:center;">
-⚡ All SCW Elite tools are currently <strong style="color:var(--white);">free and open</strong> to everyone. This may change in the future as we grow.
+<span class="scw-icon" data-icon="zap"></span> All SCW Elite tools are currently <strong style="color:var(--white);">free and open</strong> to everyone. This may change in the future as we grow.
 </div>
 </div>
 
@@ -44,7 +44,7 @@ permalink: /premium/
 <div class="elite-card__glow"></div>
 <div class="elite-card__content">
 <div class="elite-card__head">
-<span class="elite-card__icon">🛡️</span>
+<span class="elite-card__icon" data-icon="shield"></span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>LockDown</h3>
@@ -61,7 +61,7 @@ permalink: /premium/
 <div class="elite-card__glow"></div>
 <div class="elite-card__content">
 <div class="elite-card__head">
-<span class="elite-card__icon">📡</span>
+<span class="elite-card__icon" data-icon="radar"></span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>BreachRadar</h3>
@@ -80,7 +80,7 @@ permalink: /premium/
 <div class="elite-card__glow"></div>
 <div class="elite-card__content">
 <div class="elite-card__head">
-<span class="elite-card__icon">🎯</span>
+<span class="elite-card__icon" data-icon="crosshair"></span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>Detection Vault</h3>
@@ -96,7 +96,7 @@ permalink: /premium/
 <div class="elite-card__glow"></div>
 <div class="elite-card__content">
 <div class="elite-card__head">
-<span class="elite-card__icon">📋</span>
+<span class="elite-card__icon" data-icon="clipboard"></span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>WarRoom</h3>
@@ -112,7 +112,7 @@ permalink: /premium/
 <div class="elite-card__glow"></div>
 <div class="elite-card__content">
 <div class="elite-card__head">
-<span class="elite-card__icon">🔍</span>
+<span class="elite-card__icon" data-icon="search"></span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>ThreatLens</h3>
@@ -128,7 +128,7 @@ permalink: /premium/
 <div class="elite-card__glow"></div>
 <div class="elite-card__content">
 <div class="elite-card__head">
-<span class="elite-card__icon">🎣</span>
+<span class="elite-card__icon" data-icon="anchor"></span>
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>GoFish</h3>
@@ -147,25 +147,25 @@ permalink: /premium/
 <!-- ── Telegram Bot: direct access ── -->
 <section class="elite-bot reveal">
 <div class="elite-bot__card">
-<div class="elite-bot__icon">🔍</div>
+<div class="elite-bot__icon" data-icon="search"></div>
 <h2 class="elite-bot__title">SCW Intel Bot</h2>
 <p class="elite-bot__desc">Real-time threat intelligence, straight to your Telegram. Search by organization, threat actor, or country. Monitor your vendors with watchlist alerts. Get weekly briefs with severity rankings, IOCs ready for your SIEM, and MITRE ATT&CK mapping — all in one bot.</p>
 
 <div class="elite-bot__features">
 <div class="elite-bot__feature">
-<strong>🔍 Instant Threat Search</strong>
+<strong><span class="scw-icon" data-icon="search"></span> Instant Threat Search</strong>
 <span>Search by org name, domain, APT group, or country code. Results in seconds with severity scores and event context.</span>
 </div>
 <div class="elite-bot__feature">
-<strong>🔔 Watchlist Alerts</strong>
+<strong><span class="scw-icon" data-icon="bell"></span> Watchlist Alerts</strong>
 <span>Add your vendors or clients by domain. Get an instant Telegram alert whenever they appear in a breach, ransomware event, or vulnerability disclosure.</span>
 </div>
 <div class="elite-bot__feature">
-<strong>📊 Weekly Threat Briefs</strong>
+<strong><span class="scw-icon" data-icon="bar-chart"></span> Weekly Threat Briefs</strong>
 <span>Automated weekly report ranked by severity — critical, high, medium. Key IOCs and MITRE ATT&CK techniques included.</span>
 </div>
 <div class="elite-bot__feature">
-<strong>🎯 IOC Exports</strong>
+<strong><span class="scw-icon" data-icon="crosshair"></span> IOC Exports</strong>
 <span>Structured IOC data (CVEs, indicators, affected products) ready to copy-paste into your SIEM or threat platform.</span>
 </div>
 </div>
@@ -179,32 +179,32 @@ permalink: /premium/
 <h2 class="elite-next__title">In the Pipeline</h2>
 <div class="elite-next__grid">
 <div class="elite-next__item">
-<span>🛡️</span>
+<span class="scw-icon" data-icon="shield"></span>
 <strong>Recon Suite</strong>
 <span class="elite-next__tag">Automation</span>
 </div>
 <div class="elite-next__item">
-<span>⚡</span>
+<span class="scw-icon" data-icon="zap"></span>
 <strong>API Scanner</strong>
 <span class="elite-next__tag">Scanner</span>
 </div>
 <div class="elite-next__item">
-<span>🔧</span>
+<span class="scw-icon" data-icon="wrench"></span>
 <strong>Payload Forge</strong>
 <span class="elite-next__tag">Utility</span>
 </div>
 <div class="elite-next__item">
-<span>📊</span>
+<span class="scw-icon" data-icon="bar-chart"></span>
 <strong>Report Gen</strong>
 <span class="elite-next__tag">Reporting</span>
 </div>
 <div class="elite-next__item">
-<span>🧪</span>
+<span class="scw-icon" data-icon="flask"></span>
 <strong>SCW Labs</strong>
 <span class="elite-next__tag">Training</span>
 </div>
 <div class="elite-next__item">
-<span>🔍</span>
+<span class="scw-icon" data-icon="cloud"></span>
 <strong>Cloud Auditor</strong>
 <span class="elite-next__tag">Cloud</span>
 </div>

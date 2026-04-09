@@ -350,35 +350,36 @@
   /* ── Risk level from score ── */
   function riskLevel(score) {
     if (score >= 70) return {
-      label: 'PHISHING DETECTED', cls: 'critical', emoji: '🚨',
+      label: 'PHISHING DETECTED', cls: 'critical', emoji: '<span style="color:#ef4444">&#9679;</span>',
       advice: 'This is almost certainly a phishing/smishing attack. Do NOT click any links. Do NOT enter any information. Delete the message and report the sender. If you already clicked — change your passwords immediately and monitor your accounts.'
     };
     if (score >= 40) return {
-      label: 'HIGH RISK', cls: 'high', emoji: '🔴',
+      label: 'HIGH RISK', cls: 'high', emoji: '<span style="color:#ef4444">&#9679;</span>',
       advice: 'Multiple phishing indicators detected. Do not click any links. If this claims to be from a company, open their official website directly (not through this link) or call them.'
     };
     if (score >= 20) return {
-      label: 'SUSPICIOUS', cls: 'medium', emoji: '🟡',
+      label: 'SUSPICIOUS', cls: 'medium', emoji: '<span style="color:#eab308">&#9679;</span>',
       advice: 'Some suspicious patterns found. Verify the sender through official channels before interacting. When in doubt, go directly to the official website — never through a link in a message.'
     };
     if (score > 0) return {
-      label: 'LOW RISK', cls: 'low', emoji: '🟢',
+      label: 'LOW RISK', cls: 'low', emoji: '<span style="color:#34d399">&#9679;</span>',
       advice: 'Minor indicators found. Probably safe, but always verify links from unknown senders.'
     };
     return {
-      label: 'CLEAN', cls: 'clean', emoji: '✅',
+      label: 'CLEAN', cls: 'clean', emoji: '<span style="color:#34d399">&#9679;</span>',
       advice: 'No phishing indicators detected. Standard caution applies.'
     };
   }
 
   /* ── Build external verification links ── */
   function buildVerifyLinks(urlStr) {
+    var _i = function(n) { return typeof scwIcon === 'function' ? scwIcon(n) : ''; };
     return [
-      { name: 'VirusTotal', icon: '🦠', href: 'https://www.virustotal.com/gui/url/' + encodeURIComponent(urlStr), desc: 'Scan across 90+ security engines for malware & phishing' },
-      { name: 'URLScan.io', icon: '📸', href: 'https://urlscan.io/search/#' + encodeURIComponent(urlStr), desc: 'Safe visual preview — see the page without visiting it' },
-      { name: 'Google Safe Browsing', icon: '🛡️', href: 'https://transparencyreport.google.com/safe-browsing/search?url=' + encodeURIComponent(urlStr), desc: "Google's phishing & malware blocklist" },
-      { name: 'PhishTank', icon: '🎣', href: 'https://phishtank.org/phish_search.php?verified=u&active=y', desc: 'Community-verified phishing database' },
-      { name: 'URLVoid', icon: '🌐', href: 'https://www.urlvoid.com/scan/' + encodeURIComponent(urlStr), desc: 'Check 30+ website reputation engines' }
+      { name: 'VirusTotal', icon: _i('search'), href: 'https://www.virustotal.com/gui/url/' + encodeURIComponent(urlStr), desc: 'Scan across 90+ security engines for malware & phishing' },
+      { name: 'URLScan.io', icon: _i('search'), href: 'https://urlscan.io/search/#' + encodeURIComponent(urlStr), desc: 'Safe visual preview — see the page without visiting it' },
+      { name: 'Google Safe Browsing', icon: _i('shield'), href: 'https://transparencyreport.google.com/safe-browsing/search?url=' + encodeURIComponent(urlStr), desc: "Google's phishing & malware blocklist" },
+      { name: 'PhishTank', icon: _i('anchor'), href: 'https://phishtank.org/phish_search.php?verified=u&active=y', desc: 'Community-verified phishing database' },
+      { name: 'URLVoid', icon: _i('cloud'), href: 'https://www.urlvoid.com/scan/' + encodeURIComponent(urlStr), desc: 'Check 30+ website reputation engines' }
     ];
   }
 
@@ -448,7 +449,7 @@
     /* ── SMS text analysis ── */
     if (smsAnalysis.findings.length > 0) {
       html += '<div class="gofish-section">';
-      html += '  <div class="gofish-section__title">📱 Message Analysis</div>';
+      html += '  <div class="gofish-section__title">' + (typeof scwIcon === 'function' ? scwIcon('file') : '') + ' Message Analysis</div>';
       html += '  <div class="gofish-findings">';
       smsAnalysis.findings.forEach(function (f) {
         html += '<div class="gofish-finding gofish-finding--' + f.severity + '">';
@@ -464,7 +465,7 @@
     /* ── URL analyses ── */
     urlAnalyses.forEach(function (analysis) {
       html += '<div class="gofish-section">';
-      html += '  <div class="gofish-section__title">🔗 URL Analysis</div>';
+      html += '  <div class="gofish-section__title">' + (typeof scwIcon === 'function' ? scwIcon('link') : '') + ' URL Analysis</div>';
       html += '  <code class="gofish-url">' + esc(analysis.url) + '</code>';
 
       html += '  <div class="gofish-findings">';
@@ -479,7 +480,7 @@
 
       /* Verification links */
       var verifyLinks = buildVerifyLinks(analysis.url);
-      html += '  <div class="gofish-verify-title">🔍 Verify with external scanners</div>';
+      html += '  <div class="gofish-verify-title">' + (typeof scwIcon === 'function' ? scwIcon('search') : '') + ' Verify with external scanners</div>';
       html += '  <div class="gofish-verify-links">';
       verifyLinks.forEach(function (l) {
         html += '<a href="' + escapeAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
@@ -515,7 +516,7 @@
     });
     if (recs.length > 0 && totalScore > 0) {
       html += '<div class="ioc-card__recs">';
-      html += '  <div class="ioc-card__recs-title">🛡️ Protect yourself</div>';
+      html += '  <div class="ioc-card__recs-title">' + (typeof scwIcon === 'function' ? scwIcon('shield') : '') + ' Protect yourself</div>';
       recs.forEach(function (r) {
         html += '<a href="' + escapeAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
         html += '  <div class="ioc-rec__header">';

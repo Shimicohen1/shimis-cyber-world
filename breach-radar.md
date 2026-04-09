@@ -31,7 +31,7 @@ permalink: /breach-radar/
 
   <div class="br-input-area">
     <div class="br-input-wrap">
-      <span class="br-input-icon">📡</span>
+      <span class="br-input-icon" data-icon="radar"></span>
       <input id="brInput" type="text" class="br-input" placeholder="Enter domain (e.g. acme.com) or company name…" spellcheck="false" autocomplete="off">
       <button id="brScanBtn" class="btn btn--primary br-scan-btn">Scan</button>
     </div>
@@ -67,7 +67,7 @@ permalink: /breach-radar/
     <h2 class="feed__title"><span class="label label--ghost">LEGAL</span> &nbsp;Disclaimer</h2>
   </div>
   <div class="br-disclaimer__box">
-    <p><strong>⚖️ Important:</strong> BreachRadar aggregates publicly available data from ransomware group leak sites and open-source threat intelligence feeds. This tool does <strong>not</strong> access, interact with, or host any data from the dark web. All data is sourced through legitimate third-party APIs.</p>
+    <p><strong><span class="scw-icon" data-icon="shield"></span> Important:</strong> BreachRadar aggregates publicly available data from ransomware group leak sites and open-source threat intelligence feeds. This tool does <strong>not</strong> access, interact with, or host any data from the dark web. All data is sourced through legitimate third-party APIs.</p>
     <p>Results may include <strong>unverified claims</strong> made by threat actors. Inclusion in this database does not confirm a breach occurred. We do not guarantee the accuracy, completeness, or reliability of any result. Organizations should conduct their own forensic investigation if a match is found.</p>
     <p>This tool is intended for <strong>security research and awareness purposes only</strong>. By using BreachRadar, you agree to our <a href="/terms/">Terms of Service</a>.</p>
   </div>
@@ -82,22 +82,22 @@ permalink: /breach-radar/
   </div>
   <div class="br-sources__grid">
     <div class="br-source-card">
-      <span class="br-source-card__icon">🕸️</span>
+      <span class="br-source-card__icon" data-icon="radar"></span>
       <strong>Ransomware Leak Sites</strong>
       <p>558 ransomware and extortion groups tracked across .onion and clearnet leak sites via RansomLook. Over 30,000 victim posts indexed.</p>
     </div>
     <div class="br-source-card">
-      <span class="br-source-card__icon">💧</span>
+      <span class="br-source-card__icon" data-icon="bell"></span>
       <strong>Data Leak Monitoring</strong>
       <p>4,400+ documented data leaks cross-referenced with victim claims. Includes leak size, record counts, and exposure timelines.</p>
     </div>
     <div class="br-source-card">
-      <span class="br-source-card__icon">🔗</span>
+      <span class="br-source-card__icon" data-icon="link"></span>
       <strong>Threat Actor Intelligence</strong>
       <p>29 threat actors profiled with crypto addresses, ransom notes, and relay status. Group profiles link directly to RansomLook.</p>
     </div>
     <div class="br-source-card">
-      <span class="br-source-card__icon">🔍</span>
+      <span class="br-source-card__icon" data-icon="search"></span>
       <strong>External Investigation Links</strong>
       <p>Each scan result includes direct links to Have I Been Pwned, Shodan, VirusTotal, IntelX, and Telegram monitoring channels for deeper investigation.</p>
     </div>

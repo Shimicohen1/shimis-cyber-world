@@ -398,25 +398,26 @@
    * ════════════════════════════════════════════════════════════ */
 
   function buildExternalLinks(query, isDomain) {
+    var _i = function(n) { return typeof scwIcon === 'function' ? scwIcon(n) : ''; };
     var links = [
-      { name: 'RansomLook', icon: '🕸️', href: 'https://www.ransomlook.io/recent', desc: 'Browse recent ransomware victim posts, group profiles, and threat intelligence' }
+      { name: 'RansomLook', icon: _i('radar'), href: 'https://www.ransomlook.io/recent', desc: 'Browse recent ransomware victim posts, group profiles, and threat intelligence' }
     ];
     if (isDomain) {
-      links.push({ name: 'Have I Been Pwned', icon: '🔐', href: 'https://haveibeenpwned.com/DomainSearch', desc: 'Check if employee emails from this domain appeared in known data breaches (requires login)' });
-      links.push({ name: 'Shodan', icon: '🌐', href: 'https://www.shodan.io/search?query=hostname%3A' + encodeURIComponent(query), desc: 'Discover exposed services, open ports, and infrastructure for this domain' });
-      links.push({ name: 'VirusTotal', icon: '🦠', href: 'https://www.virustotal.com/gui/domain/' + encodeURIComponent(query), desc: 'Domain reputation, DNS history, and associated malware detections' });
-      links.push({ name: 'URLScan', icon: '📸', href: 'https://urlscan.io/search/#domain%3A' + encodeURIComponent(query), desc: 'Visual page snapshots and infrastructure analysis for this domain' });
+      links.push({ name: 'Have I Been Pwned', icon: _i('lock'), href: 'https://haveibeenpwned.com/DomainSearch', desc: 'Check if employee emails from this domain appeared in known data breaches (requires login)' });
+      links.push({ name: 'Shodan', icon: _i('cloud'), href: 'https://www.shodan.io/search?query=hostname%3A' + encodeURIComponent(query), desc: 'Discover exposed services, open ports, and infrastructure for this domain' });
+      links.push({ name: 'VirusTotal', icon: _i('search'), href: 'https://www.virustotal.com/gui/domain/' + encodeURIComponent(query), desc: 'Domain reputation, DNS history, and associated malware detections' });
+      links.push({ name: 'URLScan', icon: _i('search'), href: 'https://urlscan.io/search/#domain%3A' + encodeURIComponent(query), desc: 'Visual page snapshots and infrastructure analysis for this domain' });
     } else {
-      links.push({ name: 'Shodan', icon: '🌐', href: 'https://www.shodan.io/search?query=org%3A%22' + encodeURIComponent(query) + '%22', desc: 'Discover exposed infrastructure associated with this organization' });
+      links.push({ name: 'Shodan', icon: _i('cloud'), href: 'https://www.shodan.io/search?query=org%3A%22' + encodeURIComponent(query) + '%22', desc: 'Discover exposed infrastructure associated with this organization' });
     }
-    links.push({ name: 'Google Dorking', icon: '🔍', href: 'https://www.google.com/search?q=%22' + encodeURIComponent(query) + '%22+ransomware+OR+breach+OR+leak', desc: 'Search for public breach reports, news articles, and CERT advisories' });
+    links.push({ name: 'Google Dorking', icon: _i('search'), href: 'https://www.google.com/search?q=%22' + encodeURIComponent(query) + '%22+ransomware+OR+breach+OR+leak', desc: 'Search for public breach reports, news articles, and CERT advisories' });
     return links;
   }
 
   function renderExternalLinks(query, isDomain) {
     var links = buildExternalLinks(query, isDomain);
     var h = '<div class="br-externals">';
-    h += '<div class="br-externals__title">🔍 Dig deeper — external investigation</div>';
+    h += '<div class="br-externals__title">' + (typeof scwIcon === 'function' ? scwIcon('search') : '') + ' Dig deeper — external investigation</div>';
     h += '<div class="br-externals__grid">';
     links.forEach(function (l) {
       h += '<a href="' + escAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
@@ -433,7 +434,7 @@
       return r.types.indexOf('breach') !== -1;
     });
     if (!recs.length) return '';
-    var h = '<div class="ioc-card__recs"><div class="ioc-card__recs-title">🛡️ Protect your organization</div>';
+    var h = '<div class="ioc-card__recs"><div class="ioc-card__recs-title">' + (typeof scwIcon === 'function' ? scwIcon('shield') : '') + ' Protect your organization</div>';
     recs.forEach(function (r) {
       h += '<a href="' + escAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
       h += '<div class="ioc-rec__header"><strong class="ioc-rec__name">' + esc(r.name) + '</strong>';
@@ -454,17 +455,17 @@
   function renderMatchBadge(conf) {
     if (!conf) return '';
     var labels = {
-      'domain': '🎯 Domain Match',
-      'exact-name': '🎯 Exact Name',
-      'org-name': '🏢 Org Name Match',
-      'fuzzy': '🔍 Keyword Match'
+      'domain': '<span style="color:#34d399">&#9679;</span> Domain Match',
+      'exact-name': '<span style="color:#34d399">&#9679;</span> Exact Name',
+      'org-name': '<span style="color:#3b82f6">&#9679;</span> Org Name Match',
+      'fuzzy': '<span style="color:#eab308">&#9679;</span> Keyword Match'
     };
     return '<span class="br-match-type br-match-type--' + conf.matchType + '">' + (labels[conf.matchType] || 'Match') + '</span>';
   }
 
   function renderNoResults(query, isDomain) {
     var h = '<div class="br-empty">';
-    h += '<div class="br-empty__icon">✅</div>';
+    h += '<div class="br-empty__icon"><span style="color:#34d399">&#9679;</span></div>';
     h += '<h3 class="br-empty__title">No exposure found</h3>';
     h += '<p class="br-empty__text">No ransomware victim claims found for "<strong>' + esc(query) + '</strong>". ';
     h += 'This does not guarantee the organization is safe — only that no tracked threat actor has publicly claimed them.</p>';
@@ -476,7 +477,7 @@
 
   function renderError(query, message, isDomain) {
     var h = '<div class="br-error">';
-    h += '<div class="br-error__icon">⚠️</div>';
+    h += '<div class="br-error__icon">' + (typeof scwIcon === 'function' ? scwIcon('bell') : '!') + '</div>';
     h += '<h3 class="br-error__title">Intelligence Feed Unavailable</h3>';
     h += '<p class="br-error__text">' + esc(message) + '</p>';
     h += '<p class="br-error__hint">You can still investigate manually using the links below.</p>';
@@ -487,17 +488,18 @@
   }
 
   function renderActions() {
+    var _i = function(n) { return typeof scwIcon === 'function' ? scwIcon(n) : ''; };
     var actions = [
-      { icon: '🔑', text: 'Review SSO & identity provider logs for unauthorized access' },
-      { icon: '🌐', text: 'Check VPN and remote access logs for anomalous sessions' },
-      { icon: '📧', text: 'Audit email telemetry for phishing or BEC indicators' },
-      { icon: '🖥️', text: 'Query endpoint/EDR for known ransomware IOCs' },
-      { icon: '🔐', text: 'Check credential exposure on Have I Been Pwned' },
-      { icon: '📞', text: 'Engage IR team or MSSP if exposure is confirmed' },
-      { icon: '📋', text: 'Assess regulatory disclosure obligations' }
+      { icon: _i('lock'), text: 'Review SSO & identity provider logs for unauthorized access' },
+      { icon: _i('cloud'), text: 'Check VPN and remote access logs for anomalous sessions' },
+      { icon: _i('file'), text: 'Audit email telemetry for phishing or BEC indicators' },
+      { icon: _i('search'), text: 'Query endpoint/EDR for known ransomware IOCs' },
+      { icon: _i('lock'), text: 'Check credential exposure on Have I Been Pwned' },
+      { icon: _i('bell'), text: 'Engage IR team or MSSP if exposure is confirmed' },
+      { icon: _i('clipboard'), text: 'Assess regulatory disclosure obligations' }
     ];
     var h = '<div class="br-actions">';
-    h += '<div class="br-section-title">🚨 Recommended Actions</div>';
+    h += '<div class="br-section-title">' + _i('bell') + ' Recommended Actions</div>';
     h += '<div class="br-actions__list">';
     actions.forEach(function (a) {
       h += '<div class="br-action-item"><span class="br-action-item__icon">' + a.icon + '</span>';
@@ -521,17 +523,17 @@
     /* A. Assessment Banner */
     var threatCls = 'detected';
     var threatLabel = 'EXPOSURE DETECTED';
-    var threatEmoji = '⚠️';
+    var threatEmoji = '<span style="color:#f97316">&#9679;</span>';
     var threatDesc = 'At least one threat actor has claimed this entity.';
 
     if (summary.total >= 5) {
-      threatCls = 'critical'; threatLabel = 'CRITICAL EXPOSURE'; threatEmoji = '🚨';
+      threatCls = 'critical'; threatLabel = 'CRITICAL EXPOSURE'; threatEmoji = '<span style="color:#ef4444">&#9679;</span>';
       threatDesc = 'This entity has been targeted by multiple threat actors. Immediate investigation recommended.';
     } else if (summary.total >= 3) {
-      threatCls = 'high'; threatLabel = 'HIGH EXPOSURE'; threatEmoji = '🔴';
+      threatCls = 'high'; threatLabel = 'HIGH EXPOSURE'; threatEmoji = '<span style="color:#ef4444">&#9679;</span>';
       threatDesc = 'Multiple ransomware incidents detected. This entity is a recurring target.';
     } else if (summary.total >= 2) {
-      threatCls = 'medium'; threatLabel = 'ELEVATED RISK'; threatEmoji = '🟡';
+      threatCls = 'medium'; threatLabel = 'ELEVATED RISK'; threatEmoji = '<span style="color:#eab308">&#9679;</span>';
       threatDesc = 'Multiple breach claims found. Verify each incident independently.';
     }
 
@@ -549,14 +551,14 @@
 
     /* Disclaimer */
     h += '<div class="br-disclaimer-inline">';
-    h += '<span class="br-disclaimer-inline__icon">⚖️</span>';
+    h += '<span class="br-disclaimer-inline__icon">' + (typeof scwIcon === 'function' ? scwIcon('shield') : '') + '</span>';
     h += '<span>' + esc(DISCLAIMER_TEXT) + '</span>';
     h += '</div>';
 
     /* Generic query warning */
     if (dossier.isGenericQuery) {
       h += '<div class="br-warning">';
-      h += '<span class="br-warning__icon">⚡</span>';
+      h += '<span class="br-warning__icon">' + (typeof scwIcon === 'function' ? scwIcon('zap') : '') + '</span>';
       h += '<span>This is a generic/common term. Results may include unrelated organizations. Use a specific company name or domain for accurate results.</span>';
       h += '</div>';
     }
@@ -571,7 +573,7 @@
 
     /* B. Threat Actor Breakdown */
     h += '<div class="br-groups">';
-    h += '<div class="br-section-title">⚔️ Threat Actor Attribution</div>';
+    h += '<div class="br-section-title">' + (typeof scwIcon === 'function' ? scwIcon('swords') : '') + ' Threat Actor Attribution</div>';
     h += '<div class="br-groups__grid">';
     var sortedGroups = Object.keys(summary.groupBreakdown).sort(function (a, b) {
       return summary.groupBreakdown[b] - summary.groupBreakdown[a];
@@ -589,7 +591,7 @@
 
     /* C. Incident Timeline */
     h += '<div class="br-timeline">';
-    h += '<div class="br-section-title">📋 Incident Timeline</div>';
+    h += '<div class="br-section-title">' + (typeof scwIcon === 'function' ? scwIcon('clipboard') : '') + ' Incident Timeline</div>';
 
     incidents.forEach(function (v) {
       var date = v.discovered || '';
@@ -611,15 +613,15 @@
 
       h += '<div class="br-incident__attrib">';
       if (v.isLeak) {
-        h += '<span class="br-incident__group"><span class="br-incident__group-icon">💧</span><span>Data Leak</span></span>';
+        h += '<span class="br-incident__group"><span class="br-incident__group-icon">' + (typeof scwIcon === 'function' ? scwIcon('bell') : '') + '</span><span>Data Leak</span></span>';
       } else if (v.raw_type === 'threat_actor_intel') {
         h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-incident__group">';
-        h += '<span class="br-incident__group-icon">🧠</span><span>' + esc(v.group || 'Unknown') + '</span></a>';
+        h += '<span class="br-incident__group-icon">' + (typeof scwIcon === 'function' ? scwIcon('search') : '') + '</span><span>' + esc(v.group || 'Unknown') + '</span></a>';
         if (info) h += '<span class="br-incident__aka">aka ' + esc(info.aka) + '</span>';
         h += '<span class="br-incident__type-tag" style="background:var(--accent-purple,#9b59b6);color:#fff;padding:2px 8px;border-radius:4px;font-size:.75rem;margin-left:6px">Threat Actor Intel</span>';
       } else {
         h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-incident__group">';
-        h += '<span class="br-incident__group-icon">⚔️</span><span>' + esc(v.group || 'Unknown') + '</span></a>';
+        h += '<span class="br-incident__group-icon">' + (typeof scwIcon === 'function' ? scwIcon('swords') : '') + '</span><span>' + esc(v.group || 'Unknown') + '</span></a>';
         if (info) h += '<span class="br-incident__aka">aka ' + esc(info.aka) + '</span>';
       }
       h += '<span class="br-incident__source">via RansomLook</span>';
@@ -632,25 +634,25 @@
       }
 
       if (v.confidence && v.confidence.level === 'low') {
-        h += '<div class="br-incident__note">⚡ <em>Low-confidence match. ' + esc(v.confidence.reason) + '. Manual validation recommended.</em></div>';
+        h += '<div class="br-incident__note">' + (typeof scwIcon === 'function' ? scwIcon('zap') : '') + ' <em>Low-confidence match. ' + esc(v.confidence.reason) + '. Manual validation recommended.</em></div>';
       }
 
       h += '<div class="br-incident__evidence">';
       if (v.website) {
         var href = /^https?:\/\//.test(v.website) ? v.website : 'https://' + v.website;
-        h += '<a href="' + escAttr(href) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--website">🌐 Website</a>';
+        h += '<a href="' + escAttr(href) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--website">' + (typeof scwIcon === 'function' ? scwIcon('cloud') : '') + ' Website</a>';
       }
       if (v.screenshot) {
-        h += '<a href="' + escAttr(v.screenshot) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">📸 Screenshot</a>';
+        h += '<a href="' + escAttr(v.screenshot) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">' + (typeof scwIcon === 'function' ? scwIcon('search') : '') + ' Screenshot</a>';
       }
       if (v.source_link) {
-        h += '<a href="' + escAttr(v.source_link) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">🔗 Source</a>';
+        h += '<a href="' + escAttr(v.source_link) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--evidence">' + (typeof scwIcon === 'function' ? scwIcon('link') : '') + ' Source</a>';
       }
       if (v.onion_link) {
-        h += '<span class="br-evidence-btn br-evidence-btn--onion" title="' + escAttr(v.onion_link) + '">🧅 .onion (Tor only)</span>';
+        h += '<span class="br-evidence-btn br-evidence-btn--onion" title="' + escAttr(v.onion_link) + '">' + (typeof scwIcon === 'function' ? scwIcon('lock') : '') + ' .onion (Tor only)</span>';
       }
       if (v.group && !v.isLeak) {
-        h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--group">⚔️ Group Profile</a>';
+        h += '<a href="https://www.ransomlook.io/group/' + escAttr((v.group || '').toLowerCase()) + '" target="_blank" rel="noopener noreferrer" class="br-evidence-btn br-evidence-btn--group">' + (typeof scwIcon === 'function' ? scwIcon('swords') : '') + ' Group Profile</a>';
       }
       h += '</div>';
 
