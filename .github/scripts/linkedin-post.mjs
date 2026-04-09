@@ -260,9 +260,9 @@ function formatLinkedInPost(meta, fileName) {
   const body = stripMarkdown(meta._body || '');
   const score = (meta.score || 'MEDIUM').toUpperCase();
 
-  // Build post URL
-  const slug = fileName.replace(/\.md$/, '').replace(/^(\d{4})-(\d{2})-(\d{2})-/, '$1/$2/$3/');
-  const postUrl = `${SITE_URL}/${slug}`;
+  // Build post URL — must match Jekyll permalink: /posts/:title/
+  const slug = fileName.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '');
+  const postUrl = `${SITE_URL}/posts/${slug}/`;
 
   // ── 1. HOOK (first 2 lines — critical for "see more" click) ──
   const hookIdx = Math.floor(Math.random() * HOOK_PATTERNS.length);
