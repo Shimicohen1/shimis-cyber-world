@@ -12,6 +12,7 @@
  *   LINKEDIN_PERSON_URN   — e.g. "urn:li:person:AbCdEf123"
  * Optional:
  *   LINKEDIN_ORG_URN      — e.g. "urn:li:organization:112773961" (Company Page)
+ *   GEMINI_API_KEY        — Gemini AI for natural post generation (falls back to template if missing)
  */
 
 import fs from 'fs';
@@ -20,6 +21,7 @@ import path from 'path';
 const TOKEN = process.env.LINKEDIN_ACCESS_TOKEN;
 const PERSON_URN = process.env.LINKEDIN_PERSON_URN;
 const ORG_URN = process.env.LINKEDIN_ORG_URN || '';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, '_posts');
 const STATE_FILE = path.join(ROOT, '.github', 'linkedin-state.json');
@@ -343,6 +345,110 @@ ${hashtags}`;
 }
 
 /* ═══════════════════════════════════════════════════════════
+ *  GEMINI AI — Generate natural LinkedIn post
+ * ═══════════════════════════════════════════════════════════ */
+
+async function generateWithGemini(meta, fileName, postUrl) {
+  if (!GEMINI_API_KEY) return null;
+
+  const title = meta.title || 'Security Update';
+  const body = stripMarkdown(meta._body || '').slice(0, 1500);
+  const score = (meta.score || 'MEDIUM').toUpperCase();
+  const whyItMatters = meta.why_it_matters || meta.excerpt || '';
+  const tags = (meta.tags || '').replace(/[\[\]]/g, '');
+  
+  // Check for affiliate rec
+  const monRec = getMonetizedRecommendation(meta.tags);
+  let affiliateLine = '';
+  if (monRec !== SCW_ELITE_REC) {
+    affiliateLine = `\nIf appropriate, naturally weave in this recommendation (don't force it):\n${monRec.text} — ${monRec.url}`;
+  }
+
+  const prompt = `You are writing a LinkedIn post as a cybersecurity professional who runs a threat intelligence community. Write in first person, conversational tone — like a real security expert sharing insights with peers, NOT like a newsletter or press release.
+
+ARTICLE TITLE: ${title}
+SEVERITY: ${score}
+TAGS: ${tags}
+KEY CONTENT:
+${body}
+
+WHY IT MATTERS:
+${whyItMatters}
+${affiliateLine}
+
+RULES (strict):
+1. Start with a compelling hook — first 2 lines must create curiosity (visible before "see more")
+2. Write like a human expert sharing their opinion, NOT like a news summary
+3. Use short paragraphs (1-2 sentences each). Mobile-first formatting
+4. Add YOUR professional opinion — what does this mean for defenders? What would YOU do?
+5. End with an engagement question that invites comments
+6. Include these two links naturally in the footer:
+   📄 Full analysis: ${postUrl}
+   📡 Daily updates: https://t.me/shimiscyberworld
+7. End with EXACTLY these hashtags: #ShimisCyberWorld #cybersecurity #infosec (add 1-2 topic-specific ones)
+8. NO markdown formatting (no bold, no links syntax, no bullets with *)
+9. Use bullet points with • if needed
+10. Keep total length between 800-1400 characters. This is critical — LinkedIn penalizes very long posts
+11. NO emojis in the hook line itself — use them sparingly for section markers only
+12. Do NOT mention "AI" or "automated" — this should read as a personal post
+13. Do NOT use phrases like "In today's threat landscape" or "It's crucial to" — be direct and real`;
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 800,
+          }
+        })
+      }
+    );
+
+    if (!res.ok) {
+      console.warn(`⚠️  Gemini API ${res.status} — falling back to template`);
+      return null;
+    }
+
+    const data = await res.json();
+    const generated = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    
+    if (!generated || generated.length < 200) {
+      console.warn('⚠️  Gemini returned empty/short response — falling back to template');
+      return null;
+    }
+
+    // Clean up and validate
+    let text = generated.trim();
+    
+    // Ensure footer links are present (add if AI forgot them)
+    if (!text.includes('t.me/shimiscyberworld')) {
+      text += `\n\n📡 Daily updates: https://t.me/shimiscyberworld`;
+    }
+    if (!text.includes(postUrl)) {
+      text = text.replace(/📡/, `📄 Full analysis: ${postUrl}\n📡`);
+    }
+    if (!text.includes('#ShimisCyberWorld')) {
+      text += '\n\n#ShimisCyberWorld #cybersecurity #infosec';
+    }
+
+    // Safety trim
+    if (text.length > 2800) {
+      text = text.slice(0, 2800).replace(/\s+\S*$/, '') + '...';
+    }
+
+    return text;
+  } catch (err) {
+    console.warn(`⚠️  Gemini error: ${err.message} — falling back to template`);
+    return null;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
  *  LINKEDIN API
  * ═══════════════════════════════════════════════════════════ */
 
@@ -403,8 +509,20 @@ async function main() {
 
   console.log(`📝 Selected: "${best.meta.title}" (${best.file})`);
   
-  const { text, postUrl, title, image } = formatLinkedInPost(best.meta, best.file);
-  console.log(`\n--- LinkedIn Post Preview ---\n${text}\n---\n`);
+  const { text: templateText, postUrl, title, image } = formatLinkedInPost(best.meta, best.file);
+
+  // Try Gemini AI first, fall back to template
+  let text;
+  const aiText = await generateWithGemini(best.meta, best.file, postUrl);
+  if (aiText) {
+    text = aiText;
+    console.log('🤖 Using Gemini-generated post');
+  } else {
+    text = templateText;
+    console.log('📋 Using template-generated post');
+  }
+
+  console.log(`\n--- LinkedIn Post Preview (${text.length} chars) ---\n${text}\n---\n`);
 
   // Post to personal profile
   const personalId = await postToLinkedIn(PERSON_URN, text, postUrl, title, image);
