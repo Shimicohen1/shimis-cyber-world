@@ -3,15 +3,14 @@
  * 
  * Picks the best post from today's _posts/ and publishes
  * a formatted update to LinkedIn via the REST API.
- * Posts to personal profile, and optionally to Company Page.
+ * Posts to personal profile only.
  * 
  * Runs daily via GitHub Actions at 10:00 Israel time.
  * 
  * Required secrets:
- *   LINKEDIN_ACCESS_TOKEN — OAuth 2.0 token with w_member_social (+ w_organization_social for company)
+ *   LINKEDIN_ACCESS_TOKEN — OAuth 2.0 token with w_member_social
  *   LINKEDIN_PERSON_URN   — e.g. "urn:li:person:AbCdEf123"
  * Optional:
- *   LINKEDIN_ORG_URN      — e.g. "REDACTED_ORG_URN" (Company Page)
  *   GEMINI_API_KEY        — Gemini AI for natural post generation (falls back to template if missing)
  */
 
@@ -172,12 +171,12 @@ function selectBestPost(state) {
 /* ── Hook generators — conversational, opinion-driven, question-based ── */
 /* LinkedIn rewards: personal voice, curiosity gaps, questions, hot takes */
 const HOOK_PATTERNS = [
-  (t, score) => `${score === 'CRITICAL' ? '🔴' : ''} ${t}\n\nHere's what most people are missing about this one:`,
-  (t, score) => `${t}\n\nThis caught my attention today — and it should catch yours too.`,
-  (t, score) => `${t}\n\nI just reviewed the technical details. Here's my take:`,
-  (t, score) => `${score === 'CRITICAL' ? '🔴 ' : ''}${t}\n\nThis one makes me uncomfortable. Let me explain:`,
-  (t, score) => `${t}\n\nAre you affected? Let me break it down:`,
-  (t, score) => `${t}\n\nI see this pattern over and over again. Here's why it matters:`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴 ' : ''}${t}\n\nHere's what security teams need to know:`,
+  (t, score) => `${t}\n\nThis just surfaced — and it deserves attention.`,
+  (t, score) => `${t}\n\nThe technical details reveal a bigger problem:`,
+  (t, score) => `${score === 'CRITICAL' ? '🔴 ' : ''}${t}\n\nThis one is worth a closer look.`,
+  (t, score) => `${t}\n\nAre organizations affected? Here's the breakdown:`,
+  (t, score) => `${t}\n\nA growing pattern that keeps surfacing:`,
   (t, score) => `${score === 'CRITICAL' ? '🔴 ' : ''}${t}\n\nMost teams won't catch this until it's too late.`,
 ];
 
@@ -194,27 +193,7 @@ const TOOL_RECOMMENDATIONS = {
 };
 const DEFAULT_TOOL = { text: '🛡️ Free security tools → BreachRadar, ThreatLens, LockDown, GoFish', url: '/tools/' };
 
-/* ── Tag → MONETIZED product recommendation (affiliate / revenue) ── */
-/* Only shown when tags naturally match — never forced.              */
-/* Topics without a natural affiliate fit (malware, APT, CVE, etc.) */
-/* fall through to SCW Elite — no irrelevant recs.                   */
-const MONETIZED_RECS = [
-  { tags: ['credentials','password','identity','brute-force','authentication','mfa','2fa','iam','okta','active-directory','kerberos','ldap'],
-    text: '🔑 Secure your credentials → Proton Pass (encrypted password manager)',
-    url: 'https://www.kqzyfj.com/click-101720928-15831601' },
-  { tags: ['vpn','privacy','network','surveillance','tracking','proxy','tor','encryption','data-leak','data-breach','exposure'],
-    text: '🔐 Stay private online → Surfshark VPN',
-    url: 'https://www.kqzyfj.com/click-101720928-15438560' },
-  { tags: ['osint','reconnaissance','discovery'],
-    text: '🔐 Stay anonymous during research → NordVPN',
-    url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
-  { tags: ['pentest','ctf','red-team','offensive','training','labs','oscp','certification','learning','career','blue-team','soc','dfir','detection'],
-    text: '🎯 Level up your skills → Hack The Box (10-20% off)',
-    url: 'https://hacktheboxltd.sjv.io/DWLa2a' },
-];
 
-/* ── SCW Elite — promoted when no monetized partner fits ── */
-const SCW_ELITE_REC = { text: '⭐ Get premium threat intel, IOC exports & deep-dive reports → SCW Elite', url: 'https://t.me/Shimiscyberworldbot?start=elite' };
 
 function getToolRecommendation(tags) {
   const tagList = (tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
@@ -224,30 +203,7 @@ function getToolRecommendation(tags) {
   return DEFAULT_TOOL;
 }
 
-function getMonetizedRecommendation(tags) {
-  const tagList = (tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
-  // Only return affiliate rec if tags naturally match
-  for (const rec of MONETIZED_RECS) {
-    if (tagList.some(t => rec.tags.includes(t))) return rec;
-  }
-  // No natural fit → promote SCW Elite instead of forcing an affiliate
-  return SCW_ELITE_REC;
-}
 
-function buildHashtags(meta) {
-  const tagList = (meta.tags || '').replace(/[\[\]]/g, '').split(',')
-    .map(t => t.trim()).filter(Boolean);
-
-  // Map raw tags to clean LinkedIn hashtags
-  const mapped = tagList
-    .map(t => t.replace(/[- ]/g, '').replace(/^#/, ''))
-    .filter(t => t.length > 2 && t.length < 25);
-
-  // Always include core hashtags, then add from post tags
-  const core = ['cybersecurity', 'infosec', 'threatintelligence'];
-  const all = [...new Set([...mapped.slice(0, 3), ...core])];
-  return all.slice(0, 6).map(h => `#${h}`).join(' ');
-}
 
 function stripMarkdown(text) {
   return text
@@ -286,10 +242,10 @@ function formatLinkedInPost(meta, fileName) {
   if (meta.why_it_matters) {
     const whyRaw = meta.why_it_matters;
     const whyClean = whyRaw.length > 250 ? whyRaw.slice(0, 247).replace(/\s+\S*$/, '') + '...' : whyRaw;
-    whySection = `\n🎯 Bottom line:\n${whyClean}`;
+    whySection = `\n${whyClean}`;
   } else if (meta.excerpt) {
     const ex = meta.excerpt.length > 180 ? meta.excerpt.slice(0, 177) + '...' : meta.excerpt;
-    whySection = `\n🎯 Bottom line:\n${ex}`;
+    whySection = `\n${ex}`;
   }
 
   // ── 4. ENGAGEMENT QUESTION — drives comments ──
@@ -303,19 +259,21 @@ function formatLinkedInPost(meta, fileName) {
   ];
   const question = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
 
-  // ── 5. SINGLE RECOMMENDATION (only if affiliate matches) ──
-  const monRec = getMonetizedRecommendation(meta.tags);
-  let recLine = '';
-  if (monRec !== SCW_ELITE_REC) {
-    recLine = `\n${monRec.text}\n${monRec.url}`;
-  }
-  // If no affiliate match — skip the rec entirely. Keeps it clean.
+  // ── 5. SCW TOOL RECOMMENDATION (only when topically relevant) ──
+  const toolRec = getToolRecommendation(meta.tags);
+  const toolLine = toolRec !== DEFAULT_TOOL
+    ? `\n${toolRec.text}: ${SITE_URL}${toolRec.url}`
+    : '';
 
   // ── 6. FOOTER — article link + Telegram (compact, no divider) ──
   const footer = `📄 Full analysis: ${postUrl}\n📡 Daily updates: https://t.me/shimiscyberworld`;
 
-  // ── 7. HASHTAGS (max 4 — fewer = better reach) ──
-  const hashtags = '#ShimisCyberWorld ' + buildHashtags(meta).split(' ').slice(0, 3).join(' ');
+  // ── 7. HASHTAGS (exactly 3) ──
+  const tagList = (meta.tags || '').replace(/[\[\]]/g, '').split(',')
+    .map(t => t.trim().replace(/[- ]/g, '').replace(/^#/, ''))
+    .filter(t => t.length > 2 && t.length < 25);
+  const topicTag = tagList[0] || 'infosec';
+  const hashtags = `#ShimisCyberWorld #cybersecurity #${topicTag}`;
 
   // ── ASSEMBLE ──
   let text = `${hook}
@@ -324,7 +282,7 @@ ${analysis}
 ${whySection}
 
 ${question}
-${recLine}
+${toolLine}
 
 ${footer}
 
@@ -337,7 +295,7 @@ ${hashtags}`;
   if (text.length > 2500) {
     const overflow = text.length - 2400;
     analysis = analysis.slice(0, Math.max(100, analysis.length - overflow)) + '...';
-    text = `${hook}\n\n${analysis}\n${whySection}\n\n${question}\n${recLine}\n\n${footer}\n\n${hashtags}`;
+    text = `${hook}\n\n${analysis}\n${whySection}\n\n${question}\n${toolLine}\n\n${footer}\n\n${hashtags}`;
     text = text.replace(/\n{3,}/g, '\n\n').trim();
   }
 
@@ -363,9 +321,9 @@ CONTENT:
 ${body}
 
 FORMAT (follow exactly):
-[Hook — 1-2 lines, state the news fact]
+[Hook — 1-2 lines, state the news fact in third person]
 
-[2-3 short paragraphs, 1-2 sentences each]
+[2-3 short paragraphs, 1-2 sentences each, reporter style]
 
 [1 question to spark comments]
 
@@ -374,12 +332,13 @@ FORMAT (follow exactly):
 #ShimisCyberWorld #cybersecurity #[one topic tag]
 
 HARD RULES:
-- NEVER write "I just reviewed", "I was at", "Here's my take", "Bottom line". Write in third person about the news
+- NEVER write "I just reviewed", "I was at", "Here's my take", "I see this pattern", "Bottom line". Write in third person about the news
 - ZERO emojis anywhere except the two footer markers (📄 📡). No 🎯 🔐 👍 or any other emoji
 - EXACTLY 3 hashtags on the last line. Not 4, not 5 — exactly 3
 - Total post MUST be 500-700 characters. Count carefully. If over 700, remove content
 - NO product recommendations, NO affiliate links, NO "stay private" or "protect yourself" product plugs
 - NO sections labeled "Bottom line" or "Key takeaway" — just flow naturally
+- If the topic involves breach/ransomware/exposure, you may add ONE line before the footer: "Check your exposure free: ${SITE_URL}/breach-radar/"
 - Plain text only, no formatting`;
 
   try {
@@ -414,8 +373,11 @@ HARD RULES:
     // Clean up and validate
     let text = generated.trim();
 
-    // Strip any emojis Gemini snuck in (keep only 📄 and 📡)
-    text = text.replace(/(?!📄|📡)[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1FA00}-\u{1FAFF}\u{FE00}-\u{FE0F}\u{200D}]/gu, '');
+    // Strip ALL emojis, then restore only the footer markers
+    text = text.replace(/[\p{Extended_Pictographic}]/gu, '');
+    // Restore footer emoji markers
+    text = text.replace(/(\s*)Full analysis:/m, '\n📄 Full analysis:');
+    text = text.replace(/(\s*)(Daily updates:|https:\/\/t\.me)/m, '\n📡 $2');
     
     // Ensure footer links are present (add if AI forgot them)
     if (!text.includes('t.me/shimiscyberworld')) {
