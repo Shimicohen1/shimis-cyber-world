@@ -190,19 +190,18 @@ const TOOL_RECOMMENDATIONS = {
 const DEFAULT_TOOL = { text: '🛡️ Free security tools → BreachRadar, ThreatLens, LockDown, GoFish', url: '/tools/' };
 
 /* ── Tag → MONETIZED product recommendation (affiliate / revenue) ── */
-/* Only shown when tags naturally match — never forced */
+/* Only shown when tags naturally match — never forced.              */
+/* Topics without a natural affiliate fit (malware, APT, CVE, etc.) */
+/* fall through to SCW Elite — no irrelevant recs.                   */
 const MONETIZED_RECS = [
   { tags: ['credentials','password','identity','brute-force','authentication','mfa','2fa','iam','okta','active-directory','kerberos','ldap'],
-    text: '🔑 Secure your credentials → Proton Pass (password manager)',
+    text: '🔑 Secure your credentials → Proton Pass (encrypted password manager)',
     url: 'https://www.kqzyfj.com/click-101720928-15831601' },
-  { tags: ['phishing','social-engineering','email','spam','bec','scam','fraud'],
-    text: '🔐 Encrypted email & privacy → Proton VPN',
-    url: 'https://www.jdoqocy.com/click-101720928-15834536' },
   { tags: ['vpn','privacy','network','surveillance','tracking','proxy','tor','encryption','data-leak','data-breach','exposure'],
     text: '🔐 Stay private online → Surfshark VPN',
     url: 'https://www.kqzyfj.com/click-101720928-15438560' },
-  { tags: ['ransomware','malware','apt','backdoor','c2','trojan','botnet','exploit','zero-day'],
-    text: '🔐 Protect your network → NordVPN Threat Protection',
+  { tags: ['osint','reconnaissance','discovery'],
+    text: '🔐 Stay anonymous during research → NordVPN',
     url: 'https://www.anrdoezrs.net/click-101720928-13756265' },
   { tags: ['pentest','ctf','red-team','offensive','training','labs','oscp','certification','learning','career','blue-team','soc','dfir','detection'],
     text: '🎯 Level up your skills → Hack The Box (10-20% off)',
