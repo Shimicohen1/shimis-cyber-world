@@ -10,6 +10,7 @@ layout: null
   <id>{{ '/feed.xml' | absolute_url }}</id>
   <title type="html">{{ site.title | xml_escape }}</title>
   <subtitle>{{ site.description | xml_escape }}</subtitle>
+  <link href="https://t.me/Shimiscyberworldbot" rel="related" type="text/html" title="SCW Intel Bot — Real-time threat search, watchlist alerts, and IOC exports on Telegram" />
   {% assign posts = site.posts | where_exp: "post", "post.hidden != true" %}
   {% for post in posts limit:50 %}
   <entry>
