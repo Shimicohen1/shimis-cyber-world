@@ -25,48 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Content Overwhelms Bug Bounty Platforms
-    text: Bug bounty platforms struggle with AI-generated vulnerability reports, causing triage chaos.
-    detail: HackerOne has reportedly paused services due to an overwhelming influx of AI-generated submissions, highlighting a growing challenge in distinguishing legitimate findings from automated noise. Security teams should prioritize robust validation processes for bug bounty reports to efficiently manage resources and focus on real threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-its-role-cybersecurity
-    link_label: AI in Cybersecurity
+  - title: AI Models Present New Attack Vectors
+    text: AI models are becoming targets, with vulnerabilities allowing credential theft and potential misuse.
+    detail: The `text-generation-webui` platform's RAG extensions are vulnerable to cloud credential theft. Cybersecurity professionals should audit AI infrastructure for exposed credentials and review access controls for AI models and their extensions to prevent unauthorized access and potential data breaches.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP Top 10 for LLM Applications
     badge: signal
     tags:
       - ai-security
-      - bug-bounty
+      - cloud-security
       - threat-intel
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business services sector faces a surge in ransomware attacks, demanding proactive defense.
-    detail: The business services sector is experiencing a significant uptick in ransomware activity, with multiple threat intelligence channels reporting coordinated attacks. Organizations must strengthen their ransomware defenses, including robust backups, network segmentation, and employee awareness training, to mitigate potential operational disruptions.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness
-    link_label: Ransomware Awareness
+  - title: Open Source Software Remains a Prime Target
+    text: Numerous critical vulnerabilities are being discovered across popular open-source platforms.
+    detail: Discourse, OrangeHRM, Backstage, and Alchemy CMS are among recent platforms with critical flaws, ranging from file reads to RCE. Organizations must prioritize patching and vulnerability management for all open-source components, leveraging CVE data and vendor advisories to stay ahead of exploits.
+    link: https://www.cisa.gov/news-events/advisories/aa23-285a
+    link_label: CISA Known Exploited Vulnerabilities Catalog
+    badge: signal
+    tags:
+      - vulnerability-management
+      - open-source
+      - patching
+  - title: Ransomware Actors Diversify Tactics and Targets
+    text: New ransomware groups and evolving tactics highlight persistent threats to businesses.
+    detail: The emergence of TiMc and continued activity against the Business Services sector, coupled with the defacement of the Kairos ransomware site, indicate a dynamic threat landscape. Organizations should reinforce ransomware defenses, including robust backups and incident response plans, and monitor threat intelligence for emerging actors.
+    link: https://www.mitre.org/cybersecurity-dialogues/threat-actors/ransomware
+    link_label: MITRE Ransomware Insights
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - business-continuity
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery and Remote Code Execution flaws continue to be exploited.
-    detail: Multiple recent advisories highlight ongoing critical vulnerabilities like SSRF and RCE across various software, including developer tools and CMS platforms. Developers and security teams should prioritize patching these common vulnerability types and implement secure coding practices to prevent unauthorized access and system compromise.
-    link: https://owasp.org/www-project-top-ten/
-    link_label: OWASP Top 10
-    badge: signal
-    tags:
-      - vulnerability
-      - rce
-      - ssrf
-      - secure-coding
-  - title: OSINT Techniques Uncover Deeper Identity and Data Exposure
-    text: Open Source Intelligence methods reveal extensive personal data linkage and potential breach vectors.
-    detail: Recent analyses demonstrate how OSINT techniques, particularly involving phone numbers, can unlock significant personal identity information and linked accounts. Security professionals should incorporate OSINT monitoring into their threat intelligence strategy to proactively identify potential exposure points and data breach risks.
-    link: https://www.mitre.org/about/overview/mission/mitre-attack
-    link_label: MITRE ATT&CK Framework
+      - business-services
+  - title: OSINT Techniques Expand to Identity and Data Exposure
+    text: Phone numbers and public data sources are increasingly used for identity linkage and potential breaches.
+    detail: A deep dive into Indian phone number OSINT reveals its potential for uncovering personal identities and linked accounts. Security teams should educate users on the risks of oversharing personal information online and implement data loss prevention (DLP) strategies to mitigate risks associated with OSINT-driven reconnaissance.
+    link: https://www.nist.gov/cyberframework
+    link_label: NIST Cybersecurity Framework
     badge: signal
     tags:
       - osint
+      - identity-management
       - data-breach
-      - threat-intel
-      - identity-protection
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
