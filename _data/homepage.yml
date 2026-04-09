@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business services sector sees a significant surge in ransomware attacks.
-    detail: Intelligence indicates a coordinated increase in ransomware activity targeting the business services sector. Organizations in this industry should prioritize robust endpoint protection, regular backups, and comprehensive incident response plans to mitigate potential disruptions and data loss.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-284a
-    link_label: Ransomware Guidance
+  - title: Ransomware Groups Aggressively Targeting Business Services
+    text: Business services sector is experiencing a significant surge in ransomware attacks.
+    detail: DarkFeed reports an 18% increase in ransomware attacks targeting the business services sector over the past week. This indicates a coordinated effort by threat actors. Organizations should bolster defenses, focusing on endpoint protection and robust backup strategies to mitigate potential disruptions.
+    link: https://www.cisa.gov/news-events/advisories/aa22-285a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: SSRF Vulnerabilities Remain a Critical Threat Vector
-    text: Server-Side Request Forgery (SSRF) flaws continue to expose internal systems.
-    detail: Multiple recent advisories highlight SSRF vulnerabilities in various tools and platforms, enabling attackers to probe and access internal networks. Developers and security teams must rigorously validate user-supplied URLs and implement strict access controls to prevent unauthorized requests.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: SSRF Attack Overview
-    badge: signal
-    tags:
-      - vulnerability
-      - ssrf
-      - web-security
-  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
-    text: AI-generated submissions are overwhelming bug bounty platforms, impacting triage.
-    detail: Bug bounty platforms are struggling with a deluge of AI-generated vulnerability reports, complicating verification and remediation efforts. Organizations relying on bug bounties should refine their submission guidelines and explore AI detection tools to manage this new challenge effectively.
-    link: https://www.mitre.org/about/news/mitre-engenuity-center-emerging-threats-discusses-ai-and-cybersecurity
-    link_label: AI & Cybersecurity
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI-generated submissions are flooding bug bounty platforms, hindering remediation efforts.
+    detail: Cyber Threat Intelligence notes HackerOne's pause in services due to an influx of AI-created vulnerability reports. This trend challenges efficient triage and validation. Security teams should implement AI detection tools and refine submission guidelines to manage this new reporting landscape.
+    link: https://owasp.org/www-project-generative-ai-security/
+    link_label: OWASP Generative AI Security
     badge: signal
     tags:
       - ai-security
-      - threat-intel
       - bug-bounty
-  - title: Remote Code Execution (RCE) Bugs in Software Dependencies
-    text: RCE vulnerabilities linked to third-party library dependencies are prevalent.
-    detail: Recent findings show RCE flaws stemming from vulnerable dependencies, such as PyYAML, impacting various software projects. Maintaining an up-to-date Software Bill of Materials (SBOM) and employing dependency scanning tools are crucial for identifying and mitigating these risks.
-    link: https://www.nist.gov/blogs/cybersecurity-awareness/software-bill-materials-sbom-understanding-and-why-it-matters
-    link_label: Understanding SBOMs
+      - threat-intel
+  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws are prevalent.
+    detail: Recent CVE Notify posts highlight critical SSRF and RCE vulnerabilities in tools like Backstage, Alchemy CMS, and Docling Core. These flaws allow attackers to access internal systems or execute arbitrary code. Prioritize patching and implement robust input validation to defend against these common attack vectors.
+    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery_(SSRF)
+    link_label: OWASP SSRF
     badge: signal
     tags:
       - vulnerability
       - rce
-      - supply-chain
+      - ssrf
+      - patch-management
+  - title: New Threat Actor 'TiMc' Emerges on Dark Web Radar
+    text: A new threat actor, 'TiMc', has been identified, indicating evolving cybercrime landscapes.
+    detail: DARKFEED has flagged the emergence of TiMc, a new threat actor now on the radar. The identification of novel entities suggests continuous evolution within the threat actor community. Staying informed via threat intelligence feeds is crucial for proactive defense against emerging threats.
+    link: https://www.mitre.org/threat-intelligence
+    link_label: MITRE Threat Intelligence
+    badge: signal
+    tags:
+      - threat-intel
+      - darkweb
+      - new-actor
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
