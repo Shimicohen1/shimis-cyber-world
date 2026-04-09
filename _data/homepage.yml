@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: LLM Interfaces and RAG Extensions Pose Cloud Credential Risks
-    text: AI chat interfaces with RAG extensions are vulnerable to cloud credential theft.
-    detail: The 'text-generation-webui' and its RAG extensions are susceptible to credential theft, potentially exposing cloud infrastructure. Organizations should audit access controls and monitor for unusual network activity. Regularly update LLM interfaces and extensions to patch known vulnerabilities.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery_(SSRF)
-    link_label: OWASP SSRF Guidance
+  - title: AI-Generated Reports Flood Bug Bounty Platforms
+    text: AI-generated vulnerability reports are overwhelming bug bounty platforms, hindering effective triage.
+    detail: HackerOne has paused services due to a surge in AI-generated submissions, making it difficult to distinguish genuine threats from noise. Cybersecurity professionals should prioritize developing robust AI detection and filtering mechanisms for their own vulnerability management processes.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-265a
+    link_label: AI Security Guidance
     badge: signal
     tags:
       - ai-security
-      - cloud-security
-      - vulnerability
-  - title: Discourse Vulnerabilities Highlight Need for Prompt Patching
-    text: Multiple recent Discourse flaws highlight the need for prompt patching and configuration review.
-    detail: Recent advisories reveal vulnerabilities in Discourse related to email settings, subscriptions, and draft topic exposure. Administrators must ensure timely patching and review configurations for group email tests and subscription management to prevent unauthorized access and potential data leakage.
-    link: https://blog.discourse.org/security/
-    link_label: Discourse Security Updates
-    badge: signal
-    tags:
-      - web-application-security
-      - vulnerability
-      - patch-management
-  - title: Ransomware Groups Target Business Services Sector Aggressively
-    text: The business services sector is experiencing a significant surge in ransomware attacks.
-    detail: Intelligence indicates a coordinated ramp-up in ransomware activity targeting the business services industry. Companies in this sector should enhance their endpoint security, implement robust backup strategies, and conduct regular phishing awareness training to mitigate evolving threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
-    link_label: CISA Ransomware Guidance
+      - threat-intel
+      - bug-bounty
+  - title: Ransomware Groups Target Business Services Sector
+    text: The Business Services sector is experiencing a sharp increase in ransomware attacks.
+    detail: Recent intelligence indicates a coordinated ramp-up of ransomware activity targeting businesses in this sector. Organizations should reinforce their defenses, focusing on endpoint protection, regular backups, and comprehensive incident response plans.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-333a
+    link_label: Ransomware Protection
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: SSRF and RCE Vulnerabilities Common in Developer Tools
-    text: Developer tools like Backstage and Alchemy CMS exhibit critical SSRF and RCE flaws.
-    detail: Critical SSRF and RCE vulnerabilities found in developer frameworks and CMS platforms underscore the importance of secure coding practices and dependency management. Regularly scan code and dependencies for known vulnerabilities and apply vendor patches promptly.
+  - title: SSRF and RCE Vulnerabilities Persist Across Tools
+    text: SSRF and RCE vulnerabilities continue to be prevalent in various software tools.
+    detail: Multiple recent advisories highlight Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws in development tools, CMS, and API labs. Prioritize patching and input validation for all third-party components and custom applications.
     link: https://owasp.org/www-project-top-ten/
     link_label: OWASP Top 10
     badge: signal
     tags:
-      - developer-tools
       - vulnerability
       - rce
       - ssrf
+      - secure-development
+  - title: New Threat Actors Emerge with Sophisticated Tactics
+    text: Emerging threat actors like TiMc and UNC6783 employ novel techniques for infiltration.
+    detail: The cybersecurity landscape sees the rise of new actors, including UNC6783 targeting BPOs for ticket heists and TiMc appearing on the dark web. Stay updated on emerging TTPs and proactively hunt for signs of these actors in your environment.
+    link: https://attack.mitre.org/groups/
+    link_label: MITRE ATT&CK Groups
+    badge: signal
+    tags:
+      - threat-intel
+      - emerging-threats
+      - apt
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
