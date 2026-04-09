@@ -147,10 +147,18 @@ permalink: /premium/
 <!-- ── Telegram Bot: direct access ── -->
 <section class="elite-bot reveal">
 <div class="elite-bot__card">
-<div class="elite-bot__icon">📊</div>
-<h2 class="elite-bot__title">SCW Elite Bot</h2>
-<p class="elite-bot__desc">Real threat data from this week's incidents — IOCs, CVEs, and MITRE ATT&CK mapping extracted from our feed and delivered straight to your Telegram. Copy-paste into your SIEM.</p>
+<div class="elite-bot__icon">�</div>
+<h2 class="elite-bot__title">SCW Intel Bot</h2>
+<p class="elite-bot__desc">Your personal cyber threat radar. Search threats by organization, domain, threat actor, or country. Set up a watchlist and get instant Telegram alerts when your vendors or clients appear in the feed. IOC exports, MITRE ATT&CK mapping, and weekly briefs — delivered straight to your chat.</p>
 <div class="elite-bot__products">
+<div class="elite-bot__product">
+<strong>🔍 Threat Search</strong>
+<span>Free</span>
+</div>
+<div class="elite-bot__product">
+<strong>🔔 Watchlist (3 orgs)</strong>
+<span>Free</span>
+</div>
 <div class="elite-bot__product">
 <strong>📊 Threat Intel Brief</strong>
 <span>150 ⭐</span>
@@ -160,11 +168,15 @@ permalink: /premium/
 <span>250 ⭐</span>
 </div>
 <div class="elite-bot__product">
-<strong>🔒 Elite Monthly</strong>
-<span>500 ⭐/mo</span>
+<strong>🔔 Watchlist Pro (20 orgs)</strong>
+<span>400 ⭐/mo</span>
+</div>
+<div class="elite-bot__product">
+<strong>🔒 Elite Monthly (all included)</strong>
+<span>750 ⭐/mo</span>
 </div>
 </div>
-<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Unlock My Intel →</a>
+<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot →</a>
 </div>
 </section>
 
