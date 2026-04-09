@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Groups Actively Targeting Business Services
-    text: A surge in ransomware attacks specifically targeting the Business Services sector has been observed.
-    detail: DARKFEED intelligence highlights a coordinated increase in ransomware activity against the Business Services sector. Organizations in this industry should review their incident response plans and enhance endpoint security measures to mitigate potential impacts from these targeted campaigns.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-089a
-    link_label: CISA Ransomware Guidance
-    badge: signal
-    tags:
-      - ransomware
-      - threat-intel
-      - business-services
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI-generated vulnerability reports are creating a significant triage and remediation challenge for bug bounty platforms.
-    detail: HackerOne's reported pause in services due to an influx of AI-generated submissions underscores a growing trend. Cybersecurity teams must develop robust validation processes for AI-assisted security research and focus on genuine, exploitable vulnerabilities.
-    link: https://owasp.org/www-project-ai-security-and-privacy/
-    link_label: OWASP AI Security
+  - title: AI-Generated Vulnerabilities Flood Bug Bounty Platforms
+    text: AI tools are overwhelming bug bounty platforms with automated submissions.
+    detail: HackerOne has paused services due to an influx of AI-generated vulnerability reports, making triage difficult. Cybersecurity professionals should anticipate increased noise from automated scanning and report generation, focusing on human-verified findings and robust validation processes to cut through the clutter.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ai-security-considerations
+    link_label: AI Security Considerations
     badge: signal
     tags:
       - ai-security
       - bug-bounty
       - threat-intel
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities continue to be prevalent.
-    detail: Multiple recent disclosures highlight ongoing risks from SSRF and RCE flaws in various software, including content management systems and developer tools. Prioritize patching and implement input validation and least privilege principles to defend against these common attack vectors.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Business Services sector faces a significant surge in ransomware attacks.
+    detail: DARKFEED reports an 18% increase in attacks targeting the Business Services sector. Organizations in this industry must prioritize robust endpoint protection, regular backups, and comprehensive incident response plans to mitigate the escalating ransomware threat.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness
+    link_label: Ransomware Awareness
     badge: signal
     tags:
-      - vulnerability
-      - rce
-      - ssrf
-      - patching
-  - title: New Threat Actor 'TiMc' Identified in Dark Web Activity
-    text: A new threat actor, codenamed 'TiMc', has been detected operating in the cyber threat landscape.
-    detail: The emergence of new threat actors like TiMc, as flagged by DARKFEED, necessitates continuous monitoring of dark web channels and threat intelligence feeds. Understanding their tactics, techniques, and procedures (TTPs) is crucial for proactive defense strategies.
-    link: https://www.mitre.org/threat-actor-attribution
-    link_label: MITRE ATT&CK
+      - ransomware
+      - threat-intel
+      - business-services
+  - title: Emerging Threat Actor 'TiMc' Identified
+    text: New threat actor 'TiMc' has been spotted operating in the wild.
+    detail: DARKFEED has flagged the emergence of a new threat actor, 'TiMc'. This development underscores the dynamic nature of the threat landscape. Security teams should stay vigilant for novel TTPs and indicators of compromise associated with this emerging entity.
+    link: https://www.mitre.org/attack-matrix/enterprise
+    link_label: MITRE ATT&CK Framework
     badge: signal
     tags:
       - threat-intel
       - darkweb
       - new-actor
+  - title: SSRF Vulnerabilities Remain a Critical Threat Vector
+    text: Server-Side Request Forgery (SSRF) flaws continue to be actively exploited.
+    detail: Recent advisories highlight critical SSRF vulnerabilities in tools like Backstage and the atototo API lab. Developers and security teams must implement strict input validation, network segmentation, and outbound connection controls to prevent internal system exposure and unauthorized access.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guidance
+    badge: signal
+    tags:
+      - vulnerability
+      - ssrf
+      - secure-development
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
