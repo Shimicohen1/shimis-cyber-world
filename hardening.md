@@ -25,6 +25,16 @@ permalink: /hardening/
 
 <hr class="section-break">
 
+<!-- Search -->
+<section class="harden-search reveal">
+  <div class="harden-search__box">
+    <svg class="harden-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="hardenSearch" class="harden-search__input" placeholder="Search all 847 checks across all platforms…" autocomplete="off" spellcheck="false">
+    <button id="hardenSearchClear" class="harden-search__clear" style="display:none;" title="Clear search">&times;</button>
+  </div>
+  <div id="hardenSearchInfo" class="harden-search__info" style="display:none;"></div>
+</section>
+
 <!-- Generator -->
 <section id="generator" class="harden-generator reveal">
   <div class="feed__header">
@@ -54,9 +64,9 @@ permalink: /hardening/
   <!-- Severity filter -->
   <div id="hardenSevFilters" class="vault-filters harden-sev-filters" style="display:none;">
     <button class="vault-filter active" data-sev="all">All Severities</button>
-    <button class="vault-filter" data-sev="critical">🔴 Critical</button>
-    <button class="vault-filter" data-sev="high">🟠 High</button>
-    <button class="vault-filter" data-sev="medium">🟡 Medium</button>
+    <button class="vault-filter" data-sev="critical"><span style="color:#ef4444;">&#9679;</span> Critical</button>
+    <button class="vault-filter" data-sev="high"><span style="color:#f97316;">&#9679;</span> High</button>
+    <button class="vault-filter" data-sev="medium"><span style="color:#eab308;">&#9679;</span> Medium</button>
   </div>
 
   <!-- Progress bar -->
@@ -97,9 +107,9 @@ permalink: /hardening/
 
 <!-- Export -->
 <div id="hardenExport" class="ioc-export" style="display:none;">
-  <button id="hardenExportMd" class="btn btn--ghost">📄 Export Markdown</button>
-  <button id="hardenCopyMd" class="btn btn--ghost">📋 Copy as Markdown</button>
-  <button id="hardenReset" class="btn btn--ghost">🔄 Reset Checkmarks</button>
+  <button id="hardenExportMd" class="btn btn--ghost"><span class="scw-icon" data-icon="file"></span> Export Markdown</button>
+  <button id="hardenCopyMd" class="btn btn--ghost"><span class="scw-icon" data-icon="clipboard"></span> Copy as Markdown</button>
+  <button id="hardenReset" class="btn btn--ghost"><span class="scw-icon" data-icon="refresh"></span> Reset Checkmarks</button>
 </div>
 
 <hr class="section-break">
@@ -121,7 +131,7 @@ permalink: /hardening/
 <!-- Elite guidance info banner -->
 <div id="hardenAuthBanner" class="harden-auth-banner" style="display:none;">
   <div class="harden-auth-banner__inner">
-    <span class="harden-auth-banner__icon">🛡️</span>
+    <span class="harden-auth-banner__icon" data-icon="shield"></span>
     <div class="harden-auth-banner__text">
       <strong>Elite Guidance Available</strong>
       <span>Items marked with ★ include deeper context — attack perspectives, validation steps, detection logic, and tuning notes.</span>

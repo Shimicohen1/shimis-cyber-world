@@ -32,7 +32,7 @@ permalink: /ioc-scanner/
   <div class="ioc-input-area">
     <textarea id="iocInput" class="ioc-textarea" rows="8" placeholder="Paste IOCs here — one per line or comma-separated.&#10;&#10;Examples:&#10;  8.8.8.8&#10;  evil-domain.com&#10;  44d88612fea8a8f36de82e1278abb02f&#10;  https://malicious-site.xyz/payload&#10;  attacker@evil.com&#10;&#10;Supports: IPv4, IPv6, domains, MD5, SHA1, SHA256, URLs, emails" spellcheck="false"></textarea>
     <div class="ioc-input-actions">
-      <button id="iocScanBtn" class="btn btn--primary">🔍 Scan</button>
+      <button id="iocScanBtn" class="btn btn--primary"><span class="scw-icon" data-icon="search"></span> Scan</button>
       <button id="iocClearBtn" class="btn btn--ghost">Clear</button>
       <label class="ioc-toggle">
         <input type="checkbox" id="iocDefang" checked>
@@ -73,9 +73,9 @@ permalink: /ioc-scanner/
 
   <!-- Export -->
   <div id="iocExport" class="ioc-export" style="display:none;">
-    <button id="iocExportCsv" class="btn btn--ghost">📄 Export CSV</button>
-    <button id="iocExportTxt" class="btn btn--ghost">📋 Export TXT (Defanged)</button>
-    <button id="iocCopyAll" class="btn btn--ghost">📋 Copy All</button>
+    <button id="iocExportCsv" class="btn btn--ghost"><span class="scw-icon" data-icon="file"></span> Export CSV</button>
+    <button id="iocExportTxt" class="btn btn--ghost"><span class="scw-icon" data-icon="clipboard"></span> Export TXT (Defanged)</button>
+    <button id="iocCopyAll" class="btn btn--ghost"><span class="scw-icon" data-icon="clipboard"></span> Copy All</button>
   </div>
 </section>
 

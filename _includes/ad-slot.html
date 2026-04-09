@@ -42,7 +42,7 @@
   <div class="ad-slot ad-slot--premium">
     <div class="ad-slot__content">
       <div class="ad-slot__text">
-        <strong>🔒 {{ include.title | default: "Get deeper insights" }}</strong>
+        <strong><span class="scw-icon" data-icon="lock"></span> {{ include.title | default: "Get deeper insights" }}</strong>
         <p>{{ include.desc | default: "Early alerts, IOC feeds, detection rules, and exclusive analysis." }}</p>
       </div>
       <a href="{{ include.url | default: '/premium/' | relative_url }}" class="btn btn--sm btn--accent" data-track="premium">
@@ -61,7 +61,7 @@
         {% unless matched %}
           {% assign matched = true %}
   <div class="ad-slot ad-slot--recommendations">
-    <h3 class="ad-slot__heading">🛠 Recommended Tools</h3>
+    <h3 class="ad-slot__heading"><span class="scw-icon" data-icon="wrench"></span> Recommended Tools</h3>
     <div class="ad-slot__products">
           {% for product in rec.products %}
       <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" class="ad-slot__product" data-track="affiliate">

@@ -32,7 +32,7 @@ permalink: /gofish/
   <div class="gofish-input-area">
     <textarea id="gofishInput" class="ioc-textarea gofish-textarea" rows="4" placeholder="Paste a suspicious URL or SMS text here… (Enter to scan, Shift+Enter for new line)&#10;&#10;Examples:&#10;  https://amaz0n-security.xyz/verify?id=839201&#10;  ברצוננו ליידע כי קיים חוב עבור נסיעות בכביש 6: https://m-r.pw/axIa" spellcheck="false"></textarea>
     <div class="gofish-input-actions">
-      <button id="gofishScanBtn" class="btn btn--primary">🎣 Analyze for Phishing</button>
+      <button id="gofishScanBtn" class="btn btn--primary"><span class="scw-icon" data-icon="anchor"></span> Analyze for Phishing</button>
       <button id="gofishClearBtn" class="btn btn--ghost">Clear</button>
     </div>
   </div>
@@ -50,22 +50,22 @@ permalink: /gofish/
   </div>
   <div class="gofish-detect-grid">
     <div class="gofish-detect-card">
-      <span class="gofish-detect-card__icon">🔗</span>
+      <span class="gofish-detect-card__icon" data-icon="link"></span>
       <strong>URL Manipulation</strong>
       <p>Suspicious TLDs, URL shorteners, IP-based URLs, excessive subdomains, homograph attacks, encoded characters</p>
     </div>
     <div class="gofish-detect-card">
-      <span class="gofish-detect-card__icon">🏦</span>
+      <span class="gofish-detect-card__icon" data-icon="shield"></span>
       <strong>Brand Impersonation</strong>
       <p>Lookalike domains mimicking banks, tech companies, payment services, delivery companies, and government agencies</p>
     </div>
     <div class="gofish-detect-card">
-      <span class="gofish-detect-card__icon">⚡</span>
+      <span class="gofish-detect-card__icon" data-icon="zap"></span>
       <strong>Urgency & Pressure</strong>
       <p>Threatening language, account suspension claims, "act now" pressure, time-limited offers, scare tactics</p>
     </div>
     <div class="gofish-detect-card">
-      <span class="gofish-detect-card__icon">📱</span>
+      <span class="gofish-detect-card__icon" data-icon="file"></span>
       <strong>SMS Patterns</strong>
       <p>Smishing templates, delivery scams, verification code lures, prize/lottery messages, Hebrew phishing patterns</p>
     </div>

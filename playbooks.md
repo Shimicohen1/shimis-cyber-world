@@ -91,7 +91,7 @@ permalink: /playbooks/
       {% if pb.escalation %}
       <div class="rb-section rb-escalation">
         <button class="rb-section__toggle" aria-expanded="false">
-          <span class="rb-section__icon">🚨</span>
+          <span class="rb-section__icon"><span class="scw-icon" data-icon="bell"></span></span>
           <span class="rb-section__name">Escalation Matrix</span>
           <span class="rb-section__arrow">▸</span>
         </button>
@@ -122,7 +122,7 @@ permalink: /playbooks/
       {% if pb.metrics %}
       <div class="rb-section rb-metrics">
         <button class="rb-section__toggle" aria-expanded="false">
-          <span class="rb-section__icon">📊</span>
+          <span class="rb-section__icon"><span class="scw-icon" data-icon="bar-chart"></span></span>
           <span class="rb-section__name">Response Metrics & SLAs</span>
           <span class="rb-section__arrow">▸</span>
         </button>
@@ -142,7 +142,7 @@ permalink: /playbooks/
       {% for phase in pb.phases %}
       <div class="rb-section rb-phase">
         <button class="rb-section__toggle" aria-expanded="false">
-          <span class="rb-section__icon">{% if phase.name == 'Detect' %}🔍{% elsif phase.name == 'Contain' %}🛑{% elsif phase.name == 'Eradicate' %}🧹{% elsif phase.name == 'Recover' %}🔄{% elsif phase.name == 'Post-Incident' %}📝{% else %}▶{% endif %}</span>
+          <span class="rb-section__icon">{% if phase.name == 'Detect' %}<span class="scw-icon" data-icon="search"></span>{% elsif phase.name == 'Contain' %}<span class="scw-icon" data-icon="shield"></span>{% elsif phase.name == 'Eradicate' %}<span class="scw-icon" data-icon="crosshair"></span>{% elsif phase.name == 'Recover' %}<span class="scw-icon" data-icon="refresh"></span>{% elsif phase.name == 'Post-Incident' %}<span class="scw-icon" data-icon="file"></span>{% else %}&#9654;{% endif %}</span>
           <span class="rb-section__name">{{ phase.name }}</span>
           <span class="rb-section__count">{{ phase.steps | size }} steps</span>
           <span class="rb-section__arrow">▸</span>
@@ -161,7 +161,7 @@ permalink: /playbooks/
 
           {% if phase.decision_tree %}
           <div class="rb-decision-tree">
-            <p class="rb-label">⚡ Decision Tree</p>
+            <p class="rb-label"><span class="scw-icon" data-icon="zap"></span> Decision Tree</p>
             {% for d in phase.decision_tree %}
             <div class="rb-decision">
               <div class="rb-decision__if"><strong>IF:</strong> {{ d.condition }}</div>
@@ -178,7 +178,7 @@ permalink: /playbooks/
       {% if pb.evidence_checklist %}
       <div class="rb-section rb-evidence">
         <button class="rb-section__toggle" aria-expanded="false">
-          <span class="rb-section__icon">📎</span>
+          <span class="rb-section__icon"><span class="scw-icon" data-icon="paperclip"></span></span>
           <span class="rb-section__name">Evidence Checklist</span>
           <span class="rb-section__count">{{ pb.evidence_checklist | size }} items</span>
           <span class="rb-section__arrow">▸</span>
@@ -197,7 +197,7 @@ permalink: /playbooks/
       {% if pb.comms_templates %}
       <div class="rb-section rb-comms">
         <button class="rb-section__toggle" aria-expanded="false">
-          <span class="rb-section__icon">📨</span>
+          <span class="rb-section__icon"><span class="scw-icon" data-icon="file"></span></span>
           <span class="rb-section__name">Communication Templates</span>
           <span class="rb-section__arrow">▸</span>
         </button>
@@ -206,7 +206,7 @@ permalink: /playbooks/
           <div class="rb-comms__block">
             <p class="rb-label">Internal Notification</p>
             <div class="rb-template">
-              <button class="dl-copy-btn" title="Copy template">📋</button>
+              <button class="dl-copy-btn" title="Copy template"><span class="scw-icon" data-icon="clipboard"></span></button>
               <pre><code>{{ pb.comms_templates.internal | strip | xml_escape }}</code></pre>
             </div>
           </div>
@@ -215,7 +215,7 @@ permalink: /playbooks/
           <div class="rb-comms__block">
             <p class="rb-label">External / Customer Notification</p>
             <div class="rb-template">
-              <button class="dl-copy-btn" title="Copy template">📋</button>
+              <button class="dl-copy-btn" title="Copy template"><span class="scw-icon" data-icon="clipboard"></span></button>
               <pre><code>{{ pb.comms_templates.external | strip | xml_escape }}</code></pre>
             </div>
           </div>
@@ -224,7 +224,7 @@ permalink: /playbooks/
           <div class="rb-comms__block">
             <p class="rb-label">Affected Individuals Notification</p>
             <div class="rb-template">
-              <button class="dl-copy-btn" title="Copy template">📋</button>
+              <button class="dl-copy-btn" title="Copy template"><span class="scw-icon" data-icon="clipboard"></span></button>
               <pre><code>{{ pb.comms_templates.affected_individuals | strip | xml_escape }}</code></pre>
             </div>
           </div>

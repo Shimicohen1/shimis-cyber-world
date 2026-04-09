@@ -5,6 +5,7 @@
 
   var activePlatform = null;
   var globalCategoryMode = false;   /* true when viewing cross-platform category */
+  var searchMode = false;           /* true when search results are shown */
   var STORAGE_KEY = 'scw_harden_checked';
 
   /* ── Premium data cache (keyed by platform) ── */
@@ -79,37 +80,37 @@
 
     if (p.attackPerspective) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">⚔️ Real-World Exposure</h4>';
+      html += '<h4 class="harden-premium__heading">' + (typeof scwIcon === 'function' ? scwIcon('swords') : '') + ' Real-World Exposure</h4>';
       html += '<p class="harden-premium__text">' + esc(p.attackPerspective) + '</p>';
       html += '</div>';
     }
     if (p.implementationNotes) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">🛠️ Practical Execution</h4>';
+      html += '<h4 class="harden-premium__heading">' + (typeof scwIcon === 'function' ? scwIcon('settings') : '') + ' Practical Execution</h4>';
       html += '<pre class="harden-premium__code"><code>' + esc(p.implementationNotes) + '</code></pre>';
       html += '</div>';
     }
     if (p.validationNotes) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">✅ Verification</h4>';
+      html += '<h4 class="harden-premium__heading">' + (typeof scwIcon === 'function' ? scwIcon('check') : '') + ' Verification</h4>';
       html += '<pre class="harden-premium__code"><code>' + esc(p.validationNotes) + '</code></pre>';
       html += '</div>';
     }
     if (p.tuningNotes) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">🎯 Considerations</h4>';
+      html += '<h4 class="harden-premium__heading">' + (typeof scwIcon === 'function' ? scwIcon('crosshair') : '') + ' Considerations</h4>';
       html += '<p class="harden-premium__text">' + esc(p.tuningNotes) + '</p>';
       html += '</div>';
     }
     if (p.advancedDetection) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">🔍 Operational Signals</h4>';
+      html += '<h4 class="harden-premium__heading">' + (typeof scwIcon === 'function' ? scwIcon('search') : '') + ' Operational Signals</h4>';
       html += '<pre class="harden-premium__code"><code>' + esc(p.advancedDetection) + '</code></pre>';
       html += '</div>';
     }
     if (p.relatedIds && p.relatedIds.length) {
       html += '<div class="harden-premium__block">';
-      html += '<h4 class="harden-premium__heading">🔗 Related Items</h4>';
+      html += '<h4 class="harden-premium__heading">' + (typeof scwIcon === 'function' ? scwIcon('link') : '') + ' Related Items</h4>';
       html += '<div class="harden-premium__related">';
       p.relatedIds.forEach(function (rid) {
         var rel = (window.HARDEN_ITEMS || []).find(function (r) { return r.id === rid; });
@@ -121,13 +122,63 @@
     }
 
     html += '<div class="harden-premium__actions">';
-    html += '<button class="btn btn--ghost btn--sm harden-premium__copy" data-id="' + item.id + '">📋 Copy Elite Guidance</button>';
-    html += '<button class="btn btn--ghost btn--sm harden-premium__export" data-id="' + item.id + '">📄 Export Full Playbook</button>';
+    html += '<button class="btn btn--ghost btn--sm harden-premium__copy" data-id="' + item.id + '">' + (typeof scwIcon === 'function' ? scwIcon('clipboard') : '') + ' Copy Elite Guidance</button>';
+    html += '<button class="btn btn--ghost btn--sm harden-premium__export" data-id="' + item.id + '">' + (typeof scwIcon === 'function' ? scwIcon('file') : '') + ' Export Full Playbook</button>';
     html += '</div>';
 
     html += '<p class="harden-premium__disclaimer">Built from real-world security experience. Always validate before production use.</p>';
 
     return html;
+  }
+
+  /* ── Search across all platforms ── */
+  function searchAll(query) {
+    var q = query.trim().toLowerCase();
+    if (!q || q.length < 2) {
+      exitSearch();
+      return;
+    }
+    searchMode = true;
+    globalCategoryMode = false;
+    var tokens = q.split(/\s+/);
+    var items = (window.HARDEN_ITEMS || []).filter(function (i) {
+      var haystack = (i.title + ' ' + i.description + ' ' + i.platform + ' ' + i.category + ' ' + (i.command || '') + ' ' + (i.tags || []).join(' ')).toLowerCase();
+      return tokens.every(function (t) { return haystack.indexOf(t) !== -1; });
+    });
+    renderItems(items, null);
+
+    /* Show search info */
+    var info = document.getElementById('hardenSearchInfo');
+    if (info) {
+      info.style.display = '';
+      info.textContent = items.length + ' result' + (items.length !== 1 ? 's' : '') + ' for "' + query.trim() + '" across all platforms';
+    }
+
+    /* Deselect platform buttons */
+    document.querySelectorAll('.harden-platform-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+  }
+
+  function exitSearch() {
+    searchMode = false;
+    var info = document.getElementById('hardenSearchInfo');
+    if (info) info.style.display = 'none';
+    var clearBtn = document.getElementById('hardenSearchClear');
+    if (clearBtn) clearBtn.style.display = 'none';
+    if (activePlatform) {
+      renderChecklist(activePlatform);
+    } else {
+      /* Reset to initial state */
+      var list = document.getElementById('hardenList');
+      if (list) list.innerHTML = '';
+      document.getElementById('hardenCatFilters').style.display = 'none';
+      document.getElementById('hardenSevFilters').style.display = 'none';
+      document.getElementById('hardenProgress').style.display = 'none';
+      document.getElementById('hardenStats').style.display = 'none';
+      document.getElementById('hardenBreak').style.display = 'none';
+      document.getElementById('hardenExport').style.display = 'none';
+    }
   }
 
   /* ── Render checklist ── */
@@ -206,17 +257,17 @@
       html += '    </div>';
       html += '  </div>';
       html += '  <p class="harden-item__desc">' + esc(item.description) + '</p>';
-      html += '  <p class="harden-item__ref">📎 ' + esc(item.reference) + '</p>';
+      html += '  <p class="harden-item__ref">' + (typeof scwIcon === 'function' ? scwIcon('paperclip') : '') + ' ' + esc(item.reference) + '</p>';
       if (item.command) {
         html += '  <div class="dl-rule__code harden-item__code">';
-        html += '    <button class="dl-copy-btn" title="Copy command">📋</button>';
+        html += '    <button class="dl-copy-btn" title="Copy command">' + (typeof scwIcon === 'function' ? scwIcon('clipboard') : '') + '</button>';
         html += '    <pre><code>' + esc(item.command.trim()) + '</code></pre>';
         html += '  </div>';
       }
       if (item.commandFull) {
         html += '  <div class="dl-rule__code harden-item__code harden-item__code--full">';
         html += '    <span class="harden-item__code-label">Full Command</span>';
-        html += '    <button class="dl-copy-btn" title="Copy full command">📋</button>';
+        html += '    <button class="dl-copy-btn" title="Copy full command">' + (typeof scwIcon === 'function' ? scwIcon('clipboard') : '') + '</button>';
         html += '    <pre><code>' + esc(item.commandFull.trim()) + '</code></pre>';
         html += '  </div>';
       }
@@ -353,8 +404,8 @@
       if (!md) return;
       navigator.clipboard.writeText(md).then(function () {
         var btn = document.getElementById('hardenCopyMd');
-        btn.textContent = '✅ Copied!';
-        setTimeout(function () { btn.textContent = '📋 Copy as Markdown'; }, 1500);
+        btn.innerHTML = (typeof scwIcon === 'function' ? scwIcon('check') : '') + ' Copied!';
+        setTimeout(function () { btn.innerHTML = (typeof scwIcon === 'function' ? scwIcon('clipboard') : '') + ' Copy as Markdown'; }, 1500);
       });
     });
   }
@@ -411,10 +462,41 @@
     var platforms = document.getElementById('hardenPlatforms');
     if (!platforms) return;
 
+    /* Search input with debounce */
+    var searchInput = document.getElementById('hardenSearch');
+    var searchClear = document.getElementById('hardenSearchClear');
+    var searchTimer = null;
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        clearTimeout(searchTimer);
+        var val = this.value;
+        if (searchClear) searchClear.style.display = val.length > 0 ? '' : 'none';
+        searchTimer = setTimeout(function () { searchAll(val); }, 250);
+      });
+      searchInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          this.value = '';
+          exitSearch();
+        }
+      });
+    }
+    if (searchClear) {
+      searchClear.addEventListener('click', function () {
+        if (searchInput) searchInput.value = '';
+        exitSearch();
+      });
+    }
+
     /* Platform select */
     platforms.addEventListener('click', function (e) {
       var btn = e.target.closest('.harden-platform-btn');
       if (!btn) return;
+      /* Clear search and exit search mode */
+      if (searchInput) searchInput.value = '';
+      searchMode = false;
+      var info = document.getElementById('hardenSearchInfo');
+      if (info) info.style.display = 'none';
+      if (searchClear) searchClear.style.display = 'none';
       /* Reset category filter to "All" when switching platforms */
       document.querySelectorAll('#hardenCatFilters .vault-filter').forEach(function (b) {
         b.classList.toggle('active', b.dataset.cat === 'all');
@@ -448,8 +530,8 @@
         var code = copyBtn.parentElement.querySelector('code');
         if (!code) return;
         navigator.clipboard.writeText(code.textContent).then(function () {
-          copyBtn.textContent = '✅';
-          setTimeout(function () { copyBtn.textContent = '📋'; }, 1200);
+          copyBtn.innerHTML = typeof scwIcon === 'function' ? scwIcon('check') : '✓';
+          setTimeout(function () { copyBtn.innerHTML = typeof scwIcon === 'function' ? scwIcon('clipboard') : ''; }, 1200);
         });
         return;
       }
@@ -492,8 +574,8 @@
       var premCopy = e.target.closest('.harden-premium__copy');
       if (premCopy) {
         copyPremiumContent(premCopy.dataset.id);
-        premCopy.textContent = '✅ Copied!';
-        setTimeout(function () { premCopy.textContent = '📋 Copy Elite Guidance'; }, 1500);
+        premCopy.innerHTML = (typeof scwIcon === 'function' ? scwIcon('check') : '') + ' Copied!';
+        setTimeout(function () { premCopy.innerHTML = (typeof scwIcon === 'function' ? scwIcon('clipboard') : '') + ' Copy Elite Guidance'; }, 1500);
         return;
       }
 
