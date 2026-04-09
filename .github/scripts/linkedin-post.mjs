@@ -308,9 +308,9 @@ function formatLinkedInPost(meta, fileName) {
   }
 
   // ── 5. FOOTER — Telegram channel + Company Page mention ──
-  const orgMention = ORG_URN ? `@[Shimi's Cyber World](${ORG_URN})` : "Shimi's Cyber World";
+  const ORG_MENTION_TEXT = "Shimi's Cyber World";
   const cta = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📡 Follow ${orgMention} and join 2,000+ security pros on our Telegram channel → https://t.me/shimiscyberworld`;
+📡 Follow ${ORG_MENTION_TEXT} and join 2,000+ security pros on our Telegram channel → https://t.me/shimiscyberworld`;
 
   // ── 6. HASHTAGS ──
   const hashtags = buildHashtags(meta);
@@ -335,14 +335,27 @@ ${hashtags}`;
     text = `${hook}\n\n${analysis}\n${whySection}\n\n${recLine}\n\n${cta}\n\n${hashtags}`;
   }
 
-  return { text, postUrl, title, image: meta.image || meta.cover_image || '' };
+  // Build org mention attributes for LinkedIn API
+  const orgMentionAttrs = [];
+  if (ORG_URN) {
+    const mentionStart = text.indexOf(ORG_MENTION_TEXT);
+    if (mentionStart !== -1) {
+      orgMentionAttrs.push({
+        start: mentionStart,
+        length: ORG_MENTION_TEXT.length,
+        value: { 'com.linkedin.common.CompanyAttributedEntity': { company: ORG_URN } }
+      });
+    }
+  }
+
+  return { text, postUrl, title, image: meta.image || meta.cover_image || '', orgMentionAttrs };
 }
 
 /* ═══════════════════════════════════════════════════════════
  *  LINKEDIN API
  * ═══════════════════════════════════════════════════════════ */
 
-async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle, thumbnailUrl) {
+async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle, thumbnailUrl, mentionAttrs = []) {
   const mediaObj = {
     status: 'READY',
     originalUrl: articleUrl,
@@ -352,12 +365,16 @@ async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle, thumbna
     mediaObj.description = { text: articleTitle };
     mediaObj.thumbnails = [{ url: thumbnailUrl }];
   }
+  const commentary = { text };
+  if (mentionAttrs.length > 0) {
+    commentary.attributes = mentionAttrs;
+  }
   const payload = {
     author: authorUrn,
     lifecycleState: 'PUBLISHED',
     specificContent: {
       'com.linkedin.ugc.ShareContent': {
-        shareCommentary: { text },
+        shareCommentary: commentary,
         shareMediaCategory: 'ARTICLE',
         media: [mediaObj]
       }
@@ -406,17 +423,17 @@ async function main() {
 
   console.log(`📝 Selected: "${best.meta.title}" (${best.file})`);
   
-  const { text, postUrl, title, image } = formatLinkedInPost(best.meta, best.file);
+  const { text, postUrl, title, image, orgMentionAttrs } = formatLinkedInPost(best.meta, best.file);
   console.log(`\n--- LinkedIn Post Preview ---\n${text}\n---\n`);
 
   // Post to personal profile
-  const personalId = await postToLinkedIn(PERSON_URN, text, postUrl, title, image);
+  const personalId = await postToLinkedIn(PERSON_URN, text, postUrl, title, image, orgMentionAttrs);
   console.log(`✅ Posted to personal profile: ${personalId}`);
 
   // Post to Company Page (if configured)
   if (ORG_URN) {
     try {
-      const orgId = await postToLinkedIn(ORG_URN, text, postUrl, title, image);
+      const orgId = await postToLinkedIn(ORG_URN, text, postUrl, title, image, orgMentionAttrs);
       console.log(`✅ Posted to Company Page: ${orgId}`);
     } catch (err) {
       // Don't fail the whole run if company post fails
