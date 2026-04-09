@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Content Flooding Bug Bounty Platforms
-    text: Bug bounty platforms are overwhelmed by AI-generated vulnerability reports, impacting triage efficiency.
-    detail: HackerOne has paused services due to a surge in AI-created submissions, making it difficult to distinguish genuine findings. Security teams should prioritize manual verification and enhance AI detection capabilities to filter out noise and focus on real threats.
-    link: https://www.cyberthreatintelligence.com/blog/hackerone-halts-bug-bounties-amid-ai-remediation-chaos
-    link_label: Cyber Threat Intelligence Report
-    badge: signal
-    tags:
-      - bug-bounty
-      - ai-security
-      - threat-intel
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: The Business Services sector is experiencing a significant increase in targeted ransomware attacks.
-    detail: Intelligence indicates a coordinated surge in ransomware activity targeting this sector. Organizations should bolster their defenses with robust backup strategies, endpoint detection and response (EDR), and regular security awareness training to mitigate the growing threat.
-    link: https://www.darkfeed.io/reports/business-services-sector-under-fire
-    link_label: DARKFEED Intelligence
+    text: Business Services sector sees a significant surge in ransomware attacks.
+    detail: DARKFEED reports an alarming increase in ransomware activity targeting the Business Services sector, with 18 attacks noted in the past week. Organizations in this sector should prioritize hardening their defenses against ransomware, including robust backups, employee training, and network segmentation.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Cybersecurity Advisories
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: New Threat Actor 'TiMc' Emerges on Dark Web
-    text: A novel threat actor, TiMc, has been identified, signaling a potential new player in cybercrime.
-    detail: The emergence of new threat actors like TiMc requires vigilance. Monitor dark web forums and threat intelligence feeds for early indicators of their tactics, techniques, and procedures (TTPs) to proactively adapt defenses and anticipate emerging attack vectors.
-    link: https://www.darkfeed.io/blog/timc-emerges-new-threat-actor-spotted-in-the-wild
-    link_label: DARKFEED Alert
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI tools are flooding bug bounty programs with low-quality submissions.
+    detail: HackerOne is reportedly halting bug bounties due to an influx of AI-generated vulnerability reports, making triage difficult. Cybersecurity teams should establish clear guidelines for AI-assisted security research and focus on verifying unique, high-impact findings to maintain program integrity.
+    link: https://owasp.org/www-community/AI-Security
+    link_label: OWASP AI Security
+    badge: signal
+    tags:
+      - ai-security
+      - bug-bounty
+      - threat-intel
+  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
+    text: Server-Side Request Forgery and Remote Code Execution flaws are prevalent.
+    detail: Multiple recent CVE notifications highlight ongoing risks from SSRF and RCE vulnerabilities in various software, including Backstage, Alchemy CMS, and Jeecgboot. Developers and security teams must prioritize patching these vulnerabilities and implementing secure coding practices to prevent system compromise.
+    link: https://nvd.nist.gov/vuln/categories
+    link_label: NVD Vulnerability Categories
+    badge: signal
+    tags:
+      - vulnerability
+      - rce
+      - ssrf
+      - patching
+  - title: New Threat Actor TiMc Emerges on Dark Web
+    text: A new threat actor, TiMc, has been identified operating on the dark web.
+    detail: DARKFEED has alerted the community to the emergence of a new threat actor, TiMc. The appearance of novel entities in the threat landscape necessitates vigilance. Security operations centers should monitor for TiMc's activity and update threat intelligence feeds accordingly.
+    link: https://www.mitre.org/threat-actor-attribution
+    link_label: MITRE Threat Actor Attribution
     badge: signal
     tags:
       - threat-intel
       - darkweb
-      - emerging-threats
-  - title: Critical Vulnerabilities in Open Source Software Persist
-    text: Multiple recent advisories highlight critical flaws in popular open-source applications.
-    detail: Vulnerabilities in platforms like OrangeHRM, Discourse, and Backstage underscore the persistent risks in open-source software. Implement a robust software supply chain security program, including SBOMs and regular vulnerability scanning, to manage these ongoing threats.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=OrangeHRM
-    link_label: NVD Search
-    badge: signal
-    tags:
-      - vulnerability
-      - open-source
-      - cve
-      - supply-chain
+      - new-actor
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
