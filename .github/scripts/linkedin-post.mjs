@@ -364,7 +364,7 @@ async function generateWithGemini(meta, fileName, postUrl) {
     affiliateLine = `\nIf appropriate, naturally weave in this recommendation (don't force it):\n${monRec.text} — ${monRec.url}`;
   }
 
-  const prompt = `You are writing a LinkedIn post as a cybersecurity professional who runs a threat intelligence community. Write in first person, conversational tone — like a real security expert sharing insights with peers, NOT like a newsletter or press release.
+  const prompt = `You are writing a LinkedIn post for Shimi, a cybersecurity professional who curates threat intelligence at Shimi's Cyber World. He REPORTS and ANALYZES news — he does NOT participate in the events he covers. Write as a commentator sharing a story he found, NOT as someone who was there.
 
 ARTICLE TITLE: ${title}
 SEVERITY: ${score}
@@ -377,21 +377,22 @@ ${whyItMatters}
 ${affiliateLine}
 
 RULES (strict):
-1. Start with a compelling hook — first 2 lines must create curiosity (visible before "see more")
-2. Write like a human expert sharing their opinion, NOT like a news summary
-3. Use short paragraphs (1-2 sentences each). Mobile-first formatting
-4. Add YOUR professional opinion — what does this mean for defenders? What would YOU do?
-5. End with an engagement question that invites comments
-6. Include these two links naturally in the footer:
-   📄 Full analysis: ${postUrl}
-   📡 Daily updates: https://t.me/shimiscyberworld
-7. End with EXACTLY these hashtags: #ShimisCyberWorld #cybersecurity #infosec (add 1-2 topic-specific ones)
-8. NO markdown formatting (no bold, no links syntax, no bullets with *)
-9. Use bullet points with • if needed
-10. Keep total length between 800-1400 characters. This is critical — LinkedIn penalizes very long posts
-11. NO emojis in the hook line itself — use them sparingly for section markers only
-12. Do NOT mention "AI" or "automated" — this should read as a personal post
-13. Do NOT use phrases like "In today's threat landscape" or "It's crucial to" — be direct and real`;
+1. Hook: First 2 lines must create curiosity. Be direct — state the news, then give your take
+2. You are REPORTING this story, not living it. Use phrases like "This just dropped", "Interesting development", "Worth paying attention to" — NOT "I just experienced" or "I was at"
+3. Short paragraphs — 1-2 sentences max. Mobile-first
+4. Add a brief professional opinion: what should defenders think about?
+5. End with ONE short engagement question
+6. Footer — put these on separate lines at the end:
+   📄 ${postUrl}
+   📡 https://t.me/shimiscyberworld
+7. Last line: #ShimisCyberWorld #cybersecurity #infosec (+ 1 topic hashtag max)
+8. NO markdown (no ** bold, no []() links). Plain text only
+9. NO emojis in the hook. Max 3 emojis total in the entire post (footer markers are fine)
+10. STRICT LENGTH: 600-1000 characters total. Shorter is better. If over 1000, cut aggressively
+11. Do NOT mention "AI" or "automated"
+12. Do NOT use cliché phrases: "In today's threat landscape", "It's crucial", "wake-up call", "hammered home"
+13. Do NOT recommend any product unless the affiliate line above explicitly provides one
+14. Sound like a real person on LinkedIn, not a press release`;
 
   try {
     const res = await fetch(
@@ -402,8 +403,8 @@ RULES (strict):
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature: 0.8,
-            maxOutputTokens: 800,
+            temperature: 0.7,
+            maxOutputTokens: 500,
           }
         })
       }
@@ -436,9 +437,9 @@ RULES (strict):
       text += '\n\n#ShimisCyberWorld #cybersecurity #infosec';
     }
 
-    // Safety trim
-    if (text.length > 2800) {
-      text = text.slice(0, 2800).replace(/\s+\S*$/, '') + '...';
+    // Safety trim — hard cap at 1500 chars
+    if (text.length > 1500) {
+      text = text.slice(0, 1500).replace(/\s+\S*$/, '') + '...';
     }
 
     return text;
