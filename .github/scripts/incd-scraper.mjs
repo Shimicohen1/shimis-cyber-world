@@ -30,10 +30,17 @@ const POSTS_DIR = path.join(process.cwd(), "_posts");
 const MAX_NEW_PER_RUN = 5;
 const CVE_RE = /CVE-\d{4}-\d{4,}/gi;
 
-// ── Unsplash Image Pool ─────────────────────────────────
+// ── Image Pool — AI-generated (from scw-post-images repo) + Unsplash fallback ──
+
+const IMAGES_REPO_API = "https://api.github.com/repos/Shimicohen1/scw-post-images/contents/linkedin";
+const IMAGES_BASE_URL = "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin";
+const AI_IMAGE_THRESHOLD = 50; // Use only AI images once we have this many
 
 const UNSPLASH_BASE = "https://images.unsplash.com";
 const UNSPLASH_PARAMS = "w=800&h=400&fit=crop&auto=format&q=80";
+
+// AI image list — populated at startup by loadAiImagePool()
+let aiImagePool = [];
 
 const imagePools = {
   threats: [
@@ -69,7 +76,28 @@ const imagePools = {
   ],
 };
 
+async function loadAiImagePool() {
+  try {
+    const res = await fetch(IMAGES_REPO_API);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const files = await res.json();
+    aiImagePool = files
+      .filter(f => f.name.endsWith('.png'))
+      .map(f => `${IMAGES_BASE_URL}/${f.name}`);
+    console.log(`🖼️  AI image pool: ${aiImagePool.length} images (threshold: ${AI_IMAGE_THRESHOLD})`);
+  } catch (err) {
+    console.warn(`⚠️  Could not load AI image pool: ${err.message} — using Unsplash`);
+    aiImagePool = [];
+  }
+}
+
 function pickCoverImage(tags) {
+  // If we have enough AI images, use them exclusively
+  if (aiImagePool.length >= AI_IMAGE_THRESHOLD) {
+    return aiImagePool[Math.floor(Math.random() * aiImagePool.length)];
+  }
+
+  // Fallback to Unsplash pools by tag category
   const tagStr = tags.join(" ");
   let pool;
   if (/vulnerability|cve|exploit|zero.?day/.test(tagStr)) pool = imagePools.threats;
@@ -416,7 +444,7 @@ function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
       "\n";
   }
 
-  // Cover image — pick from Unsplash pool based on tags
+  // Cover image — AI-generated pool or Unsplash fallback
   const coverImage = pickCoverImage(tags);
 
   // MITRE ATT&CK YAML
@@ -475,6 +503,9 @@ function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
 
 async function main() {
   console.log("[INCD] Starting INCD publications scraper...");
+
+  // Load AI image pool from scw-post-images repo
+  await loadAiImagePool();
 
   const state = loadState();
   const publishedSet = new Set(state.publishedUrls || []);
