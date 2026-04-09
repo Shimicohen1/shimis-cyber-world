@@ -25,42 +25,41 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business Services sector sees a significant surge in ransomware attacks.
-    detail: DARKFEED reports an alarming increase in ransomware activity targeting the Business Services sector, with 18 attacks noted in the past week. Organizations in this sector should prioritize hardening their defenses against ransomware, including robust backups, employee training, and network segmentation.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
-    link_label: CISA Cybersecurity Advisories
-    badge: signal
-    tags:
-      - ransomware
-      - threat-intel
-      - business-services
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI tools are flooding bug bounty programs with low-quality submissions.
-    detail: HackerOne is reportedly halting bug bounties due to an influx of AI-generated vulnerability reports, making triage difficult. Cybersecurity teams should establish clear guidelines for AI-assisted security research and focus on verifying unique, high-impact findings to maintain program integrity.
-    link: https://owasp.org/www-community/AI-Security
-    link_label: OWASP AI Security
+  - title: LLM Interfaces Present New Cloud Credential Risks
+    text: AI chat interfaces with RAG extensions are vulnerable to cloud credential theft.
+    detail: The text-generation-webui, particularly with RAG extensions like superbooga, has a vulnerability allowing for potential cloud credential theft. Cybersecurity professionals should audit LLM deployments for such extensions and implement strict access controls and credential management practices to mitigate this emerging threat.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: LLM Security Risks
     badge: signal
     tags:
       - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery and Remote Code Execution flaws are prevalent.
-    detail: Multiple recent CVE notifications highlight ongoing risks from SSRF and RCE vulnerabilities in various software, including Backstage, Alchemy CMS, and Jeecgboot. Developers and security teams must prioritize patching these vulnerabilities and implementing secure coding practices to prevent system compromise.
-    link: https://nvd.nist.gov/vuln/categories
-    link_label: NVD Vulnerability Categories
+      - cloud-security
+      - vulnerability
+  - title: SSRF Exploitation Targets Developer Tooling
+    text: Developer tools like Backstage and API labs are susceptible to SSRF attacks.
+    detail: Recent advisories highlight SSRF vulnerabilities in developer frameworks such as Backstage and API tools like atototo. These flaws enable attackers to probe internal systems via URL manipulation. Teams should prioritize patching these tools and implement network segmentation and input validation to prevent unauthorized access.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery_(SSRF)
+    link_label: SSRF Attack Vectors
     badge: signal
     tags:
-      - vulnerability
-      - rce
       - ssrf
-      - patching
-  - title: New Threat Actor TiMc Emerges on Dark Web
-    text: A new threat actor, TiMc, has been identified operating on the dark web.
-    detail: DARKFEED has alerted the community to the emergence of a new threat actor, TiMc. The appearance of novel entities in the threat landscape necessitates vigilance. Security operations centers should monitor for TiMc's activity and update threat intelligence feeds accordingly.
-    link: https://www.mitre.org/threat-actor-attribution
-    link_label: MITRE Threat Actor Attribution
+      - developer-tools
+      - vulnerability
+  - title: Supply Chain Risks Magnified by YAML Dependencies
+    text: RCE vulnerabilities are emerging from insecure handling of YAML dependencies.
+    detail: The Docling Core vulnerability, stemming from its PyYAML dependency, underscores the critical risk of insecure third-party libraries. Organizations must rigorously vet and manage software dependencies, especially those handling untrusted data formats like YAML, to prevent supply chain attacks and RCE.
+    link: https://owasp.org/www-community/vulnerabilities/Dependency_vulnerabilities
+    link_label: Dependency Management
+    badge: signal
+    tags:
+      - supply-chain
+      - rce
+      - dependency-management
+  - title: New Threat Actor 'TiMc' Emerges on Dark Web
+    text: A new threat actor, TiMc, has been identified operating in the cybercrime landscape.
+    detail: The emergence of new threat actors like TiMc, as flagged by DARKFEED, highlights the dynamic nature of cyber threats. CISOs and security teams should enhance threat intelligence gathering to monitor nascent groups and adapt defensive strategies to counter evolving attack methodologies.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/understanding-threat-actors-and-their-tactics
+    link_label: Understanding Threat Actors
     badge: signal
     tags:
       - threat-intel
