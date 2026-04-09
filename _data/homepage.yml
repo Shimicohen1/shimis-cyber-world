@@ -25,48 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: BPO Supply Chain Attacks Accelerating
-    text: Threat actor UNC6783 is exploiting BPO providers as launchpads for major enterprise breaches.
-    detail: UNC6783 is strategically targeting Business Process Outsourcing (BPO) firms to gain initial access into larger corporate networks. This supply chain vector bypasses traditional defenses. Organizations must rigorously vet third-party vendor security and implement strict access controls for BPO-provided services.
-    link: https://www.cisa.gov/news-events/advisories/aa23-285a
-    link_label: CISA Supply Chain Guidance
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: Bug bounty platforms are struggling with a surge of AI-generated vulnerability reports, impacting triage and remediation efforts.
+    detail: The rise of AI tools is flooding platforms like HackerOne with submissions, many of which are difficult to process. Cybersecurity teams should prioritize internal validation and robust AI detection mechanisms to manage this influx and focus on genuine threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-076a
+    link_label: CISA AI Security Guidance
     badge: signal
     tags:
-      - supply-chain
+      - ai-security
       - threat-intel
-      - bpo
-  - title: Ransomware Groups Intensify Business Services Sector Attacks
-    text: The Business Services sector is experiencing a significant surge in ransomware attacks.
-    detail: Intelligence indicates a coordinated ramp-up in ransomware activity targeting the Business Services industry, with 18 attacks reported in a single week. Companies in this sector should prioritize robust endpoint detection and response, regular data backups, and comprehensive employee security awareness training.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-345a
-    link_label: CISA Ransomware Guidance
+      - bug-bounty
+  - title: Ransomware Operations Evolve with Leak Site Defacements
+    text: Ransomware groups may be using leak site defacements for tactical advantage, signaling potential takedowns or elaborate diversions.
+    detail: The defacement of the Kairos ransomware leak site highlights the evolving tactics of threat actors. Organizations should remain vigilant, treating such events as potential indicators of broader operational shifts or sophisticated deception campaigns by ransomware gangs.
+    link: https://www.mitre.org/modules/attackmatrix/software/S0372
+    link_label: "MITRE ATT&CK: Data Leaked"
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - business-services
-  - title: New macOS Malware Evades Defenses via Script Editor
-    text: macOS malware is evolving, leveraging built-in Script Editor to bypass security.
-    detail: A new 'ClickFix-style' macOS attack is bypassing traditional defenses by utilizing the native Script Editor. This highlights the need for advanced endpoint security solutions that monitor script execution and application behavior, not just signature-based detection. Users should exercise caution with downloaded scripts.
-    link: https://attack.mitre.org/techniques/T1059/004/
-    link_label: "MITRE ATT&CK: Scripting"
-    badge: signal
-    tags:
       - malware
-      - macos
-      - threat-intel
-      - evasion
-  - title: AI-Generated Reports Overwhelm Bug Bounty Platforms
-    text: AI-generated vulnerability reports are flooding bug bounty programs, causing triage chaos.
-    detail: Platforms like HackerOne are struggling to manage a surge of AI-produced vulnerability submissions, impacting remediation efforts. This trend necessitates AI-aware triage processes and tools to distinguish genuine findings from automated noise. Security teams should refine their intake strategies to filter and validate reports.
-    link: https://owasp.org/www-project-generative-ai-security/
-    link_label: OWASP Generative AI Security
+  - title: SSRF and RCE Vulnerabilities Persist Across Diverse Software
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities continue to be prevalent across various software categories.
+    detail: Recent advisories highlight SSRF in tools like Backstage and atototo API, alongside RCE flaws in Alchemy CMS and Docling Core due to dependency issues. Prioritizing patching and input validation for these common exploit vectors is critical for all organizations.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guide
     badge: signal
     tags:
-      - ai-security
-      - bug-bounty
+      - vulnerability
+      - rce
+      - ssrf
+      - patch-management
+  - title: Business Services Sector Faces Heightened Ransomware and Targeted Attacks
+    text: The Business Services sector is experiencing a significant increase in ransomware attacks and targeted intrusions via BPO providers.
+    detail: Intelligence indicates a coordinated surge in attacks against business services, with threat actors like UNC6783 targeting BPOs for access. Companies in this sector must bolster defenses, particularly around third-party risk management and supply chain security.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/protecting-small-and-midsize-businesses
+    link_label: CISA SMB Cybersecurity
+    badge: signal
+    tags:
+      - business-services
+      - ransomware
       - threat-intel
-      - vulnerability-management
+      - supply-chain
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
