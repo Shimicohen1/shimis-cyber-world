@@ -334,14 +334,22 @@ ${hashtags}`;
     text = `${hook}\n\n${analysis}\n${whySection}\n\n${recLine}\n\n${cta}\n\n${hashtags}`;
   }
 
-  return { text, postUrl, title };
+  return { text, postUrl, title, image: meta.image || meta.cover_image || '' };
 }
 
 /* ═══════════════════════════════════════════════════════════
  *  LINKEDIN API
  * ═══════════════════════════════════════════════════════════ */
 
-async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle) {
+async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle, thumbnailUrl) {
+  const mediaObj = {
+    status: 'READY',
+    originalUrl: articleUrl,
+    title: { text: articleTitle },
+  };
+  if (thumbnailUrl) {
+    mediaObj.description = { text: articleTitle };
+  }
   const payload = {
     author: authorUrn,
     lifecycleState: 'PUBLISHED',
@@ -349,13 +357,7 @@ async function postToLinkedIn(authorUrn, text, articleUrl, articleTitle) {
       'com.linkedin.ugc.ShareContent': {
         shareCommentary: { text },
         shareMediaCategory: 'ARTICLE',
-        media: [
-          {
-            status: 'READY',
-            originalUrl: articleUrl,
-            title: { text: articleTitle },
-          }
-        ]
+        media: [mediaObj]
       }
     },
     visibility: {
@@ -402,17 +404,17 @@ async function main() {
 
   console.log(`📝 Selected: "${best.meta.title}" (${best.file})`);
   
-  const { text, postUrl, title } = formatLinkedInPost(best.meta, best.file);
+  const { text, postUrl, title, image } = formatLinkedInPost(best.meta, best.file);
   console.log(`\n--- LinkedIn Post Preview ---\n${text}\n---\n`);
 
   // Post to personal profile
-  const personalId = await postToLinkedIn(PERSON_URN, text, postUrl, title);
+  const personalId = await postToLinkedIn(PERSON_URN, text, postUrl, title, image);
   console.log(`✅ Posted to personal profile: ${personalId}`);
 
   // Post to Company Page (if configured)
   if (ORG_URN) {
     try {
-      const orgId = await postToLinkedIn(ORG_URN, text, postUrl, title);
+      const orgId = await postToLinkedIn(ORG_URN, text, postUrl, title, image);
       console.log(`✅ Posted to Company Page: ${orgId}`);
     } catch (err) {
       // Don't fail the whole run if company post fails
