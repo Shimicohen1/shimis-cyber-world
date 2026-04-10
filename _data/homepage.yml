@@ -25,48 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Operators Increasingly Targeting Business Services Sector
-    text: A concerning surge in ransomware attacks specifically targeting the business services sector has been observed.
-    detail: DARKFEED intelligence indicates a coordinated ramp-up in ransomware activity against the business services industry, with 18 attacks reported in the last week. Organizations in this sector should prioritize hardening their defenses, conduct regular vulnerability assessments, and ensure robust incident response plans are in place to mitigate potential impacts.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
-    link_label: CISA Advisories
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI is flooding bug bounty programs, straining triage and remediation efforts.
+    detail: The surge in AI-generated vulnerability reports, as seen with HackerOne's recent pause, poses a significant challenge for cybersecurity teams. Professionals must develop strategies to effectively filter and validate these submissions, distinguishing genuine threats from AI-generated noise. Prioritize threat intelligence feeds that correlate AI-driven activity with known exploitation patterns.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-cybersecurity
+    link_label: AI & Cybersecurity Guidance
+    badge: signal
+    tags:
+      - ai-security
+      - threat-intel
+      - bug-bounty
+  - title: SSRF Vulnerabilities Remain a Persistent Threat
+    text: SSRF flaws continue to be discovered across various tools and platforms.
+    detail: Recent advisories highlight ongoing Server-Side Request Forgery (SSRF) vulnerabilities in tools like Backstage and atototo API Lab. These flaws can expose internal systems and lead to remote attacks. Organizations should implement robust input validation and egress filtering, and regularly audit their applications for common SSRF patterns.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Guide
+    badge: signal
+    tags:
+      - vulnerability
+      - ssrf
+      - application-security
+  - title: Ransomware Actors Intensify Attacks on Business Services
+    text: Business services sector faces a sharp increase in ransomware attacks.
+    detail: Intelligence indicates a coordinated surge in ransomware activity targeting the Business Services sector. Threat actors are actively exploiting this industry, likely due to its critical role in supply chains. Companies in this sector should review and strengthen their ransomware defenses, including robust backups and incident response plans.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-075a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerabilities Overwhelm Bug Bounty Platforms
-    text: AI-generated vulnerability reports are causing significant triage and remediation challenges for bug bounty platforms.
-    detail: HackerOne has reportedly paused services due to an influx of AI-generated submissions, highlighting the evolving threat landscape. Cybersecurity teams must develop strategies to differentiate between human-discovered and AI-generated findings and enhance their automated scanning and analysis tools to cope with this trend.
-    link: https://owasp.org/www-project-top-10-ai-security/
-    link_label: OWASP AI Security
-    badge: signal
-    tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: SSRF Vulnerabilities Persist in API Tools and Frameworks
-    text: Server-Side Request Forgery (SSRF) flaws continue to be a critical risk in various API tools and developer platforms.
-    detail: Recent advisories highlight SSRF vulnerabilities in tools like Backstage and atototo API Lab, allowing for potential exposure of internal systems. Developers and security teams must rigorously validate all user-supplied URLs and inputs, implement strict network segmentation, and enforce least privilege access controls to prevent exploitation.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF Guide
-    badge: signal
-    tags:
-      - ssrf
-      - vulnerability
-      - api-security
-      - developer-tools
-  - title: Supply Chain Risks Amplified by Open-Source Component Vulnerabilities
-    text: Vulnerabilities in widely used open-source components, including YAML parsers and CMS plugins, pose significant supply chain risks.
-    detail: Recent CVEs affecting OrangeHRM, Alchemy CMS, Docling Core (via PyYAML), and WordPress plugins underscore the critical need for robust software supply chain security. Organizations must implement Software Bill of Materials (SBOM) practices, continuously monitor dependencies, and prioritize timely patching of known vulnerabilities.
-    link: https://www.nist.gov/itl/programs-project/software-supply-chain-security-program
-    link_label: NIST SSCS
+  - title: Supply Chain Risks Escalate with New Threat Actor Tactics
+    text: New threat actors like UNC6783 target BPOs for broader enterprise access.
+    detail: The emergence of sophisticated threat actors like UNC6783, who specifically target Business Process Outsourcers (BPOs), highlights evolving supply chain attack vectors. This strategy aims to gain access to larger, high-value corporations indirectly. Organizations must extend their security oversight to third-party vendors and partners.
+    link: https://www.mitre.org/attack-matrix/enterprise/identity-attack/supply-chain-compromise
+    link_label: MITRE Supply Chain Compromise
     badge: signal
     tags:
       - supply-chain
-      - vulnerability
-      - open-source
-      - sbom
+      - threat-intel
+      - bpo
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
