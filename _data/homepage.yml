@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Reports Flood Bug Bounty Platforms
-    text: AI-generated vulnerability reports are overwhelming platforms like HackerOne, hindering effective remediation efforts.
-    detail: The surge in AI-generated submissions, as seen by HackerOne's pause in bug bounties, poses a significant challenge for security teams. Professionals must develop robust AI detection and verification processes to filter noise and focus on genuine threats. Prioritizing manual verification and threat intelligence analysis is crucial.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-001a
-    link_label: CISA Guidance on AI Security
-    badge: signal
-    tags:
-      - ai-security
-      - threat-intel
-      - bug-bounty
-  - title: SSRF Vulnerabilities Continue to Threaten Internal Systems
-    text: Server-Side Request Forgery (SSRF) remains a critical threat, impacting tools like Backstage and API labs.
-    detail: The recurring SSRF flaws in developer tools and API endpoints highlight the persistent risk of exposing internal systems. Organizations should implement strict input validation, network segmentation, and regularly audit access controls for applications handling external requests to mitigate this threat.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Guidance
-    badge: signal
-    tags:
-      - vulnerability
-      - ssrf
-      - api-security
-  - title: Ransomware Operations Diversify and Deface Leak Sites
-    text: Ransomware groups like Kairos are showing signs of disruption, with defaced leak sites raising questions.
-    detail: The defacement of the Kairos ransomware leak site suggests potential internal strife or external pressure. However, threat actors often use such tactics as misdirection. Security teams must remain vigilant, monitor for new operational tactics, and ensure robust data backup and recovery plans are in place.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-321a
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Business services sector faces a surge in ransomware attacks, indicating a coordinated campaign.
+    detail: Recent intelligence highlights a significant uptick in ransomware activity targeting the Business Services sector. This coordinated push suggests a deliberate focus by threat actors. Organizations in this sector should review and enhance their ransomware defenses, focusing on robust backups, network segmentation, and employee awareness training.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-265a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - malware
-  - title: Open Source Software Remains a Prime Target
-    text: Vulnerabilities in popular open-source platforms like OrangeHRM, Discourse, and WordPress plugins are frequent.
-    detail: The prevalence of vulnerabilities in open-source software, including CMSs and HR platforms, underscores the need for diligent patch management and supply chain security. Regularly scanning dependencies and prioritizing updates for widely used open-source components are essential defensive measures.
-    link: https://nvd.nist.gov/vuln/search
-    link_label: NVD Vulnerability Database
+      - business-services
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI-generated vulnerability reports are flooding bug bounty platforms, straining triage and remediation efforts.
+    detail: Bug bounty platforms are struggling to manage an influx of AI-generated vulnerability submissions, impacting their ability to effectively triage and remediate issues. This trend necessitates improved AI detection mechanisms and a re-evaluation of submission processes to ensure legitimate findings are prioritized.
+    link: https://owasp.org/www-project-top-10-ai-security/
+    link_label: OWASP Top 10 AI Security
+    badge: signal
+    tags:
+      - ai-security
+      - bug-bounty
+      - vulnerability-management
+  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to be actively exploited.
+    detail: Recent advisories highlight ongoing critical SSRF and RCE vulnerabilities across various software, including CMS, developer tools, and APIs. These flaws allow attackers to probe internal systems or execute arbitrary code. Prioritize patching and implement robust input validation and network egress filtering to mitigate these risks.
+    link: https://cve.mitre.org/about/faqs.html#faq_what_is_cve
+    link_label: Understanding CVE
     badge: signal
     tags:
       - vulnerability
-      - open-source
+      - rce
+      - ssrf
       - patch-management
+  - title: New Threat Actor 'TiMc' Emerges on Dark Web
+    text: A new threat actor, TiMc, has been identified, indicating evolving dark web criminal activity.
+    detail: The emergence of a novel threat actor like TiMc underscores the dynamic nature of the cybercrime landscape. Staying informed about new entities and their potential tactics, techniques, and procedures (TTPs) is crucial for effective threat intelligence and proactive defense strategies.
+    link: https://www.sans.org/blog/the-threat-landscape-for-2024/
+    link_label: Emerging Threat Trends
+    badge: signal
+    tags:
+      - threat-intel
+      - darkweb
+      - new-actor
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
