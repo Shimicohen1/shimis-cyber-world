@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI Models Pose New Risks in LLM Interfaces
-    text: RAG extensions in LLM interfaces are exposing cloud credentials.
-    detail: The `text-generation-webui` platform's RAG extensions are vulnerable to cloud credential theft. Cybersecurity professionals should audit LLM deployments for such extensions and enforce strict access controls and credential management practices to mitigate this emerging threat vector.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Security Best Practices
-    badge: signal
-    tags:
-      - ai-security
-      - cloud-security
-      - threat-intel
-  - title: Open Source Software Remains a Prime Target
-    text: Multiple open-source platforms like Discourse and OrangeHRM have critical vulnerabilities.
-    detail: Recent advisories highlight critical flaws in widely used open-source projects such as Discourse, OrangeHRM, and Backstage. Organizations must prioritize timely patching and vulnerability management for their open-source dependencies to prevent exploitation of common weaknesses.
-    link: https://www.cisa.gov/news-events/advisories/aa23-317a
-    link_label: CISA Known Exploited Vulnerabilities
-    badge: signal
-    tags:
-      - vulnerability-management
-      - open-source
-      - patching
-  - title: Supply Chain Attacks Target BPOs for Data Access
-    text: UNC6783 hackers exploit BPOs to infiltrate corporate systems via Zendesk.
-    detail: Threat actors are increasingly targeting Business Process Outsourcing providers as a pivot point into larger organizations, as seen with UNC6783's attacks on Zendesk. Security teams must extend their visibility and controls to third-party vendors and their systems.
-    link: https://www.mitre.org/about/news/mitre-attack-technique-of-the-year-2023-exploitation-of-remote-services
-    link_label: Supply Chain Attack Tactics
-    badge: signal
-    tags:
-      - supply-chain
-      - threat-intel
-      - bpo-security
-  - title: Ransomware Groups Diversify Attack Vectors
-    text: Ransomware operations are active against business services and showing signs of internal conflict.
-    detail: The business services sector faces increased ransomware activity, while the defacement of the Kairos ransomware site suggests potential internal disputes or takedowns. Continuous monitoring for ransomware trends and actor TTPs is crucial for defense.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-076a
-    link_label: Ransomware Defense Guidance
+  - title: Ransomware Groups Aggressively Target Business Services Sector
+    text: Observe a significant increase in ransomware attacks targeting the Business Services sector.
+    detail: Recent intelligence indicates a coordinated surge in ransomware activity specifically aimed at the Business Services industry. Cybersecurity professionals should prioritize hardening defenses for systems and data within this sector and ensure robust incident response plans are in place.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Advisories
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - malware
+      - business-services
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: Bug bounty platforms are struggling to manage an influx of AI-generated vulnerability reports.
+    detail: The sheer volume of AI-produced vulnerability submissions is straining triaging and remediation processes on platforms like HackerOne. Organizations should focus on internal validation and threat hunting capabilities, as well as refining their own security tooling to better detect sophisticated AI-driven threats.
+    link: https://owasp.org/www-project-ai-security/
+    link_label: OWASP AI Security
+    badge: signal
+    tags:
+      - ai-security
+      - bug-bounty
+      - threat-intel
+  - title: Exploitation of Open Source Software Continues Unabated
+    text: Multiple critical vulnerabilities are being disclosed in popular open-source applications.
+    detail: Recent disclosures highlight ongoing risks in widely used open-source platforms like OrangeHRM, Discourse, and various libraries. Organizations must maintain diligent patch management for their software supply chains, with a focus on prioritizing updates for components with known critical vulnerabilities.
+    link: https://www.nist.gov/cyberframework
+    link_label: NIST Cybersecurity Framework
+    badge: signal
+    tags:
+      - vulnerability
+      - cve
+      - open-source
+      - patch-management
+  - title: Threat Actors Weaponize Emojis for Evasion and Obfuscation
+    text: Sophisticated threat actors are using emojis to bypass security controls and hide malicious communications.
+    detail: The use of emojis in threat actor campaigns is evolving beyond simple phishing into advanced evasion techniques. Security teams should review and enhance their detection mechanisms for context-aware analysis of communications, particularly looking for anomalies in the use of seemingly innocuous characters.
+    link: https://www.mitre.org/attack
+    link_label: MITRE ATT&CK®
+    badge: signal
+    tags:
+      - threat-intel
+      - evasion
+      - social-engineering
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
