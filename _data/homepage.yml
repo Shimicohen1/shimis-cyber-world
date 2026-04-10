@@ -25,48 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI is flooding bug bounty platforms, making triage difficult and demanding new validation strategies.
-    detail: HackerOne's pause on bug bounties due to AI-generated submissions highlights a critical trend. Professionals must develop robust methods to differentiate human-discovered vulnerabilities from AI-generated noise, ensuring efficient resource allocation and effective security validation.
-    link: https://www.cisa.gov/news-events/news/recent-vulnerabilities-and-their-impact-critical-infrastructure
-    link_label: CISA on Vulnerability Trends
+  - title: AI Models Pose New Risks in LLM Interfaces
+    text: RAG extensions in LLM interfaces are exposing cloud credentials.
+    detail: The `text-generation-webui` platform's RAG extensions are vulnerable to cloud credential theft. Cybersecurity professionals should audit LLM deployments for such extensions and enforce strict access controls and credential management practices to mitigate this emerging threat vector.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: LLM Security Best Practices
     badge: signal
     tags:
       - ai-security
+      - cloud-security
       - threat-intel
-      - bug-bounty
-  - title: Ransomware Actors Increasingly Targeting Business Services Sector
-    text: The Business Services sector is experiencing a significant surge in ransomware attacks, indicating a strategic shift by threat actors.
-    detail: Intelligence indicates a coordinated ramp-up of ransomware operations targeting the Business Services industry. Organizations in this sector should prioritize hardening their defenses, focusing on robust backup strategies, employee training, and rapid incident response capabilities.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-347a
-    link_label: CISA Ransomware Guidance
+  - title: Open Source Software Remains a Prime Target
+    text: Multiple open-source platforms like Discourse and OrangeHRM have critical vulnerabilities.
+    detail: Recent advisories highlight critical flaws in widely used open-source projects such as Discourse, OrangeHRM, and Backstage. Organizations must prioritize timely patching and vulnerability management for their open-source dependencies to prevent exploitation of common weaknesses.
+    link: https://www.cisa.gov/news-events/advisories/aa23-317a
+    link_label: CISA Known Exploited Vulnerabilities
+    badge: signal
+    tags:
+      - vulnerability-management
+      - open-source
+      - patching
+  - title: Supply Chain Attacks Target BPOs for Data Access
+    text: UNC6783 hackers exploit BPOs to infiltrate corporate systems via Zendesk.
+    detail: Threat actors are increasingly targeting Business Process Outsourcing providers as a pivot point into larger organizations, as seen with UNC6783's attacks on Zendesk. Security teams must extend their visibility and controls to third-party vendors and their systems.
+    link: https://www.mitre.org/about/news/mitre-attack-technique-of-the-year-2023-exploitation-of-remote-services
+    link_label: Supply Chain Attack Tactics
+    badge: signal
+    tags:
+      - supply-chain
+      - threat-intel
+      - bpo-security
+  - title: Ransomware Groups Diversify Attack Vectors
+    text: Ransomware operations are active against business services and showing signs of internal conflict.
+    detail: The business services sector faces increased ransomware activity, while the defacement of the Kairos ransomware site suggests potential internal disputes or takedowns. Continuous monitoring for ransomware trends and actor TTPs is crucial for defense.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-076a
+    link_label: Ransomware Defense Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - business-services
-  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Open-Source Tools
-    text: Recent advisories highlight persistent Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws in popular open-source projects.
-    detail: Multiple CVEs underscore the ongoing risks associated with open-source components, including Backstage, Alchemy CMS, and Jeecgboot. Developers must maintain vigilant dependency management, conduct thorough code reviews, and apply patches promptly to mitigate these common yet critical vulnerabilities.
-    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Guide
-    badge: signal
-    tags:
-      - vulnerability
-      - rce
-      - ssrf
-      - open-source
-  - title: Emojis Evolve as Stealthy Tools for Threat Actor Evasion
-    text: Threat actors are weaponizing emojis for sophisticated evasion techniques, bypassing security controls and obfuscating malicious communications.
-    detail: The subtle use of emojis presents a new challenge for cybersecurity defenses. Security teams need to update detection mechanisms to recognize emoji-based obfuscation tactics, ensuring that communication monitoring and threat analysis are comprehensive and effective.
-    link: https://attack.mitre.org/techniques/T1566/
-    link_label: MITRE ATT&CK - Phishing
-    badge: signal
-    tags:
-      - threat-intel
-      - evasion
-      - phishing
-      - emojis
+      - malware
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
