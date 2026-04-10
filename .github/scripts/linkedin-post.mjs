@@ -422,7 +422,8 @@ Target 1000-1500 characters. LinkedIn rewards longer, thoughtful posts. Don't pa
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.8,
-            maxOutputTokens: 800,
+            maxOutputTokens: 1500,
+            thinkingConfig: { thinkingBudget: 0 },
           }
         })
       }
@@ -434,7 +435,13 @@ Target 1000-1500 characters. LinkedIn rewards longer, thoughtful posts. Don't pa
     }
 
     const data = await res.json();
-    const generated = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    // Extract text, skipping any thinking/reasoning parts
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const generated = parts
+      .filter(p => !p.thought && p.text)
+      .map(p => p.text)
+      .join('')
+      .trim();
     
     if (!generated || generated.length < 200) {
       console.warn('⚠️  Gemini returned empty/short response — falling back to template');
