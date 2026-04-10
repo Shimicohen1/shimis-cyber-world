@@ -32,10 +32,14 @@ recommendations:
 
   - match_tags: [training, certification, beginner, ctf, pentest, red-team, labs, blue-team, soc, dfir]
     products:
+      - name: "TryHackMe"
+        desc: "Guided learning paths with hands-on cyber labs. From beginner to advanced — start for free."
+        url: "https://tryhackme.sjv.io/GbDW09"
+        badge: "Our Pick"
       - name: "Hack The Box"
         desc: "Real-world hacking labs & enterprise security training. Level up your skills."
         url: "https://hacktheboxltd.sjv.io/DWLa2a"
-        badge: "Our Pick"
+        badge: "Recommended"
 
   - match_tags: [osint, reconnaissance, discovery]
     products:
@@ -97,6 +101,11 @@ feed_ads:
       desc: "Real-world hacking labs and enterprise training. 10-20% off."
       url: "https://hacktheboxltd.sjv.io/DWLa2a"
       badge: "Our Pick"
+    - type: "affiliate"
+      title: "Learn cybersecurity hands-on"
+      desc: "Guided paths from beginner to advanced. Start free with TryHackMe."
+      url: "https://tryhackme.sjv.io/GbDW09"
+      badge: "Our Pick"
     - type: "premium-cta"
       title: "Want early alerts?"
       desc: "Get exclusive analysis, detection rules, and IOC feeds"
@@ -134,8 +143,11 @@ toolkit_banners:
   - after_category: "Training & Labs"
     type: "affiliate"
     title: "Train like attackers think"
-    desc: "Hands-on hacking labs, CTFs, and enterprise security training from Hack The Box."
+    desc: "Hands-on hacking labs, CTFs, and enterprise security training."
     products:
+      - name: "TryHackMe"
+        url: "https://tryhackme.sjv.io/GbDW09"
+        button: "Start Learning →"
       - name: "Hack The Box"
         url: "https://hacktheboxltd.sjv.io/DWLa2a"
         button: "Start Hacking →"
@@ -180,3 +192,8 @@ tool_recommendations:
     url: "https://hacktheboxltd.sjv.io/DWLa2a"
     badge: "Train Up"
     types: [cve]
+  - name: "TryHackMe"
+    desc: "Guided cyber labs from beginner to advanced. Learn by doing — start free."
+    url: "https://tryhackme.sjv.io/GbDW09"
+    badge: "Learn"
+    types: [cve, malware]
