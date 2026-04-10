@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Vulnerability Reports Overwhelming Bug Bounty Platforms
-    text: Bug bounty platforms face challenges triaging AI-generated vulnerability submissions.
-    detail: HackerOne has paused services due to a surge of AI-generated reports, highlighting the growing challenge of distinguishing real threats from automated noise. Security teams must develop strategies to filter and validate AI-assisted submissions to maintain effective vulnerability management processes.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ai-cybersecurity-risks-and-how-mitigate-them
-    link_label: AI & Cybersecurity Risks
+  - title: AI-Generated Content Fuels Bug Bounty Triage Overload
+    text: AI-generated vulnerability reports are overwhelming bug bounty platforms, impacting remediation efforts.
+    detail: HackerOne has reportedly paused services due to a surge in AI-created submissions, making it difficult to triage and address legitimate security findings. Organizations should prioritize automated scanning and validation tools to pre-filter submissions and focus human analysts on high-fidelity alerts.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-137a
+    link_label: CISA AI Security Guidance
     badge: signal
     tags:
       - ai-security
-      - threat-intel
       - bug-bounty
-  - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: Business services are experiencing a significant rise in ransomware attacks.
-    detail: Intelligence indicates a coordinated increase in ransomware activity targeting the business services sector, with 18 attacks reported recently. Organizations in this sector should review their defenses, ensure regular backups are immutable, and conduct incident response drills.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-what-you-can-do
-    link_label: Ransomware Defense
+      - threat-intel
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: The business services sector is experiencing a significant increase in ransomware attacks.
+    detail: Recent intelligence indicates a coordinated surge in ransomware activity targeting the business services industry. Organizations in this sector must reinforce their defenses, including robust backup strategies, regular patching, and comprehensive employee training on phishing and social engineering tactics.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-310a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: "Evasion Techniques: Threat Actors Weaponizing Emojis for Stealth"
-    text: Attackers are using emojis to bypass security controls and obfuscate communications.
-    detail: Sophisticated threat actors are leveraging emojis for stealthy communication and to evade detection, moving beyond simple phishing tactics. Security awareness training should be updated to include recognizing these novel evasion methods, and endpoint detection solutions should be tuned for such patterns.
-    link: https://owasp.org/www-community/vulnerabilities/Social_engineering
-    link_label: Social Engineering Risks
-    badge: signal
-    tags:
-      - threat-intel
-      - evasion
-      - communication-security
-  - title: Critical SSRF and RCE Vulnerabilities Plague Open-Source Software
-    text: Multiple critical SSRF and RCE flaws are being discovered in widely used open-source tools.
-    detail: Recent disclosures highlight critical Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in open-source projects like Backstage, Alchemy CMS, and Docling Core. Prioritize patching and dependency management for these and similar tools to mitigate exploitation risks.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=basic&results_type=overview&query=SSRF+RCE
-    link_label: SSRF & RCE Vulnerabilities
+  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
+    text: Server-Side Request Forgery and Remote Code Execution flaws continue to be exploited.
+    detail: Multiple recent advisories highlight ongoing critical vulnerabilities, including SSRF in API tools like `atototo api-lab-mcp` and RCE in systems like Alchemy CMS and Docling Core. Prioritize patching and implement input validation and network segmentation to mitigate risks associated with these common exploit vectors.
+    link: https://owasp.org/www-project-top-ten/
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - vulnerability
       - rce
       - ssrf
-      - open-source
+      - patch-management
+  - title: OSINT Poses Significant Identity and Data Breach Risks
+    text: Open-source intelligence gathering is revealing extensive personal data and identity exposure.
+    detail: Detailed analysis of Indian phone numbers demonstrates how OSINT can unlock comprehensive personal identities and linked accounts. Users and organizations must be vigilant about their digital footprint, employ strong privacy settings, and be aware of the potential for data aggregation and misuse.
+    link: https://www.nist.gov/cyberframework/primer
+    link_label: NIST Cybersecurity Framework
+    badge: signal
+    tags:
+      - osint
+      - data-breach
+      - identity-protection
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
