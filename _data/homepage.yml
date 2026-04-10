@@ -25,9 +25,19 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
+  - title: AI Chat Interfaces Pose New Cloud Credential Risks
+    text: AI chat interfaces with RAG extensions are vulnerable to cloud credential theft.
+    detail: The `text-generation-webui` and its RAG extensions present a significant risk for cloud credential exposure. Ensure these interfaces are securely configured, isolated from sensitive cloud environments, and regularly audited for unauthorized access or data exfiltration.
+    link: https://owasp.org/www-project-api-security/
+    link_label: OWASP API Security
+    badge: signal
+    tags:
+      - ai-security
+      - cloud-security
+      - vulnerability
   - title: Ransomware Groups Intensify Attacks on Business Services
     text: Business services sector is experiencing a surge in ransomware attacks.
-    detail: DarkFeed reports an 18% increase in attacks targeting the business services sector over the past week. This coordinated surge indicates a strategic focus by ransomware groups on this industry. Organizations should review and strengthen their ransomware defenses, including robust backup strategies and incident response plans.
+    detail: The business services sector is a growing target for ransomware operations, with multiple groups actively launching attacks. Organizations in this sector must bolster their defenses, focusing on robust backup strategies, employee training, and rapid incident response capabilities to mitigate potential disruptions.
     link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
     link_label: CISA Ransomware Guidance
     badge: signal
@@ -35,36 +45,27 @@ quick_signals:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
-    text: AI-generated reports are overwhelming bug bounty platforms like HackerOne.
-    detail: HackerOne has paused services due to an influx of AI-generated vulnerability submissions, making triage difficult. This trend highlights the need for better AI detection and validation tools for security teams. Organizations should prepare for an increase in AI-assisted threat intelligence and potential false positives.
-    link: https://owasp.org/www-project-generative-ai-security/
-    link_label: OWASP Generative AI Security
-    badge: signal
-    tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
   - title: SSRF Vulnerabilities Remain a Critical Threat Vector
-    text: Multiple recent advisories highlight ongoing Server-Side Request Forgery (SSRF) risks.
-    detail: CVE Notify has flagged SSRF flaws in Backstage and the atototo API tool. These vulnerabilities allow attackers to force server-side requests to unintended locations, potentially exposing internal systems or sensitive data. Developers must prioritize secure coding practices and input validation to mitigate SSRF risks.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery_(SSRF)
-    link_label: OWASP SSRF Guidance
+    text: Multiple tools and platforms are exhibiting critical Server-Side Request Forgery (SSRF) flaws.
+    detail: Server-Side Request Forgery vulnerabilities continue to be prevalent across various tools and applications, including developer portals and API testing tools. Organizations should prioritize patching known SSRF vulnerabilities and implement strict input validation and network segmentation to prevent internal system exposure.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Vulnerability
     badge: signal
     tags:
       - ssrf
       - vulnerability
-      - secure-coding
-  - title: Supply Chain Risks Amplified by Dependency Vulnerabilities
-    text: Vulnerabilities in software dependencies, like PyYAML, pose significant risks.
-    detail: Docling Core's RCE bug stems from an insecure PyYAML dependency, underscoring the critical need for vigilant dependency management. Organizations must implement Software Bill of Materials (SBOM) and regularly scan for known vulnerabilities in third-party libraries to prevent supply chain attacks.
-    link: https://www.nist.gov/cyberframework/sbom
-    link_label: NIST SBOM Resources
+      - application-security
+  - title: Supply Chain Risks Highlighted by PyYAML Dependency
+    text: A critical RCE vulnerability stems from an insecure PyYAML dependency in Docling Core.
+    detail: The reliance on vulnerable third-party libraries, like PyYAML in Docling Core, poses significant supply chain risks. Regularly audit software dependencies, utilize Software Bill of Materials (SBOMs), and enforce strict version control to manage and mitigate risks associated with compromised dependencies.
+    link: https://owasp.org/www-project-top-ten/2021/A06_2021-Identify_and_Protect_against_Vulnerable_and_Outdated_Components
+    link_label: OWASP Vulnerable Components
     badge: signal
     tags:
       - supply-chain
-      - dependency-management
       - vulnerability
+      - rce
+      - dependency-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
