@@ -177,7 +177,7 @@ permalink: /premium/
 </div>
 <div class="elite-bot__feature">
 <strong><span class="scw-icon" data-icon="bell"></span> Watchlist Alerts</strong>
-<span>Monitor your vendors or clients by domain. Get an alert whenever they appear in a breach, ransomware event, or vulnerability disclosure.</span>
+<span>Monitor your vendors or clients by domain. Get notified when they appear in a breach, ransomware event, or vulnerability disclosure — checked automatically.</span>
 </div>
 <div class="elite-bot__feature">
 <strong><span class="scw-icon" data-icon="bar-chart"></span> On-demand Threat Briefs</strong>
