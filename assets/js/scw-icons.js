@@ -4,7 +4,7 @@
    All icons: 24x24 viewBox, stroke-based, inherit currentColor */
 (function () {
   'use strict';
-  var a = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+  var a = 'xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
   window.SCW_ICONS = {
     shield:     '<svg ' + a + '><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
     radar:      '<svg ' + a + '><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>',
@@ -34,6 +34,7 @@
       var name = el.getAttribute('data-icon');
       if (SCW_ICONS[name]) {
         el.innerHTML = SCW_ICONS[name];
+        if (!el.classList.contains('scw-icon')) el.classList.add('scw-icon');
         el.removeAttribute('data-icon');
       }
     });
