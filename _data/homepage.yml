@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI is flooding bug bounty platforms, making triage difficult and demanding new verification methods.
-    detail: The sheer volume of AI-generated vulnerability submissions to platforms like HackerOne is straining resources, requiring advanced AI detection and human validation workflows. Organizations must prepare for increased noise and focus on verifying the authenticity and impact of reported issues.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-cybersecurity
-    link_label: AI Security Best Practices
-    badge: signal
-    tags:
-      - ai-security
-      - threat-intel
-      - bug-bounty
-  - title: Ransomware Groups Target Business Services with Renewed Vigor
-    text: Ransomware attacks on the business services sector are escalating, demanding enhanced defenses.
-    detail: Intelligence indicates a significant surge in ransomware activity targeting the business services industry. Organizations in this sector should fortify their defenses against encryption and data exfiltration, focusing on robust backups, network segmentation, and employee awareness training.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness-month
-    link_label: Ransomware Defense Guide
+  - title: Ransomware Groups Aggressively Target Business Services
+    text: Observe a significant surge in ransomware attacks targeting the Business Services sector.
+    detail: Recent intelligence indicates a coordinated increase in ransomware operations focusing on business services. Organizations in this sector should review and enhance their ransomware defenses, including robust backup strategies and incident response plans, to mitigate potential disruptions.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Advisories
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: New SSRF and RCE flaws in popular tools like Backstage and Alchemy CMS require immediate patching.
-    detail: Recent disclosures highlight ongoing critical Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in widely used development and CMS platforms. Prioritize patching these systems to prevent unauthorized access, data breaches, and potential command execution.
-    link: https://owasp.org/www-project-cheat-sheets/
-    link_label: OWASP Security Cheat Sheets
+  - title: AI-Generated Content Flooding Bug Bounty Platforms
+    text: AI-generated vulnerability reports are overwhelming bug bounty platforms, creating triage challenges.
+    detail: Bug bounty programs are struggling to manage a deluge of AI-produced vulnerability submissions. Security teams should implement AI detection tools and refine submission guidelines to filter out noise and focus on genuine, actionable findings.
+    link: https://owasp.org/www-project-generative-ai-security/
+    link_label: OWASP Generative AI Security
     badge: signal
     tags:
-      - vulnerability
-      - rce
+      - ai-security
+      - bug-bounty
+      - threat-intel
+  - title: SSRF Vulnerabilities Remain a Critical Threat Vector
+    text: Server-Side Request Forgery (SSRF) flaws continue to be discovered across various tools.
+    detail: Recent disclosures highlight ongoing SSRF vulnerabilities in development tools and APIs, posing risks of internal system exposure. Developers must prioritize input validation and implement strict network controls to prevent unauthorized requests and data exfiltration.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Guide
+    badge: signal
+    tags:
       - ssrf
-      - patch-management
-  - title: "OSINT Risks: Indian Phone Numbers Reveal Extensive Personal Data"
-    text: Indian phone numbers are proving to be rich OSINT targets, exposing linked accounts and identities.
-    detail: Open-source intelligence gathering on Indian (+91) phone numbers can yield extensive personal data, including associated businesses and online accounts. Individuals and organizations should be aware of this exposure and implement robust privacy controls and data hygiene practices.
-    link: https://www.privacyrights.org/consumer-guides/phone-numbers-and-your-privacy
-    link_label: Phone Number Privacy
+      - vulnerability
+      - web-security
+  - title: Supply Chain Risks Persist in Open-Source Software
+    text: Vulnerabilities in open-source dependencies continue to impact diverse applications.
+    detail: The recent discovery of critical flaws in open-source projects like Docling Core (via PyYAML) underscores persistent supply chain risks. Organizations must maintain rigorous dependency scanning and promptly patch vulnerable libraries to prevent exploitation.
+    link: https://www.mitre.org/about/news/mitre-and-cisa-launch-vulnerability-shaming-campaign-promote-software-bill-materials
+    link_label: Mitre SBOM Initiative
     badge: signal
     tags:
-      - osint
-      - data-privacy
-      - identity-theft
+      - supply-chain
+      - vulnerability
+      - open-source
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
