@@ -444,42 +444,66 @@ Style requirements:
 - Atmospheric and dramatic lighting
 - 1024x1024 square format`;
 
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            responseModalities: ['IMAGE', 'TEXT'],
-          }
-        })
+  const MAX_RETRIES = 3;
+  const RETRY_DELAYS = [5000, 10000, 20000]; // 5s, 10s, 20s
+
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseModalities: ['IMAGE', 'TEXT'],
+            }
+          })
+        }
+      );
+
+      if (!res.ok) {
+        // Retry on transient errors (429, 500, 502, 503, 504)
+        if ([429, 500, 502, 503, 504].includes(res.status) && attempt < MAX_RETRIES) {
+          const delay = RETRY_DELAYS[attempt];
+          console.warn(`⚠️  Gemini Image API ${res.status} — retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`);
+          await new Promise(r => setTimeout(r, delay));
+          continue;
+        }
+        console.warn(`⚠️  Gemini Image API ${res.status} — posting without image`);
+        return null;
       }
-    );
 
-    if (!res.ok) {
-      console.warn(`⚠️  Gemini Image API ${res.status} — posting without image`);
+      const data = await res.json();
+      const parts = data?.candidates?.[0]?.content?.parts || [];
+      const imagePart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
+
+      if (!imagePart) {
+        if (attempt < MAX_RETRIES) {
+          const delay = RETRY_DELAYS[attempt];
+          console.warn(`⚠️  Gemini returned no image — retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`);
+          await new Promise(r => setTimeout(r, delay));
+          continue;
+        }
+        console.warn('⚠️  Gemini returned no image after retries — posting without image');
+        return null;
+      }
+
+      const imageBuffer = Buffer.from(imagePart.inlineData.data, 'base64');
+      const mimeType = imagePart.inlineData.mimeType;
+      console.log(`🖼️  Generated image: ${(imageBuffer.length / 1024).toFixed(0)}KB (${mimeType})${attempt > 0 ? ` (after ${attempt} retries)` : ''}`);
+      return { buffer: imageBuffer, mimeType };
+    } catch (err) {
+      if (attempt < MAX_RETRIES) {
+        const delay = RETRY_DELAYS[attempt];
+        console.warn(`⚠️  Image generation error: ${err.message} — retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      console.warn(`⚠️  Image generation error after retries: ${err.message} — posting without image`);
       return null;
     }
-
-    const data = await res.json();
-    const parts = data?.candidates?.[0]?.content?.parts || [];
-    const imagePart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
-
-    if (!imagePart) {
-      console.warn('⚠️  Gemini returned no image — posting without image');
-      return null;
-    }
-
-    const imageBuffer = Buffer.from(imagePart.inlineData.data, 'base64');
-    const mimeType = imagePart.inlineData.mimeType;
-    console.log(`🖼️  Generated image: ${(imageBuffer.length / 1024).toFixed(0)}KB (${mimeType})`);
-    return { buffer: imageBuffer, mimeType };
-  } catch (err) {
-    console.warn(`⚠️  Image generation error: ${err.message} — posting without image`);
-    return null;
   }
 }
 
