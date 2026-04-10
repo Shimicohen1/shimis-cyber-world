@@ -26,47 +26,45 @@ identity:
     url: /about/
 quick_signals:
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business services sector is a prime target for ransomware groups, with a notable surge in attacks.
-    detail: DARKFEED intelligence highlights a coordinated increase in ransomware activity targeting the business services sector. Organizations in this industry should prioritize robust endpoint protection, network segmentation, and regular data backups to mitigate the risk of disruption and data loss.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-011a
+    text: Business Services sector is experiencing a surge in ransomware attacks.
+    detail: Ransomware groups are specifically targeting the Business Services sector, with a notable increase in attacks observed. Organizations in this sector should review their incident response plans and ensure robust backup and recovery strategies are in place to mitigate potential disruptions and data loss.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-285a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
-    text: AI tools are flooding bug bounty platforms, overwhelming triage and remediation efforts.
-    detail: Cyber Threat Intelligence reports HackerOne has paused services due to an influx of AI-generated vulnerability submissions. Security teams must develop strategies to identify and validate AI-assisted findings efficiently, focusing on human expertise for genuine threat assessment.
-    link: https://owasp.org/www-community/vulnerabilities/Artificial_Intelligence_vulnerabilities
-    link_label: OWASP AI Security
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI is flooding bug bounty platforms with low-quality reports.
+    detail: Bug bounty platforms are struggling to manage an influx of AI-generated vulnerability submissions, leading to service pauses. This trend highlights the need for enhanced AI detection and validation mechanisms within security programs to focus resources on genuine threats rather than noise.
+    link: https://owasp.org/www-project-top-10-ai-security/
+    link_label: OWASP Top 10 AI Security
     badge: signal
     tags:
       - ai-security
-      - bug-bounty
       - threat-intel
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery and Remote Code Execution vulnerabilities continue to be actively exploited.
-    detail: Recent CVE notifications reveal ongoing exploitation of SSRF (Backstage, atototo API) and RCE (Alchemy CMS, Docling Core) flaws. Organizations must prioritize patching these critical vulnerabilities and implement network controls to prevent unauthorized access and command execution.
-    link: https://cve.mitre.org/about/alternatives.html
-    link_label: MITRE CVE Details
+      - bug-bounty
+  - title: Emerging Threat Actor 'TiMc' Identified in Dark Web Activity
+    text: New threat actor 'TiMc' has been identified operating on the dark web.
+    detail: The emergence of new threat actors like 'TiMc' underscores the dynamic nature of the cyber threat landscape. Continuous monitoring of dark web intelligence is crucial for understanding evolving tactics, techniques, and procedures (TTPs) and proactively defending against nascent threats.
+    link: https://www.mitre.org/capabilities/cybersecurity/threat-actor-attribution
+    link_label: MITRE Threat Actor Attribution
+    badge: signal
+    tags:
+      - darkweb
+      - threat-intel
+      - new-actor
+  - title: SSRF Vulnerabilities Remain a Critical Risk in Web Applications
+    text: Server-Side Request Forgery (SSRF) vulnerabilities continue to be a significant threat.
+    detail: Recent advisories highlight ongoing Server-Side Request Forgery (SSRF) vulnerabilities in various tools and applications. Developers and security teams must prioritize input validation, implement network segmentation, and utilize allowlists for outbound requests to prevent attackers from accessing internal resources.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guide
     badge: signal
     tags:
       - vulnerability
-      - rce
       - ssrf
-      - patch-management
-  - title: Increased Focus on Identity and Cloud Credential Theft
-    text: AI interfaces and cloud services are emerging targets for credential theft.
-    detail: A vulnerability in an AI chat interface highlights the growing risk of cloud credential theft via RAG extensions. Implementing multi-factor authentication, strict access controls, and regular security audits for cloud environments and AI integrations is crucial.
-    link: https://www.nist.gov/cyberframework/identity-management
-    link_label: NIST Identity Management
-    badge: signal
-    tags:
-      - cloud-security
-      - identity
-      - ai-security
-      - credential-theft
+      - web-application-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
