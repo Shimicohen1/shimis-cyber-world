@@ -26,46 +26,47 @@ identity:
     url: /about/
 quick_signals:
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business services sector faces a surge in ransomware attacks, indicating a coordinated campaign.
-    detail: Recent intelligence highlights a significant uptick in ransomware activity targeting the Business Services sector. This coordinated push suggests a deliberate focus by threat actors. Organizations in this sector should review and enhance their ransomware defenses, focusing on robust backups, network segmentation, and employee awareness training.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-265a
+    text: Business services sector is a prime target for ransomware groups, with a notable surge in attacks.
+    detail: DARKFEED intelligence highlights a coordinated increase in ransomware activity targeting the business services sector. Organizations in this industry should prioritize robust endpoint protection, network segmentation, and regular data backups to mitigate the risk of disruption and data loss.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-011a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI-generated vulnerability reports are flooding bug bounty platforms, straining triage and remediation efforts.
-    detail: Bug bounty platforms are struggling to manage an influx of AI-generated vulnerability submissions, impacting their ability to effectively triage and remediate issues. This trend necessitates improved AI detection mechanisms and a re-evaluation of submission processes to ensure legitimate findings are prioritized.
-    link: https://owasp.org/www-project-top-10-ai-security/
-    link_label: OWASP Top 10 AI Security
+  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
+    text: AI tools are flooding bug bounty platforms, overwhelming triage and remediation efforts.
+    detail: Cyber Threat Intelligence reports HackerOne has paused services due to an influx of AI-generated vulnerability submissions. Security teams must develop strategies to identify and validate AI-assisted findings efficiently, focusing on human expertise for genuine threat assessment.
+    link: https://owasp.org/www-community/vulnerabilities/Artificial_Intelligence_vulnerabilities
+    link_label: OWASP AI Security
     badge: signal
     tags:
       - ai-security
       - bug-bounty
-      - vulnerability-management
+      - threat-intel
   - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to be actively exploited.
-    detail: Recent advisories highlight ongoing critical SSRF and RCE vulnerabilities across various software, including CMS, developer tools, and APIs. These flaws allow attackers to probe internal systems or execute arbitrary code. Prioritize patching and implement robust input validation and network egress filtering to mitigate these risks.
-    link: https://cve.mitre.org/about/faqs.html#faq_what_is_cve
-    link_label: Understanding CVE
+    text: Server-Side Request Forgery and Remote Code Execution vulnerabilities continue to be actively exploited.
+    detail: Recent CVE notifications reveal ongoing exploitation of SSRF (Backstage, atototo API) and RCE (Alchemy CMS, Docling Core) flaws. Organizations must prioritize patching these critical vulnerabilities and implement network controls to prevent unauthorized access and command execution.
+    link: https://cve.mitre.org/about/alternatives.html
+    link_label: MITRE CVE Details
     badge: signal
     tags:
       - vulnerability
       - rce
       - ssrf
       - patch-management
-  - title: New Threat Actor 'TiMc' Emerges on Dark Web
-    text: A new threat actor, TiMc, has been identified, indicating evolving dark web criminal activity.
-    detail: The emergence of a novel threat actor like TiMc underscores the dynamic nature of the cybercrime landscape. Staying informed about new entities and their potential tactics, techniques, and procedures (TTPs) is crucial for effective threat intelligence and proactive defense strategies.
-    link: https://www.sans.org/blog/the-threat-landscape-for-2024/
-    link_label: Emerging Threat Trends
+  - title: Increased Focus on Identity and Cloud Credential Theft
+    text: AI interfaces and cloud services are emerging targets for credential theft.
+    detail: A vulnerability in an AI chat interface highlights the growing risk of cloud credential theft via RAG extensions. Implementing multi-factor authentication, strict access controls, and regular security audits for cloud environments and AI integrations is crucial.
+    link: https://www.nist.gov/cyberframework/identity-management
+    link_label: NIST Identity Management
     badge: signal
     tags:
-      - threat-intel
-      - darkweb
-      - new-actor
+      - cloud-security
+      - identity
+      - ai-security
+      - credential-theft
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
