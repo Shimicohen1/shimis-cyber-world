@@ -117,7 +117,7 @@ categories:
         button: Start Hacking
       - title: "TryHackMe"
         description: "Guided learning paths with hands-on cyber labs. Best starting point for beginners and intermediate learners."
-        url: "https://tryhackme.com/"
+        url: "https://tryhackme.sjv.io/GbDW09"
         tags: [labs, training, beginner]
         status: Recommended
         sponsored: true

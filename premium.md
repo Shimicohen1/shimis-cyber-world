@@ -39,6 +39,25 @@ permalink: /premium/
 <!-- ── Live Tools: THE MAIN EVENT ── -->
 <section class="elite-tools reveal">
 
+<!-- Bot teaser — links to full section below -->
+<a href="#intel-bot" class="elite-card elite-card--featured elite-card--bot-teaser" style="background:linear-gradient(135deg,rgba(6,182,212,.1),rgba(59,130,246,.1));border-color:rgba(6,182,212,.25);margin-bottom:1.5rem;">
+<div class="elite-card__glow"></div>
+<div class="elite-card__content">
+<div class="elite-card__head">
+<span class="elite-card__icon">🔎</span>
+<span class="elite-card__status elite-card__status--live">LIVE</span>
+</div>
+<h3>SCW Intel Bot</h3>
+<p>Search threats, monitor organizations, and generate analyst-ready outputs — directly inside Telegram. Our most powerful tool.</p>
+<div class="elite-card__meta">
+<span>Threat Search</span>
+<span>Watchlist Alerts</span>
+<span>IOC Export</span>
+<span>Inside Telegram</span>
+</div>
+</div>
+</a>
+
 <div class="elite-featured-row">
 <a href="/hardening/" class="elite-card elite-card--featured">
 <div class="elite-card__glow"></div>
@@ -145,9 +164,9 @@ permalink: /premium/
 </section>
 
 <!-- ── Telegram Bot: direct access ── -->
-<section class="elite-bot reveal">
+<section class="elite-bot reveal" id="intel-bot">
 <div class="elite-bot__card">
-<div class="elite-bot__icon" data-icon="search"></div>
+<div class="elite-bot__icon">🔎</div>
 <h2 class="elite-bot__title">SCW Intel Bot</h2>
 <p class="elite-bot__desc">AI-powered cyber threat intelligence — built for real-world use. Search threats, monitor organizations, and generate analyst-ready outputs directly from Telegram. No dashboards. No noise. Just usable intel.</p>
 

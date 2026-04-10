@@ -193,6 +193,9 @@ const TOOL_RECOMMENDATIONS = {
   'cve':              { text: '🛡️ 847 hardening checks across 18 platforms → LockDown', url: '/hardening/' },
   'detection':        { text: '📋 KQL, Sigma & Splunk rules → Detection Vault', url: '/detections/' },
   'incident-response':{ text: '🚨 Step-by-step IR playbooks → WarRoom', url: '/playbooks/' },
+  'training':         { text: '🎓 Hands-on cyber labs from beginner to advanced → TryHackMe', url: 'https://tryhackme.sjv.io/GbDW09' },
+  'blue-team':        { text: '🎓 Practice real defense scenarios → TryHackMe', url: 'https://tryhackme.sjv.io/GbDW09' },
+  'red-team':         { text: '🎓 Sharpen your offensive skills → TryHackMe', url: 'https://tryhackme.sjv.io/GbDW09' },
 };
 const DEFAULT_TOOL = { text: '🛡️ Free security tools → BreachRadar, ThreatLens, LockDown, GoFish', url: '/tools/' };
 
