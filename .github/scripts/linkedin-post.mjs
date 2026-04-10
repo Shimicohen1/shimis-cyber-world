@@ -412,27 +412,37 @@ ${body}
 ═══ LENGTH ═══
 Target 1000-1500 characters. LinkedIn rewards longer, thoughtful posts. Don't pad — but don't cut short either. Say what needs to be said.`;
 
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: 0.8,
-            maxOutputTokens: 1500,
-            thinkingConfig: { thinkingBudget: 0 },
-          }
-        })
-      }
-    );
+  const TEXT_MAX_RETRIES = 3;
+  const TEXT_RETRY_DELAYS = [3000, 8000, 15000];
 
-    if (!res.ok) {
-      console.warn(`⚠️  Gemini API ${res.status} — falling back to template`);
-      return null;
-    }
+  for (let attempt = 0; attempt <= TEXT_MAX_RETRIES; attempt++) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.8,
+              maxOutputTokens: 1500,
+              thinkingConfig: { thinkingBudget: 0 },
+            }
+          })
+        }
+      );
+
+      if (!res.ok) {
+        if ([429, 500, 502, 503, 504].includes(res.status) && attempt < TEXT_MAX_RETRIES) {
+          const delay = TEXT_RETRY_DELAYS[attempt];
+          console.warn(`⚠️  Gemini text API ${res.status} — retrying in ${delay / 1000}s (attempt ${attempt + 1}/${TEXT_MAX_RETRIES})`);
+          await new Promise(r => setTimeout(r, delay));
+          continue;
+        }
+        console.warn(`⚠️  Gemini API ${res.status} — falling back to template`);
+        return null;
+      }
 
     const data = await res.json();
     // Extract text, skipping any thinking/reasoning parts
@@ -489,10 +499,18 @@ Target 1000-1500 characters. LinkedIn rewards longer, thoughtful posts. Don't pa
     }
 
     return text;
-  } catch (err) {
-    console.warn(`⚠️  Gemini error: ${err.message} — falling back to template`);
-    return null;
+    } catch (err) {
+      if (attempt < TEXT_MAX_RETRIES) {
+        const delay = TEXT_RETRY_DELAYS[attempt];
+        console.warn(`⚠️  Gemini text error: ${err.message} — retrying in ${delay / 1000}s (attempt ${attempt + 1}/${TEXT_MAX_RETRIES})`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      console.warn(`⚠️  Gemini error after retries: ${err.message} — falling back to template`);
+      return null;
+    }
   }
+  return null;
 }
 
 /* ═══════════════════════════════════════════════════════════
