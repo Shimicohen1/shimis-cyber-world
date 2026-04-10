@@ -12,7 +12,7 @@ permalink: /premium/
 <h1 class="elite-hero__title">Security tools that<br><span>actually work.</span></h1>
 <p class="elite-hero__sub">Built by practitioners. No theory, no filler — just tools you can use right now.</p>
 <div style="margin-top:1rem;padding:.75rem 1.25rem;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:.85rem;color:var(--gray);text-align:center;">
-<span class="scw-icon" data-icon="zap"></span> All SCW Elite tools are currently <strong style="color:var(--white);">free and open</strong> to everyone. This may change in the future as we grow.
+<span class="scw-icon" data-icon="zap"></span> All SCW Elite tools are currently <strong style="color:var(--white);">free and open</strong> to everyone. Premium tiers may be introduced down the road.
 </div>
 </div>
 
