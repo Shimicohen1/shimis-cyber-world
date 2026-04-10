@@ -104,6 +104,22 @@ function parseFrontMatter(content) {
  *  SELECT BEST POST
  * ═══════════════════════════════════════════════════════════ */
 
+// Channels to EXCLUDE from LinkedIn (boring CVE bulletins, low engagement)
+const LINKEDIN_EXCLUDED_CHANNELS = [
+  '1129491012', // CVE Notify — raw CVE disclosures for obscure software
+];
+
+// Tags that boost LinkedIn score (real-world impact stories)
+const LINKEDIN_BOOST_TAGS = [
+  'data-breach', 'ransomware', 'apt', 'espionage', 'supply-chain',
+  'darkweb', 'threat-intel', 'incident-response', 'fraud',
+];
+
+// Tags that reduce LinkedIn score (dry, technical, low engagement)
+const LINKEDIN_PENALTY_TAGS = [
+  'cve', 'vulnerability', 'hardening',
+];
+
 function selectBestPost(state) {
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
   const files = fs.readdirSync(POSTS_DIR)
@@ -126,6 +142,11 @@ function selectBestPost(state) {
   const candidates = [];
   for (const file of files) {
     if (state.postedFiles.includes(file)) continue; // Already posted
+
+    // Exclude boring channels by filename (format: YYYY-MM-DD-telegram-CHANNELID-MSGID.md)
+    const channelMatch = file.match(/telegram-(\d+)-/);
+    if (channelMatch && LINKEDIN_EXCLUDED_CHANNELS.includes(channelMatch[1])) continue;
+
     const content = fs.readFileSync(path.join(POSTS_DIR, file), 'utf8');
     const meta = parseFrontMatter(content);
     if (!meta || meta.hidden === 'true') continue;
@@ -137,18 +158,32 @@ function selectBestPost(state) {
     return null;
   }
 
-  // Score: priority (higher = better), score field, featured flag
+  // LinkedIn-optimized scoring: prefer real-world impact stories over dry CVEs
   const scoreMap = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
   candidates.sort((a, b) => {
     const aFeat = a.meta.featured === 'true' ? 100 : 0;
     const bFeat = b.meta.featured === 'true' ? 100 : 0;
-    const aPrio = parseInt(a.meta.priority || '50');
-    const bPrio = parseInt(b.meta.priority || '50');
     const aScore = scoreMap[a.meta.score] || 2;
     const bScore = scoreMap[b.meta.score] || 2;
-    return (bFeat + bPrio + bScore * 10) - (aFeat + aPrio + aScore * 10);
+
+    // Tag-based boost/penalty for LinkedIn engagement
+    const aTags = (a.meta.tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
+    const bTags = (b.meta.tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
+    const aBoost = aTags.some(t => LINKEDIN_BOOST_TAGS.includes(t)) ? 30 : 0;
+    const bBoost = bTags.some(t => LINKEDIN_BOOST_TAGS.includes(t)) ? 30 : 0;
+    const aPenalty = aTags.some(t => LINKEDIN_PENALTY_TAGS.includes(t)) ? 20 : 0;
+    const bPenalty = bTags.some(t => LINKEDIN_PENALTY_TAGS.includes(t)) ? 20 : 0;
+
+    // AI-rewritten content gets a boost (better quality)
+    const aAi = a.meta.ai_rewritten === 'true' ? 10 : 0;
+    const bAi = b.meta.ai_rewritten === 'true' ? 10 : 0;
+
+    const aTotal = aFeat + aScore * 10 + aBoost - aPenalty + aAi;
+    const bTotal = bFeat + bScore * 10 + bBoost - bPenalty + bAi;
+    return bTotal - aTotal;
   });
 
+  console.log(`📊 LinkedIn candidates: ${candidates.length} posts (top pick: "${candidates[0].meta.title?.slice(0, 60)}")`);
   return candidates[0];
 }
 
@@ -316,48 +351,78 @@ async function generateWithGemini(meta, fileName, postUrl) {
   if (!GEMINI_API_KEY) return null;
 
   const title = meta.title || 'Security Update';
-  const body = stripMarkdown(meta._body || '').slice(0, 1500);
+  const body = stripMarkdown(meta._body || '').slice(0, 2000);
   const score = (meta.score || 'MEDIUM').toUpperCase();
   const tags = (meta.tags || '').replace(/[\[\]]/g, '');
+  const source = meta.source_name || meta.channel || 'a threat intelligence source';
+  const category = meta.event_type || (tags.includes('vulnerability') ? 'vulnerability' : 'incident');
 
-  const prompt = `Write a LinkedIn post for Shimi's Cyber World — a cyber threat intelligence community. Shimi REPORTS news he found. He was NOT at any event and did NOT experience anything personally.
+  // Load persona config
+  let persona = {};
+  try {
+    const personaPath = path.join(ROOT, '.github', 'config', 'persona.json');
+    persona = JSON.parse(fs.readFileSync(personaPath, 'utf8'));
+  } catch { /* fallback to inline rules */ }
 
-ARTICLE: ${title}
-CONTENT:
+  const prompt = `You are Shimi — a CISO with 20+ years in cybersecurity, intelligence, OSINT, and ethical hacking. Based in Israel. You run Shimi's Cyber World (SCW), a threat intelligence community.
+
+Write a LinkedIn post about this news. Your voice: a seasoned CISO sharing a real take with his professional network — not a news anchor reading a teleprompter.
+
+═══ ARTICLE ═══
+Title: ${title}
+Source: ${source}
+Category: ${category}
+Severity: ${score}
+Tags: ${tags}
+Content:
 ${body}
 
-FORMAT (follow exactly):
-[Hook — 1-2 lines, state the news fact in third person]
+═══ YOUR VOICE ═══
+- Write as yourself — a CISO who's seen 20+ years of threats. Be direct, opinionated, practical.
+- Open with a strong hook (1-2 lines) that makes people stop scrolling. State the news fact, then add YOUR angle.
+- Give 2-3 short paragraphs of analysis. What does this REALLY mean? Why should a security leader care? What would YOU tell your team?
+- End with a question that sparks real discussion — not generic "thoughts?" but something specific to the topic.
+- Tone: confident, sharp, occasionally blunt. You can say "this is bad" or "this is overhyped" — have an opinion.
 
-[2-3 short paragraphs, 1-2 sentences each, reporter style]
+═══ HARD RULES — NEVER BREAK THESE ═══
+1. NEVER claim you attended, visited, or experienced anything from the source article. You are REPORTING news you found — you were NOT there.
+2. NEVER write "I was at", "I just came back from", "At this week's conference", "I reviewed this firsthand". These are BANNED phrases.
+3. NEVER fabricate personal anecdotes. No "this reminds me of the time we responded to..." with specific made-up details.
+4. You CAN reference general experience: "In 20+ years of doing this...", "As someone who manages security operations...", "I've seen this pattern enough times to know..."
+5. You CAN give your professional opinion: "This is exactly what keeps CISOs up at night", "Here's what I'd tell my team Monday morning"
+6. NEVER mention your employer or company name.
+7. Attribute findings to the source: "According to ${source}..." or "${source} reported..."
+8. ZERO emojis ANYWHERE in the post except the two footer markers (📄 📡). Not even 🔴 or 🔍 or 👆.
+9. EXACTLY 3 hashtags on the last line: #ShimisCyberWorld #cybersecurity #[one topic tag]
+10. NO product recommendations, NO affiliate links, NO "protect yourself with..." plugs.
+11. NO sections labeled "Bottom line", "Key takeaway", "TL;DR" — just flow naturally.
+12. Plain text only — no markdown, no bold, no formatting.
 
-[1 question to spark comments]
+═══ FORMAT ═══
+[Hook: 1-2 punchy lines — the news fact + your angle]
+
+[2-3 short paragraphs, 1-3 sentences each — your CISO analysis]
+
+[1 specific question to drive comments]
 
 📄 ${postUrl}
 📡 https://t.me/shimiscyberworld
-#ShimisCyberWorld #cybersecurity #[one topic tag]
+#ShimisCyberWorld #cybersecurity #[topic]
 
-HARD RULES:
-- NEVER write "I just reviewed", "I was at", "Here's my take", "I see this pattern", "Bottom line". Write in third person about the news
-- ZERO emojis anywhere except the two footer markers (📄 📡). No 🎯 🔐 👍 or any other emoji
-- EXACTLY 3 hashtags on the last line. Not 4, not 5 — exactly 3
-- Total post MUST be 500-700 characters. Count carefully. If over 700, remove content
-- NO product recommendations, NO affiliate links, NO "stay private" or "protect yourself" product plugs
-- NO sections labeled "Bottom line" or "Key takeaway" — just flow naturally
-- If the topic involves breach/ransomware/exposure, you may add ONE line before the footer: "Check your exposure free: ${SITE_URL}/breach-radar/"
-- Plain text only, no formatting`;
+═══ LENGTH ═══
+Target 1000-1500 characters. LinkedIn rewards longer, thoughtful posts. Don't pad — but don't cut short either. Say what needs to be said.`;
 
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 350,
+            temperature: 0.8,
+            maxOutputTokens: 800,
           }
         })
       }
@@ -401,17 +466,15 @@ HARD RULES:
     // Clean up double blank lines from removals
     text = text.replace(/\n{3,}/g, '\n\n');
 
-    // Enforce max length — trim body paragraphs if over 900 chars (keep hook + footer)
-    if (text.length > 900) {
+    // Enforce max length — LinkedIn limit is 3000, keep under 2000 for readability
+    if (text.length > 2000) {
       const lines = text.split('\n');
-      // Find footer start (📄 line)
       const footerIdx = lines.findIndex(l => l.startsWith('📄'));
       if (footerIdx > 2) {
         const hook = lines.slice(0, 2).join('\n');
         const footer = lines.slice(footerIdx).join('\n');
         let body = lines.slice(2, footerIdx).filter(l => l.trim());
-        // Remove paragraphs from the end until under limit
-        while (body.length > 1 && (hook + '\n\n' + body.join('\n\n') + '\n\n' + footer).length > 900) {
+        while (body.length > 1 && (hook + '\n\n' + body.join('\n\n') + '\n\n' + footer).length > 2000) {
           body.pop();
         }
         text = hook + '\n\n' + body.join('\n\n') + '\n\n' + footer;
@@ -433,18 +496,37 @@ async function generateImage(title, tags) {
   if (!GEMINI_API_KEY) return null;
 
   const tagStr = (tags || '').replace(/[\[\]]/g, '');
-  const prompt = `Create a professional cybersecurity-themed digital illustration for a LinkedIn post.
+
+  // Map topic to a specific visual concept
+  const tagList = tagStr.split(',').map(t => t.trim().toLowerCase());
+  let visualConcept = 'digital threat landscape with network connections and data flows';
+  if (tagList.some(t => ['ransomware', 'data-breach', 'darkweb'].includes(t))) {
+    visualConcept = 'a locked vault or encrypted data being breached, shattered digital locks, data fragments scattering into darkness';
+  } else if (tagList.some(t => ['apt', 'espionage', 'threat-intel'].includes(t))) {
+    visualConcept = 'a shadowy digital chess board with strategic pieces, representing state-level cyber warfare and intelligence operations';
+  } else if (tagList.some(t => ['phishing', 'social-engineering', 'fraud'].includes(t))) {
+    visualConcept = 'a deceptive digital landscape with mirrored surfaces and hidden traps, representing social engineering deception';
+  } else if (tagList.some(t => ['vulnerability', 'cve', 'exploit'].includes(t))) {
+    visualConcept = 'a cracked digital shield with code fragments visible through the cracks, representing software vulnerabilities';
+  } else if (tagList.some(t => ['malware', 'trojan', 'botnet'].includes(t))) {
+    visualConcept = 'a corrupted digital organism spreading through a network, with infected nodes glowing in warning colors';
+  } else if (tagList.some(t => ['supply-chain', 'incident-response'].includes(t))) {
+    visualConcept = 'an interconnected chain of digital nodes with one critical link highlighted as compromised, ripple effects spreading outward';
+  }
+
+  const prompt = `Create a striking, editorial-quality cybersecurity illustration for a LinkedIn post by a CISO.
 
 Topic: ${title}
-Tags: ${tagStr}
+Visual concept: ${visualConcept}
 
-Style requirements:
-- Dark background with blue and cyan neon accent lighting
-- Abstract tech elements: circuit board traces, data streams, digital shields, network nodes
-- Modern, clean, corporate-appropriate
+Style:
+- Deep dark background (near black) with bold accent colors: electric blue, amber warning tones, and sharp white highlights
+- Cinematic lighting — dramatic, moody, like a movie poster for a cyber thriller
+- Clean, modern composition — NOT cluttered stock art. Think editorial illustration, not infographic
+- Abstract and conceptual — represent the IDEA, not literal screenshots or code
+- High contrast, sharp edges, professional quality
 - NO text, NO words, NO letters, NO numbers anywhere in the image
-- NO faces, NO people, NO hands
-- Atmospheric and dramatic lighting
+- NO faces, NO people, NO hands, NO logos
 - 1024x1024 square format`;
 
   const MAX_RETRIES = 3;
