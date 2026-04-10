@@ -149,28 +149,28 @@ permalink: /premium/
 <div class="elite-bot__card">
 <div class="elite-bot__icon" data-icon="search"></div>
 <h2 class="elite-bot__title">SCW Intel Bot</h2>
-<p class="elite-bot__desc">Real-time threat intelligence, straight to your Telegram. Search by organization, threat actor, or country. Monitor your vendors with watchlist alerts. Get weekly briefs with severity rankings, IOCs ready for your SIEM, and MITRE ATT&CK mapping — all in one bot.</p>
+<p class="elite-bot__desc">AI-powered cyber threat intelligence — built for real-world use. Search threats, monitor organizations, and generate analyst-ready outputs directly from Telegram. No dashboards. No noise. Just usable intel.</p>
 
 <div class="elite-bot__features">
 <div class="elite-bot__feature">
 <strong><span class="scw-icon" data-icon="search"></span> Instant Threat Search</strong>
-<span>Search by org name, domain, APT group, or country code. Results in seconds with severity scores and event context.</span>
+<span>Search by org name, domain, APT group, or country code. Analyst-ready results with severity scores and event context.</span>
 </div>
 <div class="elite-bot__feature">
 <strong><span class="scw-icon" data-icon="bell"></span> Watchlist Alerts</strong>
-<span>Add your vendors or clients by domain. Get an instant Telegram alert whenever they appear in a breach, ransomware event, or vulnerability disclosure.</span>
+<span>Monitor your vendors or clients by domain. Get an alert whenever they appear in a breach, ransomware event, or vulnerability disclosure.</span>
 </div>
 <div class="elite-bot__feature">
-<strong><span class="scw-icon" data-icon="bar-chart"></span> Weekly Threat Briefs</strong>
-<span>Automated weekly report ranked by severity — critical, high, medium. Key IOCs and MITRE ATT&CK techniques included.</span>
+<strong><span class="scw-icon" data-icon="bar-chart"></span> On-demand Threat Briefs</strong>
+<span>Analyst-ready weekly report ranked by severity — critical, high, medium. Key IOCs and MITRE ATT&CK techniques included.</span>
 </div>
 <div class="elite-bot__feature">
-<strong><span class="scw-icon" data-icon="crosshair"></span> IOC Exports</strong>
-<span>Structured IOC data (CVEs, indicators, affected products) ready to copy-paste into your SIEM or threat platform.</span>
+<strong><span class="scw-icon" data-icon="crosshair"></span> SIEM-ready IOC Exports</strong>
+<span>Structured IOC data (CVEs, indicators, affected products) ready to paste into your SIEM or threat platform. No manual work.</span>
 </div>
 </div>
 
-<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot — View Plans & Start Free →</a>
+<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot — Free Preview Available →</a>
 </div>
 </section>
 
