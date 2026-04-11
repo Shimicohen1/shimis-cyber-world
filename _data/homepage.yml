@@ -25,45 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Reports Flood Bug Bounty Platforms
-    text: AI-generated vulnerability reports are overwhelming bug bounty programs, impacting triage efficiency.
-    detail: HackerOne has paused services due to a surge in AI-generated submissions, highlighting the challenges in distinguishing legitimate findings. Security teams must adapt their vetting processes to effectively manage these new submission types and ensure critical vulnerabilities are not missed amidst the noise.
-    link: https://www.cyberthreatintelligence.com/blog/ai-generated-reports-flood-bug-bounty-platforms
-    link_label: AI Report Triage Challenges
+  - title: AI Models Pose New Attack Surface Risks
+    text: AI models and interfaces are becoming targets for credential theft and prompt injection.
+    detail: Vulnerabilities in AI chat interfaces, like text-generation-webui, can expose cloud credentials. Furthermore, the increasing reliance on AI for content generation means prompt manipulation and data leakage from AI models require robust security controls and monitoring.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
-      - bug-bounty
       - ai-security
       - threat-intel
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: The Business Services sector is experiencing a significant increase in ransomware attacks.
-    detail: DARKFEED reports a sharp rise in targeted attacks against the Business Services industry. Organizations in this sector should prioritize robust endpoint protection, regular data backups, and comprehensive employee training to mitigate the growing ransomware threat.
-    link: https://www.darkfeed.com/business-services-under-fire
-    link_label: Ransomware Trends
+      - vulnerability
+  - title: Ransomware Actors Diversify Tactics and Targets
+    text: Ransomware groups are actively targeting the business services sector and defacing leak sites.
+    detail: Multiple ransomware operations, including Kairos, are active, with some showing signs of disruption or elaborate deception. The Business Services sector is a particular focus, indicating a strategic shift in targeting to exploit supply chain dependencies or critical business functions.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-285a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - business-services
-  - title: SSRF Vulnerabilities Remain a Critical Threat Vector
-    text: Server-Side Request Forgery (SSRF) flaws continue to be exploited across various tools and platforms.
-    detail: Recent advisories highlight SSRF vulnerabilities in tools like Backstage and the atototo API lab. These flaws can lead to internal system exposure and remote attacks. Implement strict input validation and network segmentation to prevent unauthorized requests.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: SSRF Prevention
+      - malware
+  - title: SSRF Vulnerabilities Remain a Persistent Threat
+    text: SSRF flaws continue to appear in various tools and platforms, enabling internal system exposure.
+    detail: Recent advisories highlight SSRF vulnerabilities in tools like Backstage and API labs, allowing attackers to probe internal systems. Organizations must prioritize patching and implement network segmentation and egress filtering to mitigate the risk of unauthorized internal access.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF
     badge: signal
     tags:
-      - ssrf
       - vulnerability
-      - web-security
-  - title: Supply Chain Risks via Third-Party Dependencies
-    text: Vulnerabilities in third-party libraries pose significant risks to software integrity.
-    detail: The Docling Core RCE bug, stemming from a PyYAML dependency, underscores the critical need for vigilant dependency management. Regularly scan your software supply chain for known vulnerabilities and prioritize patching outdated or insecure libraries.
+      - ssrf
+      - threat-intel
+  - title: Open Source Software Dependencies Demand Vigilance
+    text: Vulnerabilities in open-source components, including YAML parsers, pose significant RCE risks.
+    detail: The Docling Core RCE bug highlights the danger of vulnerable dependencies like PyYAML. Organizations must maintain robust Software Bill of Materials (SBOM) and actively monitor for and patch vulnerabilities in their open-source libraries, as these often serve as entry points for attackers.
     link: https://nvd.nist.gov/vuln/detail/CVE-2026-23885
-    link_label: Dependency Vulnerabilities
+    link_label: NVD CVE-2026-23885
     badge: signal
     tags:
       - supply-chain
       - vulnerability
+      - rce
       - dependency-management
 vault_picks:
   - name: OWASP Top 10
