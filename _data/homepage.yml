@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI is flooding bug bounty programs, straining triage and remediation efforts.
-    detail: The surge in AI-generated vulnerability reports, as seen with HackerOne pausing services, demands new strategies. Organizations must enhance automated detection for AI-crafted submissions and refine manual review processes to distinguish genuine findings from noise, ensuring efficient resource allocation for critical security issues.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-287a
-    link_label: CISA AI Guidance
-    badge: signal
-    tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: SSRF Vulnerabilities Persist Across Diverse Applications
-    text: Server-Side Request Forgery (SSRF) remains a prevalent threat in API tools and developer platforms.
-    detail: Recent alerts highlight SSRF flaws in tools like Backstage and the atototo API lab, indicating a consistent pattern of insecure handling of external requests. Developers must prioritize robust input validation and access controls for all URL-based functionalities to prevent internal system exposure and unauthorized data access.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Guide
-    badge: signal
-    tags:
-      - vulnerability
-      - ssrf
-      - api-security
-  - title: Ransomware Actors Intensify Attacks on Business Services Sector
-    text: The Business Services sector is experiencing a coordinated surge in ransomware attacks.
-    detail: DARKFEED reports indicate a significant increase in ransomware activity targeting the Business Services industry. Companies in this sector should bolster their defenses with robust endpoint protection, regular data backups, and comprehensive incident response plans to mitigate the growing threat of encryption and extortion.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-343a
-    link_label: CISA Ransomware Guidance
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Business services sector is experiencing a surge in ransomware attacks.
+    detail: Recent intelligence indicates a coordinated increase in ransomware activity targeting the business services industry. Cybersecurity professionals should prioritize hardening defenses and implementing robust incident response plans for systems within this sector to mitigate potential disruptions.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Advisories
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: Exploitation of Open-Source Software Dependencies Remains Critical
-    text: Vulnerabilities stemming from open-source dependencies continue to pose significant risks.
-    detail: The Docling Core RCE bug, linked to PyYAML, exemplifies the persistent danger of insecure dependencies. Organizations must implement rigorous Software Bill of Materials (SBOM) practices and continuously monitor their supply chain for known vulnerabilities in third-party libraries to prevent compromise.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-23885
-    link_label: NVD - CVE-2026-23885
+  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
+    text: AI is overwhelming bug bounty platforms with submissions.
+    detail: The proliferation of AI-generated vulnerability reports is straining triage and remediation processes on platforms like HackerOne. Organizations should review their internal bug bounty programs and consider implementing AI detection measures to focus efforts on genuine security findings.
+    link: https://owasp.org/www-project-top-10-ai-security/
+    link_label: OWASP AI Security
+    badge: signal
+    tags:
+      - ai-security
+      - bug-bounty
+      - threat-intel
+  - title: Emerging Threat Actor 'TiMc' Identified in Dark Web Monitoring
+    text: New threat actor 'TiMc' has been identified, signaling evolving threats.
+    detail: The emergence of new threat actors like TiMc on the dark web necessitates continuous monitoring and threat intelligence gathering. Organizations should stay updated on emerging TTPs and ensure their threat detection capabilities are robust enough to identify novel malicious entities.
+    link: https://www.mitre.org/attack-matrix
+    link_label: MITRE ATT&CK
+    badge: signal
+    tags:
+      - threat-intel
+      - darkweb
+      - new-actor
+  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
+    text: Server-Side Request Forgery and Remote Code Execution flaws persist.
+    detail: Recent advisories highlight ongoing critical vulnerabilities such as SSRF and RCE in various software, including developer tools and CMS platforms. Prioritize patching these common but severe flaws, and implement network segmentation and input validation to reduce exploitability.
+    link: https://nvd.nist.gov/vuln/search
+    link_label: NVD Vulnerability Database
     badge: signal
     tags:
       - vulnerability
-      - supply-chain
-      - dependency-management
+      - rce
+      - ssrf
+      - patch-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
