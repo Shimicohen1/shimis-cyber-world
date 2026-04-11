@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
+  - title: AI-Generated Reports Flood Bug Bounty Platforms
+    text: AI-generated vulnerability reports are overwhelming bug bounty programs, impacting triage efficiency.
+    detail: HackerOne has paused services due to a surge in AI-generated submissions, highlighting the challenges in distinguishing legitimate findings. Security teams must adapt their vetting processes to effectively manage these new submission types and ensure critical vulnerabilities are not missed amidst the noise.
+    link: https://www.cyberthreatintelligence.com/blog/ai-generated-reports-flood-bug-bounty-platforms
+    link_label: AI Report Triage Challenges
+    badge: signal
+    tags:
+      - bug-bounty
+      - ai-security
+      - threat-intel
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business services sector is experiencing a surge in ransomware attacks.
-    detail: Recent intelligence indicates a coordinated increase in ransomware activity targeting the business services industry. Cybersecurity professionals should prioritize hardening defenses and implementing robust incident response plans for systems within this sector to mitigate potential disruptions.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
-    link_label: CISA Advisories
+    text: The Business Services sector is experiencing a significant increase in ransomware attacks.
+    detail: DARKFEED reports a sharp rise in targeted attacks against the Business Services industry. Organizations in this sector should prioritize robust endpoint protection, regular data backups, and comprehensive employee training to mitigate the growing ransomware threat.
+    link: https://www.darkfeed.com/business-services-under-fire
+    link_label: Ransomware Trends
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
-    text: AI is overwhelming bug bounty platforms with submissions.
-    detail: The proliferation of AI-generated vulnerability reports is straining triage and remediation processes on platforms like HackerOne. Organizations should review their internal bug bounty programs and consider implementing AI detection measures to focus efforts on genuine security findings.
-    link: https://owasp.org/www-project-top-10-ai-security/
-    link_label: OWASP AI Security
+  - title: SSRF Vulnerabilities Remain a Critical Threat Vector
+    text: Server-Side Request Forgery (SSRF) flaws continue to be exploited across various tools and platforms.
+    detail: Recent advisories highlight SSRF vulnerabilities in tools like Backstage and the atototo API lab. These flaws can lead to internal system exposure and remote attacks. Implement strict input validation and network segmentation to prevent unauthorized requests.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
+    link_label: SSRF Prevention
     badge: signal
     tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: Emerging Threat Actor 'TiMc' Identified in Dark Web Monitoring
-    text: New threat actor 'TiMc' has been identified, signaling evolving threats.
-    detail: The emergence of new threat actors like TiMc on the dark web necessitates continuous monitoring and threat intelligence gathering. Organizations should stay updated on emerging TTPs and ensure their threat detection capabilities are robust enough to identify novel malicious entities.
-    link: https://www.mitre.org/attack-matrix
-    link_label: MITRE ATT&CK
-    badge: signal
-    tags:
-      - threat-intel
-      - darkweb
-      - new-actor
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery and Remote Code Execution flaws persist.
-    detail: Recent advisories highlight ongoing critical vulnerabilities such as SSRF and RCE in various software, including developer tools and CMS platforms. Prioritize patching these common but severe flaws, and implement network segmentation and input validation to reduce exploitability.
-    link: https://nvd.nist.gov/vuln/search
-    link_label: NVD Vulnerability Database
-    badge: signal
-    tags:
-      - vulnerability
-      - rce
       - ssrf
-      - patch-management
+      - vulnerability
+      - web-security
+  - title: Supply Chain Risks via Third-Party Dependencies
+    text: Vulnerabilities in third-party libraries pose significant risks to software integrity.
+    detail: The Docling Core RCE bug, stemming from a PyYAML dependency, underscores the critical need for vigilant dependency management. Regularly scan your software supply chain for known vulnerabilities and prioritize patching outdated or insecure libraries.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-23885
+    link_label: Dependency Vulnerabilities
+    badge: signal
+    tags:
+      - supply-chain
+      - vulnerability
+      - dependency-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
