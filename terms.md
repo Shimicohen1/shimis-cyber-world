@@ -60,7 +60,7 @@ We are committed to handling all takedown requests fairly and quickly.
 
 For takedown requests, corrections, or any other inquiries:
 
-**Email:** [shimicyberworld@gmail.com](mailto:shimicyberworld@gmail.com)
+**Email:** [admin@shimiscyberworld.com](mailto:admin@shimiscyberworld.com)
 
 ### 10. Changes
 
