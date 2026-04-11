@@ -230,6 +230,22 @@ layout: default
       </div>
     </div>
 
+    {% comment %}── Related Posts by Tag ──{% endcomment %}
+    {% assign first_tag = page.tags | first %}
+    {% if first_tag %}
+    {% assign related = site.posts | where_exp: "p", "p.url != page.url" | where_exp: "p", "p.tags contains first_tag" | limit: 3 %}
+    {% if related.size > 0 %}
+    <div class="post-related">
+      <h3 class="post-related__title">Related Posts</h3>
+      <div class="post-related__grid">
+        {% for post in related limit: 3 %}
+        {% include post-card.html %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
     <nav class="post-nav">
       <a href="{{ '/posts/' | relative_url }}" class="btn btn--ghost btn--sm">&larr; All Posts</a>
     </nav>

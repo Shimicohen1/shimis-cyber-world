@@ -1,0 +1,53 @@
+---
+layout: default
+title: "404 — Page Not Found"
+permalink: /404.html
+---
+
+<div class="error-page">
+  <div class="error-page__glitch" aria-hidden="true">404</div>
+  <h1 class="error-page__title">Lost in Cyberspace</h1>
+  <p class="error-page__desc">The page you're looking for doesn't exist, was moved, or has been taken down.</p>
+  <div class="error-page__actions">
+    <a href="/" class="btn btn--primary">← Back to Feed</a>
+    <a href="/posts/" class="btn btn--ghost">Browse All Posts</a>
+  </div>
+</div>
+
+<style>
+.error-page {
+  text-align: center;
+  padding: 6rem 1rem 4rem;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.error-page__glitch {
+  font-family: var(--f-mono);
+  font-size: 8rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.15;
+  margin-bottom: -1.5rem;
+  user-select: none;
+}
+.error-page__title {
+  font-family: var(--f-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0 0 0.8rem;
+}
+.error-page__desc {
+  color: var(--gray);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 2rem;
+}
+.error-page__actions {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+</style>

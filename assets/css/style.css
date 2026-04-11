@@ -1916,6 +1916,40 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   border-top: 1px solid var(--border);
 }
 
+/* ── Related Posts ── */
+.post-related {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.post-related__title {
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  margin: 0 0 1rem;
+}
+.post-related__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+}
+.post-related__grid .feed-item {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0.8rem;
+  background: var(--card);
+}
+.post-related__grid .feed-item:hover {
+  border-color: var(--accent);
+}
+@media (min-width: 640px) {
+  .post-related__grid { grid-template-columns: repeat(3, 1fr); }
+  .post-related__grid .feed-item { flex-direction: column; }
+  .post-related__grid .feed-item__img { width: 100%; height: 120px; }
+}
+
 /* =====================================================
    FOOTER
    ===================================================== */
