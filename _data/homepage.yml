@@ -25,47 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Actors Target Business Services Sector
-    text: Business services are experiencing a significant increase in ransomware attacks.
-    detail: DARKFEED reports an 18-attack surge in the business services sector, indicating a coordinated campaign. Prioritize hardening defenses, implementing robust backup strategies, and ensuring rapid incident response capabilities for critical business systems.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness
-    link_label: Ransomware Defense
+  - title: Ransomware Operations Face Scrutiny and Disruption
+    text: Ransomware groups are increasingly targets of takedowns or elaborate hoaxes, impacting their operations.
+    detail: Recent events suggest that ransomware operations, like Kairos, are facing disruption, with their leak sites defaced. This could indicate successful law enforcement action or sophisticated misdirection. Security teams should remain vigilant and verify intelligence from these sources, as the operational landscape for ransomware actors is becoming more volatile.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-329a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - business-services
-  - title: AI-Generated Content Overwhelms Bug Bounty Platforms
-    text: AI-generated vulnerability reports are flooding bug bounty platforms.
-    detail: HackerOne has paused services due to an influx of AI-produced submissions, making triage difficult. Security teams should develop strategies to detect and filter AI-generated reports, focusing on human-verified findings and unique exploit chains.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: AI Security Risks
+      - disruption
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: Bug bounty platforms are struggling to manage a surge in AI-generated vulnerability submissions.
+    detail: The influx of AI-generated vulnerability reports is causing significant triage and remediation challenges for platforms like HackerOne. This trend necessitates improved AI detection tools and a re-evaluation of submission validation processes to ensure genuine security issues are prioritized over automated noise.
+    link: https://owasp.org/www-project-top-10-ai-security/
+    link_label: OWASP AI Security
     badge: signal
     tags:
       - ai-security
+      - vulnerability-management
       - bug-bounty
-      - threat-intel
-  - title: SSRF Vulnerabilities Remain a Critical Threat
-    text: SSRF vulnerabilities continue to be actively exploited across various tools.
-    detail: Recent advisories highlight SSRF flaws in Backstage and an 'atototo' API tool, enabling internal system exposure. Implement strict input validation, network segmentation, and egress filtering to mitigate SSRF risks and prevent unauthorized access to internal resources.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: SSRF Mitigation
+  - title: SSRF and RCE Remain Critical Threats in Diverse Applications
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities continue to impact various software.
+    detail: Recent advisories highlight critical SSRF flaws in tools like Backstage and API labs, alongside RCE vulnerabilities in Alchemy CMS and Docling Core due to dependency issues. Organizations must prioritize patching and secure coding practices, especially for components handling external inputs or utilizing dynamic code execution.
+    link: https://cwe.mitre.org/data/definitions/88.html
+    link_label: CWE SSRF
     badge: signal
     tags:
+      - vulnerability
       - ssrf
-      - vulnerability
-      - web-application-security
-  - title: "Exploiting Software Dependencies: RCE via PyYAML"
-    text: Vulnerabilities in software dependencies pose significant RCE risks.
-    detail: Docling Core's RCE bug stems from an insecure PyYAML dependency, highlighting supply chain risks. Maintain an accurate software bill of materials (SBOM), regularly audit dependencies for known vulnerabilities, and promptly patch or replace vulnerable components.
-    link: https://www.nist.gov/cyberframework/software-supply-chain-security
-    link_label: Supply Chain Security
+      - rce
+      - secure-coding
+  - title: Phishing and Scams Evolve with New Tactics and Targets
+    text: Cyber threat actors are leveraging sophisticated tactics, including emojis and targeting specific sectors like business services.
+    detail: Threat actors are increasingly using emojis for stealth and are focusing on sectors like business services, alongside exploiting crypto scams and elder fraud to fuel cyber theft. Defense strategies must adapt to these evolving social engineering techniques and sector-specific attack vectors.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
+    link_label: Phishing Awareness
     badge: signal
     tags:
-      - supply-chain
-      - rce
-      - vulnerability
-      - dependency-management
+      - threat-intel
+      - phishing
+      - scams
+      - social-engineering
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
