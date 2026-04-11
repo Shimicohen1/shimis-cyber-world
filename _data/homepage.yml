@@ -25,48 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware Operations Face Scrutiny and Disruption
-    text: Ransomware groups are increasingly targets of takedowns or elaborate hoaxes, impacting their operations.
-    detail: Recent events suggest that ransomware operations, like Kairos, are facing disruption, with their leak sites defaced. This could indicate successful law enforcement action or sophisticated misdirection. Security teams should remain vigilant and verify intelligence from these sources, as the operational landscape for ransomware actors is becoming more volatile.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-329a
-    link_label: Ransomware Guidance
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Business services sector is experiencing a surge in ransomware attacks, indicating a strategic shift by threat actors.
+    detail: Recent intelligence highlights a significant increase in ransomware activities targeting the business services sector. Organizations in this industry should review and enhance their incident response plans, ensure robust backup strategies, and implement advanced endpoint detection and response (EDR) solutions to mitigate the growing threat.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-076a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - disruption
+      - business-services
   - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: Bug bounty platforms are struggling to manage a surge in AI-generated vulnerability submissions.
-    detail: The influx of AI-generated vulnerability reports is causing significant triage and remediation challenges for platforms like HackerOne. This trend necessitates improved AI detection tools and a re-evaluation of submission validation processes to ensure genuine security issues are prioritized over automated noise.
-    link: https://owasp.org/www-project-top-10-ai-security/
-    link_label: OWASP AI Security
+    text: Bug bounty platforms face challenges triaging AI-generated vulnerability submissions, impacting remediation efforts.
+    detail: The influx of AI-produced vulnerability reports is straining resources on platforms like HackerOne. Cybersecurity teams must develop strategies to effectively filter, validate, and prioritize these submissions, potentially leveraging AI tools for initial analysis while maintaining human oversight to ensure genuine threats are addressed promptly.
+    link: https://owasp.org/www-community/vulnerabilities/AI_Security_Risks
+    link_label: OWASP AI Security Risks
     badge: signal
     tags:
       - ai-security
-      - vulnerability-management
       - bug-bounty
-  - title: SSRF and RCE Remain Critical Threats in Diverse Applications
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities continue to impact various software.
-    detail: Recent advisories highlight critical SSRF flaws in tools like Backstage and API labs, alongside RCE vulnerabilities in Alchemy CMS and Docling Core due to dependency issues. Organizations must prioritize patching and secure coding practices, especially for components handling external inputs or utilizing dynamic code execution.
-    link: https://cwe.mitre.org/data/definitions/88.html
-    link_label: CWE SSRF
+      - threat-intel
+  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Web Applications
+    text: New critical SSRF and RCE vulnerabilities continue to be discovered in popular web applications and tools.
+    detail: Recent advisories underscore the persistent risk of Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws in web applications and developer tools. Organizations must prioritize patching these vulnerabilities, conduct regular security assessments, and implement input validation and network segmentation to prevent exploitation.
+    link: https://owasp.org/www-project-top-ten/
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - vulnerability
-      - ssrf
       - rce
-      - secure-coding
-  - title: Phishing and Scams Evolve with New Tactics and Targets
-    text: Cyber threat actors are leveraging sophisticated tactics, including emojis and targeting specific sectors like business services.
-    detail: Threat actors are increasingly using emojis for stealth and are focusing on sectors like business services, alongside exploiting crypto scams and elder fraud to fuel cyber theft. Defense strategies must adapt to these evolving social engineering techniques and sector-specific attack vectors.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
-    link_label: Phishing Awareness
+      - ssrf
+      - web-application-security
+  - title: OSINT Techniques for Identity Discovery Expand
+    text: Open-source intelligence techniques are increasingly effective for uncovering detailed personal and business information.
+    detail: The power of OSINT continues to grow, with detailed guides emerging on leveraging phone numbers and other public data to map individuals and their digital footprint. Professionals should stay informed about evolving OSINT methodologies and tools, while also reinforcing data privacy measures and user awareness training.
+    link: https://www.nist.gov/cyberframework
+    link_label: NIST Cybersecurity Framework
     badge: signal
     tags:
+      - osint
+      - data-privacy
       - threat-intel
-      - phishing
-      - scams
-      - social-engineering
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
