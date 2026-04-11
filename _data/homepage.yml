@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
+  - title: AI Models Pose Emerging Threat to Cloud Credentials
+    text: AI chat interfaces are becoming targets for cloud credential theft.
+    detail: Vulnerabilities in AI interfaces, particularly those with RAG extensions, can expose sensitive cloud credentials. Professionals should audit AI system configurations and access controls, prioritizing secure credential management to mitigate this growing risk.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
+    badge: signal
+    tags:
+      - ai-security
+      - cloud-security
+      - vulnerability
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business services sector is experiencing a surge in ransomware attacks, indicating a strategic shift by threat actors.
-    detail: Recent intelligence highlights a significant increase in ransomware activities targeting the business services sector. Organizations in this industry should review and enhance their incident response plans, ensure robust backup strategies, and implement advanced endpoint detection and response (EDR) solutions to mitigate the growing threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-076a
+    text: Business services sector faces a significant surge in ransomware attacks.
+    detail: Intelligence indicates a coordinated increase in ransomware activity targeting the business services industry. Organizations in this sector must review their incident response plans, enhance endpoint protection, and ensure robust data backups are in place and tested.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-302a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: Bug bounty platforms face challenges triaging AI-generated vulnerability submissions, impacting remediation efforts.
-    detail: The influx of AI-produced vulnerability reports is straining resources on platforms like HackerOne. Cybersecurity teams must develop strategies to effectively filter, validate, and prioritize these submissions, potentially leveraging AI tools for initial analysis while maintaining human oversight to ensure genuine threats are addressed promptly.
-    link: https://owasp.org/www-community/vulnerabilities/AI_Security_Risks
-    link_label: OWASP AI Security Risks
+  - title: SSRF Vulnerabilities Remain a Critical Risk
+    text: SSRF flaws continue to be discovered in various tools and platforms.
+    detail: Recent reports highlight SSRF vulnerabilities in developer tools and API labs, enabling attackers to probe internal systems. Implement strict input validation, network segmentation, and outbound traffic filtering to prevent unauthorized access and data exfiltration.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Prevention
     badge: signal
     tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Web Applications
-    text: New critical SSRF and RCE vulnerabilities continue to be discovered in popular web applications and tools.
-    detail: Recent advisories underscore the persistent risk of Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws in web applications and developer tools. Organizations must prioritize patching these vulnerabilities, conduct regular security assessments, and implement input validation and network segmentation to prevent exploitation.
-    link: https://owasp.org/www-project-top-ten/
-    link_label: OWASP Top 10
-    badge: signal
-    tags:
-      - vulnerability
-      - rce
       - ssrf
-      - web-application-security
-  - title: OSINT Techniques for Identity Discovery Expand
-    text: Open-source intelligence techniques are increasingly effective for uncovering detailed personal and business information.
-    detail: The power of OSINT continues to grow, with detailed guides emerging on leveraging phone numbers and other public data to map individuals and their digital footprint. Professionals should stay informed about evolving OSINT methodologies and tools, while also reinforcing data privacy measures and user awareness training.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
+      - vulnerability
+      - web-security
+  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
+    text: Critical vulnerabilities are arising from third-party library dependencies.
+    detail: A recent RCE bug in Docling Core, stemming from a PyYAML dependency, underscores the risks of unmanaged software supply chains. Organizations must implement robust Software Bill of Materials (SBOM) practices and regularly scan dependencies for known vulnerabilities.
+    link: https://www.nist.gov/itl/programs-office/software-supply-chain-security
+    link_label: NIST SBOM Guidance
     badge: signal
     tags:
-      - osint
-      - data-privacy
-      - threat-intel
+      - supply-chain
+      - vulnerability
+      - dependency-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
