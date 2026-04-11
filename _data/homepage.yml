@@ -25,45 +25,45 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI Models Pose Emerging Threat to Cloud Credentials
-    text: AI chat interfaces are becoming targets for cloud credential theft.
-    detail: Vulnerabilities in AI interfaces, particularly those with RAG extensions, can expose sensitive cloud credentials. Professionals should audit AI system configurations and access controls, prioritizing secure credential management to mitigate this growing risk.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI is flooding bug bounty programs, straining triage and remediation efforts.
+    detail: The surge in AI-generated vulnerability reports, as seen with HackerOne pausing services, demands new strategies. Organizations must enhance automated detection for AI-crafted submissions and refine manual review processes to distinguish genuine findings from noise, ensuring efficient resource allocation for critical security issues.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-287a
+    link_label: CISA AI Guidance
     badge: signal
     tags:
       - ai-security
-      - cloud-security
+      - bug-bounty
+      - threat-intel
+  - title: SSRF Vulnerabilities Persist Across Diverse Applications
+    text: Server-Side Request Forgery (SSRF) remains a prevalent threat in API tools and developer platforms.
+    detail: Recent alerts highlight SSRF flaws in tools like Backstage and the atototo API lab, indicating a consistent pattern of insecure handling of external requests. Developers must prioritize robust input validation and access controls for all URL-based functionalities to prevent internal system exposure and unauthorized data access.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Guide
+    badge: signal
+    tags:
       - vulnerability
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business services sector faces a significant surge in ransomware attacks.
-    detail: Intelligence indicates a coordinated increase in ransomware activity targeting the business services industry. Organizations in this sector must review their incident response plans, enhance endpoint protection, and ensure robust data backups are in place and tested.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-302a
+      - ssrf
+      - api-security
+  - title: Ransomware Actors Intensify Attacks on Business Services Sector
+    text: The Business Services sector is experiencing a coordinated surge in ransomware attacks.
+    detail: DARKFEED reports indicate a significant increase in ransomware activity targeting the Business Services industry. Companies in this sector should bolster their defenses with robust endpoint protection, regular data backups, and comprehensive incident response plans to mitigate the growing threat of encryption and extortion.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-343a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: SSRF Vulnerabilities Remain a Critical Risk
-    text: SSRF flaws continue to be discovered in various tools and platforms.
-    detail: Recent reports highlight SSRF vulnerabilities in developer tools and API labs, enabling attackers to probe internal systems. Implement strict input validation, network segmentation, and outbound traffic filtering to prevent unauthorized access and data exfiltration.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Prevention
+  - title: Exploitation of Open-Source Software Dependencies Remains Critical
+    text: Vulnerabilities stemming from open-source dependencies continue to pose significant risks.
+    detail: The Docling Core RCE bug, linked to PyYAML, exemplifies the persistent danger of insecure dependencies. Organizations must implement rigorous Software Bill of Materials (SBOM) practices and continuously monitor their supply chain for known vulnerabilities in third-party libraries to prevent compromise.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-23885
+    link_label: NVD - CVE-2026-23885
     badge: signal
     tags:
-      - ssrf
       - vulnerability
-      - web-security
-  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
-    text: Critical vulnerabilities are arising from third-party library dependencies.
-    detail: A recent RCE bug in Docling Core, stemming from a PyYAML dependency, underscores the risks of unmanaged software supply chains. Organizations must implement robust Software Bill of Materials (SBOM) practices and regularly scan dependencies for known vulnerabilities.
-    link: https://www.nist.gov/itl/programs-office/software-supply-chain-security
-    link_label: NIST SBOM Guidance
-    badge: signal
-    tags:
       - supply-chain
-      - vulnerability
       - dependency-management
 vault_picks:
   - name: OWASP Top 10
