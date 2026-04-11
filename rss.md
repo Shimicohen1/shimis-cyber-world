@@ -23,7 +23,7 @@ permalink: /rss/
 <div class="rss-readers">
   <h2 class="rss-readers__title">Open in a feed reader</h2>
   <div class="rss-readers__grid">
-    <a href="https://feedly.com/i/subscription/feed/{{ '/feed.xml' | absolute_url | url_encode }}" target="_blank" rel="noopener noreferrer" class="rss-reader-card">
+    <a href="https://feedly.com/i/subscription/feed%2Fhttps%3A%2F%2Fshimiscyberworld.com%2Ffeed.xml" target="_blank" rel="noopener noreferrer" class="rss-reader-card">
       <span class="rss-reader-card__icon" style="color:#34d399;">&#9679;</span>
       <strong>Feedly</strong>
       <span>Most popular feed reader</span>
