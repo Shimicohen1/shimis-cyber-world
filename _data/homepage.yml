@@ -25,48 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: RCE Vulnerabilities Remain a Critical Threat Vector
-    text: Multiple recent advisories highlight a persistent and dangerous trend of Remote Code Execution (RCE) vulnerabilities.
-    detail: RCE bugs, like those found in Alchemy CMS (CVE-2026-23885) and Docling Core due to PyYAML, continue to be a primary attack vector. Organizations must prioritize patching and robust input validation to mitigate these risks. Regularly review dependency security to prevent transitive RCEs.
-    link: https://owasp.org/www-community/vulnerabilities/Insecure_Deserialization
-    link_label: OWASP Insecure Deserialization
+  - title: AI-Generated Vulnerabilities Flood Bug Bounty Platforms
+    text: AI is overwhelming bug bounty programs, impacting triage and remediation efforts.
+    detail: HackerOne has paused services due to an influx of AI-generated vulnerability reports, highlighting challenges in distinguishing automated submissions from genuine findings. Cybersecurity professionals should prepare for increased noise and focus on verifying the novelty and impact of AI-assisted discovery efforts.
+    link: https://www.first.org/resources/guides/ai-in-cybersecurity
+    link_label: AI in Cybersecurity Guide
+    badge: signal
+    tags:
+      - ai-security
+      - threat-intel
+      - bug-bounty
+  - title: Emerging Threat Actors Require Proactive Monitoring
+    text: New threat actors like TiMc are appearing, demanding vigilance and updated threat intelligence.
+    detail: The emergence of new threat actors, such as TiMc, underscores the dynamic nature of the cyber threat landscape. Organizations must continuously monitor threat intelligence feeds and adapt their defenses to counter evolving TTPs from both established and novel adversaries.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/threat-actors-and-indicators-compromise
+    link_label: Threat Actors Overview
+    badge: signal
+    tags:
+      - threat-intel
+      - new-actors
+      - monitoring
+  - title: SSRF and RCE Remain Critical Application Vulnerabilities
+    text: Server-Side Request Forgery and Remote Code Execution flaws persist across various applications.
+    detail: Recent advisories highlight ongoing Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in diverse software, including developer tools, CMS platforms, and APIs. Prioritizing patching and robust input validation is crucial to mitigate these persistent application-level risks.
+    link: https://owasp.org/www-project-top-ten/
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - vulnerability
       - rce
-      - dependency-management
-  - title: SSRF Flaws Pose Significant Risk to Internal Systems
-    text: Server-Side Request Forgery (SSRF) vulnerabilities are being actively exploited, exposing internal network resources.
-    detail: Recent alerts for Backstage and the atototo API tool underscore the critical need to address SSRF flaws. These vulnerabilities allow attackers to make unauthorized requests from the server to internal or external resources. Implement strict URL validation and network segmentation to prevent exploitation.
-    link: https://cwe.mitre.org/data/definitions/918.html
-    link_label: CWE-918 Server-Side Request Forgery
-    badge: signal
-    tags:
-      - vulnerability
       - ssrf
-      - network-security
-  - title: AI Tool Vulnerabilities Emerge as LLMs Integrate
-    text: The integration of LLMs introduces new attack surfaces, with AI interfaces vulnerable to credential theft.
-    detail: A critical flaw in an AI chat interface (text-generation-webui) highlights the growing security concerns around AI tools. Attackers can potentially steal cloud credentials. Organizations deploying AI models must secure their interfaces, implement strong access controls, and continuously monitor for emerging AI-specific threats.
-    link: https://www.nist.gov/cybersecurity/artificial-intelligence-and-machine-learning
-    link_label: NIST AI & ML Cybersecurity
+      - application-security
+  - title: Business Services Sector Faces Intensified Ransomware Attacks
+    text: Ransomware groups are specifically targeting the business services sector with increased frequency.
+    detail: The business services sector is experiencing a concentrated surge in ransomware attacks, indicating a strategic shift by threat actors. Companies in this industry should reinforce their ransomware defenses, conduct regular backups, and train employees on phishing and social engineering awareness.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-294a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
-      - ai-security
-      - vulnerability
-      - cloud-security
-      - identity
-  - title: New Threat Actors and Tactics Demand Vigilance
-    text: The threat landscape is dynamic, with new actors like TiMc and evolving tactics such as emoji weaponization.
-    detail: Emerging threat actors and novel evasion techniques, like using emojis for stealth, require continuous intelligence gathering. Stay updated on threat actor profiles and their methods. Implement advanced threat detection and response capabilities to counter sophisticated attacks and stay ahead of evolving TTPs.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/threat-actors-tactics-techniques-and-procedures-ttpts
-    link_label: CISA TTPs Explained
-    badge: signal
-    tags:
+      - ransomware
       - threat-intel
+      - business-services
       - malware
-      - darkweb
-      - attack-vectors
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
