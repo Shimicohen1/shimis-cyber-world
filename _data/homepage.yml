@@ -25,47 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: "Discourse Vulnerabilities Escalate: Focus on Authentication and Access Control"
-    text: Multiple Discourse vulnerabilities highlight ongoing issues with moderator access and subscription tier manipulation.
-    detail: Recent advisories reveal several critical flaws in Discourse, including unauthorized access to private topics and subscription privilege escalation. Professionals should prioritize patching and reviewing access control configurations for this widely-used platform to prevent privilege creep and unauthorized data exposure.
+  - title: Discourse Platform Faces Multi-Vector Vulnerability Exploitation
+    text: Discourse platforms are experiencing a surge in vulnerabilities affecting private topics, email settings, subscriptions, and draft sharing.
+    detail: Multiple recent advisories highlight a concerning trend of diverse vulnerabilities within the Discourse platform. Professionals should prioritize patching and review access controls, especially concerning private topics and subscription mechanisms, to mitigate risks.
     link: https://github.com/discourse/discourse/security/advisories
     link_label: Discourse Security Advisories
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - access-control
-  - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: Ransomware operations are actively targeting the business services sector, with a notable increase in attacks.
-    detail: Intelligence indicates a surge in ransomware activity specifically against the business services industry. Organizations in this sector must bolster their defenses, focusing on robust backup strategies, network segmentation, and employee training to mitigate the growing threat of data encryption and extortion.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
-    link_label: CISA Alerts
+      - application-security
+  - title: AI Models and Interfaces Present New Cloud Credential & Data Risks
+    text: AI interfaces and models are increasingly targeted, posing risks to cloud credentials and sensitive user data.
+    detail: The emergence of vulnerabilities in AI chat interfaces (e.g., text-generation-webui) underscores the evolving threat landscape. Organizations must scrutinize AI integrations for proper credential management and data handling to prevent unauthorized access and potential data leaks.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
+    badge: signal
+    tags:
+      - ai-security
+      - cloud-security
+      - vulnerability
+      - data-leak
+  - title: Ransomware Groups Actively Targeting Business Services Sector
+    text: Ransomware operations show increased focus on the Business Services sector, with active targeting and potential site disruptions.
+    detail: Intelligence indicates a coordinated increase in ransomware attacks against the Business Services sector. Organizations in this sector should bolster defenses, conduct regular backups, and ensure incident response plans are up-to-date to counter these escalating threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-278a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Vulnerability Reports Flood Bug Bounty Platforms
-    text: Bug bounty platforms are overwhelmed by AI-generated vulnerability submissions, impacting triage efficiency.
-    detail: The influx of AI-generated vulnerability reports is straining resources on platforms like HackerOne. Security teams should implement stricter validation processes for submitted findings and focus on developing AI detection capabilities to distinguish genuine exploits from automated noise.
-    link: https://owasp.org/www-project-threat-model-for-ai-applications/
-    link_label: OWASP AI Security
-    badge: signal
-    tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: SSRF and RCE Vulnerabilities Persist in Developer Tools and CMS
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to affect developer tools and CMS platforms.
-    detail: Recent disclosures highlight persistent SSRF and RCE vulnerabilities in popular developer tools and content management systems. It's crucial for organizations to stay updated on patches for components like Backstage, Alchemy CMS, and Jeecgboot, and to conduct regular security audits to prevent exploitation.
-    link: https://nvd.nist.gov/vuln/search
-    link_label: NVD Vulnerability Database
+      - malware
+  - title: SSRF Vulnerabilities Remain a Critical Threat Vector
+    text: Server-Side Request Forgery (SSRF) vulnerabilities continue to be identified across various tools and platforms.
+    detail: Recent advisories highlight ongoing SSRF risks in developer tools like Backstage and API testing utilities. Defenders must implement robust input validation and network segmentation to prevent attackers from exploiting these flaws to access internal systems.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery_(SSRF)
+    link_label: OWASP SSRF Prevention
     badge: signal
     tags:
       - vulnerability
-      - rce
       - ssrf
-      - developer-tools
+      - application-security
+      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
