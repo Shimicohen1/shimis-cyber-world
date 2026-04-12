@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: "Discourse Under Siege: Multiple Vulnerabilities Surface"
-    text: Discourse platforms are experiencing a series of critical vulnerabilities impacting moderation, subscriptions, and data exposure.
-    detail: Recent advisories highlight a cluster of flaws in Discourse, including unauthorized access to private topics (CVE-2026-32615) and subscription tier manipulation (CVE-2026-33074). Prioritize patching and review access controls to mitigate risks of data leakage and unauthorized privilege escalation.
-    link: https://github.com/discourse/discourse/security/advisories
+  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
+    text: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform, affecting various functionalities.
+    detail: Discourse continues to be a target, with recent vulnerabilities allowing unauthorized access to private topics, network probing, and subscription manipulation. Organizations using Discourse should prioritize patching and review access controls to mitigate these persistent risks. Stay updated on official Discourse security advisories.
+    link: https://blog.discourse.org/2023/09/discourse-security-updates/
     link_label: Discourse Security Advisories
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - patching
-  - title: "AI Model Risks: Anthropic's 'Mythos' Too Dangerous to Release"
-    text: Advanced AI models like Anthropic's 'Mythos' are deemed too hazardous for public deployment due to potential misuse.
-    detail: The development of highly capable AI models presents significant risks, as exemplified by Anthropic's decision to withhold 'Mythos'. Organizations must proactively assess the potential societal and security implications of emerging AI technologies and implement robust safety protocols.
+      - discourse
+      - web-application
+  - title: AI Models and Interfaces Present New Attack Vectors
+    text: Emerging threats target AI models and interfaces, including credential theft and concerning model capabilities.
+    detail: The increasing integration of AI introduces novel security challenges. Vulnerabilities in AI chat interfaces can lead to cloud credential theft, while advanced AI models themselves may pose risks if deemed too dangerous for public release. Security teams must focus on securing AI infrastructure and scrutinizing AI model deployments.
     link: https://www.cisa.gov/news-events/news/securing-artificial-intelligence-systems
-    link_label: CISA AI Security Guidance
+    link_label: CISA on AI Security
     badge: signal
     tags:
       - ai-security
-      - risk-management
-      - emerging-tech
-  - title: Ransomware Activity Surges in Business Services Sector
-    text: Ransomware groups are intensifying attacks against the Business Services sector, indicating a targeted campaign.
-    detail: Intelligence reports a significant increase in ransomware attacks targeting the Business Services industry. Organizations in this sector should bolster defenses, conduct regular backups, and ensure robust incident response plans are in place to counter these escalating threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
-    link_label: CISA Ransomware Guidance
-    badge: signal
-    tags:
-      - ransomware
+      - cloud-security
       - threat-intel
-      - business-services
-  - title: "Exploiting Dependencies: PyYAML and RCE Risks"
-    text: Vulnerabilities in software dependencies, like PyYAML in Docling Core, are leading to critical RCE flaws.
-    detail: The Docling Core RCE bug (CVE-2026-35468) highlights the critical risk posed by insecure dependencies. Regularly audit your software supply chain, track dependency versions, and prioritize patching for libraries like PyYAML to prevent widespread compromise.
-    link: https://owasp.org/www-project-dependency-check/
-    link_label: OWASP Dependency-Check
+  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
+    text: Critical vulnerabilities are arising from insecure dependencies in various software projects.
+    detail: Several recent advisories underscore the significant risk posed by vulnerable dependencies, such as PyYAML in Docling Core or Ruby's `eval()` in Alchemy CMS. Organizations must implement robust Software Bill of Materials (SBOM) practices and actively monitor their software supply chain for known vulnerabilities.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP SCA Project
     badge: signal
     tags:
       - supply-chain
       - dependency-management
-      - rce
+      - vulnerability
+  - title: New Threat Actors and Tactics Emerge in Dark Web Landscape
+    text: The emergence of new ransomware operations and evolving evasion tactics are noted.
+    detail: Intelligence highlights new threat actors like 'TiMc' and evolving ransomware tactics, including the use of emojis for stealth and potential defacement campaigns against ransomware groups. Continuous monitoring of dark web forums and threat intelligence feeds is crucial for staying ahead of emerging threats and actor methodologies.
+    link: https://www.mitre.org/news-events/news/mitre-att-ck-techniques-and-threat-actor-groupings
+    link_label: MITRE ATT&CK
+    badge: signal
+    tags:
+      - darkweb
+      - threat-intel
+      - ransomware
+      - evasion
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
