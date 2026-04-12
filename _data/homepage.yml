@@ -25,48 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple Discourse vulnerabilities are being reported, impacting various features from content access to subscription tiers.
-    detail: Discourse users should prioritize patching vulnerabilities that allow unauthorized access to private topics (CVE-2026-32615), expose draft titles (CVE-2026-32951), and enable subscription fraud (CVE-2026-33074). Regularly review access controls and update to the latest versions to mitigate risks.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+  - title: Discourse Platform Targeted by Multiple Vulnerabilities
+    text: Discourse is experiencing a wave of diverse vulnerabilities, including privilege escalation and data exposure.
+    detail: Multiple recent CVEs highlight an ongoing assault on the Discourse platform. Attackers are exploiting flaws related to moderator access, private topic exposure, and subscription tier manipulation. Organizations using Discourse should prioritize patching and review access controls to mitigate risks.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: Discourse Vulnerability Details
     badge: signal
     tags:
       - discourse
       - vulnerability
-      - patching
-  - title: AI Model Risks Highlight Need for Robust Safety Protocols
-    text: Concerns are mounting over advanced AI models deemed too dangerous for public release, emphasizing AI safety research.
-    detail: The development of powerful AI models like Anthropic's 'Mythos' raises significant ethical and security questions. Organizations must implement rigorous AI safety frameworks and consider responsible deployment strategies to prevent misuse and unintended consequences.
-    link: https://www.nist.gov/ai-risk-management-framework
-    link_label: NIST AI RMF
-    badge: signal
-    tags:
-      - ai-security
-      - responsible-ai
-      - threat-intel
-  - title: Ransomware Actors Intensify Attacks on Business Services
-    text: The business services sector is experiencing a surge in ransomware attacks, indicating a targeted campaign.
-    detail: Cybercriminals are actively targeting the Business Services sector, with a notable increase in ransomware incidents. Companies in this sector should bolster their defenses, implement robust backup strategies, and enhance employee training on phishing and social engineering tactics.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
+      - platform-security
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Business services sector is facing a coordinated surge in ransomware attacks.
+    detail: Intelligence indicates a significant increase in ransomware activity targeting the business services sector. Threat actors are actively exploiting vulnerabilities to disrupt operations and extort victims. Organizations in this sector must bolster their defenses with robust backups, endpoint protection, and incident response plans.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-321a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
-      - business-services
       - threat-intel
-      - malware
-  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Tools
-    text: New SSRF and RCE vulnerabilities continue to be discovered in various software tools and platforms.
-    detail: Recent disclosures highlight ongoing risks from Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws in tools like Backstage, atototo API, and Alchemy CMS. Developers must prioritize secure coding practices, input validation, and timely patching of known vulnerabilities.
-    link: https://owasp.org/www-project-top-ten/
-    link_label: OWASP Top 10
+      - business-services
+  - title: AI Models Pose New Security Risks and Data Leakage Concerns
+    text: Emerging AI models and interfaces are introducing novel security risks and data exfiltration vectors.
+    detail: Vulnerabilities in AI chat interfaces and LLM extensions highlight risks of credential theft and data exposure. Furthermore, AI models themselves are being developed with capabilities deemed too dangerous for public release. Organizations must implement strict security protocols for AI deployments and be vigilant about potential AI-driven threats.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
+    badge: signal
+    tags:
+      - ai-security
+      - data-leak
+      - llm
+  - title: SSRF and RCE Vulnerabilities in Developer Tools and CMS
+    text: Critical SSRF and RCE flaws are prevalent in developer tools and content management systems.
+    detail: Recent advisories reveal critical Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities impacting various developer tools and CMS platforms like Backstage, Alchemy CMS, and Jeecgboot. These flaws allow attackers to probe internal systems or execute arbitrary code. Ensure all affected software is promptly updated.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Information
     badge: signal
     tags:
       - ssrf
       - rce
-      - vulnerability
-      - secure-coding
+      - developer-tools
+      - cms
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
