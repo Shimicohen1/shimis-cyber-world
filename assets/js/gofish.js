@@ -374,12 +374,14 @@
   /* ── Build external verification links ── */
   function buildVerifyLinks(urlStr) {
     var _i = function(n) { return typeof scwIcon === 'function' ? scwIcon(n) : ''; };
+    var domain = '';
+    try { domain = new URL(urlStr).hostname; } catch(e) { domain = urlStr.replace(/^https?:\/\//, '').split('/')[0]; }
     return [
       { name: 'VirusTotal', icon: _i('search'), href: 'https://www.virustotal.com/gui/url/' + encodeURIComponent(urlStr), desc: 'Scan across 90+ security engines for malware & phishing' },
       { name: 'URLScan.io', icon: _i('search'), href: 'https://urlscan.io/search/#' + encodeURIComponent(urlStr), desc: 'Safe visual preview — see the page without visiting it' },
       { name: 'Google Safe Browsing', icon: _i('shield'), href: 'https://transparencyreport.google.com/safe-browsing/search?url=' + encodeURIComponent(urlStr), desc: "Google's phishing & malware blocklist" },
-      { name: 'PhishTank', icon: _i('anchor'), href: 'https://phishtank.org/phish_search.php?verified=u&active=y', desc: 'Community-verified phishing database' },
-      { name: 'URLVoid', icon: _i('cloud'), href: 'https://www.urlvoid.com/scan/' + encodeURIComponent(urlStr), desc: 'Check 30+ website reputation engines' }
+      { name: 'PhishTank', icon: _i('anchor'), href: 'https://phishtank.org/phish_search.php?verified=u&active=y&url=' + encodeURIComponent(domain), desc: 'Community-verified phishing database' },
+      { name: 'Sucuri SiteCheck', icon: _i('cloud'), href: 'https://sitecheck.sucuri.net/results/' + encodeURIComponent(domain), desc: 'Check for malware, blocklisting & website security issues' }
     ];
   }
 

@@ -96,4 +96,4 @@ window.IOC_TOOL_RECS = [
   {% endfor %}
 ];
 </script>
-<script src="/assets/js/gofish.js?v=6" defer></script>
+<script src="/assets/js/gofish.js?v=7" defer></script>
