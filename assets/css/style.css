@@ -479,7 +479,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   color: var(--gray);
 }
 .btn--ghost:hover { color: var(--white); border-color: var(--white); background: var(--faint); }
-.btn--sm { font-size: .72rem; padding: .35rem .7rem; }
+.btn--sm { font-size: .72rem; padding: .35rem .7rem; border: 1px solid var(--border-hi); background: transparent; color: var(--gray); border-radius: 999px; }
+.btn--sm:hover { border-color: var(--electric); color: var(--white); background: rgba(59, 130, 246, .08); }
+.btn--active { background: var(--electric); border-color: var(--electric); color: #fff; }
+.btn--active:hover { background: var(--electric); border-color: var(--electric); color: #fff; }
 .btn--disabled { opacity: .35; cursor: default; pointer-events: none; }
 
 /* =====================================================
