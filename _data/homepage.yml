@@ -25,39 +25,40 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Vulnerabilities Continue to Emerge
-    text: Multiple recent posts highlight ongoing security flaws within the Discourse platform.
-    detail: Discourse, a popular open-source discussion platform, has seen several vulnerabilities reported, including issues with private topic access, network probing via email settings, subscription tier manipulation, and draft topic title exposure. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=summary&query=Discourse
-    link_label: Discourse CVEs on NVD
+  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
+    text: Multiple Discourse vulnerabilities are being reported, impacting various features from content access to subscription tiers.
+    detail: Discourse users should prioritize patching vulnerabilities that allow unauthorized access to private topics (CVE-2026-32615), expose draft titles (CVE-2026-32951), and enable subscription fraud (CVE-2026-33074). Regularly review access controls and update to the latest versions to mitigate risks.
+    link: https://github.com/discourse/discourse/security/advisories
+    link_label: Discourse Security Advisories
     badge: signal
     tags:
       - discourse
       - vulnerability
-      - cve
-  - title: Ransomware Groups Intensify Business Services Sector Attacks
-    text: The Business Services sector is experiencing a significant increase in ransomware attacks.
-    detail: Intelligence indicates a coordinated surge in ransomware activity targeting the Business Services sector. Companies in this industry must reinforce their defenses, focusing on robust backups, network segmentation, and employee awareness training to counter these escalating threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-291a
+      - patching
+  - title: AI Model Risks Highlight Need for Robust Safety Protocols
+    text: Concerns are mounting over advanced AI models deemed too dangerous for public release, emphasizing AI safety research.
+    detail: The development of powerful AI models like Anthropic's 'Mythos' raises significant ethical and security questions. Organizations must implement rigorous AI safety frameworks and consider responsible deployment strategies to prevent misuse and unintended consequences.
+    link: https://www.nist.gov/ai-risk-management-framework
+    link_label: NIST AI RMF
+    badge: signal
+    tags:
+      - ai-security
+      - responsible-ai
+      - threat-intel
+  - title: Ransomware Actors Intensify Attacks on Business Services
+    text: The business services sector is experiencing a surge in ransomware attacks, indicating a targeted campaign.
+    detail: Cybercriminals are actively targeting the Business Services sector, with a notable increase in ransomware incidents. Companies in this sector should bolster their defenses, implement robust backup strategies, and enhance employee training on phishing and social engineering tactics.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
-      - threat-intel
       - business-services
-  - title: AI-Generated Vulnerability Reports Challenge Bug Bounty Platforms
-    text: AI-generated reports are overwhelming bug bounty platforms, hindering remediation efforts.
-    detail: The influx of AI-assisted vulnerability submissions is creating significant triage challenges for platforms like HackerOne. Security teams should establish clear guidelines for AI-generated reports and invest in tools capable of discerning genuine findings from noise to maintain effective bug bounty programs.
-    link: https://owasp.org/www-community/AI-Security
-    link_label: OWASP AI Security
-    badge: signal
-    tags:
-      - ai-security
-      - bug-bounty
       - threat-intel
-  - title: SSRF and RCE Vulnerabilities Remain Prevalent Across Tools
-    text: Server-Side Request Forgery and Remote Code Execution flaws are common in various tools.
-    detail: Recent advisories highlight persistent Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in diverse software, including developer tools and content management systems. Developers and system administrators must rigorously validate inputs, implement proper access controls, and apply timely patches to mitigate these critical risks.
+      - malware
+  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Tools
+    text: New SSRF and RCE vulnerabilities continue to be discovered in various software tools and platforms.
+    detail: Recent disclosures highlight ongoing risks from Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws in tools like Backstage, atototo API, and Alchemy CMS. Developers must prioritize secure coding practices, input validation, and timely patching of known vulnerabilities.
     link: https://owasp.org/www-project-top-ten/
     link_label: OWASP Top 10
     badge: signal
@@ -65,7 +66,7 @@ quick_signals:
       - ssrf
       - rce
       - vulnerability
-      - tools
+      - secure-coding
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
