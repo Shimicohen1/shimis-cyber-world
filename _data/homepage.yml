@@ -25,48 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Vulnerabilities Flood Bug Bounty Platforms
-    text: AI is overwhelming bug bounty programs, impacting triage and remediation efforts.
-    detail: HackerOne has paused services due to an influx of AI-generated vulnerability reports, highlighting challenges in distinguishing automated submissions from genuine findings. Cybersecurity professionals should prepare for increased noise and focus on verifying the novelty and impact of AI-assisted discovery efforts.
-    link: https://www.first.org/resources/guides/ai-in-cybersecurity
-    link_label: AI in Cybersecurity Guide
+  - title: Discourse Platform Faces Multiple Vulnerabilities
+    text: Discourse is experiencing a surge in reported vulnerabilities affecting various features.
+    detail: Multiple CVEs highlight security weaknesses in Discourse, including unauthorized access to private topics, network probing via email settings, subscription tier bypass, and exposure of draft topic titles. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
+    link_label: Discourse Vulnerabilities
+    badge: signal
+    tags:
+      - discourse
+      - vulnerability
+      - cve
+  - title: AI Models and Interfaces Present New Attack Vectors
+    text: AI systems are becoming targets for credential theft and prompt manipulation.
+    detail: A vulnerability in an AI chat interface's RAG extensions exposes cloud credentials, and another in Discourse allows users to manipulate subscription benefits. This indicates a growing threat surface around AI deployments, necessitating robust security for AI models and their associated infrastructure.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - threat-intel
-      - bug-bounty
-  - title: Emerging Threat Actors Require Proactive Monitoring
-    text: New threat actors like TiMc are appearing, demanding vigilance and updated threat intelligence.
-    detail: The emergence of new threat actors, such as TiMc, underscores the dynamic nature of the cyber threat landscape. Organizations must continuously monitor threat intelligence feeds and adapt their defenses to counter evolving TTPs from both established and novel adversaries.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/threat-actors-and-indicators-compromise
-    link_label: Threat Actors Overview
-    badge: signal
-    tags:
-      - threat-intel
-      - new-actors
-      - monitoring
-  - title: SSRF and RCE Remain Critical Application Vulnerabilities
-    text: Server-Side Request Forgery and Remote Code Execution flaws persist across various applications.
-    detail: Recent advisories highlight ongoing Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in diverse software, including developer tools, CMS platforms, and APIs. Prioritizing patching and robust input validation is crucial to mitigate these persistent application-level risks.
-    link: https://owasp.org/www-project-top-ten/
-    link_label: OWASP Top 10
-    badge: signal
-    tags:
+      - cloud
       - vulnerability
-      - rce
-      - ssrf
-      - application-security
-  - title: Business Services Sector Faces Intensified Ransomware Attacks
-    text: Ransomware groups are specifically targeting the business services sector with increased frequency.
-    detail: The business services sector is experiencing a concentrated surge in ransomware attacks, indicating a strategic shift by threat actors. Companies in this industry should reinforce their ransomware defenses, conduct regular backups, and train employees on phishing and social engineering awareness.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-294a
-    link_label: Ransomware Guidance
+      - identity
+  - title: Supply Chain Risks Highlighted by Dependency Vulnerabilities
+    text: Critical vulnerabilities stem from insecure third-party dependencies.
+    detail: The Docling Core RCE bug, caused by an insecure PyYAML dependency, and the Jeecgboot JimuReport vulnerability exploiting `DriverManager.getConnection`, underscore the risks of vulnerable software supply chains. Organizations must implement robust dependency scanning and management practices.
+    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerabilities
+    link_label: OWASP Supply Chain
     badge: signal
     tags:
-      - ransomware
+      - supply-chain
+      - vulnerability
+      - cve
+      - dependency
+  - title: "Evasion Tactics: Emojis and Obfuscation in Threat Actor Playbooks"
+    text: Threat actors are increasingly using emojis and advanced obfuscation for stealth.
+    detail: Emojis are being weaponized by threat actors to bypass security controls and hide malicious communications. This trend, alongside sophisticated malware like PRISMEX used by APT28, demands adaptive security solutions capable of detecting and neutralizing advanced evasion techniques.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/recognize-and-report-phishing
+    link_label: Phishing Awareness
+    badge: signal
+    tags:
       - threat-intel
-      - business-services
       - malware
+      - evasion
+      - emoji
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
