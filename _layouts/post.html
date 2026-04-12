@@ -233,7 +233,7 @@ layout: default
     {% comment %}── Related Posts by Tag ──{% endcomment %}
     {% assign first_tag = page.tags | first %}
     {% if first_tag %}
-    {% assign related = site.posts | where_exp: "p", "p.url != page.url" | where_exp: "p", "p.tags contains first_tag" | limit: 3 %}
+    {% assign related = site.posts | where_exp: "p", "p.url != page.url" | where_exp: "p", "p.tags contains first_tag" %}
     {% if related.size > 0 %}
     <div class="post-related">
       <h3 class="post-related__title">Related Posts</h3>
