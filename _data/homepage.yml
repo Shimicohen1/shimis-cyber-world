@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: LLM Interface Vulnerabilities Demand Immediate Attention
-    text: AI chat interfaces are becoming targets for cloud credential theft and other sensitive data exposure.
-    detail: The 'text-generation-webui' is a recent example of an LLM interface vulnerable to RAG extension exploitation, leading to cloud credential theft. Cybersecurity professionals should audit LLM deployments, scrutinize RAG extensions, and implement strict access controls to mitigate these emerging risks.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLM
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI tools are flooding bug bounty platforms with low-quality reports, straining triage resources.
+    detail: The rise of AI-generated vulnerability submissions, as seen with HackerOne's recent challenges, highlights a growing problem. Security teams must develop robust AI detection and filtering mechanisms to manage the influx and focus on genuine threats. This trend necessitates reassessing automated reporting pipelines and investing in advanced analysis tools to discern human-crafted insights from AI noise.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ai-cybersecurity-emerging-risks-and-opportunities
+    link_label: AI in Cybersecurity
     badge: signal
     tags:
       - ai-security
-      - cloud-security
+      - threat-intel
+      - bug-bounty
+  - title: SSRF Vulnerabilities Continue to Plague Diverse Software
+    text: Server-Side Request Forgery (SSRF) flaws are consistently appearing across various applications and tools.
+    detail: Recent advisories highlight ongoing SSRF vulnerabilities in tools like Backstage and API labs, demonstrating a persistent risk. Developers must prioritize input validation and implement egress filtering to prevent unauthorized requests to internal or external resources. Regularly auditing code for common SSRF patterns is crucial for mitigating this widespread threat.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Guide
+    badge: signal
+    tags:
       - vulnerability
-  - title: Ransomware Groups Expand Business Services Sector Targeting
-    text: The business services sector is experiencing a significant surge in ransomware attacks.
-    detail: Recent intelligence indicates a coordinated increase in ransomware activity targeting the business services industry. Organizations in this sector must reinforce their defenses, conduct regular vulnerability assessments, and ensure robust incident response plans are in place to counter this escalating threat.
+      - ssrf
+      - web-application-security
+  - title: Supply Chain Risks Highlighted by PyYAML Dependency Issues
+    text: Critical software relies on third-party libraries, posing significant supply chain risks.
+    detail: The Docling Core RCE vulnerability, stemming from a PyYAML dependency, underscores the inherent risks in software supply chains. Organizations must implement rigorous dependency scanning and software bill of materials (SBOM) practices. Proactive monitoring of known vulnerable components and prompt patching are essential to defend against these indirect attacks.
+    link: https://www.nist.gov/itl/national-initiative-software-security/software-bill-materials-sbom
+    link_label: NIST SBOM Initiative
+    badge: signal
+    tags:
+      - supply-chain
+      - vulnerability
+      - dependency-management
+  - title: Emerging Threat Actors and Ransomware Tactics Demand Vigilance
+    text: New threat actors and evolving ransomware tactics necessitate continuous threat intelligence monitoring.
+    detail: The emergence of new actors like TiMc and evolving ransomware operations, such as the Kairos site defacement, highlight the dynamic threat landscape. Staying informed through platforms like DARKFEED is vital. Security teams should focus on robust endpoint detection and response (EDR) and regular threat modeling to adapt to these persistent and evolving cyber threats.
     link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
-      - ransomware
       - threat-intel
-      - business-services
-  - title: SSRF and RCE Vulnerabilities Proliferate in Open-Source Tools
-    text: Numerous open-source tools are exhibiting critical SSRF and RCE vulnerabilities.
-    detail: Recent advisories highlight critical SSRF flaws in tools like Backstage and atototo API, alongside RCE vulnerabilities in Alchemy CMS and Docling Core due to dependency issues. Teams must prioritize patching and review configurations for libraries like PyYAML and dependency management practices.
-    link: https://nvd.nist.gov/vuln/categories
-    link_label: NVD Vulnerability Categories
-    badge: signal
-    tags:
-      - vulnerability
-      - open-source
-      - rce
-      - ssrf
-  - title: OSINT Techniques Exploit Indian Phone Numbers for Identity Mapping
-    text: Phone numbers in India are proving to be a rich source for identity-based OSINT.
-    detail: New OSINT research reveals how Indian (+91) phone numbers can unlock extensive personal and professional data, including linked accounts. Security professionals should educate users on the risks of data aggregation and implement stricter privacy controls for publicly accessible information.
-    link: https://www.sans.org/information-security-policy/osint-policy/
-    link_label: SANS OSINT Best Practices
-    badge: signal
-    tags:
-      - osint
-      - data-privacy
-      - identity-theft
+      - ransomware
+      - darkweb
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
