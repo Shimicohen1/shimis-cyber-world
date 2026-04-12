@@ -25,49 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse platforms are repeatedly targeted with vulnerabilities affecting private topics, email settings, and subscription tiers.
-    detail: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform, ranging from unauthorized access to private content to subscription manipulation. Organizations using Discourse should prioritize patching and review access controls to mitigate risks associated with CVE-2026-32615, CVE-2026-33185, and CVE-2026-33074.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+  - title: Discourse Platform Faces Diverse Vulnerability Exploits
+    text: Multiple CVEs highlight various Discourse flaws, from private topic access to subscription abuse.
+    detail: Discourse, a popular discussion platform, is currently experiencing a wave of reported vulnerabilities. These include unauthorized access to private topics (CVE-2026-32615), potential subscription tier bypasses (CVE-2026-33074), and exposure of draft topic titles (CVE-2026-32951). Organizations using Discourse should prioritize patching and reviewing access controls to mitigate these risks.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: Discourse Vulnerability Details
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - patching
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: AI chat interfaces and models are becoming targets for credential theft and raise concerns about potential misuse.
-    detail: The emergence of vulnerabilities in AI chat interfaces, such as CVE-2026-39345 impacting OrangeHRM which could lead to file reads, and risks associated with LLM extensions like RAG, highlights the growing attack surface. Cybersecurity professionals must focus on securing AI infrastructure and scrutinizing third-party AI model capabilities for potential risks.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLMs
+      - discourse
+      - cve
+  - title: RCE Vulnerabilities Persist Across Open Source Tools
+    text: Recent reports show RCE risks in CMS, AI tools, and developer platforms.
+    detail: Several open-source projects are flagged with critical Remote Code Execution (RCE) vulnerabilities. Alchemy CMS (CVE-2026-23885) and Docling Core (due to PyYAML) are prime examples, alongside issues in AI chat interfaces and developer tools like Backstage. Teams must maintain strict dependency management and promptly update affected software.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guide
+    badge: signal
+    tags:
+      - vulnerability
+      - rce
+      - open-source
+      - dependency-management
+  - title: AI Security Concerns Escalate with New Exploits
+    text: AI models and interfaces are increasingly targeted, posing risks to cloud credentials and data.
+    detail: The rapid integration of AI is introducing novel security challenges. A notable vulnerability in an AI chat interface (text-generation-webui) exposes cloud credentials via RAG extensions. Furthermore, Anthropic's 'Mythos' AI model is flagged as too risky for public release due to its capabilities. Organizations must implement robust AI security practices.
+    link: https://csrc.nist.gov/projects/nist-ai-risk-management-framework
+    link_label: NIST AI Risk Management
     badge: signal
     tags:
       - ai-security
-      - llm
       - vulnerability
+      - cloud-security
       - threat-intel
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Business services sector is under increased threat from ransomware groups, indicating a targeted campaign.
-    detail: Intelligence reports show a significant increase in ransomware attacks targeting the business services sector. Threat actors are actively exploiting vulnerabilities and potentially using tactics to bypass security controls. Organizations in this sector should bolster their defenses, implement robust backup strategies, and stay informed on emerging ransomware trends.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-293a
-    link_label: CISA Ransomware Guidance
+  - title: Threat Actors Leverage Evasion Tactics and Target Business Services
+    text: New threat actors emerge, ransomware groups intensify attacks, and emojis are used for stealth.
+    detail: The threat landscape is dynamic, with new actors like TiMc appearing and ransomware groups actively targeting the Business Services sector. Additionally, sophisticated evasion techniques, including the weaponization of emojis, are being employed by threat actors to bypass security controls. Continuous monitoring and advanced threat detection are crucial.
+    link: https://www.mitre.org/attack-matrix
+    link_label: MITRE ATT&CK Framework
     badge: signal
     tags:
+      - threat-intel
       - ransomware
-      - business-services
-      - threat-intel
-      - malware
-  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
-    text: Vulnerabilities in software dependencies like PyYAML pose significant RCE risks in core libraries.
-    detail: The Docling Core RCE bug (CVE-2026-35468) underscores the critical risk posed by vulnerable software dependencies. Analyzing and managing third-party components is crucial to prevent cascading security failures. Prioritize Software Bill of Materials (SBOM) and rigorous dependency scanning to identify and mitigate these risks.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
-    badge: signal
-    tags:
-      - supply-chain
-      - dependency-management
-      - vulnerability
-      - rce
+      - evasion
+      - darkweb
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
