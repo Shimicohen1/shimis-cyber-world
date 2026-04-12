@@ -34,7 +34,7 @@ permalink: /posts/
 
 <div class="archive">
   <div class="archive__list" id="feed-list">
-    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify' and post.channel != 'NVD'" %}
+    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" %}
     {% assign ad_freq = site.data.monetization.feed_ads.frequency | default: 6 %}
     {% assign ad_items = site.data.monetization.feed_ads.items %}
     {% assign ad_count = ad_items | size %}

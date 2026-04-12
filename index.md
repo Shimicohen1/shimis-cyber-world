@@ -45,7 +45,7 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
       <button class="filter-pill" data-filter="data-breach">Data Breach</button>
     </div>
 
-    {% assign non_cve_posts = site.posts | where_exp: "post", "post.channel != 'CVE Notify' and post.channel != 'NVD'" %}
+    {% assign non_cve_posts = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" %}
     {% assign posts = non_cve_posts | slice: 0, 30 %}
     {% if posts.size > 0 %}
     <div class="feed__list reveal" id="home-drops-list">
