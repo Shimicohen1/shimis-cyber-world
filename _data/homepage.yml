@@ -25,49 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform, affecting various features.
-    detail: Discourse users should prioritize patching and reviewing configurations, as vulnerabilities range from private topic access to subscription bypasses and draft title exposure. Staying updated on CVEs specific to Discourse is crucial for maintaining a secure community platform. Regularly audit user permissions and access controls.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+  - title: Discourse Platform Faces Persistent Vulnerabilities
+    text: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform.
+    detail: Discourse, a popular open-source discussion tool, has been flagged for several vulnerabilities including moderator privilege escalation, network probing via email settings, subscription tier exploits, and draft topic title exposure. Organizations using Discourse should prioritize patching and reviewing access controls to mitigate these risks.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=summary&query=Discourse
+    link_label: Discourse Vulnerabilities
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - web-application
-  - title: AI Models and Interfaces Present New Security Frontiers
-    text: Emerging threats target AI models and their interfaces, including credential theft and potential for dangerous capabilities.
-    detail: Organizations deploying AI, especially LLMs and interfaces like text-generation-webui, must secure cloud credentials and scrutinize model outputs for unintended risks. The rapid evolution of AI necessitates robust security practices and ongoing threat modeling for these systems.
+      - discourse
+      - web-app
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: The Business Services sector is experiencing a significant surge in ransomware attacks.
+    detail: Recent intelligence indicates a coordinated increase in ransomware activity targeting the Business Services sector. Threat actors are actively exploiting vulnerabilities to disrupt operations and extort victims. Organizations in this sector must reinforce their defenses, focusing on endpoint protection, network segmentation, and robust backup strategies.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-289a
+    link_label: CISA Ransomware Guidance
+    badge: signal
+    tags:
+      - ransomware
+      - threat-intel
+      - business-services
+      - malware
+  - title: AI Models and Tools Present New Attack Surfaces
+    text: AI-related tools and models are emerging as targets for credential theft and other exploits.
+    detail: Vulnerabilities have been identified in AI chat interfaces and LLM extensions, specifically related to cloud credential theft and potential RCE. As AI adoption grows, security professionals must be vigilant about the unique risks introduced by these technologies, including secure development practices and access management for AI platforms.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
     link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - llm
-      - cloud-security
-      - threat-intel
-  - title: Supply Chain Risks Amplify with Dependency Vulnerabilities
-    text: Critical vulnerabilities are being discovered in software dependencies, impacting downstream applications like Docling Core and Alchemy CMS.
-    detail: The reliance on libraries like PyYAML and Ruby's eval() function underscores the importance of strict dependency management and vulnerability scanning. Organizations must actively monitor and update third-party components to mitigate risks of RCE and data breaches.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-23885
-    link_label: CVE-2026-23885 Details
+      - cloud
+      - vulnerability
+      - identity
+  - title: Supply Chain Risks Highlighted by Dependency Vulnerabilities
+    text: Vulnerabilities in software dependencies, like PyYAML, pose significant RCE risks.
+    detail: The Docling Core RCE bug, stemming from a vulnerable PyYAML dependency, underscores the critical importance of supply chain security. Organizations must meticulously manage their software dependencies, conduct regular audits, and implement security scanning to identify and remediate risks introduced through third-party code.
+    link: https://owasp.org/www-project-top-10-for-software-supply-chain-security/
+    link_label: OWASP Supply Chain Security
     badge: signal
     tags:
       - supply-chain
-      - dependency-management
+      - vulnerability
       - rce
-      - malware
-  - title: Threat Actors Weaponize Emojis for Stealthy Attacks
-    text: Sophisticated threat actors are leveraging emojis to bypass security controls and obfuscate malicious communications.
-    detail: Security teams should enhance detection mechanisms to recognize emoji-based obfuscation techniques. Training users to be wary of unusual emoji usage in communications can also help thwart phishing and social engineering attempts.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-tips
-    link_label: Phishing Prevention Tips
-    badge: signal
-    tags:
-      - threat-intel
-      - evasion-techniques
-      - social-engineering
-      - phishing
+      - dependency-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
