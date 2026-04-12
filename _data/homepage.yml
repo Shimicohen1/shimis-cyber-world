@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform, affecting various functionalities.
-    detail: Discourse continues to be a target, with recent vulnerabilities allowing unauthorized access to private topics, network probing, and subscription manipulation. Organizations using Discourse should prioritize patching and review access controls to mitigate these persistent risks. Stay updated on official Discourse security advisories.
-    link: https://blog.discourse.org/2023/09/discourse-security-updates/
-    link_label: Discourse Security Advisories
+  - title: Discourse Vulnerabilities Continue to Emerge
+    text: Discourse platforms are frequently targeted with vulnerabilities affecting various features, from private topics to subscription tiers.
+    detail: Recent advisories highlight multiple CVEs impacting Discourse, including issues with moderator access, network probing via email settings, subscription circumvention, and draft topic exposure. Organizations using Discourse should prioritize patching and reviewing access controls to mitigate these ongoing risks. Stay updated on the latest Discourse security bulletins.
+    link: https://discourse.org/blog/security-updates
+    link_label: Discourse Security Updates
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - web-application
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: Emerging threats target AI models and interfaces, including credential theft and concerning model capabilities.
-    detail: The increasing integration of AI introduces novel security challenges. Vulnerabilities in AI chat interfaces can lead to cloud credential theft, while advanced AI models themselves may pose risks if deemed too dangerous for public release. Security teams must focus on securing AI infrastructure and scrutinizing AI model deployments.
-    link: https://www.cisa.gov/news-events/news/securing-artificial-intelligence-systems
-    link_label: CISA on AI Security
+      - vulnerability
+      - web-app
+  - title: AI Model Risks Demand Careful Deployment
+    text: Emerging AI models like 'Mythos' are deemed too dangerous for public release due to unpredictable capabilities.
+    detail: The development of advanced AI models presents significant safety concerns, with some, like Anthropic's 'Mythos', being withheld from public release due to potential risks. Cybersecurity professionals must stay informed about AI safety research and advocate for responsible AI development and deployment practices.
+    link: https://www.cisa.gov/news-events/advisories/ai-security-guidance
+    link_label: AI Security Guidance
     badge: signal
     tags:
       - ai-security
-      - cloud-security
       - threat-intel
-  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
-    text: Critical vulnerabilities are arising from insecure dependencies in various software projects.
-    detail: Several recent advisories underscore the significant risk posed by vulnerable dependencies, such as PyYAML in Docling Core or Ruby's `eval()` in Alchemy CMS. Organizations must implement robust Software Bill of Materials (SBOM) practices and actively monitor their software supply chain for known vulnerabilities.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
+      - responsible-ai
+  - title: Ransomware Groups Expand Business Services Sector Focus
+    text: The Business Services sector is experiencing a surge in ransomware attacks, indicating a strategic shift by threat actors.
+    detail: Darkfeed intelligence indicates a significant increase in ransomware targeting the Business Services sector. This coordinated effort suggests ransomware groups are actively seeking new avenues for profit. Organizations in this sector should bolster defenses, implement robust backup strategies, and conduct regular incident response drills.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-313a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
-      - supply-chain
-      - dependency-management
-      - vulnerability
-  - title: New Threat Actors and Tactics Emerge in Dark Web Landscape
-    text: The emergence of new ransomware operations and evolving evasion tactics are noted.
-    detail: Intelligence highlights new threat actors like 'TiMc' and evolving ransomware tactics, including the use of emojis for stealth and potential defacement campaigns against ransomware groups. Continuous monitoring of dark web forums and threat intelligence feeds is crucial for staying ahead of emerging threats and actor methodologies.
-    link: https://www.mitre.org/news-events/news/mitre-att-ck-techniques-and-threat-actor-groupings
-    link_label: MITRE ATT&CK
-    badge: signal
-    tags:
-      - darkweb
-      - threat-intel
       - ransomware
-      - evasion
+      - threat-intel
+      - business-services
+  - title: SSRF and RCE Vulnerabilities Persist in Tools
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to be prevalent in various software tools.
+    detail: Multiple recent advisories highlight critical SSRF and RCE vulnerabilities in widely used tools like Backstage, atototo API, Alchemy CMS, and Docling Core. These flaws often stem from improper handling of external requests or insecure dependencies. Prioritize patching and thoroughly vet third-party code and dependencies.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guide
+    badge: signal
+    tags:
+      - ssrf
+      - rce
+      - vulnerability
+      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
