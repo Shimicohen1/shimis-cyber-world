@@ -25,49 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Targeted by Multiple Vulnerabilities
-    text: Discourse is facing a wave of distinct vulnerabilities, impacting moderation, subscriptions, and data exposure.
-    detail: Multiple recent advisories highlight a concerning trend of diverse vulnerabilities within the Discourse platform. Exploits range from unauthorized access to private topics and subscription tier manipulation, to exposure of draft topic titles and network probing capabilities. Defenders should prioritize patching and review access control configurations for all Discourse instances.
+  - title: Discourse Ecosystem Faces Persistent Vulnerability Exploitation
+    text: Multiple recent advisories highlight ongoing security flaws within the Discourse platform.
+    detail: Discourse continues to be a target, with recent reports detailing vulnerabilities allowing unauthorized access to private topics, network probing via email, subscription circumvention, and exposure of draft topic titles. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
     link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: Discourse Vulnerabilities
+    link_label: Discourse CVE Details
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - web-application
-  - title: RCE and File Access Flaws Plague Open Source Software
-    text: Open-source projects like OrangeHRM and Alchemy CMS are showing critical RCE and file access vulnerabilities.
-    detail: Recent reports indicate critical Remote Code Execution (RCE) and local file read vulnerabilities in widely used open-source software such as OrangeHRM and Alchemy CMS. These flaws, often stemming from improper input validation or insecure dependency handling, pose a significant risk. Organizations must maintain rigorous patch management and scrutinize software dependencies.
-    link: https://owasp.org/www-community/vulnerabilities/Insecure_Deserialization
-    link_label: OWASP Insecure Deserialization
+      - vulnerability
+      - patching
+  - title: AI Tooling Vulnerabilities Require Heightened Security Scrutiny
+    text: Emerging vulnerabilities in AI tools pose significant risks, including credential theft.
+    detail: The security of AI-related tools, particularly those handling sensitive data or extensions, is becoming a critical concern. A recent advisory highlights a flaw in an AI chat interface that could lead to cloud credential theft. Security teams must implement strict access controls and conduct thorough security assessments of all AI tooling.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
+      - ai-security
+      - cloud-security
       - vulnerability
-      - rce
-      - open-source
+  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
+    text: Third-party dependencies remain a significant vector for critical vulnerabilities.
+    detail: Recent advisories underscore the persistent danger of vulnerable third-party components, such as in Docling Core's reliance on PyYAML and the SSRF flaw in Backstage's `FetchUrlReader`. Organizations must adopt robust Software Bill of Materials (SBOM) practices and actively monitor their dependency chains for known vulnerabilities.
+    link: https://owasp.org/www-project-dependency-check/
+    link_label: OWASP Dependency-Check
+    badge: signal
+    tags:
       - supply-chain
-  - title: SSRF Vulnerabilities Remain a Persistent Threat
-    text: Server-Side Request Forgery (SSRF) flaws continue to be discovered in developer tools and APIs.
-    detail: The prevalence of Server-Side Request Forgery (SSRF) vulnerabilities is evident across various tools, including Backstage and API testing utilities. These flaws allow attackers to trick applications into making unintended network requests, potentially exposing internal systems or sensitive data. Implementing robust input validation and network segmentation is crucial for mitigation.
-    link: https://cwe.mitre.org/data/definitions/918.html
-    link_label: CWE-918 SSRF
-    badge: signal
-    tags:
+      - dependency-management
       - vulnerability
-      - ssrf
-      - web-application
-      - api-security
-  - title: New Threat Actors and Tactics Emerge in Dark Web Landscape
-    text: Emerging threat actors and novel evasion techniques like emoji weaponization are on the rise.
-    detail: The dark web intelligence landscape reveals the emergence of new threat actors like TiMc and evolving tactics, including the weaponization of emojis for stealthy communications. Ransomware groups also continue to target specific sectors, with notable activity reported against business services. Staying informed on emerging TTPs and threat actor profiles is vital for proactive defense.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/spotlight-threat-actors
-    link_label: CISA Threat Actor Spotlight
+  - title: Ransomware Operators Diversify Tactics and Targets
+    text: Ransomware groups are actively targeting business services and employing new actors.
+    detail: The ransomware landscape remains dynamic, with new threat actors like TiMc emerging and existing groups intensifying attacks, particularly against the business services sector. Recent reports also indicate potential defacement of ransomware leak sites, possibly indicating internal strife or strategic shifts. Continuous monitoring and robust defenses are crucial.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-129a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
-      - threat-intel
-      - darkweb
       - ransomware
-      - emoji-security
+      - threat-intel
+      - business-services
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
