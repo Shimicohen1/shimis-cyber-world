@@ -98,7 +98,7 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
     {% assign cve_shown = 0 %}
     {% assign has_cve = false %}
     {% for post in site.posts %}
-      {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" %}
+      {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "NVD" or post.channel == "INCD" %}
       {% if post.score == "HIGH" or post.score == "CRITICAL" %}
         {% if has_cve == false %}
           {% assign has_cve = true %}
