@@ -4,17 +4,19 @@ title: GoFish
 permalink: /gofish/
 ---
 
-<div class="page-head">
-  <div class="label label--cyan page-head__label">SCW TOOLS</div>
-  <h1 class="page-head__title">GoFish</h1>
-  <p class="page-head__desc">Paste a suspicious URL or SMS message — get an instant phishing risk analysis with detailed breakdown, red flags, and external verification links.</p>
+<div class="tool-hero tool-hero--phish">
+  <div class="tool-hero__badge tool-hero__badge--amber">SCW SHIELD</div>
+  <h1 class="tool-hero__title">Go<span class="tool-hero__accent tool-hero__accent--amber">Fish</span></h1>
+  <p class="tool-hero__tagline">Phishing & Smishing Detection Engine</p>
+  <p class="tool-hero__desc">Got a sus link or sketchy SMS? Paste it here. GoFish runs <strong>25+ heuristic checks</strong> — URL manipulation, brand impersonation, urgency patterns, and Israeli scam templates — all <strong>client-side, zero data sent anywhere</strong>.</p>
+  <div class="tool-hero__note"><span class="scw-icon" data-icon="shield"></span> <strong>Your data stays local:</strong> GoFish runs entirely in your browser. Nothing is sent to any server — ever. Perfect for checking links you're not sure about.</div>
 </div>
 
 <section class="cs-intro reveal">
-  <div class="ioc-how-it-works">
-    <div class="ioc-step"><span class="ioc-step__num">1</span><span class="ioc-step__text">Paste a suspicious URL or SMS message</span></div>
-    <div class="ioc-step"><span class="ioc-step__num">2</span><span class="ioc-step__text">GoFish analyzes 25+ phishing indicators in real-time</span></div>
-    <div class="ioc-step"><span class="ioc-step__num">3</span><span class="ioc-step__text">Get a risk score, red flags, and verification links</span></div>
+  <div class="tool-steps tool-steps--amber">
+    <div class="tool-step"><span class="tool-step__num">1</span><div class="tool-step__body"><strong>Paste the suspect</strong><span class="tool-step__detail">A URL, an SMS, a WhatsApp message — anything with a link</span></div></div>
+    <div class="tool-step"><span class="tool-step__num">2</span><div class="tool-step__body"><strong>Instant analysis</strong><span class="tool-step__detail">25+ checks including URL tricks, brand spoofing, Hebrew/English urgency patterns</span></div></div>
+    <div class="tool-step"><span class="tool-step__num">3</span><div class="tool-step__body"><strong>Verdict + proof</strong><span class="tool-step__detail">Risk score, every red flag explained, and external verification links</span></div></div>
   </div>
   <div class="cs-intro__actions">
     <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools →</a>
@@ -78,15 +80,15 @@ permalink: /gofish/
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
     <h2 class="cs-cta__title">Think before you click.</h2>
-    <p class="cs-cta__text">GoFish is a client-side heuristic scanner — it analyzes patterns without sending your data anywhere. For deeper analysis, use the external verification links provided.</p>
+    <p class="cs-cta__text">GoFish catches phishing patterns that bypass spam filters. It analyzes entirely in your browser — zero data leaves your device. For deeper investigation, use the external verification links provided with each result.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--primary">ThreatLens →</a>
-      <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools</a>
+      <a href="{{ '/breach-radar/' | relative_url }}" class="btn btn--primary"><span class="scw-icon" data-icon="radar"></span> BreachRadar — Dark Web Intel →</a>
+      <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--ghost"><span class="scw-icon" data-icon="search"></span> ThreatLens — Investigate IOCs →</a>
     </div>
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=9">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=12">
 <script>
 window.IOC_TOOL_RECS = [
   {% for rec in site.data.monetization.tool_recommendations %}

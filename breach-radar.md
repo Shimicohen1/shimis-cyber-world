@@ -4,17 +4,18 @@ title: BreachRadar
 permalink: /breach-radar/
 ---
 
-<div class="page-head">
-  <div class="label label--signal page-head__label">SCW ELITE</div>
-  <h1 class="page-head__title">BreachRadar</h1>
-  <p class="page-head__desc">Search if a company or domain has been claimed by ransomware groups or appeared on dark web leak sites. Live data from 558 tracked threat actors.</p>
+<div class="tool-hero tool-hero--breach">
+  <div class="tool-hero__badge tool-hero__badge--red">SCW ELITE</div>
+  <h1 class="tool-hero__title">Breach<span class="tool-hero__accent tool-hero__accent--red">Radar</span></h1>
+  <p class="tool-hero__tagline">Dark Web Exposure Intelligence</p>
+  <p class="tool-hero__desc">Real-time scan across <strong>558 ransomware groups</strong> and <strong>30,000+ victim posts</strong> on dark web leak sites. Enter any company or domain — get a full threat dossier with timeline, attribution, evidence, and response actions.</p>
 </div>
 
 <section class="cs-intro reveal">
-  <div class="ioc-how-it-works">
-    <div class="ioc-step"><span class="ioc-step__num">1</span><span class="ioc-step__text">Enter a company name or domain</span></div>
-    <div class="ioc-step"><span class="ioc-step__num">2</span><span class="ioc-step__text">BreachRadar queries ransomware leak site databases in real-time</span></div>
-    <div class="ioc-step"><span class="ioc-step__num">3</span><span class="ioc-step__text">Get a threat dossier — timeline, groups, evidence, and action items</span></div>
+  <div class="tool-steps tool-steps--red">
+    <div class="tool-step"><span class="tool-step__num">1</span><div class="tool-step__body"><strong>Enter a target</strong><span class="tool-step__detail">Company name, brand, or domain — BreachRadar searches both</span></div></div>
+    <div class="tool-step"><span class="tool-step__num">2</span><div class="tool-step__body"><strong>Live dark web query</strong><span class="tool-step__detail">Searches ransomware leak databases via RansomLook in real-time</span></div></div>
+    <div class="tool-step"><span class="tool-step__num">3</span><div class="tool-step__body"><strong>Get your dossier</strong><span class="tool-step__detail">Threat assessment, actor attribution, incident timeline, and action plan</span></div></div>
   </div>
   <div class="cs-intro__actions">
     <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools →</a>
@@ -112,13 +113,13 @@ permalink: /breach-radar/
     <h2 class="cs-cta__title">Knowledge is your first line of defense.</h2>
     <p class="cs-cta__text">BreachRadar is powered by <a href="https://www.ransomlook.io" target="_blank" rel="noopener noreferrer">RansomLook</a> — open-source ransomware intelligence tracking 558 groups and 30,000+ victim posts. Data is refreshed continuously.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--primary">ThreatLens →</a>
-      <a href="{{ '/gofish/' | relative_url }}" class="btn btn--ghost">GoFish →</a>
+      <a href="{{ '/ioc-scanner/' | relative_url }}" class="btn btn--primary"><span class="scw-icon" data-icon="search"></span> ThreatLens — Investigate IOCs →</a>
+      <a href="{{ '/gofish/' | relative_url }}" class="btn btn--ghost"><span class="scw-icon" data-icon="anchor"></span> GoFish — Detect Phishing →</a>
     </div>
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=11">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=12">
 <script>
 window.IOC_TOOL_RECS = [
   {% for rec in site.data.monetization.tool_recommendations %}
