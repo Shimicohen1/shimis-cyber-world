@@ -25,48 +25,50 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Serial Exploitation
-    text: Multiple vulnerabilities in Discourse underscore risks in popular community platforms.
-    detail: Discourse, a widely used open-source discussion platform, has been flagged with several distinct vulnerabilities including unauthorized access to private topics, network probing via email settings, subscription tier manipulation, and exposure of draft topic titles. Organizations relying on Discourse should prioritize patching and review access controls to mitigate these ongoing risks.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+  - title: "Discourse Vulnerabilities Escalate: Focus on Access Control and Data Exposure"
+    text: Multiple Discourse flaws highlight risks from moderator privilege escalation to sensitive data leaks.
+    detail: Recent reports indicate a concerning trend of vulnerabilities within the Discourse platform, including CVE-2026-32615 allowing unauthorized access to private topics and CVE-2026-32951 exposing draft topic titles. Professionals should review Discourse security configurations, apply patches promptly, and conduct regular audits to mitigate these access control and data exposure risks.
+    link: https://discourse.org/blog/security-updates
+    link_label: Discourse Security Updates
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - community-platforms
-  - title: AI Model Risks Outweigh Public Release
-    text: AI developers deem advanced models too dangerous for public deployment.
-    detail: A major AI research company has reportedly withheld a powerful new language model due to its perceived risks, citing concerning capabilities. This highlights the critical need for robust AI safety protocols and responsible development practices as AI technology advances rapidly, emphasizing caution over immediate public access.
-    link: https://www.cisa.gov/news-events/news/responsible-use-artificial-intelligence-principles
-    link_label: Responsible AI Principles
+      - vulnerability
+      - access-control
+      - data-leak
+  - title: AI Model Safety and RAG Extension Risks Demand Scrutiny
+    text: AI models like Anthropic's 'Mythos' and RAG extensions present new security challenges.
+    detail: The reported safety concerns surrounding Anthropic's 'Mythos' AI model and vulnerabilities in AI chat interfaces like `text-generation-webui`'s RAG extensions underscore the growing need for AI security best practices. Organizations integrating AI should prioritize thorough risk assessments and secure development lifecycles to address potential misuse and data exposure.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - risk-management
+      - llm
+      - rag
       - threat-intel
-  - title: Supply Chain Vulnerabilities Plague Open-Source Tools
-    text: Dependencies like PyYAML and Ruby eval create RCE risks in key software.
-    detail: Recent advisories reveal critical Remote Code Execution (RCE) vulnerabilities stemming from insecure dependencies in open-source projects like Docling Core (PyYAML) and Alchemy CMS (Ruby eval). Developers must rigorously vet dependencies and implement secure coding practices to prevent attackers from exploiting these common supply chain weaknesses.
-    link: https://owasp.org/www-project-top-10-for-2021/
-    link_label: OWASP Top 10
+  - title: SSRF and RCE Vulnerabilities Persist Across Tools and CMS
+    text: Server-Side Request Forgery and Remote Code Execution flaws are prevalent in various software.
+    detail: Recent advisories highlight critical SSRF in Backstage and `atototo api-lab-mcp`, alongside RCE in Alchemy CMS and Docling Core due to library dependencies. These persistent vulnerabilities emphasize the importance of supply chain security and diligent patching. Teams should implement robust input validation and network segmentation to defend against these common attack vectors.
+    link: https://cwe.mitre.org/data/definitions/79.html
+    link_label: CWE - Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')
     badge: signal
     tags:
-      - supply-chain
-      - rce
       - vulnerability
-      - dependencies
-  - title: Threat Actors Leverage Emojis for Stealth
-    text: Emojis are increasingly used by threat actors to bypass security controls.
-    detail: Cyber threat intelligence indicates a growing trend of threat actors employing emojis for sophisticated evasion techniques. These can be used to obfuscate malicious communications and bypass security filters. Security teams should update detection mechanisms to recognize and flag potentially malicious emoji usage in communications.
-    link: https://www.mitre.org/technologies/attack/resources/attack-techniques
-    link_label: MITRE ATT&CK Techniques
+      - rce
+      - ssrf
+      - supply-chain
+  - title: New Threat Actors and Evolving Tactics in Cybercrime Landscape
+    text: Emerging actors like TiMc and sophisticated emoji-based evasion techniques are on the rise.
+    detail: The threat landscape is continually evolving with the appearance of new actors like TiMc and advanced evasion tactics such as emoji weaponization for stealth. Intelligence suggests increased ransomware activity targeting business services. Staying informed through threat intelligence feeds and adapting defenses to counter novel obfuscation methods is crucial.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Alerts and Advisories
     badge: signal
     tags:
       - threat-intel
-      - evasion
+      - darkweb
+      - ransomware
       - malware
-      - communication-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
