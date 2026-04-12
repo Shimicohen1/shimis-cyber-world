@@ -25,48 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Vulnerabilities Continue to Emerge
-    text: Multiple Discourse flaws highlight ongoing risks in popular open-source discussion platforms.
-    detail: Recent reports detail various vulnerabilities in Discourse, including unauthorized access to private topics, network probing via email settings, subscription tier exploitation, and draft topic title exposure. Organizations using Discourse should prioritize patching and reviewing access controls to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: Discourse Vulnerabilities
+  - title: Discourse Platform Faces Multiple Vulnerabilities
+    text: Discourse platform is experiencing a surge in vulnerabilities, impacting privacy, subscriptions, and data exposure.
+    detail: Multiple recent advisories highlight critical flaws in Discourse, including moderator privilege escalation, subscription bypass, and exposure of draft topic titles. Professionals should ensure their Discourse instances are patched and review access controls to mitigate risks.
+    link: https://github.com/discourse/discourse/security/advisories
+    link_label: Discourse Security Advisories
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - cve
-  - title: AI Model Safety Concerns Escalate
-    text: AI models are being withheld due to potential dangers, raising ethical and security questions.
-    detail: Reports indicate that advanced AI models are being deemed too dangerous for public release, citing concerning capabilities. This highlights the growing need for robust AI safety research, ethical guidelines, and secure development practices to prevent misuse.
+      - patch-management
+  - title: AI Model Safety and Release Concerns Grow
+    text: AI models are being developed with capabilities deemed too dangerous for public release.
+    detail: Reports indicate advanced AI models are exhibiting concerning capabilities, leading developers to withhold public release due to safety concerns. Organizations integrating AI should prioritize robust testing and ethical deployment strategies, staying informed about emerging AI risks.
     link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-cybersecurity
-    link_label: AI and Cybersecurity
+    link_label: AI and Cybersecurity Guidance
     badge: signal
     tags:
       - ai-security
+      - risk-management
       - threat-intel
-      - ethics
-  - title: Supply Chain Risks Persist with RCE Vulnerabilities
-    text: RCE vulnerabilities in software dependencies and components pose significant supply chain risks.
-    detail: Several recent advisories point to Remote Code Execution (RCE) vulnerabilities stemming from software dependencies, such as PyYAML in Docling Core, and flaws in components like DriverManager in Jeecgboot. Organizations must implement rigorous software composition analysis and dependency management to secure their supply chains.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: Software Component Analysis
+  - title: Ransomware Operations Show Evolving Tactics
+    text: New ransomware groups are emerging, while established ones show signs of disruption or sophisticated attacks.
+    detail: The threat landscape features new ransomware actors like TiMc and potential disruptions in existing operations, such as the Kairos leak site defacement. Continuous monitoring of darkweb chatter and threat actor TTPs is crucial for proactive defense against evolving ransomware threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-298a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
-      - supply-chain
+      - ransomware
+      - darkweb
+      - threat-intel
+      - malware
+  - title: SSRF and RCE Vulnerabilities Plague Developer Tools
+    text: Developer tools and CMS platforms are exhibiting critical SSRF and RCE vulnerabilities.
+    detail: Recent advisories reveal critical SSRF and RCE flaws in tools like Backstage, Alchemy CMS, and Jeecgboot, alongside dependencies like PyYAML. Developers must prioritize secure coding practices, dependency scanning, and prompt patching of these widely used platforms.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guidance
+    badge: signal
+    tags:
       - vulnerability
       - rce
-      - dependency-management
-  - title: Threat Actors Leverage Emojis for Stealth
-    text: Emojis are increasingly used by threat actors for evasion and obfuscation in communications.
-    detail: Sophisticated threat actors are weaponizing emojis to bypass security controls and disguise malicious content. This trend necessitates advanced threat detection mechanisms that can analyze contextual meaning and identify disguised payloads, moving beyond simple signature-based detection.
-    link: https://www.mitre.org/publications/technical-papers/threat-actor-techniques-and-indicators-guide
-    link_label: Threat Actor Techniques
-    badge: signal
-    tags:
-      - threat-intel
-      - evasion
-      - malware
-      - emoji
+      - ssrf
+      - developer-tools
+      - supply-chain
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
