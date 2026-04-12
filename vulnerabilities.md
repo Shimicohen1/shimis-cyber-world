@@ -7,7 +7,7 @@ permalink: /vulnerabilities/
 <div class="page-head">
   <div class="label label--red page-head__label">CVE</div>
   <h1 class="page-head__title">Vulnerabilities</h1>
-  <p class="page-head__desc">Live CVE feed — high and critical vulnerability disclosures tracked as they drop.</p>
+  <p class="page-head__desc">Live CVE feed — vulnerability disclosures tracked as they drop, sourced directly from the National Vulnerability Database.</p>
 </div>
 
 <div class="feed-controls">
@@ -21,8 +21,8 @@ permalink: /vulnerabilities/
 <div class="archive">
   <div class="archive__list" id="vuln-list">
     {% for post in site.posts %}
-    {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" %}
-    {% if post.score == "HIGH" or post.score == "CRITICAL" %}
+    {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" or post.channel == "NVD" %}
+    {% if post.score == "HIGH" or post.score == "CRITICAL" or post.score == "MEDIUM" %}
     <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}">
           {% include post-card.html %}
     </div>
@@ -37,7 +37,8 @@ permalink: /vulnerabilities/
   {% assign critical_kev = site.posts | where: "channel", "CISA KEV" | where: "score", "CRITICAL" %}
   {% assign high_incd = site.posts | where: "channel", "INCD" | where: "score", "HIGH" %}
   {% assign critical_incd = site.posts | where: "channel", "INCD" | where: "score", "CRITICAL" %}
-  {% assign cve_total = high_cve.size | plus: critical_cve.size | plus: high_kev.size | plus: critical_kev.size | plus: high_incd.size | plus: critical_incd.size %}
+  {% assign nvd_all = site.posts | where: "channel", "NVD" %}
+  {% assign cve_total = high_cve.size | plus: critical_cve.size | plus: high_kev.size | plus: critical_kev.size | plus: high_incd.size | plus: critical_incd.size | plus: nvd_all.size %}
   {% if cve_total == 0 %}
   <div class="empty-state" style="margin-top: 2rem;">
     <p>No vulnerabilities tracked yet. The CVE feed is warming up.</p>
