@@ -25,49 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Multiple Vulnerabilities
-    text: Discourse is experiencing a surge in reported vulnerabilities affecting various features.
-    detail: Multiple CVEs highlight security weaknesses in Discourse, including unauthorized access to private topics, network probing via email settings, subscription tier bypass, and exposure of draft topic titles. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
-    link_label: Discourse Vulnerabilities
+  - title: Discourse Platform Faces Serial Exploitation
+    text: Multiple vulnerabilities in Discourse underscore risks in popular community platforms.
+    detail: Discourse, a widely used open-source discussion platform, has been flagged with several distinct vulnerabilities including unauthorized access to private topics, network probing via email settings, subscription tier manipulation, and exposure of draft topic titles. Organizations relying on Discourse should prioritize patching and review access controls to mitigate these ongoing risks.
+    link: https://github.com/discourse/discourse/security/advisories
+    link_label: Discourse Security Advisories
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - cve
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: AI systems are becoming targets for credential theft and prompt manipulation.
-    detail: A vulnerability in an AI chat interface's RAG extensions exposes cloud credentials, and another in Discourse allows users to manipulate subscription benefits. This indicates a growing threat surface around AI deployments, necessitating robust security for AI models and their associated infrastructure.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+      - discourse
+      - community-platforms
+  - title: AI Model Risks Outweigh Public Release
+    text: AI developers deem advanced models too dangerous for public deployment.
+    detail: A major AI research company has reportedly withheld a powerful new language model due to its perceived risks, citing concerning capabilities. This highlights the critical need for robust AI safety protocols and responsible development practices as AI technology advances rapidly, emphasizing caution over immediate public access.
+    link: https://www.cisa.gov/news-events/news/responsible-use-artificial-intelligence-principles
+    link_label: Responsible AI Principles
     badge: signal
     tags:
       - ai-security
-      - cloud
-      - vulnerability
-      - identity
-  - title: Supply Chain Risks Highlighted by Dependency Vulnerabilities
-    text: Critical vulnerabilities stem from insecure third-party dependencies.
-    detail: The Docling Core RCE bug, caused by an insecure PyYAML dependency, and the Jeecgboot JimuReport vulnerability exploiting `DriverManager.getConnection`, underscore the risks of vulnerable software supply chains. Organizations must implement robust dependency scanning and management practices.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerabilities
-    link_label: OWASP Supply Chain
+      - risk-management
+      - threat-intel
+  - title: Supply Chain Vulnerabilities Plague Open-Source Tools
+    text: Dependencies like PyYAML and Ruby eval create RCE risks in key software.
+    detail: Recent advisories reveal critical Remote Code Execution (RCE) vulnerabilities stemming from insecure dependencies in open-source projects like Docling Core (PyYAML) and Alchemy CMS (Ruby eval). Developers must rigorously vet dependencies and implement secure coding practices to prevent attackers from exploiting these common supply chain weaknesses.
+    link: https://owasp.org/www-project-top-10-for-2021/
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - supply-chain
+      - rce
       - vulnerability
-      - cve
-      - dependency
-  - title: "Evasion Tactics: Emojis and Obfuscation in Threat Actor Playbooks"
-    text: Threat actors are increasingly using emojis and advanced obfuscation for stealth.
-    detail: Emojis are being weaponized by threat actors to bypass security controls and hide malicious communications. This trend, alongside sophisticated malware like PRISMEX used by APT28, demands adaptive security solutions capable of detecting and neutralizing advanced evasion techniques.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/recognize-and-report-phishing
-    link_label: Phishing Awareness
+      - dependencies
+  - title: Threat Actors Leverage Emojis for Stealth
+    text: Emojis are increasingly used by threat actors to bypass security controls.
+    detail: Cyber threat intelligence indicates a growing trend of threat actors employing emojis for sophisticated evasion techniques. These can be used to obfuscate malicious communications and bypass security filters. Security teams should update detection mechanisms to recognize and flag potentially malicious emoji usage in communications.
+    link: https://www.mitre.org/technologies/attack/resources/attack-techniques
+    link_label: MITRE ATT&CK Techniques
     badge: signal
     tags:
       - threat-intel
-      - malware
       - evasion
-      - emoji
+      - malware
+      - communication-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
