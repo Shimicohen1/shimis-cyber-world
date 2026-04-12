@@ -25,47 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI Models Pose New Attack Surface Risks
-    text: AI models and interfaces are becoming targets for credential theft and prompt injection.
-    detail: Vulnerabilities in AI chat interfaces, like text-generation-webui, can expose cloud credentials. Furthermore, the increasing reliance on AI for content generation means prompt manipulation and data leakage from AI models require robust security controls and monitoring.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
-    badge: signal
-    tags:
-      - ai-security
-      - threat-intel
-      - vulnerability
-  - title: Ransomware Actors Diversify Tactics and Targets
-    text: Ransomware groups are actively targeting the business services sector and defacing leak sites.
-    detail: Multiple ransomware operations, including Kairos, are active, with some showing signs of disruption or elaborate deception. The Business Services sector is a particular focus, indicating a strategic shift in targeting to exploit supply chain dependencies or critical business functions.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-285a
-    link_label: CISA Ransomware Guidance
+  - title: Ransomware Operations Show Signs of Disruption
+    text: Ransomware groups are facing potential takedowns or elaborate decoys, indicating operational challenges.
+    detail: The defacement of the Kairos ransomware leak site suggests either successful law enforcement action or a sophisticated ruse. Cybersecurity professionals should remain vigilant for shifts in ransomware tactics and monitor for signs of group disruption or rebranding, as this could signal evolving threat landscapes.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Advisories
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - malware
-  - title: SSRF Vulnerabilities Remain a Persistent Threat
-    text: SSRF flaws continue to appear in various tools and platforms, enabling internal system exposure.
-    detail: Recent advisories highlight SSRF vulnerabilities in tools like Backstage and API labs, allowing attackers to probe internal systems. Organizations must prioritize patching and implement network segmentation and egress filtering to mitigate the risk of unauthorized internal access.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounties
+    text: Bug bounty platforms are struggling to manage an influx of AI-generated vulnerability submissions.
+    detail: HackerOne's pause on bug bounties due to AI-generated reports highlights a growing challenge. Security teams should refine their vulnerability management processes to effectively filter and validate submissions, distinguishing genuine findings from automated noise to maintain efficient operations.
+    link: https://owasp.org/www-project-top-10/
+    link_label: OWASP Top 10
     badge: signal
     tags:
-      - vulnerability
-      - ssrf
-      - threat-intel
-  - title: Open Source Software Dependencies Demand Vigilance
-    text: Vulnerabilities in open-source components, including YAML parsers, pose significant RCE risks.
-    detail: The Docling Core RCE bug highlights the danger of vulnerable dependencies like PyYAML. Organizations must maintain robust Software Bill of Materials (SBOM) and actively monitor for and patch vulnerabilities in their open-source libraries, as these often serve as entry points for attackers.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-23885
-    link_label: NVD CVE-2026-23885
+      - ai-security
+      - vulnerability-management
+      - bug-bounty
+  - title: SSRF and RCE Vulnerabilities Remain Prevalent
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to be widely exploited.
+    detail: Recent advisories highlight critical SSRF and RCE vulnerabilities across various platforms like Backstage, atototo, Alchemy CMS, and Docling Core. Organizations must prioritize patching these vulnerabilities, implement robust input validation, and segment networks to mitigate the risk of unauthorized access and code execution.
+    link: https://nvd.nist.gov/vuln/by-cwe
+    link_label: CWE Vulnerability Types
     badge: signal
     tags:
-      - supply-chain
       - vulnerability
       - rce
-      - dependency-management
+      - ssrf
+      - patch-management
+  - title: New Threat Actors Emerge, Targeting Specific Sectors
+    text: Emerging threat actors like TiMc and UNC6783 are actively targeting industries and using novel evasion techniques.
+    detail: The appearance of new threat actors and the use of sophisticated techniques, such as emoji-based obfuscation and targeting BPO providers for supply chain attacks, demand proactive threat intelligence. Organizations should enhance their threat hunting capabilities and monitor for novel indicators of compromise.
+    link: https://attack.mitre.org/
+    link_label: MITRE ATT&CK
+    badge: signal
+    tags:
+      - threat-intel
+      - emerging-threats
+      - supply-chain
+      - evasion
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
