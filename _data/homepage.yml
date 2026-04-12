@@ -25,46 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Ecosystem Faces Persistent Vulnerability Exploitation
-    text: Multiple recent advisories highlight ongoing security flaws within the Discourse platform.
-    detail: Discourse continues to be a target, with recent reports detailing vulnerabilities allowing unauthorized access to private topics, network probing via email, subscription circumvention, and exposure of draft topic titles. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
+  - title: Discourse Vulnerabilities Continue to Emerge
+    text: Multiple Discourse flaws highlight ongoing risks in popular open-source discussion platforms.
+    detail: Recent reports detail various vulnerabilities in Discourse, including unauthorized access to private topics, network probing via email settings, subscription tier exploitation, and draft topic title exposure. Organizations using Discourse should prioritize patching and reviewing access controls to mitigate these risks.
     link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: Discourse CVE Details
+    link_label: Discourse Vulnerabilities
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - patching
-  - title: AI Tooling Vulnerabilities Require Heightened Security Scrutiny
-    text: Emerging vulnerabilities in AI tools pose significant risks, including credential theft.
-    detail: The security of AI-related tools, particularly those handling sensitive data or extensions, is becoming a critical concern. A recent advisory highlights a flaw in an AI chat interface that could lead to cloud credential theft. Security teams must implement strict access controls and conduct thorough security assessments of all AI tooling.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+      - discourse
+      - cve
+  - title: AI Model Safety Concerns Escalate
+    text: AI models are being withheld due to potential dangers, raising ethical and security questions.
+    detail: Reports indicate that advanced AI models are being deemed too dangerous for public release, citing concerning capabilities. This highlights the growing need for robust AI safety research, ethical guidelines, and secure development practices to prevent misuse.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-cybersecurity
+    link_label: AI and Cybersecurity
     badge: signal
     tags:
       - ai-security
-      - cloud-security
-      - vulnerability
-  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
-    text: Third-party dependencies remain a significant vector for critical vulnerabilities.
-    detail: Recent advisories underscore the persistent danger of vulnerable third-party components, such as in Docling Core's reliance on PyYAML and the SSRF flaw in Backstage's `FetchUrlReader`. Organizations must adopt robust Software Bill of Materials (SBOM) practices and actively monitor their dependency chains for known vulnerabilities.
-    link: https://owasp.org/www-project-dependency-check/
-    link_label: OWASP Dependency-Check
+      - threat-intel
+      - ethics
+  - title: Supply Chain Risks Persist with RCE Vulnerabilities
+    text: RCE vulnerabilities in software dependencies and components pose significant supply chain risks.
+    detail: Several recent advisories point to Remote Code Execution (RCE) vulnerabilities stemming from software dependencies, such as PyYAML in Docling Core, and flaws in components like DriverManager in Jeecgboot. Organizations must implement rigorous software composition analysis and dependency management to secure their supply chains.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: Software Component Analysis
     badge: signal
     tags:
       - supply-chain
-      - dependency-management
       - vulnerability
-  - title: Ransomware Operators Diversify Tactics and Targets
-    text: Ransomware groups are actively targeting business services and employing new actors.
-    detail: The ransomware landscape remains dynamic, with new threat actors like TiMc emerging and existing groups intensifying attacks, particularly against the business services sector. Recent reports also indicate potential defacement of ransomware leak sites, possibly indicating internal strife or strategic shifts. Continuous monitoring and robust defenses are crucial.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-129a
-    link_label: CISA Ransomware Guidance
+      - rce
+      - dependency-management
+  - title: Threat Actors Leverage Emojis for Stealth
+    text: Emojis are increasingly used by threat actors for evasion and obfuscation in communications.
+    detail: Sophisticated threat actors are weaponizing emojis to bypass security controls and disguise malicious content. This trend necessitates advanced threat detection mechanisms that can analyze contextual meaning and identify disguised payloads, moving beyond simple signature-based detection.
+    link: https://www.mitre.org/publications/technical-papers/threat-actor-techniques-and-indicators-guide
+    link_label: Threat Actor Techniques
     badge: signal
     tags:
-      - ransomware
       - threat-intel
-      - business-services
+      - evasion
+      - malware
+      - emoji
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
