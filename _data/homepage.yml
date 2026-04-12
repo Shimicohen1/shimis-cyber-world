@@ -25,49 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Under Scrutiny for Multiple Vulnerabilities
-    text: Discourse platform is facing a barrage of vulnerabilities affecting private topics, email settings, and subscriptions.
-    detail: Multiple recent posts highlight significant security flaws in Discourse, including unauthorized access to private topics (CVE-2026-32615), potential for network probing via email settings (CVE-2026-33185), and subscription tier manipulation (CVE-2026-33074). Professionals should ensure their Discourse instances are patched and review access controls.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+  - title: Discourse Platforms Targeted by Multiple Vulnerabilities
+    text: Discourse, a popular open-source discussion platform, is facing a wave of diverse security flaws.
+    detail: Recent advisories highlight multiple vulnerabilities in Discourse, ranging from moderator privilege escalation (CVE-2026-32615) to network probing via email settings (CVE-2026-33185) and subscription tier exploits (CVE-2026-33074). Administrators should prioritize patching and review access controls to mitigate these risks.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: Discourse CVE Details
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - software-security
-  - title: RCE and File Read Flaws Plague Open Source Tools
-    text: Open-source projects like OrangeHRM, Alchemy CMS, and Docling Core are exhibiting critical RCE and file read vulnerabilities.
-    detail: Recent advisories reveal critical vulnerabilities such as authenticated local file reads in OrangeHRM (CVE-2026-39345), RCE via Ruby eval in Alchemy CMS (CVE-2026-23885), and RCE in Docling Core due to PyYAML (affecting versions up to 2.48.4). Organizations using these tools must prioritize patching and dependency management.
-    link: https://owasp.org/www-project-top-ten/
-    link_label: OWASP Top 10
+      - web-app
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: The business services sector is experiencing a significant surge in ransomware attacks.
+    detail: Intelligence indicates a coordinated increase in ransomware activity targeting the business services industry. Threat actors are leveraging various ransomware strains, suggesting a growing focus on this sector for financial gain. Organizations should bolster defenses, including robust backups and incident response plans.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-297a
+    link_label: CISA Ransomware Guidance
+    badge: signal
+    tags:
+      - threat-intel
+      - ransomware
+      - business-services
+  - title: AI Models Pose Emerging Security and Data Risks
+    text: New AI models are raising concerns about potential misuse and data exposure.
+    detail: The rapid development of AI, including large language models like Anthropic's 'Mythos', introduces novel security challenges. Vulnerabilities in AI interfaces (CVE-2026-39345 affecting OrangeHRM, and AI chat interfaces) and the potential for AI-generated content to be weaponized highlight the need for AI-specific security strategies.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
+    badge: signal
+    tags:
+      - ai-security
+      - vulnerability
+      - llm
+  - title: SSRF and RCE Vulnerabilities Require Immediate Patching
+    text: Critical Server-Side Request Forgery and Remote Code Execution flaws are being actively exploited.
+    detail: Multiple systems, including Backstage (CVE-2026-5832), Alchemy CMS (CVE-2026-23885), and Jeecgboot JimuReport (CVE-2026-5848), are affected by severe RCE and SSRF vulnerabilities. Prompt patching and network segmentation are crucial to prevent attackers from gaining unauthorized access and executing commands.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guide
     badge: signal
     tags:
       - vulnerability
       - rce
-      - open-source
-      - dependency-management
-  - title: AI Security Risks Emerge in LLM Interfaces and Models
-    text: AI tools and models are showing vulnerabilities, from credential theft to inherent dangers in advanced LLMs.
-    detail: The text-generation-webui is vulnerable to cloud credential theft via RAG extensions, and Anthropic's 'Mythos' AI model is deemed too dangerous for release. Security teams must implement robust access controls for AI interfaces and stay informed on the evolving risks of advanced AI models.
-    link: https://csrc.nist.gov/projects/nist-ai-risk-management-framework
-    link_label: NIST AI RMF
-    badge: signal
-    tags:
-      - ai-security
-      - llm
-      - vulnerability
-      - cloud-security
-  - title: Threat Actors Exploit SSRF and SQLi in Diverse Platforms
-    text: SSRF and SQL Injection vulnerabilities are being actively exploited across various software and API tools.
-    detail: Critical SSRF flaws have been identified in Backstage (affecting multiple versions) and the atototo API tool (up to v0.2.1). Additionally, a construction management system (version 1.0) is susceptible to SQL injection. These highlight the persistent risk of injection-based attacks and the need for thorough input validation.
-    link: https://owasp.org/www-project-top-ten/2021/A03_2021-Injection
-    link_label: OWASP Injection Vulnerabilities
-    badge: signal
-    tags:
-      - vulnerability
       - ssrf
-      - sql-injection
-      - threat-intel
+      - patching
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
