@@ -26,48 +26,45 @@ identity:
     url: /about/
 quick_signals:
   - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse platforms are frequently targeted by various vulnerabilities, including privilege escalation and data exposure.
-    detail: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform, ranging from moderator privilege escalation to exposure of private draft titles and subscription circumvention. Security teams should prioritize patching and reviewing access controls for Discourse instances to mitigate these risks.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+    text: Multiple CVEs highlight ongoing security weaknesses in Discourse, affecting private topics, email settings, and subscription tiers.
+    detail: Discourse platforms are repeatedly targeted with vulnerabilities allowing unauthorized access and privilege escalation. Professionals should prioritize patching and review access controls for private categories and subscription management to mitigate risks.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=listing&query=Discourse
+    link_label: Discourse CVEs
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - web-application
-  - title: AI Models Pose New Attack Vectors for Credential Theft
-    text: AI interfaces, particularly LLM frontends, are becoming targets for credential theft and RCE.
-    detail: The emergence of vulnerabilities in AI chat interfaces, such as credential theft in LLM frontends, indicates a new frontier for attackers. Organizations deploying AI tools should implement strict access controls, monitor for suspicious activity, and ensure the RAG extensions are updated to prevent unauthorized access.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+      - access-control
+  - title: AI Model Risks Demand Robust Pre-Deployment Vetting
+    text: Anthropic's 'Mythos' AI model deemed too dangerous for release, underscoring the need for thorough AI safety evaluations.
+    detail: The potential for advanced AI models to exhibit concerning capabilities necessitates stringent pre-deployment risk assessments. Organizations integrating AI should implement comprehensive testing and ethical review processes to prevent unintended consequences and ensure responsible deployment.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-cybersecurity
+    link_label: AI Cybersecurity Guidance
     badge: signal
     tags:
-      - vulnerability
       - ai-security
-      - cloud
-      - identity
-  - title: Supply Chain Risks Evident in PyYAML and RCE Vulnerabilities
-    text: Dependencies like PyYAML continue to be a significant source of RCE vulnerabilities.
-    detail: A critical RCE bug in Docling Core, stemming from its PyYAML dependency, underscores the persistent risks in software supply chains. Organizations must rigorously vet third-party libraries, implement dependency scanning, and maintain up-to-date software inventories to proactively manage these threats.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2020-14872
-    link_label: PyYAML Vulnerabilities
+      - risk-management
+      - threat-intel
+  - title: Supply Chain Vulnerabilities in Open Source Tools Persist
+    text: Dependencies like PyYAML and components in Backstage and OrangeHRM introduce critical RCE and file read vulnerabilities.
+    detail: The reliance on open-source components, as seen with Docling Core and OrangeHRM, introduces significant supply chain risks. Security teams must actively manage dependencies, implement Software Bill of Materials (SBOM), and perform regular vulnerability scanning on third-party libraries.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: OWASP SSCS
     badge: signal
     tags:
-      - vulnerability
       - supply-chain
-      - rce
+      - vulnerability
       - dependency-management
-  - title: Threat Actors Weaponize Emojis for Stealthy Evasion
-    text: Emojis are increasingly used by threat actors to bypass security controls and obfuscate communications.
-    detail: The evolving tactics of threat actors include leveraging emojis for stealthy communication and evading detection. Security awareness training should be updated to include recognition of sophisticated emoji-based social engineering, and email/messaging security gateways should be configured to flag unusual emoji usage.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/recognizing-and-reporting-phishing
-    link_label: Phishing Recognition Guide
+  - title: Threat Actors Leverage Emojis for Evasion and Deception
+    text: Emojis are increasingly used by threat actors to bypass security controls and obfuscate malicious communications.
+    detail: Sophisticated threat actors are weaponizing emojis for stealthy communication and to evade detection. Security awareness training should include educating users about potential emoji-based phishing and social engineering tactics, alongside technical controls.
+    link: https://www.mitre.org/modules/attack
+    link_label: MITRE ATT&CK Framework
     badge: signal
     tags:
       - threat-intel
       - evasion
       - social-engineering
-      - emoji-attack
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
