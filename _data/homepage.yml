@@ -25,46 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple CVEs highlight ongoing security weaknesses in Discourse, affecting private topics, email settings, and subscription tiers.
-    detail: Discourse platforms are repeatedly targeted with vulnerabilities allowing unauthorized access and privilege escalation. Professionals should prioritize patching and review access controls for private categories and subscription management to mitigate risks.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=listing&query=Discourse
-    link_label: Discourse CVEs
+  - title: Discourse Platform Faces Recurring Vulnerability Exploits
+    text: Discourse is experiencing multiple vulnerabilities, impacting private topics, email settings, and subscription tiers.
+    detail: Multiple CVEs highlight ongoing security weaknesses in the Discourse platform, affecting moderator access, email testing endpoints, and subscription management. Organizations using Discourse should ensure all instances are patched and review access controls, especially for private categories and subscription features, to mitigate risks.
+    link: https://github.com/discourse/discourse/security/advisories
+    link_label: Discourse Security Advisories
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - access-control
-  - title: AI Model Risks Demand Robust Pre-Deployment Vetting
-    text: Anthropic's 'Mythos' AI model deemed too dangerous for release, underscoring the need for thorough AI safety evaluations.
-    detail: The potential for advanced AI models to exhibit concerning capabilities necessitates stringent pre-deployment risk assessments. Organizations integrating AI should implement comprehensive testing and ethical review processes to prevent unintended consequences and ensure responsible deployment.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/artificial-intelligence-and-cybersecurity
-    link_label: AI Cybersecurity Guidance
+      - vulnerability
+      - web-application
+  - title: AI-Powered Tools Introduce New Attack Vectors
+    text: AI models and interfaces are becoming targets for credential theft and sensitive data exposure.
+    detail: Recent reports indicate vulnerabilities in AI chat interfaces and LLM extensions, such as RAG implementations, that can lead to cloud credential theft. Professionals should prioritize securing AI infrastructure, implementing strict access controls, and regularly auditing configurations for exposed credentials or sensitive data.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - risk-management
+      - cloud-security
+      - vulnerability
       - threat-intel
-  - title: Supply Chain Vulnerabilities in Open Source Tools Persist
-    text: Dependencies like PyYAML and components in Backstage and OrangeHRM introduce critical RCE and file read vulnerabilities.
-    detail: The reliance on open-source components, as seen with Docling Core and OrangeHRM, introduces significant supply chain risks. Security teams must actively manage dependencies, implement Software Bill of Materials (SBOM), and perform regular vulnerability scanning on third-party libraries.
-    link: https://owasp.org/www-project-software-supply-chain-security/
-    link_label: OWASP SSCS
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: The Business Services sector is seeing a significant increase in ransomware attacks.
+    detail: Intelligence suggests a coordinated surge in ransomware activity targeting the Business Services sector. Organizations in this industry must bolster their defenses with robust backup strategies, regular vulnerability scanning, and comprehensive incident response plans to counter evolving ransomware tactics.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-076a
+    link_label: CISA Ransomware Guidance
+    badge: signal
+    tags:
+      - ransomware
+      - business-services
+      - threat-intel
+      - malware
+  - title: Supply Chain Vulnerabilities Persist in Development Tools
+    text: Open-source components and development frameworks are frequent targets for critical vulnerabilities.
+    detail: Several recent advisories point to critical vulnerabilities in open-source projects like OrangeHRM, Backstage, and Docling Core, often stemming from dependency issues (e.g., PyYAML). Teams must implement rigorous Software Bill of Materials (SBOM) management and dependency scanning to proactively identify and remediate risks.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP SCA Project
     badge: signal
     tags:
       - supply-chain
       - vulnerability
-      - dependency-management
-  - title: Threat Actors Leverage Emojis for Evasion and Deception
-    text: Emojis are increasingly used by threat actors to bypass security controls and obfuscate malicious communications.
-    detail: Sophisticated threat actors are weaponizing emojis for stealthy communication and to evade detection. Security awareness training should include educating users about potential emoji-based phishing and social engineering tactics, alongside technical controls.
-    link: https://www.mitre.org/modules/attack
-    link_label: MITRE ATT&CK Framework
-    badge: signal
-    tags:
-      - threat-intel
-      - evasion
-      - social-engineering
+      - oss
+      - developer-tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
