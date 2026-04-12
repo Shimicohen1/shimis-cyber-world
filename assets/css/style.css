@@ -379,6 +379,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .label--pink { color: var(--pink); }
 .label--lime { color: var(--lime); }
 .label--red { color: rgba(255, 60, 60, .9); }
+.label--cyan { color: var(--cyan); }
+.label--signal { color: var(--electric); }
+.label--ghost { color: var(--dim); }
+.label--purple { color: var(--acid); }
 
 .badge {
   display: inline-block;

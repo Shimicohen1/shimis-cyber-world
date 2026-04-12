@@ -4,17 +4,19 @@ title: ThreatLens
 permalink: /ioc-scanner/
 ---
 
-<div class="page-head">
-  <div class="label label--cyan page-head__label">SCW TOOLS</div>
-  <h1 class="page-head__title">ThreatLens</h1>
-  <p class="page-head__desc">Paste any indicator — IPs, domains, hashes, URLs, emails — and get instant lookup links across 26 threat intelligence platforms with clear descriptions of what each source checks.</p>
+<div class="tool-hero tool-hero--intel">
+  <div class="tool-hero__badge tool-hero__badge--purple">SCW INTEL</div>
+  <h1 class="tool-hero__title">Threat<span class="tool-hero__accent tool-hero__accent--purple">Lens</span></h1>
+  <p class="tool-hero__tagline">IOC Investigation Accelerator</p>
+  <p class="tool-hero__desc">Paste any indicator — IP, hash, domain, URL, or email — and instantly get <strong>targeted lookup links</strong> across <strong>26 threat intelligence platforms</strong>. ThreatLens identifies the IOC type and routes you to the right tool with context on what to look for.</p>
+  <div class="tool-hero__note"><span class="scw-icon" data-icon="zap"></span> <strong>How it works:</strong> ThreatLens doesn't query databases — it <em>identifies</em> your IOC type and generates direct investigation links to VirusTotal, Shodan, AbuseIPDB, and 23 more platforms. You click, they analyze.</div>
 </div>
 
 <section class="cs-intro reveal">
-  <div class="ioc-how-it-works">
-    <div class="ioc-step"><span class="ioc-step__num">1</span><span class="ioc-step__text">Paste indicators — one per line, comma-separated, or mixed</span></div>
-    <div class="ioc-step"><span class="ioc-step__num">2</span><span class="ioc-step__text">Auto-detection identifies each type (IP, hash, domain, URL, email)</span></div>
-    <div class="ioc-step"><span class="ioc-step__num">3</span><span class="ioc-step__text">Get direct links to relevant platforms with context on what to look for</span></div>
+  <div class="tool-steps tool-steps--purple">
+    <div class="tool-step"><span class="tool-step__num">1</span><div class="tool-step__body"><strong>Paste your IOCs</strong><span class="tool-step__detail">Raw indicators from alerts, reports, or tickets — bulk paste supported</span></div></div>
+    <div class="tool-step"><span class="tool-step__num">2</span><div class="tool-step__body"><strong>Auto-classify</strong><span class="tool-step__detail">Engine detects IPv4, IPv6, MD5, SHA1, SHA256, domains, URLs, and emails</span></div></div>
+    <div class="tool-step"><span class="tool-step__num">3</span><div class="tool-step__body"><strong>Investigate everywhere</strong><span class="tool-step__detail">Get platform-specific links with descriptions of what each source checks</span></div></div>
   </div>
   <div class="cs-intro__actions">
     <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools →</a>
@@ -26,7 +28,7 @@ permalink: /ioc-scanner/
 <!-- Scanner -->
 <section id="scanner" class="ioc-scanner reveal">
   <div class="feed__header">
-    <h2 class="feed__title"><span class="label label--cyan">SCAN</span> &nbsp;Paste Indicators</h2>
+    <h2 class=\"feed__title\"><span class=\"label label--purple\">SCAN</span> &nbsp;Paste Indicators</h2>
   </div>
 
   <div class="ioc-input-area">
@@ -84,7 +86,7 @@ permalink: /ioc-scanner/
 <!-- Supported Sources -->
 <section class="ioc-sources-section reveal">
   <div class="feed__header">
-    <h2 class="feed__title"><span class="label label--amber">SOURCES</span> &nbsp;Threat Intel Platforms</h2>
+    <h2 class=\"feed__title\"><span class=\"label label--purple\">SOURCES</span> &nbsp;Threat Intel Platforms</h2>
   </div>
   <div class="ioc-sources-grid">
     {% for src in site.data.ioc_sources.sources %}
@@ -102,16 +104,16 @@ permalink: /ioc-scanner/
 <!-- CTA -->
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
-    <h2 class="cs-cta__title">Built for SOC analysts.</h2>
-    <p class="cs-cta__text">Paste IOCs from alerts, threat reports, or incident tickets. Get instant lookup links. No context switching, no API rate limits.</p>
+    <h2 class="cs-cta__title">Save hours per investigation.</h2>
+    <p class="cs-cta__text">Instead of opening 10 tabs and manually pasting each IOC — paste once, get all your investigation links in one view. Built for SOC analysts, IR teams, and threat hunters.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--primary">WarRoom →</a>
-      <a href="{{ '/premium/' | relative_url }}" class="btn btn--ghost">All SCW Tools</a>
+      <a href="{{ '/breach-radar/' | relative_url }}" class="btn btn--primary"><span class="scw-icon" data-icon="radar"></span> BreachRadar — Dark Web Intel →</a>
+      <a href="{{ '/gofish/' | relative_url }}" class="btn btn--ghost"><span class="scw-icon" data-icon="anchor"></span> GoFish — Detect Phishing →</a>
     </div>
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=9">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=12">
 
 <!-- Source data for JS -->
 <script>
