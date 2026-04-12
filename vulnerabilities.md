@@ -16,6 +16,10 @@ permalink: /vulnerabilities/
     <input type="text" class="feed-search__input" placeholder="Search CVEs..." id="vuln-search">
     <span class="feed-search__count" id="vuln-count"></span>
   </div>
+  <div class="feed-filters" style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+    <button class="btn btn--sm btn--active" id="filter-all" onclick="filterVulns('all')">All</button>
+    <button class="btn btn--sm" id="filter-high" onclick="filterVulns('high')">HIGH+ Only</button>
+  </div>
 </div>
 
 <div class="archive">
@@ -23,7 +27,7 @@ permalink: /vulnerabilities/
     {% for post in site.posts %}
     {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" or post.channel == "NVD" %}
     {% if post.score == "HIGH" or post.score == "CRITICAL" or post.score == "MEDIUM" %}
-    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}">
+    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}" data-score="{{ post.score }}">
           {% include post-card.html %}
     </div>
     {% endif %}
@@ -49,5 +53,32 @@ permalink: /vulnerabilities/
 </div>
 
 <div data-feed-pagination="vuln-list,vuln-search,vuln-count,vuln-pagination,20" style="display:none"></div>
+
+<script>
+function filterVulns(mode) {
+  var entries = document.querySelectorAll('#vuln-list .feed-entry');
+  var allBtn = document.getElementById('filter-all');
+  var highBtn = document.getElementById('filter-high');
+  entries.forEach(function(el) {
+    if (mode === 'high') {
+      var score = (el.getAttribute('data-score') || '').toUpperCase();
+      el.style.display = (score === 'HIGH' || score === 'CRITICAL') ? '' : 'none';
+    } else {
+      el.style.display = '';
+    }
+  });
+  if (mode === 'high') {
+    highBtn.classList.add('btn--active');
+    allBtn.classList.remove('btn--active');
+  } else {
+    allBtn.classList.add('btn--active');
+    highBtn.classList.remove('btn--active');
+  }
+  // Re-trigger pagination count update
+  var countEl = document.getElementById('vuln-count');
+  var visible = document.querySelectorAll('#vuln-list .feed-entry:not([style*="display: none"])').length;
+  if (countEl) countEl.textContent = visible + ' vulnerabilities';
+}
+</script>
 
 {% include newsletter.html %}
