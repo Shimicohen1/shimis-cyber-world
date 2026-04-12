@@ -25,20 +25,31 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse is experiencing a wave of vulnerabilities impacting various features, from private topic access to subscription tiers.
-    detail: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform. Professionals should prioritize patching and review configurations for potential unauthorized access, data exposure, and privilege escalation risks. Stay updated on new CVEs affecting Discourse to maintain robust security posture.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
-    link_label: Discourse Vulnerability Database
+  - title: Discourse Platform Under Scrutiny for Multiple Vulnerabilities
+    text: Discourse is facing a barrage of vulnerabilities, impacting moderation, subscriptions, and data exposure.
+    detail: Recent reports highlight several critical flaws in the Discourse platform, including unauthorized access to private topics (CVE-2026-32615), subscription tier manipulation (CVE-2026-33074), and exposure of draft topic titles (CVE-2026-32951). Organizations using Discourse should prioritize patching these vulnerabilities and review access controls to mitigate potential risks.
+    link: https://github.com/discourse/discourse/security/advisories
+    link_label: Discourse Security Advisories
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - web-application
-  - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: The Business Services sector is seeing a significant surge in ransomware attacks, indicating a targeted campaign.
-    detail: Intelligence suggests a coordinated effort by ransomware groups to disrupt business services. Organizations in this sector must reinforce their defenses, including robust backup strategies, employee training on phishing, and network segmentation, to mitigate the growing threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
+      - vulnerability
+      - cve
+  - title: AI Models Pose Emerging Cloud Credential and Data Risks
+    text: AI interfaces and models are becoming targets for credential theft and sensitive data exposure.
+    detail: The increasing integration of AI tools, like those in `text-generation-webui` with RAG extensions, presents new attack vectors. Vulnerabilities like the one allowing cloud credential theft highlight the need for robust security measures around AI deployments. Ensure AI environments are isolated and access controls are strictly enforced.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
+    badge: signal
+    tags:
+      - ai-security
+      - cloud
+      - vulnerability
+      - credential-theft
+  - title: Ransomware Actors Intensify Attacks on Business Services Sector
+    text: Ransomware groups are aggressively targeting the business services sector, demanding increased vigilance.
+    detail: Intelligence indicates a significant surge in ransomware attacks specifically targeting the business services industry. Threat actors like TiMc and operations like Kairos are active. Organizations in this sector must reinforce their defenses, focusing on endpoint security, regular backups, and employee awareness training.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-265a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
@@ -46,28 +57,17 @@ quick_signals:
       - threat-intel
       - business-services
       - malware
-  - title: AI Tool Vulnerabilities and Misuse Present New Attack Vectors
-    text: Emerging AI platforms and tools are showing vulnerabilities, alongside concerns about AI-generated content and misuse.
-    detail: The rapid adoption of AI tools introduces novel security challenges, from credential theft in AI interfaces to the potential for AI-generated misinformation. Security teams need to assess AI deployments for risks, secure AI infrastructure, and develop strategies to detect and counter AI-driven threats.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLM Apps
+  - title: New Threat Actors and Evasive Tactics Emerge in Cyber Landscape
+    text: Watch for novel threat actors and the creative use of emojis for stealthy attacks.
+    detail: The emergence of new threat actors like TiMc and the sophisticated use of emojis to bypass security controls are key trends. Additionally, APT28's use of PRISMEX for stealthy infiltration demands attention. Organizations should stay informed on emerging TTPs and implement advanced threat detection and response capabilities.
+    link: https://attack.mitre.org/groups/
+    link_label: MITRE ATT&CK Adversary Groups
     badge: signal
     tags:
-      - ai-security
-      - vulnerability
       - threat-intel
-      - llm
-  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Software
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to be discovered across various software.
-    detail: Recent advisories reveal persistent SSRF and RCE vulnerabilities in development tools, CMS platforms, and API utilities. Developers and security teams must prioritize secure coding practices, input validation, and timely patching of libraries and applications to prevent these critical security breaches.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF Guide
-    badge: signal
-    tags:
-      - vulnerability
-      - rce
-      - ssrf
-      - secure-coding
+      - emerging-threats
+      - evasion
+      - apt
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
