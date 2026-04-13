@@ -25,49 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse is experiencing a recurring pattern of vulnerabilities affecting various features, from private topic access to subscription tiers.
-    detail: Multiple recent advisories highlight ongoing security weaknesses in Discourse. Professionals should prioritize patching and review access controls, especially concerning moderator privileges and subscription management, to mitigate risks of unauthorized access and financial fraud.
-    link: https://discourse.org/blog/security-updates
-    link_label: Discourse Security Updates
+  - title: Discourse Platform Sees Spike in Diverse Vulnerabilities
+    text: Multiple CVEs highlight a range of security flaws affecting Discourse, from private topic access to subscription bypasses.
+    detail: Discourse users must prioritize patching and review configurations, as recent disclosures reveal vulnerabilities impacting moderation, content privacy, and subscription integrity. Staying updated on these rapidly disclosed flaws is crucial for maintaining platform security and user trust.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: CVE-2026-32615 Details
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - web-app-security
-  - title: AI Security Concerns Grow with LLM Interface Vulnerabilities
-    text: AI chat interfaces and LLM extensions are showing vulnerabilities, including credential theft and potential for misuse.
-    detail: The emergence of vulnerabilities in AI chat interfaces like `text-generation-webui` underscores the need for robust security in AI deployments. Organizations must secure cloud credentials and audit RAG extensions to prevent unauthorized access and data exfiltration.
+      - discourse
+      - patching
+  - title: AI Models & Interfaces Pose New Credential & Data Risks
+    text: AI tools, from LLM interfaces to specific models, are emerging as targets for credential theft and data exposure.
+    detail: Organizations deploying AI solutions must implement robust security controls for interfaces and models, especially those with RAG extensions. This includes strict access management and vulnerability scanning to prevent cloud credential theft and sensitive data leaks.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLMs
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - llm
       - cloud-security
-      - vulnerability
-  - title: Supply Chain Risks Highlighted by PyYAML and Ruby Eval Flaws
-    text: Critical RCE vulnerabilities in Docling Core and Alchemy CMS stem from insecure dependency management and code execution.
-    detail: The recent RCE flaws in Docling Core (due to PyYAML) and Alchemy CMS (Ruby eval) emphasize the critical nature of supply chain security. Development teams must rigorously vet dependencies and avoid insecure code patterns to prevent widespread compromise.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2020-14991
-    link_label: PyYAML Vulnerability Example
+      - credential-theft
+      - data-leak
+  - title: Ransomware Activity Intensifies in Business Services Sector
+    text: Ransomware groups are significantly increasing attacks targeting the Business Services sector, indicating a strategic shift.
+    detail: The Business Services sector should bolster its defenses against ransomware, focusing on robust backup strategies, network segmentation, and employee awareness training. Proactive threat hunting and rapid incident response are critical to mitigate potential impacts.
+    link: https://www.cisa.gov/news-events/advisories/aa23-289a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
-      - supply-chain
-      - rce
-      - dependency-management
-      - vulnerability
-  - title: Threat Actors Leverage Emojis for Stealthy Communications
-    text: Sophisticated threat actors are increasingly using emojis to bypass security controls and obfuscate malicious intent.
-    detail: The trend of weaponizing emojis for stealthy communication presents a new evasion tactic. Security professionals should update detection mechanisms to recognize emoji-based obfuscation and train users to be wary of unusual character usage in communications.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/social-engineering-awareness
-    link_label: Social Engineering Awareness
-    badge: signal
-    tags:
+      - ransomware
       - threat-intel
-      - evasion-techniques
-      - social-engineering
-      - emoji
+      - business-services
+      - malware
+  - title: SSRF Vulnerabilities Remain a Persistent Threat
+    text: Server-Side Request Forgery (SSRF) flaws continue to be disclosed across various tools and platforms, posing remote attack risks.
+    detail: Developers and security teams must prioritize the secure implementation of network request handling, especially in developer portals and API tools. Regular code reviews and vulnerability scanning focused on SSRF are essential to prevent unauthorized access to internal systems.
+    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Prevention
+    badge: signal
+    tags:
+      - vulnerability
+      - ssrf
+      - api-security
+      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
