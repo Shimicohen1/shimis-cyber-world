@@ -6,6 +6,8 @@ channel: "Daily Digest"
 score: "CRITICAL"
 source_name: "SCW"
 ai_rewritten: true
+featured: true
+summary: "22 vulnerability disclosures (5 Critical, 17 High) and 15 curated intelligence stories from 9 sources."
 tags:
   - daily-digest
   - vulnerability
