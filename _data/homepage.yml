@@ -26,19 +26,19 @@ identity:
     url: /about/
 quick_signals:
   - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple recent advisories highlight ongoing security flaws within the Discourse platform, impacting various features.
-    detail: Discourse, a popular open-source discussion platform, has been flagged for several vulnerabilities including unauthorized access to private topics, network probing via email settings, subscription tier manipulation, and exposure of draft topic titles. Professionals should ensure Discourse instances are updated and regularly audited for unauthorized access patterns.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+    text: Discourse continues to be a target, with multiple recent reports detailing various vulnerabilities.
+    detail: Recent posts highlight several security flaws in the Discourse platform, including issues with moderator access to private topics, network probing via email settings, subscription tier manipulation, and exposure of draft topic titles. Cybersecurity professionals should ensure Discourse instances are up-to-date and review access controls to mitigate these persistent risks.
+    link: https://discourse.org/blog/security-updates
+    link_label: Discourse Security Updates
     badge: signal
     tags:
       - vulnerability
       - discourse
       - web-application
   - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: New intelligence indicates a coordinated surge in ransomware activity targeting the business services industry.
-    detail: Recent threat intelligence highlights a significant increase in ransomware attacks specifically aimed at the business services sector. This trend suggests a deliberate campaign by threat actors to disrupt critical business operations. Organizations in this sector should bolster their ransomware defenses, including robust backups and employee training.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-075a
+    text: New threat actor TiMc emerges as ransomware groups target business services.
+    detail: Intelligence indicates a significant increase in ransomware attacks targeting the Business Services sector, with a new threat actor, TiMc, also identified. Organizations in this sector must bolster their defenses, focusing on robust backups, network segmentation, and employee awareness training to counter these escalating threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-284a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
@@ -46,28 +46,28 @@ quick_signals:
       - threat-intel
       - business-services
       - malware
-  - title: AI Integration Introduces New Attack Vectors for Credential Theft
-    text: AI tools and interfaces are becoming targets for credential theft and other sensitive data exposure.
-    detail: The increasing adoption of AI technologies, particularly in chat interfaces and LLM frontends, presents new security challenges. Vulnerabilities have been identified that could lead to cloud credential theft and exposure of sensitive AI model data. Security teams must prioritize securing AI infrastructure and scrutinizing third-party AI extensions.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI-generated submissions are causing triage chaos on bug bounty platforms.
+    detail: Bug bounty platforms are struggling with an influx of AI-generated vulnerability reports, impacting their ability to triage and remediate. Security teams should implement stricter validation processes for incoming reports and focus on verifying the novelty and exploitability of findings, rather than relying solely on automated submissions.
+    link: https://owasp.org/www-project-top-10-ai-security-risks/
+    link_label: OWASP AI Security Risks
     badge: signal
     tags:
       - ai-security
-      - credential-theft
+      - bug-bounty
+      - threat-intel
       - vulnerability
-      - cloud
-  - title: Exploitation of Software Dependencies Remains a Critical Risk
-    text: Vulnerabilities stemming from third-party library dependencies continue to pose significant threats.
-    detail: Recent advisories reveal critical Remote Code Execution (RCE) flaws in systems like Docling Core, directly attributed to insecure dependencies like PyYAML. This underscores the persistent risk associated with software supply chains. Organizations must implement rigorous dependency scanning and patching strategies to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2023-40261
-    link_label: PyYAML Vulnerability Advisory
+  - title: SSRF and RCE Vulnerabilities Persist in Various Software Tools
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws are prevalent.
+    detail: Multiple critical SSRF and RCE vulnerabilities have been disclosed across various tools, including OrangeHRM, Backstage, Alchemy CMS, Docling Core, Jeecgboot JimuReport, and atototo API. Organizations must prioritize patching these systems and implement network controls to prevent unauthorized access and potential command execution.
+    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Guidance
     badge: signal
     tags:
-      - supply-chain
       - vulnerability
       - rce
-      - dependency-management
+      - ssrf
+      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
