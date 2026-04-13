@@ -12,7 +12,7 @@ layout: null
   <subtitle>{{ site.description | xml_escape }}</subtitle>
   <link href="https://t.me/Shimiscyberworldbot" rel="related" type="text/html" title="SCW Intel Bot — Real threat intelligence inside Telegram. Search, monitor, and generate analyst-ready outputs." />
   {% assign posts = site.posts | where_exp: "post", "post.hidden != true" %}
-  {% for post in posts limit:50 %}
+  {% for post in posts limit:200 %}
   <entry>
     <title type="html">{{ post.title | xml_escape }}</title>
     <link href="{{ post.url | absolute_url }}" rel="alternate" type="text/html" title="{{ post.title | xml_escape }}" />
