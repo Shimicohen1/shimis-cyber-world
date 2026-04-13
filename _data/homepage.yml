@@ -25,48 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Multiple Vulnerabilities
-    text: Discourse platforms are experiencing a wave of vulnerabilities, impacting private topics, email settings, and subscription tiers.
-    detail: Multiple CVEs highlight security weaknesses in Discourse, including unauthorized access to private topics (CVE-2026-32615) and subscription bypass (CVE-2026-33074). Administrators should ensure all Discourse instances are patched and review access controls for moderator roles and subscription mechanisms to mitigate these risks.
+  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
+    text: Multiple CVEs highlight ongoing security weaknesses in Discourse, impacting moderation, subscriptions, and data exposure.
+    detail: Discourse continues to be a target, with recent reports detailing vulnerabilities allowing unauthorized access to private topics, subscription tier manipulation, and exposure of draft topic titles. Organizations utilizing Discourse should prioritize patching and review access control configurations to mitigate these risks.
     link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: Discourse Vulnerability Details
+    link_label: CVE-2026-32615 Details
     badge: signal
     tags:
       - vulnerability
       - discourse
       - cve
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Ransomware operations are increasingly targeting the business services sector, with notable activity from groups like Kairos.
-    detail: The business services sector is under increased threat from ransomware, as evidenced by recent reports of targeted attacks and the defacement of the Kairos ransomware leak site. Organizations in this sector should review their security postures, implement robust backup strategies, and enhance endpoint detection and response to counter these evolving threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-110a
-    link_label: Ransomware Guidance
-    badge: signal
-    tags:
-      - ransomware
-      - threat-intel
-      - business-services
-  - title: AI Models and Tools Present New Attack Surfaces
-    text: AI-powered tools and platforms are introducing novel vulnerabilities, including credential theft and RCE risks.
-    detail: Recent advisories highlight vulnerabilities in AI-related tools, such as an AI chat interface vulnerable to cloud credential theft and an RCE bug in Docling Core due to PyYAML dependency. Developers and users of AI platforms must prioritize secure coding practices, dependency management, and thorough security testing to address these emerging risks.
+  - title: "AI Models Pose New Threats: Credential Theft and Risky Deployments"
+    text: AI interfaces are vulnerable to credential theft, and advanced AI models present deployment risks.
+    detail: The security of AI-driven platforms is a growing concern. Vulnerabilities in AI chat interfaces can lead to cloud credential theft, while advanced AI models themselves may be deemed too risky for public release due to their capabilities. Organizations must implement robust security for AI integrations and carefully assess model risks.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
     link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - vulnerability
-      - rce
       - cloud
-  - title: SSRF and SQL Injection Remain Persistent Threats
-    text: Server-Side Request Forgery (SSRF) and SQL Injection vulnerabilities continue to be exploited across various applications.
-    detail: Critical SSRF flaws have been identified in tools like Backstage and atototo API, while a construction management system is vulnerable to SQL injection. These common but dangerous vulnerabilities underscore the need for continuous security testing, input validation, and secure development practices to prevent unauthorized access and system compromise.
-    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Vulnerability
+      - identity
+      - threat-intel
+  - title: Ransomware Groups Actively Targeting Business Services Sector
+    text: Ransomware operations are intensifying attacks against the Business Services sector, with notable activity on the darkweb.
+    detail: Intelligence indicates a significant surge in ransomware attacks targeting the Business Services industry. Threat actors are actively using darkweb channels for operations, with some ransomware sites experiencing defacement, potentially indicating internal struggles or external takedowns. Stay vigilant and ensure robust ransomware defenses.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-313a
+    link_label: CISA Ransomware Guidance
+    badge: signal
+    tags:
+      - ransomware
+      - darkweb
+      - threat-intel
+      - business-services
+  - title: Supply Chain and Dependency Risks Remain Critical
+    text: Vulnerabilities in software dependencies, like PyYAML and Ruby eval, continue to be exploited.
+    detail: Recent advisories highlight critical RCE vulnerabilities stemming from insecure dependencies in popular software. Examples include flaws in PyYAML usage within Docling Core and Ruby's `eval()` function in Alchemy CMS. Developers must rigorously vet dependencies and implement secure coding practices to prevent supply chain attacks.
+    link: https://owasp.org/www-project-top-10-2021/risks/cwe-1104/
+    link_label: OWASP Dependency Confusion
     badge: signal
     tags:
       - vulnerability
-      - ssrf
-      - sql-injection
-      - tools
+      - supply-chain
+      - cve
+      - dependency-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
