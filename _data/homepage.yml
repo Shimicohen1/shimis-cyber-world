@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse continues to be a target, with recent reports detailing multiple vulnerabilities affecting its core functionalities.
-    detail: Multiple CVEs highlight ongoing security weaknesses in Discourse, ranging from unauthorized access to subscription manipulation and data exposure. Organizations using Discourse should prioritize patching and review access controls to mitigate risks associated with these vulnerabilities.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: CVE Details
+  - title: Discourse Platform Faces Multifaceted Vulnerability Exploitation
+    text: Discourse platforms are experiencing a wave of diverse vulnerabilities, impacting privacy, subscriptions, and data exposure.
+    detail: Multiple recent advisories highlight a concerning trend of vulnerabilities within the Discourse platform. Exploits range from moderator privilege escalation and subscription tier manipulation to exposure of draft topic titles and network probing capabilities. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
+    link: https://CVE-2026-32615
+    link_label: Discourse Vulnerability Details
     badge: signal
     tags:
       - discourse
       - vulnerability
       - patching
+  - title: AI Model Safety Concerns Escalate with 'Too Dangerous' Releases
+    text: AI research firms are developing models deemed too risky for public release, signaling growing safety challenges.
+    detail: A major AI research company has developed a large language model that they consider too dangerous for public deployment due to its concerning capabilities. This underscores the escalating challenges in AI safety and responsible development, urging the community to focus on robust risk assessment and ethical guidelines before widespread adoption.
+    link: https://www.cisa.gov/news-events/advisories/ai-security-guidance
+    link_label: AI Security Guidance
+    badge: signal
+    tags:
+      - ai-security
+      - llm
+      - risk-management
   - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: Business services are under increased pressure as ransomware groups escalate their targeting.
-    detail: Recent intelligence indicates a significant surge in ransomware attacks specifically targeting the business services sector. Organizations in this industry must bolster their defenses, focusing on endpoint security, regular backups, and robust incident response plans to counter this growing threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-289a
-    link_label: CISA Alert
+    text: Ransomware operations are actively targeting the Business Services sector, indicating a strategic shift in threat actor focus.
+    detail: Intelligence reports show a significant increase in ransomware attacks specifically targeting the Business Services sector. This coordinated surge suggests a lucrative opportunity for threat actors in this industry. Organizations should bolster defenses, implement robust backup strategies, and ensure rapid incident response capabilities.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-133a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI-Generated Content Floods Bug Bounty Platforms
-    text: Bug bounty platforms are overwhelmed by a surge of AI-generated vulnerability reports.
-    detail: The influx of AI-assisted submissions is straining triage and remediation efforts on platforms like HackerOne. Security teams should develop strategies to effectively filter and validate AI-generated reports, focusing on human-verified findings and established vulnerability research practices.
-    link: https://owasp.org/www-project-top-10-ai-security/
-    link_label: OWASP AI Security
+  - title: New Threat Actor 'TiMc' Emerges on the Dark Web
+    text: A new threat actor, TiMc, has been identified, signaling an evolving dark web landscape.
+    detail: The emergence of a new threat actor, TiMc, on the dark web is a notable development in the cyber threat intelligence landscape. While details are still scarce, the identification of novel entities warrants increased vigilance. Security teams should monitor dark web chatter and be prepared for potential new attack vectors.
+    link: https://www.mitre.org/attack-matrix
+    link_label: MITRE ATT&CK Framework
     badge: signal
     tags:
-      - ai-security
-      - bug-bounty
+      - darkweb
       - threat-intel
-  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
-    text: Server-Side Request Forgery and Remote Code Execution flaws continue to be exploited across various tools.
-    detail: Multiple recent advisories highlight critical SSRF and RCE vulnerabilities in diverse software, including CMS, developer portals, and API tools. Organizations must maintain vigilant patching schedules and implement network segmentation to limit the impact of these common yet dangerous attack vectors.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery_(SSRF)
-    link_label: OWASP SSRF Info
-    badge: signal
-    tags:
-      - ssrf
-      - rce
-      - vulnerability
-      - patching
+      - new-actor
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
