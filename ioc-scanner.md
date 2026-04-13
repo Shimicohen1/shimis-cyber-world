@@ -28,7 +28,7 @@ permalink: /ioc-scanner/
 <!-- Scanner -->
 <section id="scanner" class="ioc-scanner reveal">
   <div class="feed__header">
-    <h2 class=\"feed__title\"><span class=\"label label--purple\">SCAN</span> &nbsp;Paste Indicators</h2>
+    <h2 class="feed__title"><span class="label label--purple">SCAN</span> &nbsp;Paste Indicators</h2>
   </div>
 
   <div class="ioc-input-area">
@@ -86,7 +86,7 @@ permalink: /ioc-scanner/
 <!-- Supported Sources -->
 <section class="ioc-sources-section reveal">
   <div class="feed__header">
-    <h2 class=\"feed__title\"><span class=\"label label--purple\">SOURCES</span> &nbsp;Threat Intel Platforms</h2>
+    <h2 class="feed__title"><span class="label label--purple">SOURCES</span> &nbsp;Threat Intel Platforms</h2>
   </div>
   <div class="ioc-sources-grid">
     {% for src in site.data.ioc_sources.sources %}
@@ -113,7 +113,7 @@ permalink: /ioc-scanner/
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=12">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=13">
 
 <!-- Source data for JS -->
 <script>
@@ -142,4 +142,4 @@ window.IOC_TOOL_RECS = [
 {% endfor %}
 ];
 </script>
-<script src="/assets/js/ioc-scanner.js?v=7" defer></script>
+<script src="/assets/js/ioc-scanner.js?v=8" defer></script>
