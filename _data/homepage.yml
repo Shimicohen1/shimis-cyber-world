@@ -25,49 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Sees Spike in Diverse Vulnerabilities
-    text: Multiple CVEs highlight a range of security flaws affecting Discourse, from private topic access to subscription bypasses.
-    detail: Discourse users must prioritize patching and review configurations, as recent disclosures reveal vulnerabilities impacting moderation, content privacy, and subscription integrity. Staying updated on these rapidly disclosed flaws is crucial for maintaining platform security and user trust.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: CVE-2026-32615 Details
+  - title: Discourse Platform Faces Multifaceted Vulnerability Exploitation
+    text: Discourse platforms are experiencing multiple CVEs, including subscription bypass, draft exposure, and moderator privilege escalation.
+    detail: Recent advisories highlight a concerning trend of diverse vulnerabilities impacting Discourse. Professionals should prioritize patching and review access controls, especially concerning private topics and subscription mechanisms. Proactive monitoring for these specific CVEs is crucial to prevent unauthorized access and privilege escalation within these collaborative environments.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
+    link_label: Discourse CVEs on NVD
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - patching
-  - title: AI Models & Interfaces Pose New Credential & Data Risks
-    text: AI tools, from LLM interfaces to specific models, are emerging as targets for credential theft and data exposure.
-    detail: Organizations deploying AI solutions must implement robust security controls for interfaces and models, especially those with RAG extensions. This includes strict access management and vulnerability scanning to prevent cloud credential theft and sensitive data leaks.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+      - access-control
+  - title: AI Model Risks Prompt Caution, Security Professionals Advised
+    text: Emerging AI models, like Anthropic's 'Mythos', pose significant risks, necessitating cautious deployment and thorough security vetting.
+    detail: The development of advanced AI models raises concerns about potential misuse and unintended consequences. Security teams should stay informed about AI safety research and implement robust testing protocols before integrating new AI technologies. Understanding the capabilities and potential risks of models like 'Mythos' is paramount for responsible AI adoption.
+    link: https://www.nist.gov/artificial-intelligence/responsible-ai
+    link_label: NIST Responsible AI
     badge: signal
     tags:
       - ai-security
-      - cloud-security
-      - credential-theft
-      - data-leak
-  - title: Ransomware Activity Intensifies in Business Services Sector
-    text: Ransomware groups are significantly increasing attacks targeting the Business Services sector, indicating a strategic shift.
-    detail: The Business Services sector should bolster its defenses against ransomware, focusing on robust backup strategies, network segmentation, and employee awareness training. Proactive threat hunting and rapid incident response are critical to mitigate potential impacts.
-    link: https://www.cisa.gov/news-events/advisories/aa23-289a
-    link_label: CISA Ransomware Guidance
-    badge: signal
-    tags:
-      - ransomware
+      - risk-management
       - threat-intel
-      - business-services
-      - malware
-  - title: SSRF Vulnerabilities Remain a Persistent Threat
-    text: Server-Side Request Forgery (SSRF) flaws continue to be disclosed across various tools and platforms, posing remote attack risks.
-    detail: Developers and security teams must prioritize the secure implementation of network request handling, especially in developer portals and API tools. Regular code reviews and vulnerability scanning focused on SSRF are essential to prevent unauthorized access to internal systems.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Prevention
+  - title: Supply Chain Vulnerabilities Persist Across Software Ecosystems
+    text: A wide array of software, from CMS to developer tools, exhibits critical supply chain vulnerabilities.
+    detail: The recent influx of CVEs affecting various open-source projects, including OrangeHRM, Alchemy CMS, and Backstage, underscores the persistent risk of supply chain attacks. Organizations must implement rigorous software bill of materials (SBOM) practices and dependency scanning to identify and mitigate vulnerabilities originating from third-party components.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP Component Analysis
     badge: signal
     tags:
+      - supply-chain
       - vulnerability
-      - ssrf
-      - api-security
-      - tools
+      - dependency-management
+  - title: New Threat Actors and Tactics Emerge in Darkweb Landscape
+    text: Emergence of new threat actors like TiMc and evolving tactics such as emoji obfuscation signal increased sophistication.
+    detail: The cybersecurity landscape is dynamic, with new threat actors and evasion techniques constantly appearing. Professionals should monitor darkweb channels for emerging threats and stay updated on novel attack vectors like emoji-based obfuscation. Adapting threat detection and incident response strategies to counter these evolving tactics is essential.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/threat-actors-and-tactics
+    link_label: CISA Threat Actors
+    badge: signal
+    tags:
+      - threat-intel
+      - darkweb
+      - attack-vectors
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
