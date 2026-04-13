@@ -26,48 +26,46 @@ identity:
     url: /about/
 quick_signals:
   - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple Discourse vulnerabilities are being actively reported, ranging from privilege escalation to data exposure.
-    detail: Discourse, a popular open-source discussion platform, is currently experiencing a wave of reported vulnerabilities. These flaws allow for unauthorized access to private topics, exposure of draft titles, and even subscription tier manipulation. Organizations relying on Discourse should prioritize patching and review access controls to mitigate these risks.
-    link: https://discourse.org/blog/security-updates
-    link_label: Discourse Security Updates
+    text: Discourse continues to be a target, with multiple recent reports highlighting various vulnerabilities.
+    detail: Recent advisories reveal a pattern of vulnerabilities in Discourse, including privilege escalation, information disclosure, and subscription bypasses. Organizations using Discourse should prioritize patching and review access controls to mitigate risks associated with CVE-2026-32615, CVE-2026-33185, CVE-2026-33074, and CVE-2026-32951.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: CVE-2026-32615 Details
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - data-leak
-  - title: AI Models and Interfaces Present New Cloud Credential Risks
-    text: AI chat interfaces with RAG extensions are vulnerable to cloud credential theft.
-    detail: The integration of RAG extensions in AI chat interfaces like `text-generation-webui` introduces risks of cloud credential theft. Attackers can potentially leverage these vulnerabilities to gain unauthorized access to sensitive cloud resources. Ensure all AI components are updated and properly secured, with strict access controls on cloud credentials.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
-    badge: signal
-    tags:
-      - ai-security
-      - cloud
-      - identity
-      - vulnerability
-  - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: Ransomware operations are actively targeting the business services sector, with a notable increase in attacks.
-    detail: Cyber threat intelligence indicates a significant surge in ransomware attacks specifically targeting the Business Services sector. This coordinated activity suggests a strategic focus by threat actors on this industry. Organizations in this sector must reinforce their defenses, focusing on robust backups, endpoint detection, and employee security awareness training.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-165a
+      - cve
+  - title: Ransomware Operations Target Business Services Sector
+    text: Ransomware groups are intensifying attacks against the Business Services sector.
+    detail: Intelligence indicates a surge in ransomware activity specifically targeting the Business Services industry. Threat actors like Kairos and others are actively seeking entry points. Businesses in this sector must reinforce their defenses, focusing on robust backups, network segmentation, and employee awareness training.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-293a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-      - malware
-  - title: Exploitable Dependencies Remain a Critical Supply Chain Risk
-    text: Vulnerabilities in common dependencies like PyYAML continue to pose significant RCE risks.
-    detail: The Docling Core RCE bug highlights the persistent danger of vulnerable third-party dependencies. Improper handling of untrusted data in libraries like PyYAML can open doors for remote code execution. Organizations must maintain rigorous software composition analysis and promptly update or mitigate components with known dependency risks.
-    link: https://owasp.org/www-project-top-10-software-supply-chain-attacks/
-    link_label: OWASP SC-TOP 10
+  - title: AI-Generated Content Fuels Bug Bounty Triage Challenges
+    text: AI-generated vulnerability reports are overwhelming bug bounty platforms.
+    detail: The rise of AI in cybersecurity is creating new challenges, with platforms like HackerOne struggling to manage the influx of AI-generated bug bounty submissions. This trend necessitates advanced automated triage systems and a refined human review process to effectively identify and address genuine security flaws.
+    link: https://owasp.org/www-community/vulnerabilities/AI_Security_Risks
+    link_label: OWASP AI Security Risks
     badge: signal
     tags:
-      - supply-chain
+      - ai-security
+      - bug-bounty
+      - threat-intel
+  - title: SSRF and RCE Vulnerabilities Persist in Open-Source Tools
+    text: Server-Side Request Forgery and Remote Code Execution flaws are prevalent in various tools.
+    detail: Recent disclosures highlight ongoing SSRF and RCE vulnerabilities in critical open-source projects like Backstage, atototo API, Alchemy CMS, and Docling Core. Organizations relying on these tools must ensure they are updated to the latest patched versions to prevent exploitation, which could lead to system compromise.
+    link: https://owasp.org/www-project-top-10-2021/assets/chart/OWASP_Top_10_2021-zh.png
+    link_label: OWASP Top 10 - SSRF
+    badge: signal
+    tags:
       - vulnerability
       - rce
-      - dependency-management
+      - ssrf
+      - open-source
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
