@@ -25,19 +25,29 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Under Scrutiny for Multiple Vulnerabilities
-    text: Discourse platforms are facing a surge in disclosed vulnerabilities affecting various features.
-    detail: Recent advisories highlight multiple security flaws in Discourse, including moderator privilege escalation, network probing via email settings, subscription tier bypass, and exposure of draft topic titles. Organizations using Discourse should prioritize patching and review access controls to mitigate risks.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+  - title: AI-Generated Reports Flood Bug Bounty Platforms
+    text: AI-generated vulnerability reports are overwhelming bug bounty platforms, impacting triage and remediation efforts.
+    detail: HackerOne has paused services due to a surge in AI-assisted submissions, making it difficult to distinguish genuine exploits from noise. Professionals should refine their internal processes for evaluating and validating AI-generated findings to avoid wasted effort and ensure critical issues are addressed.
+    link: https://www.owasp.org/www-community/vulnerabilities/AI-related_vulnerabilities
+    link_label: AI Vulnerability Best Practices
+    badge: signal
+    tags:
+      - ai-security
+      - bug-bounty
+      - threat-intel
+  - title: Discourse Platform Faces Multiple Exploitable Vulnerabilities
+    text: Discourse, a popular discussion platform, is exhibiting a range of vulnerabilities affecting moderation, subscriptions, and data exposure.
+    detail: Recent advisories highlight flaws enabling unauthorized access to private topics, subscription tier bypasses, and exposure of draft topic titles. Organizations using Discourse should prioritize patching and review access controls to mitigate potential risks of data leakage and privilege escalation.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Advanced&results_type=summary&cpe_refinement=cpe:2.3:a:discourse:discourse:*:*:*:*:*:*:*:*
+    link_label: Discourse Vulnerability Database
     badge: signal
     tags:
       - vulnerability
-      - discourse
+      - cve
       - web-application
-  - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: Business services are increasingly targeted by ransomware operations.
-    detail: Intelligence indicates a significant rise in ransomware attacks specifically targeting the business services sector. Organizations in this industry must bolster their defenses, including robust backups, network segmentation, and employee training, to counter these escalating threats.
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: The Business Services sector is experiencing a significant increase in ransomware attacks.
+    detail: Intelligence indicates a coordinated surge in ransomware activity targeting business services, with 18 attacks reported recently. Organizations in this sector must reinforce their defenses, including robust backups, endpoint protection, and user awareness training to counter these escalating threats.
     link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-265a
     link_label: CISA Ransomware Guidance
     badge: signal
@@ -45,26 +55,17 @@ quick_signals:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI Model Risks Demand Careful Deployment and Oversight
-    text: Advanced AI models pose significant risks requiring cautious public release.
-    detail: Concerns are mounting over the potential dangers of highly capable AI models, with some companies deeming them too risky for public deployment due to unpredictable behavior. Cybersecurity professionals must stay informed about AI capabilities and implement stringent governance frameworks.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+  - title: SSRF and RCE Vulnerabilities in Developer Tools & CMS
+    text: Critical SSRF and RCE flaws are being discovered in various developer tools and content management systems.
+    detail: Recent reports detail Server-Side Request Forgery (SSRF) in Backstage and atototo API, alongside Remote Code Execution (RCE) in Alchemy CMS and Docling Core. Teams utilizing these tools must apply updates immediately and implement network segmentation to contain potential exploitation.
+    link: https://owasp.org/www-project-top-10-2021/assets/chart/OWASP_Top_10_2021_v4.pdf
+    link_label: OWASP Top 10 - Injection
     badge: signal
     tags:
-      - ai-security
-      - risk-management
-      - large-language-models
-  - title: "Evasion Techniques: Threat Actors Leverage Emojis for Stealth"
-    text: Emojis are being weaponized by threat actors for stealthy communications.
-    detail: Threat actors are increasingly using emojis to bypass security controls and obfuscate malicious communications. This trend highlights the need for advanced content inspection and behavioral analysis tools capable of detecting subtle evasion tactics beyond traditional signature-based methods.
-    link: https://attack.mitre.org/techniques/T1566/
-    link_label: MITRE ATT&CK - Phishing
-    badge: signal
-    tags:
-      - threat-intel
-      - evasion
-      - social-engineering
+      - vulnerability
+      - cve
+      - rce
+      - ssrf
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
