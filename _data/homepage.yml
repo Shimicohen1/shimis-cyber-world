@@ -25,46 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Multifaceted Vulnerability Exploitation
-    text: Discourse platforms are experiencing a wave of diverse vulnerabilities, impacting privacy, subscriptions, and data exposure.
-    detail: Multiple recent advisories highlight a concerning trend of vulnerabilities within the Discourse platform. Exploits range from moderator privilege escalation and subscription tier manipulation to exposure of draft topic titles and network probing capabilities. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
-    link: https://CVE-2026-32615
-    link_label: Discourse Vulnerability Details
+  - title: Discourse Platform Under Scrutiny for Multiple Vulnerabilities
+    text: Discourse is facing a wave of diverse security flaws, impacting private topics, email settings, and subscription tiers.
+    detail: Recent advisories highlight multiple CVEs affecting the Discourse platform, ranging from unauthorized access to private topics (CVE-2026-32615) and subscription bypasses (CVE-2026-33074), to network probing via email settings (CVE-2026-33185). Administrators should prioritize patching and review access controls for these reported vulnerabilities to mitigate risks to user data and platform integrity.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
+    link_label: Discourse Vulnerability Search
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - patching
-  - title: AI Model Safety Concerns Escalate with 'Too Dangerous' Releases
-    text: AI research firms are developing models deemed too risky for public release, signaling growing safety challenges.
-    detail: A major AI research company has developed a large language model that they consider too dangerous for public deployment due to its concerning capabilities. This underscores the escalating challenges in AI safety and responsible development, urging the community to focus on robust risk assessment and ethical guidelines before widespread adoption.
-    link: https://www.cisa.gov/news-events/advisories/ai-security-guidance
-    link_label: AI Security Guidance
+      - discourse
+      - cve
+  - title: AI Security Risks Escalate with LLM Interface Vulnerabilities
+    text: AI chat interfaces are emerging as targets, with vulnerabilities exposing cloud credentials and potentially other sensitive data.
+    detail: The increasing adoption of AI tools, like the text-generation-webui, introduces new attack vectors. A reported flaw in RAG extensions could lead to cloud credential theft. Organizations integrating AI models must implement robust security measures, including secure configuration of AI extensions and regular vulnerability assessments of AI platforms.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP Top 10 for LLMs
     badge: signal
     tags:
       - ai-security
+      - cloud
+      - vulnerability
       - llm
-      - risk-management
-  - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: Ransomware operations are actively targeting the Business Services sector, indicating a strategic shift in threat actor focus.
-    detail: Intelligence reports show a significant increase in ransomware attacks specifically targeting the Business Services sector. This coordinated surge suggests a lucrative opportunity for threat actors in this industry. Organizations should bolster defenses, implement robust backup strategies, and ensure rapid incident response capabilities.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-133a
-    link_label: Ransomware Guidance
+  - title: Supply Chain Risks Highlighted by PyYAML and Dependency Exploits
+    text: Critical RCE bugs stem from vulnerable dependencies like PyYAML in core libraries, demanding vigilant dependency management.
+    detail: The Docling Core RCE vulnerability (CVE-2026-48578) underscores the pervasive risk of vulnerable third-party libraries, specifically PyYAML. This highlights the critical need for robust Software Bill of Materials (SBOM) and continuous monitoring of dependencies. Proactive patching and secure coding practices for libraries handling untrusted data are essential.
+    link: https://owasp.org/www-project-dependency-check/
+    link_label: OWASP Dependency-Check
     badge: signal
     tags:
-      - ransomware
-      - threat-intel
-      - business-services
-  - title: New Threat Actor 'TiMc' Emerges on the Dark Web
-    text: A new threat actor, TiMc, has been identified, signaling an evolving dark web landscape.
-    detail: The emergence of a new threat actor, TiMc, on the dark web is a notable development in the cyber threat intelligence landscape. While details are still scarce, the identification of novel entities warrants increased vigilance. Security teams should monitor dark web chatter and be prepared for potential new attack vectors.
-    link: https://www.mitre.org/attack-matrix
-    link_label: MITRE ATT&CK Framework
+      - supply-chain
+      - vulnerability
+      - rce
+      - dependency-management
+  - title: OSINT Techniques Expand for Identity and Data Breach Investigations
+    text: OSINT methods are revealing deeper insights into personal identities and potential data breach indicators, especially with phone numbers.
+    detail: The growing sophistication of OSINT, as demonstrated by analyses of Indian phone numbers, provides powerful tools for threat intelligence and breach investigations. Professionals should leverage OSINT to map digital footprints and identify potential risks associated with exposed personal data, while adhering to ethical and legal guidelines.
+    link: https://www.cisa.gov/news-events/news/leveraging-osint-improve-cybersecurity-posture
+    link_label: CISA on OSINT
     badge: signal
     tags:
-      - darkweb
+      - osint
+      - data-breach
       - threat-intel
-      - new-actor
+      - identity
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
