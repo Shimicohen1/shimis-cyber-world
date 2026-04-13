@@ -3252,3 +3252,90 @@
 .elite-bot__icon .scw-icon { width: 3rem; height: 3rem; }
 .elite-next__item .scw-icon { width: 1.1rem; height: 1.1rem; }
 .elite-bot__feature .scw-icon { width: 1em; height: 1em; vertical-align: -0.125em; }
+
+/* ── ThreatLens Smart Analysis ── */
+.ioc-card__risk-badge {
+  font-family: var(--f-mono, monospace);
+  font-size: .6rem;
+  font-weight: 700;
+  padding: .15em .5em;
+  border-radius: 3px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-left: auto;
+}
+.ioc-card__analysis {
+  margin: .8rem 0 1rem;
+}
+.ioc-finding {
+  padding: .6rem .8rem;
+  margin-bottom: .5rem;
+  background: rgba(255,255,255,.02);
+  border-radius: 6px;
+}
+.ioc-finding__header {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  margin-bottom: .25rem;
+  font-size: .85rem;
+  color: var(--white, #e6e6e6);
+}
+.ioc-finding__icon { font-size: 1rem; flex-shrink: 0; }
+.ioc-finding__detail {
+  font-size: .78rem;
+  color: var(--gray, #999);
+  line-height: 1.5;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+.ioc-card__priority {
+  margin: 1rem 0;
+}
+.ioc-priority-link {
+  display: block;
+  padding: .6rem .8rem;
+  margin-bottom: .4rem;
+  background: rgba(0,255,135,.04);
+  border: 1px solid rgba(0,255,135,.15);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: border-color .15s, background .15s;
+}
+.ioc-priority-link:hover {
+  border-color: rgba(0,255,135,.4);
+  background: rgba(0,255,135,.08);
+}
+.ioc-priority-link__header {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .85rem;
+  color: var(--white, #e6e6e6);
+}
+.ioc-priority-link__icon { font-size: 1rem; flex-shrink: 0; }
+.ioc-priority-link__badge {
+  font-family: var(--f-mono, monospace);
+  font-size: .55rem;
+  font-weight: 700;
+  padding: .1em .4em;
+  border-radius: 3px;
+  background: rgba(0,255,135,.15);
+  color: #00ff87;
+  letter-spacing: .06em;
+}
+.ioc-priority-link__reason {
+  font-size: .75rem;
+  color: var(--gray, #999);
+  margin: .2rem 0 0;
+  padding-left: 1.5rem;
+  line-height: 1.4;
+}
+[data-theme="light"] .ioc-finding { background: rgba(0,0,0,.02); }
+[data-theme="light"] .ioc-finding__header { color: #333; }
+[data-theme="light"] .ioc-finding__detail { color: #666; }
+[data-theme="light"] .ioc-priority-link { background: rgba(0,128,60,.04); border-color: rgba(0,128,60,.15); }
+[data-theme="light"] .ioc-priority-link:hover { border-color: rgba(0,128,60,.35); background: rgba(0,128,60,.08); }
+[data-theme="light"] .ioc-priority-link__header { color: #333; }
+[data-theme="light"] .ioc-priority-link__badge { background: rgba(0,128,60,.12); color: #006830; }
+[data-theme="light"] .ioc-priority-link__reason { color: #666; }
