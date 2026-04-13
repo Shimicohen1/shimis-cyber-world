@@ -1,0 +1,104 @@
+---
+layout: default
+---
+<div class="container">
+  <article class="post digest-post">
+    <header class="post-header">
+      <span class="badge badge--digest">Daily Digest</span>
+      <h1 class="post-title">{{ page.title }}</h1>
+      <div class="post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y" }}</time>
+      </div>
+      <div class="post-tags">
+        <span class="tag tag--source">SCW</span>
+        {% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+      </div>
+    </header>
+
+    {% comment %}── Vulnerability Digest Table ──{% endcomment %}
+    {% if page.vulns.size > 0 %}
+    <section class="digest-section">
+      <h2 class="digest-section__title">🛡️ Vulnerabilities Detected Today</h2>
+      <div class="digest-stats">
+        <span class="digest-stat"><strong>{{ page.vulns.size }}</strong> CVEs</span>
+        {% assign crit_count = 0 %}{% assign high_count = 0 %}
+        {% for v in page.vulns %}{% if v.severity == "CRITICAL" %}{% assign crit_count = crit_count | plus: 1 %}{% elsif v.severity == "HIGH" %}{% assign high_count = high_count | plus: 1 %}{% endif %}{% endfor %}
+        {% if crit_count > 0 %}<span class="digest-stat digest-stat--critical">{{ crit_count }} Critical</span>{% endif %}
+        {% if high_count > 0 %}<span class="digest-stat digest-stat--high">{{ high_count }} High</span>{% endif %}
+      </div>
+      <div class="digest-table-wrap">
+        <table class="digest-table">
+          <thead>
+            <tr>
+              <th>Severity</th>
+              <th>CVE ID</th>
+              <th>CVSS</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in page.vulns %}
+            <tr>
+              <td><span class="tag tag--{{ v.severity | downcase }}">{{ v.severity }}</span></td>
+              <td><a href="{{ v.url }}">{{ v.cveId }}</a></td>
+              <td><strong>{{ v.cvss }}</strong></td>
+              <td>{{ v.title }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {% endif %}
+
+    {% comment %}── Feed Posts Digest ──{% endcomment %}
+    {% if page.feed_posts.size > 0 %}
+    <section class="digest-section">
+      <h2 class="digest-section__title">📰 Curated Intel</h2>
+      <div class="digest-stats">
+        <span class="digest-stat"><strong>{{ page.feed_posts.size }}</strong> stories from <strong>{{ page.source_count }}</strong> sources</span>
+      </div>
+      <div class="digest-stories">
+        {% for p in page.feed_posts %}
+        <div class="digest-story">
+          <a href="{{ p.url }}" class="digest-story__title">{{ p.title }}</a>
+          <div class="digest-story__meta">
+            <span class="digest-story__source">{{ p.source }}</span>
+            {% if p.score %}<span class="tag tag--{{ p.score | downcase }} tag--xs">{{ p.score }}</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% comment %}── Trending Tags ──{% endcomment %}
+    {% if page.trending_tags.size > 0 %}
+    <section class="digest-section digest-section--tags">
+      <h2 class="digest-section__title">🏷 Trending Topics</h2>
+      <div class="digest-trending">
+        {% for tag in page.trending_tags %}
+        <span class="tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <div class="post-byline">
+      <p>By <strong>Shimi's Cyber World</strong> — Automated Daily Digest</p>
+    </div>
+
+    {% include ad-slot.html type="adsense" slot="post-mid" %}
+
+    <div class="post-bot-cta">
+      <span class="post-bot-cta__icon">🔎</span>
+      <div class="post-bot-cta__text">
+        <strong>Get real-time alerts</strong>
+        <span>Follow @shimiscyberworld on Telegram for live CVE alerts, threat intel drops, and curated security content — zero noise.</span>
+      </div>
+      <a href="https://t.me/shimiscyberworld" target="_blank" rel="noopener" class="btn btn--accent btn--sm">Join Channel →</a>
+    </div>
+
+    {% include newsletter.html %}
+  </article>
+</div>
