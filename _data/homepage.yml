@@ -25,48 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple recent posts highlight ongoing security flaws in Discourse, affecting moderation, email settings, and subscription tiers.
-    detail: Discourse, a popular open-source discussion platform, continues to be a target for attackers. Recent CVEs reveal vulnerabilities allowing unauthorized access to private topics, potential for network probing, and subscription abuse. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: Discourse Vulnerability Details
-    badge: signal
-    tags:
-      - discourse
-      - vulnerability
-      - web-application
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: Emerging threats target AI interfaces and models, risking credential theft and potentially unsafe model behaviors.
-    detail: The rapid adoption of AI technologies introduces novel security challenges. Vulnerabilities in AI chat interfaces can lead to cloud credential theft, while advanced AI models themselves may exhibit dangerous capabilities deemed too risky for public release. Secure development and deployment practices for AI systems are critical.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+  - title: AI Tools Fueling Vulnerability Triage Challenges
+    text: AI-generated reports are overwhelming bug bounty platforms, impacting remediation timelines.
+    detail: The surge in AI-assisted vulnerability submissions is straining resources for platforms like HackerOne, leading to delays in triaging and addressing potential threats. Cybersecurity teams should prioritize robust validation processes for AI-generated findings and invest in tools that can effectively differentiate human-discovered vulnerabilities from automated ones to maintain effective security postures.
+    link: https://www.owasp.org/www-community/vulnerabilities/AI_Security
+    link_label: AI Security Best Practices
     badge: signal
     tags:
       - ai-security
-      - cloud-security
       - threat-intel
-  - title: Supply Chain Risks Persist with Software Dependencies
-    text: Vulnerabilities in core libraries like PyYAML and dependencies highlight critical supply chain risks.
-    detail: The Docling Core RCE bug, stemming from a PyYAML dependency, underscores the persistent risk posed by third-party libraries. Attackers can leverage these weaknesses for significant impact, including remote code execution. Thorough dependency scanning and proactive patching are essential to secure the software supply chain.
-    link: https://owasp.org/www-project-top-10-software-supply-chain-attacks/
-    link_label: OWASP SC-10
+      - bug-bounty
+  - title: Discourse Platform Faces Multifaceted Vulnerability Exploits
+    text: Discourse exhibits a pattern of diverse vulnerabilities impacting moderation, privacy, and subscriptions.
+    detail: Recent disclosures highlight multiple security weaknesses in Discourse, ranging from moderator privilege escalation and private topic access to subscription bypasses and draft title exposure. Organizations using Discourse should ensure they are applying the latest security patches promptly and review access controls for moderators and user subscription settings to mitigate these risks.
+    link: https://github.com/discourse/discourse/security/advisories
+    link_label: Discourse Security Advisories
     badge: signal
     tags:
-      - supply-chain
       - vulnerability
-      - dependencies
-      - rce
-  - title: SSRF and SQLi Remain Prevalent Web Application Threats
-    text: Server-Side Request Forgery and SQL Injection vulnerabilities continue to be exploited across various tools and systems.
-    detail: Recent advisories show critical SSRF flaws in tools like Backstage and atototo API, alongside SQL injection in a construction management system. These classic web vulnerabilities remain potent threats, enabling attackers to probe internal systems or manipulate databases. Regular security audits and input validation are crucial defenses.
-    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Info
-    badge: signal
-    tags:
+      - discourse
       - web-application
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Business services sector is a prime target for ransomware operations, with ongoing attacks.
+    detail: Intelligence indicates a concentrated increase in ransomware activity targeting the business services industry. Threat actors like TiMc and those operating the Kairos ransomware are actively exploiting vulnerabilities in this sector. Companies should reinforce their defenses, implement robust backup strategies, and conduct regular security awareness training to counter these persistent threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-311a
+    link_label: Ransomware Guidance
+    badge: signal
+    tags:
+      - ransomware
+      - threat-intel
+      - malware
+      - business-services
+  - title: SSRF and RCE Vulnerabilities Persist in Developer Tools
+    text: Developer tools like Backstage and Alchemy CMS are susceptible to critical RCE and SSRF flaws.
+    detail: Recent advisories reveal critical Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in widely used developer frameworks and CMS platforms such as Backstage, Alchemy CMS, and Jeecgboot. Teams leveraging these tools must prioritize patching to prevent attackers from gaining unauthorized access and executing arbitrary code.
+    link: https://owasp.org/www-project-top-10/
+    link_label: OWASP Top 10
+    badge: signal
+    tags:
       - vulnerability
+      - rce
       - ssrf
-      - sql-injection
+      - developer-tools
+      - supply-chain
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
