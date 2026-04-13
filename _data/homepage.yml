@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI-Generated Reports Flood Bug Bounty Platforms
-    text: AI-generated vulnerability reports are overwhelming bug bounty platforms, impacting triage and remediation efforts.
-    detail: HackerOne has paused services due to a surge in AI-assisted submissions, making it difficult to distinguish genuine exploits from noise. Professionals should refine their internal processes for evaluating and validating AI-generated findings to avoid wasted effort and ensure critical issues are addressed.
-    link: https://www.owasp.org/www-community/vulnerabilities/AI-related_vulnerabilities
-    link_label: AI Vulnerability Best Practices
-    badge: signal
-    tags:
-      - ai-security
-      - bug-bounty
-      - threat-intel
-  - title: Discourse Platform Faces Multiple Exploitable Vulnerabilities
-    text: Discourse, a popular discussion platform, is exhibiting a range of vulnerabilities affecting moderation, subscriptions, and data exposure.
-    detail: Recent advisories highlight flaws enabling unauthorized access to private topics, subscription tier bypasses, and exposure of draft topic titles. Organizations using Discourse should prioritize patching and review access controls to mitigate potential risks of data leakage and privilege escalation.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Advanced&results_type=summary&cpe_refinement=cpe:2.3:a:discourse:discourse:*:*:*:*:*:*:*:*
-    link_label: Discourse Vulnerability Database
+  - title: Discourse Platform Sees Spike in Diverse Vulnerabilities
+    text: Multiple CVEs highlight various security flaws in Discourse, impacting moderation, subscriptions, and data exposure.
+    detail: Recent disclosures reveal a concerning trend of vulnerabilities within the popular Discourse platform. Exploits range from unauthorized access to private topics and subscription tier manipulation to exposure of draft topic titles. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
+    link: https://github.com/discourse/discourse/security/advisories
+    link_label: Discourse Security Advisories
     badge: signal
     tags:
       - vulnerability
-      - cve
-      - web-application
+      - discourse
+      - software-supply-chain
+  - title: AI Model Safety Concerns Escalate
+    text: AI research firms are withholding models due to safety risks, indicating potential for misuse.
+    detail: Leading AI research companies are identifying and withholding models exhibiting dangerous capabilities, such as Anthropic's 'Mythos'. This highlights the growing need for robust AI safety protocols and responsible development practices as advanced AI models become more potent and widely accessible.
+    link: https://www.cisa.gov/news-events/news/ai-risk-management-framework-helps-organizations-manage-risks-associated-artificial-intelligence
+    link_label: AI Risk Management Framework
+    badge: signal
+    tags:
+      - ai-security
+      - threat-intel
+      - responsible-ai
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: The Business Services sector is experiencing a significant increase in ransomware attacks.
-    detail: Intelligence indicates a coordinated surge in ransomware activity targeting business services, with 18 attacks reported recently. Organizations in this sector must reinforce their defenses, including robust backups, endpoint protection, and user awareness training to counter these escalating threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-265a
-    link_label: CISA Ransomware Guidance
+    text: Business services sector is a prime target for ransomware groups, with a notable increase in attacks.
+    detail: Intelligence indicates a coordinated surge in ransomware attacks specifically targeting the business services sector. This trend underscores the critical need for enhanced defensive measures, including robust backup strategies, network segmentation, and employee awareness training, to protect against these persistent threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-307a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: SSRF and RCE Vulnerabilities in Developer Tools & CMS
-    text: Critical SSRF and RCE flaws are being discovered in various developer tools and content management systems.
-    detail: Recent reports detail Server-Side Request Forgery (SSRF) in Backstage and atototo API, alongside Remote Code Execution (RCE) in Alchemy CMS and Docling Core. Teams utilizing these tools must apply updates immediately and implement network segmentation to contain potential exploitation.
-    link: https://owasp.org/www-project-top-10-2021/assets/chart/OWASP_Top_10_2021_v4.pdf
-    link_label: OWASP Top 10 - Injection
+  - title: SSRF and RCE Vulnerabilities Remain Prevalent
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws continue to be exploited across various tools and platforms.
+    detail: Recent advisories highlight ongoing exploitation of SSRF and RCE vulnerabilities in widely used development tools and content management systems. Developers and system administrators must prioritize patching these critical flaws and implement strict input validation and access controls to prevent unauthorized system access.
+    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Guidance
     badge: signal
     tags:
       - vulnerability
-      - cve
       - rce
       - ssrf
+      - secure-development
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
