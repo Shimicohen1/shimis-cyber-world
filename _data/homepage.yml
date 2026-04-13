@@ -26,49 +26,46 @@ identity:
     url: /about/
 quick_signals:
   - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse platforms are frequently targeted with vulnerabilities affecting moderation, subscriptions, and data exposure.
-    detail: Multiple recent advisories highlight ongoing security weaknesses in Discourse. Exploits range from unauthorized access to private topics and subscription tier manipulation to exposure of draft topic titles and network probing capabilities. Organizations using Discourse should prioritize patching and review access controls for moderators and users to mitigate these risks.
-    link: https://CVE-2026-32615
-    link_label: Discourse Vulnerabilities
+    text: Discourse continues to be a target, with recent reports detailing multiple vulnerabilities affecting its core functionalities.
+    detail: Multiple CVEs highlight ongoing security weaknesses in Discourse, ranging from unauthorized access to subscription manipulation and data exposure. Organizations using Discourse should prioritize patching and review access controls to mitigate risks associated with these vulnerabilities.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: CVE Details
     badge: signal
     tags:
       - discourse
       - vulnerability
-      - access-control
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: Emerging AI tools and interfaces are introducing novel vulnerabilities, including credential theft and potential for dangerous model capabilities.
-    detail: The integration of AI, particularly in chat interfaces and LLMs, is creating new security challenges. Vulnerabilities have been identified that could lead to cloud credential theft via RAG extensions. Furthermore, concerns are rising about the inherent capabilities of advanced AI models themselves, deeming them too risky for public release. Organizations should focus on securing AI infrastructure and vetting AI model risks.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
-    badge: signal
-    tags:
-      - ai-security
-      - cloud-security
-      - llm
-      - vulnerability
-  - title: Ransomware Actors Intensify Attacks on Business Services Sector
-    text: Ransomware groups are increasingly targeting the Business Services sector, indicating a strategic shift in operational focus.
-    detail: Intelligence reports indicate a significant rise in ransomware attacks specifically aimed at the Business Services sector. This coordinated surge suggests a profitable and potentially less defended target area for cybercriminals. Organizations in this sector must bolster their defenses, focusing on endpoint security, robust backups, and comprehensive incident response plans to counter this escalating threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
-    link_label: CISA Ransomware Guidance
+      - patching
+  - title: Ransomware Groups Intensify Attacks on Business Services Sector
+    text: Business services are under increased pressure as ransomware groups escalate their targeting.
+    detail: Recent intelligence indicates a significant surge in ransomware attacks specifically targeting the business services sector. Organizations in this industry must bolster their defenses, focusing on endpoint security, regular backups, and robust incident response plans to counter this growing threat.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-289a
+    link_label: CISA Alert
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-      - malware
-  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Developer Tools
-    text: Server-Side Request Forgery and Remote Code Execution flaws continue to impact developer portals and CMS platforms.
-    detail: Recent advisories highlight critical SSRF and RCE vulnerabilities affecting widely used developer tools and content management systems. These flaws, often stemming from improper handling of external requests or insecure code execution, can lead to significant system compromise. Developers and system administrators must prioritize patching these tools and implement strict input validation and network segmentation to prevent exploitation.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF
+  - title: AI-Generated Content Floods Bug Bounty Platforms
+    text: Bug bounty platforms are overwhelmed by a surge of AI-generated vulnerability reports.
+    detail: The influx of AI-assisted submissions is straining triage and remediation efforts on platforms like HackerOne. Security teams should develop strategies to effectively filter and validate AI-generated reports, focusing on human-verified findings and established vulnerability research practices.
+    link: https://owasp.org/www-project-top-10-ai-security/
+    link_label: OWASP AI Security
     badge: signal
     tags:
-      - vulnerability
+      - ai-security
+      - bug-bounty
+      - threat-intel
+  - title: SSRF and RCE Vulnerabilities Remain Critical Threats
+    text: Server-Side Request Forgery and Remote Code Execution flaws continue to be exploited across various tools.
+    detail: Multiple recent advisories highlight critical SSRF and RCE vulnerabilities in diverse software, including CMS, developer portals, and API tools. Organizations must maintain vigilant patching schedules and implement network segmentation to limit the impact of these common yet dangerous attack vectors.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery_(SSRF)
+    link_label: OWASP SSRF Info
+    badge: signal
+    tags:
       - ssrf
       - rce
-      - developer-tools
-      - cms
+      - vulnerability
+      - patching
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
