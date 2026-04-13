@@ -25,49 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse continues to be a target, with multiple recent advisories highlighting various exploitable flaws.
-    detail: Recent posts reveal ongoing vulnerabilities in Discourse, including issues with moderator access, email settings, subscription tiers, and draft topic exposure. Professionals should prioritize patching and reviewing configurations for this widely-used platform to mitigate risks like unauthorized access and data leakage.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
-    link_label: Discourse Vulnerabilities
+  - title: Discourse Platform Faces Multiple Vulnerability Exploits
+    text: Discourse users are targeted by a wave of vulnerabilities, including privilege escalation and data exposure.
+    detail: Recent advisories highlight several critical flaws in Discourse, ranging from moderator privilege escalation (CVE-2026-32615) to exposure of private draft titles (CVE-2026-32951) and subscription tier manipulation (CVE-2026-33074). Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: NVD Advisory
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - web-app
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: Emerging AI tools and interfaces introduce novel security challenges, including credential theft and model misuse.
-    detail: The growing adoption of AI, particularly LLMs and their interfaces like text-generation-webui, introduces new attack surfaces. Vulnerabilities such as RAG extension flaws leading to cloud credential theft highlight the need for robust security practices in AI development and deployment.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+      - web-application
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Business services sector is experiencing a surge in ransomware attacks, indicating a targeted campaign.
+    detail: Intelligence reports indicate a significant increase in ransomware activity targeting the Business Services sector. Threat actors are likely focusing on this industry for financial gain. Organizations should reinforce endpoint security, implement robust backup strategies, and conduct regular user awareness training.
+    link: https://www.cisa.gov/news-events/advisories/aa23-076a
+    link_label: CISA Alert
+    badge: signal
+    tags:
+      - ransomware
+      - threat-intel
+      - business-services
+  - title: AI-Generated Content Floods Bug Bounty Platforms
+    text: AI-generated vulnerability reports are overwhelming bug bounty platforms, hindering remediation efforts.
+    detail: Bug bounty platforms are struggling to manage a deluge of AI-generated vulnerability submissions, impacting triage and response times. This trend necessitates improved automated detection and human validation processes for submitted reports. Security teams should be prepared for potentially lower-quality, AI-assisted submissions.
+    link: https://owasp.org/www-project-top-10-ai-security-risks/
+    link_label: OWASP AI Security
     badge: signal
     tags:
       - ai-security
-      - vulnerability
-      - cloud
-      - identity
-  - title: Supply Chain Risks Highlighted by PyYAML and Plugin Flaws
-    text: Dependencies like PyYAML and third-party plugins remain critical vectors for remote code execution.
-    detail: Several recent advisories underscore the persistent risk associated with software dependencies and plugins. Vulnerabilities in components like PyYAML (Docling Core) and WordPress plugins (MStore API) demonstrate how a single flawed component can lead to critical RCE or privilege escalation.
-    link: https://owasp.org/www-project-top-10-for-software-supply-chain-security/
-    link_label: OWASP SCS Top 10
+      - bug-bounty
+      - threat-intel
+  - title: SSRF and RCE Vulnerabilities in Developer Tools
+    text: Critical SSRF and RCE flaws found in popular developer tools like Backstage and Alchemy CMS.
+    detail: Several critical vulnerabilities, including Server-Side Request Forgery (SSRF) in Backstage (CVE-2026-5832) and Remote Code Execution (RCE) in Alchemy CMS (CVE-2026-23885), are exposing systems. Developers must update these tools immediately and review configurations to prevent unauthorized access and data breaches.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Info
     badge: signal
     tags:
-      - supply-chain
       - vulnerability
       - rce
-      - plugin
-  - title: Threat Actors Leverage Emojis for Stealthy Communication
-    text: Advanced threat actors are employing emojis for sophisticated evasion and obfuscation tactics.
-    detail: Cybercriminals are increasingly using emojis to bypass security filters and conceal malicious communications. Security teams must adapt detection mechanisms to recognize these evolving obfuscation techniques, moving beyond simple signature-based approaches to behavioral analysis.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/social-engineering-awareness
-    link_label: Social Engineering Awareness
-    badge: signal
-    tags:
-      - threat-intel
-      - malware
-      - evasion
-      - social-engineering
+      - ssrf
+      - developer-tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
