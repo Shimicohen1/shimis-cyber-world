@@ -25,49 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Multifaceted Vulnerabilities
-    text: Discourse platforms are experiencing a surge in diverse vulnerabilities, impacting moderation, privacy, and subscription integrity.
-    detail: Recent advisories highlight multiple CVEs affecting Discourse, ranging from moderator privilege escalation and private topic access to subscription tier manipulation and draft title exposure. Organizations relying on Discourse should prioritize patching and review access controls to mitigate risks associated with these varied security flaws.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
+  - title: Discourse Platform Faces Multiple Vulnerability Exploits
+    text: Discourse is experiencing a surge in vulnerabilities, impacting privacy, subscriptions, and data exposure.
+    detail: Multiple recent posts highlight a concerning trend of vulnerabilities in the Discourse platform, including unauthorized access to private topics (CVE-2026-32615), subscription tier manipulation (CVE-2026-33074), and exposure of draft topic titles (CVE-2026-32951). Organizations using Discourse should prioritize patching and review access controls for all categories and subscription functionalities.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: Discourse Vulnerability Details
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - web-application
-  - title: AI Models and Interfaces Present New Cloud Credential Risks
-    text: AI tools, particularly LLM interfaces with RAG extensions, are emerging as targets for cloud credential theft.
-    detail: The integration of AI models, like those in text-generation-webui with RAG extensions, introduces new attack vectors. Vulnerabilities in these interfaces can lead to the exposure of sensitive cloud credentials. Security teams must implement robust access management and monitor AI-related infrastructure for unauthorized access attempts.
-    link: https://owasp.org/www-project-cloud-security/
-    link_label: OWASP Cloud Security
+      - vulnerability
+      - patching
+  - title: AI Models and Interfaces Present Emerging Security Risks
+    text: AI tools and interfaces are becoming targets for credential theft and data exposure.
+    detail: The AI security landscape is evolving, with vulnerabilities like credential theft in AI chat interfaces (CVE-2026-39345, related to OrangeHRM flaw indirectly due to system access) and concerns over advanced AI model capabilities (Anthropic's 'Mythos'). Developers and organizations integrating AI must implement robust security measures, including secure credential management and thorough risk assessments for AI deployments.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - cloud-security
-      - vulnerability
-      - identity
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Ransomware operations are increasingly targeting the Business Services sector, indicating a strategic shift in threat actor focus.
-    detail: Intelligence indicates a significant rise in ransomware attacks against the Business Services industry. This trend suggests that these organizations are seen as lucrative targets, possibly due to critical data or operational dependencies. Implementing comprehensive ransomware defense strategies, including robust backups and employee training, is paramount.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-075a
+      - credential-theft
+      - risk-management
+  - title: Ransomware Operations Show Adaptability and Persistence
+    text: Ransomware groups like TiMc and Kairos remain active, targeting specific sectors.
+    detail: New threat actors such as TiMc are emerging, while established ransomware operations like Kairos continue to pose a threat, even amidst potential takedowns. The Business Services sector is specifically highlighted as a target. Organizations should reinforce their defenses against ransomware, focusing on robust backups, network segmentation, and employee training, particularly within high-risk industries.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-285a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-      - malware
-  - title: SSRF Vulnerabilities Remain a Persistent Threat
-    text: Server-Side Request Forgery (SSRF) vulnerabilities continue to be identified across various tools and platforms.
-    detail: Recent reports highlight SSRF flaws in developer portals like Backstage and API testing tools such as atototo. These vulnerabilities allow attackers to trick applications into making unintended network requests, potentially exposing internal systems or sensitive data. Developers should rigorously validate user inputs and enforce network segmentation.
-    link: https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Information
+  - title: SSRF and RCE Vulnerabilities Persist Across Tools and CMS
+    text: Server-Side Request Forgery and Remote Code Execution flaws are prevalent in various software.
+    detail: A consistent stream of vulnerabilities, including SSRF in Backstage and atototo API, and RCE in Alchemy CMS and Docling Core, underscores the need for diligent vulnerability management. These flaws can expose internal systems and allow command execution. Regularly update all software, libraries, and dependencies, and implement security best practices like input validation and least privilege.
+    link: https://cwe.mitre.org/data/definitions/798.html
+    link_label: CWE - Hard-coded Credentials
     badge: signal
     tags:
-      - vulnerability
       - ssrf
-      - web-application
-      - tools
+      - rce
+      - vulnerability-management
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
