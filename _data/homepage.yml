@@ -25,49 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Under Scrutiny for Multiple Vulnerabilities
-    text: Discourse is facing a wave of diverse security flaws, impacting private topics, email settings, and subscription tiers.
-    detail: Recent advisories highlight multiple CVEs affecting the Discourse platform, ranging from unauthorized access to private topics (CVE-2026-32615) and subscription bypasses (CVE-2026-33074), to network probing via email settings (CVE-2026-33185). Administrators should prioritize patching and review access controls for these reported vulnerabilities to mitigate risks to user data and platform integrity.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
-    link_label: Discourse Vulnerability Search
+  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
+    text: Discourse platforms are consistently targeted, with recent flaws exposing private data and subscription loopholes.
+    detail: Multiple recent advisories highlight ongoing vulnerabilities in the Discourse platform, ranging from unauthorized access to private topics (CVE-2026-32615) to subscription tier manipulation (CVE-2026-33074) and exposure of draft topic titles (CVE-2026-32951). Organizations using Discourse should prioritize prompt patching and conduct regular security audits to mitigate these risks.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: Discourse Vulnerability Details
     badge: signal
     tags:
-      - vulnerability
       - discourse
+      - vulnerability-management
       - cve
-  - title: AI Security Risks Escalate with LLM Interface Vulnerabilities
-    text: AI chat interfaces are emerging as targets, with vulnerabilities exposing cloud credentials and potentially other sensitive data.
-    detail: The increasing adoption of AI tools, like the text-generation-webui, introduces new attack vectors. A reported flaw in RAG extensions could lead to cloud credential theft. Organizations integrating AI models must implement robust security measures, including secure configuration of AI extensions and regular vulnerability assessments of AI platforms.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLMs
+  - title: RCE and File Read Vulnerabilities Persist in Open Source Tools
+    text: Open-source applications like OrangeHRM and Alchemy CMS are susceptible to critical RCE and file read exploits.
+    detail: Recent disclosures reveal critical Remote Code Execution (RCE) vulnerabilities in Alchemy CMS (CVE-2026-23885) and Docling Core (via PyYAML dependency), alongside file read flaws in OrangeHRM (CVE-2026-39345). Organizations relying on these or similar open-source tools must implement strict dependency management and timely updates.
+    link: https://owasp.org/www-community/vulnerabilities/Dependency_Scanning
+    link_label: OWASP Dependency Scanning
+    badge: signal
+    tags:
+      - open-source
+      - rce
+      - dependency-management
+      - cve
+  - title: AI Models and Tools Introduce New Attack Vectors
+    text: AI platforms and interfaces are becoming targets, with risks ranging from credential theft to model misuse.
+    detail: The growing adoption of AI tools, such as LLM interfaces (text-generation-webui) and AI models ('Mythos'), introduces novel security challenges, including cloud credential theft and potential for dangerous model capabilities. Organizations must adopt AI-specific security frameworks and conduct rigorous testing before deployment.
+    link: https://www.cisa.gov/news-events/news/protecting-your-organization-artificial-intelligence-use
+    link_label: CISA on AI Security
     badge: signal
     tags:
       - ai-security
-      - cloud
-      - vulnerability
       - llm
-  - title: Supply Chain Risks Highlighted by PyYAML and Dependency Exploits
-    text: Critical RCE bugs stem from vulnerable dependencies like PyYAML in core libraries, demanding vigilant dependency management.
-    detail: The Docling Core RCE vulnerability (CVE-2026-48578) underscores the pervasive risk of vulnerable third-party libraries, specifically PyYAML. This highlights the critical need for robust Software Bill of Materials (SBOM) and continuous monitoring of dependencies. Proactive patching and secure coding practices for libraries handling untrusted data are essential.
-    link: https://owasp.org/www-project-dependency-check/
-    link_label: OWASP Dependency-Check
-    badge: signal
-    tags:
-      - supply-chain
-      - vulnerability
-      - rce
-      - dependency-management
-  - title: OSINT Techniques Expand for Identity and Data Breach Investigations
-    text: OSINT methods are revealing deeper insights into personal identities and potential data breach indicators, especially with phone numbers.
-    detail: The growing sophistication of OSINT, as demonstrated by analyses of Indian phone numbers, provides powerful tools for threat intelligence and breach investigations. Professionals should leverage OSINT to map digital footprints and identify potential risks associated with exposed personal data, while adhering to ethical and legal guidelines.
-    link: https://www.cisa.gov/news-events/news/leveraging-osint-improve-cybersecurity-posture
-    link_label: CISA on OSINT
-    badge: signal
-    tags:
-      - osint
-      - data-breach
+      - cloud-security
       - threat-intel
-      - identity
+  - title: SSRF and SQLi Remain Critical Threats in Web Applications
+    text: Server-Side Request Forgery (SSRF) and SQL Injection vulnerabilities continue to plague web applications and tools.
+    detail: Recent advisories highlight critical SSRF flaws in Backstage (CVE-2026-5832) and the atototo API tool, alongside SQL Injection in a Construction Management System. These vulnerabilities underscore the importance of robust input validation and secure coding practices, especially in infrastructure and API components.
+    link: https://owasp.org/www-project-top-ten/
+    link_label: OWASP Top 10
+    badge: signal
+    tags:
+      - ssrf
+      - sql-injection
+      - web-application-security
+      - cve
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
