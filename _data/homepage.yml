@@ -26,45 +26,46 @@ identity:
     url: /about/
 quick_signals:
   - title: Discourse Platform Faces Multiple Vulnerabilities
-    text: Discourse is experiencing a surge in reported vulnerabilities affecting various features, including private topics, email settings, and subscriptions.
-    detail: Multiple CVEs highlight risks in Discourse, ranging from unauthorized access to subscription manipulation. Organizations using Discourse should prioritize patching and review access controls to mitigate potential exploitation of these diverse flaws.
+    text: Discourse platforms are experiencing a wave of vulnerabilities, impacting private topics, email settings, and subscription tiers.
+    detail: Multiple CVEs highlight security weaknesses in Discourse, including unauthorized access to private topics (CVE-2026-32615) and subscription bypass (CVE-2026-33074). Administrators should ensure all Discourse instances are patched and review access controls for moderator roles and subscription mechanisms to mitigate these risks.
     link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: Discourse Vulnerabilities
+    link_label: Discourse Vulnerability Details
     badge: signal
     tags:
-      - discourse
       - vulnerability
+      - discourse
       - cve
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Ransomware operations are actively targeting the Business Services sector, indicating a focused and coordinated offensive.
-    detail: The Business Services sector is a growing target for ransomware groups, with a notable increase in attacks. Organizations in this sector should reinforce their defenses, implement robust backup strategies, and conduct regular incident response drills to counter these escalating threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-291a
+    text: Ransomware operations are increasingly targeting the business services sector, with notable activity from groups like Kairos.
+    detail: The business services sector is under increased threat from ransomware, as evidenced by recent reports of targeted attacks and the defacement of the Kairos ransomware leak site. Organizations in this sector should review their security postures, implement robust backup strategies, and enhance endpoint detection and response to counter these evolving threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-110a
     link_label: Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI Models Pose Emerging Security and Ethical Risks
-    text: New AI models are emerging with capabilities deemed too dangerous for public release, highlighting significant security and ethical concerns.
-    detail: The development of advanced AI models like Anthropic's 'Mythos' raises critical questions about safety and responsible deployment. Cybersecurity professionals must stay abreast of AI risks, including potential misuse and unforeseen emergent behaviors, and advocate for robust ethical guidelines.
+  - title: AI Models and Tools Present New Attack Surfaces
+    text: AI-powered tools and platforms are introducing novel vulnerabilities, including credential theft and RCE risks.
+    detail: Recent advisories highlight vulnerabilities in AI-related tools, such as an AI chat interface vulnerable to cloud credential theft and an RCE bug in Docling Core due to PyYAML dependency. Developers and users of AI platforms must prioritize secure coding practices, dependency management, and thorough security testing to address these emerging risks.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Security Risks
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - llm
-      - ethics
-  - title: SSRF and RCE Vulnerabilities Proliferate Across Tools
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities are being discovered in various development tools and platforms.
-    detail: A consistent stream of SSRF and RCE vulnerabilities in tools like Backstage, Alchemy CMS, and Jeecgboot JimuReport underscores the need for rigorous code review and dependency management. Prioritizing patching and secure coding practices is crucial to prevent system compromise.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery_(SSRF)
-    link_label: SSRF Vulnerability Details
+      - vulnerability
+      - rce
+      - cloud
+  - title: SSRF and SQL Injection Remain Persistent Threats
+    text: Server-Side Request Forgery (SSRF) and SQL Injection vulnerabilities continue to be exploited across various applications.
+    detail: Critical SSRF flaws have been identified in tools like Backstage and atototo API, while a construction management system is vulnerable to SQL injection. These common but dangerous vulnerabilities underscore the need for continuous security testing, input validation, and secure development practices to prevent unauthorized access and system compromise.
+    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
+    link_label: OWASP SSRF Vulnerability
     badge: signal
     tags:
       - vulnerability
-      - rce
       - ssrf
+      - sql-injection
       - tools
 vault_picks:
   - name: OWASP Top 10
