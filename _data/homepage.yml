@@ -26,45 +26,47 @@ identity:
     url: /about/
 quick_signals:
   - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse is experiencing a high volume of diverse security flaws, impacting various features.
-    detail: Multiple recent advisories highlight ongoing vulnerabilities in Discourse, ranging from moderator privilege escalation to subscription bypasses and draft topic exposure. Organizations using Discourse should prioritize patching and review access controls to mitigate risks associated with these frequent disclosures.
-    link: https://CVE.report/discourse
+    text: Discourse platforms are repeatedly targeted with vulnerabilities affecting private topics, email settings, and subscriptions.
+    detail: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform, ranging from unauthorized access to private data to subscription tier manipulation. Organizations using Discourse should prioritize patching and review access controls to mitigate risks associated with CVE-2026-32615, CVE-2026-33185, and CVE-2026-33074.
+    link: https://CVE-2026-32615
     link_label: Discourse Vulnerabilities
     badge: signal
     tags:
       - vulnerability
       - discourse
       - patching
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: AI tools and interfaces are becoming targets for credential theft and data exposure.
-    detail: The growing adoption of AI technologies, particularly LLM interfaces like text-generation-webui, introduces novel security risks. Vulnerabilities enabling cloud credential theft and potential data leaks from AI-generated content necessitate robust security measures for AI infrastructure and user data.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
-    badge: signal
-    tags:
-      - ai-security
-      - credential-theft
-      - llm
-  - title: Ransomware Groups Actively Targeting Business Services Sector
-    text: Ransomware operations are intensifying attacks against business services, indicating a focused campaign.
-    detail: Intelligence indicates a significant surge in ransomware attacks against the business services sector. Threat actors are actively exploiting this industry, suggesting a lucrative target profile. Organizations should bolster defenses, implement robust backup strategies, and conduct regular security awareness training.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-165a
-    link_label: CISA Ransomware Guidance
+  - title: Ransomware Groups Intensify Attacks on Business Services Sector
+    text: New threat actor 'TiMc' emerges as ransomware groups escalate attacks on business services.
+    detail: The business services sector is experiencing a significant surge in ransomware attacks, with a new threat actor, 'TiMc', identified. This coordinated escalation, flagged by DARKFEED, necessitates enhanced defensive measures. Organizations should review their ransomware defenses, including backups and incident response plans, to counter these evolving threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-347a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Tools
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws persist across various tools.
-    detail: Recent advisories continue to highlight critical SSRF and RCE vulnerabilities in development tools, CMS platforms, and API labs. These flaws, often stemming from insecure dependency management or improper input validation, can lead to significant system compromise. Prioritize patching and secure coding practices.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF Details
+      - darkweb
+  - title: AI Models Pose Emerging Risks Requiring Careful Deployment
+    text: AI models like Anthropic's 'Mythos' exhibit concerning capabilities, raising safety concerns.
+    detail: The development of advanced AI models, such as Anthropic's 'Mythos', presents potential risks that necessitate cautious deployment strategies. The cybersecurity community must stay informed about AI safety research and potential misuse vectors, including those flagged in AI security discussions.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: LLM Security Risks
+    badge: signal
+    tags:
+      - ai-security
+      - threat-intel
+      - risk-management
+  - title: SSRF and RCE Vulnerabilities Persist Across Diverse Software
+    text: Server-Side Request Forgery and Remote Code Execution flaws are prevalent in various tools and platforms.
+    detail: Recent advisories highlight critical Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in diverse software, including Backstage, Alchemy CMS, and Jeecgboot. These flaws underscore the importance of secure coding practices and timely patching across development frameworks and applications.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery_(SSRF)
+    link_label: SSRF Vulnerabilities
     badge: signal
     tags:
       - vulnerability
       - rce
       - ssrf
+      - patching
       - tools
 vault_picks:
   - name: OWASP Top 10
