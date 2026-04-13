@@ -25,49 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Targeted with Multiple Vulnerabilities
-    text: Discourse is experiencing a surge in vulnerabilities affecting private topics, subscriptions, and draft content exposure.
-    detail: Professionals should prioritize patching Discourse instances and reviewing access controls for private categories. The repeated targeting indicates a potential focus by threat actors on this widely-used communication platform. Ensure all instances are updated to the latest stable version to mitigate risks.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=listing&query=Discourse
-    link_label: NVD Vulnerability Search for Discourse
+  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
+    text: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform, affecting various functionalities.
+    detail: Discourse has been flagged for several vulnerabilities, including unauthorized access to private topics (CVE-2026-32615), network probing via email settings (CVE-2026-33185), subscription tier manipulation (CVE-2026-33074), and exposure of draft topic titles (CVE-2026-32951). Organizations using Discourse should prioritize patching and review access controls to mitigate these risks.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
+    link_label: Discourse Vulnerabilities
     badge: signal
     tags:
-      - discourse
       - vulnerability
+      - discourse
       - web-application
-  - title: AI Models and Interfaces Pose Emerging Credential Theft Risks
-    text: AI chat interfaces and related extensions are vulnerable to cloud credential theft and prompt exposure.
-    detail: Organizations integrating AI tools, especially those with RAG extensions, must audit their security configurations for potential credential leakage. Implement strict access controls and monitor for unusual activity related to cloud services. Consider isolating AI environments to limit blast radius.
+  - title: AI Models and Tools Present New Attack Surfaces
+    text: Emerging AI technologies and interfaces are introducing novel vulnerabilities and attack vectors.
+    detail: Recent reports indicate vulnerabilities in AI chat interfaces (CVE-2026-39345 related to OrangeHRM which can be leveraged by authenticated users) and the potential for AI models themselves to be too dangerous for release, as seen with Anthropic's 'Mythos'. Cybersecurity professionals must stay abreast of AI-specific risks, including credential theft and the security of LLM extensions.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLM Applications
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - cloud-security
-      - credential-theft
-      - llm
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Ransomware operations are actively targeting the Business Services sector, with a notable increase in attacks.
-    detail: Companies in the business services sector should bolster their defenses against ransomware, focusing on robust backup strategies, regular security awareness training, and network segmentation. Monitor threat intelligence feeds for new ransomware variants and tactics, techniques, and procedures (TTPs).
-    link: https://www.cisa.gov/news-events/advisories/aa23-076a
-    link_label: CISA Ransomware Guidance
+      - vulnerability
+      - threat-intel
+  - title: Supply Chain Risks Continue with Dependency Vulnerabilities
+    text: Critical vulnerabilities are being discovered in software dependencies, posing significant supply chain risks.
+    detail: The Docling Core RCE bug (CVE-2026-XXXX) highlights the danger of vulnerable dependencies like PyYAML. Similarly, Jeecgboot JimuReport (CVE-2026-5848) and Backstage (CVE-2026-XXXX) show how component-level flaws can lead to widespread compromise. Organizations must implement robust Software Bill of Materials (SBOM) and dependency scanning practices.
+    link: https://www.cisa.gov/news-events/advisories/aa23-321a
+    link_label: "CISA: Secure Software Supply Chain"
+    badge: signal
+    tags:
+      - supply-chain
+      - vulnerability
+      - dependency-management
+  - title: Ransomware Activity Intensifies Across Sectors
+    text: Ransomware groups are showing increased activity, with a notable focus on business services.
+    detail: Threat intelligence channels like DARKFEED are reporting a surge in ransomware attacks, particularly targeting the Business Services sector. The emergence of new actors like TiMc and the defacement of the Kairos ransomware site suggest a dynamic and evolving threat landscape. Continuous monitoring and robust incident response plans are crucial.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-075a
+    link_label: "CISA: Ransomware Guidance"
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - business-services
       - malware
-  - title: SSRF Vulnerabilities Remain a Critical Threat Vector
-    text: Server-Side Request Forgery (SSRF) vulnerabilities continue to be exploited across various tools and platforms.
-    detail: Developers and security teams must prioritize the identification and remediation of SSRF flaws, particularly in API endpoints and internal system integrations. Implement input validation, egress filtering, and use a deny-by-default approach for network requests to mitigate this risk.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF Guide
-    badge: signal
-    tags:
-      - ssrf
-      - vulnerability
-      - web-application
-      - api-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
