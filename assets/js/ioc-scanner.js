@@ -14,6 +14,9 @@
     domain: /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z]{2,})+$/i
   };
 
+  // File extensions that should NOT be treated as domains
+  var FILE_EXTENSIONS = /\.(php|html|htm|asp|aspx|jsp|cgi|js|css|py|rb|pl|exe|dll|bat|cmd|sh|ps1|vbs|msi|doc|docx|xls|xlsx|pdf|zip|rar|7z|tar|gz|iso|img|txt|csv|xml|json|log|bak|tmp|swp|sql|db|conf|cfg|ini|yml|yaml|env|jar|war|class)$/i;
+
   var TYPE_LABELS = {
     ip: 'IP Address', hash: 'File Hash', domain: 'Domain',
     url: 'URL', email: 'Email Address'
@@ -466,7 +469,7 @@
       if (valid) return { raw: val, type: 'ipv4', lookup: 'ip' };
     }
     if (PATTERNS.ipv6.test(val))   return { raw: val, type: 'ipv6',   lookup: 'ip' };
-    if (PATTERNS.domain.test(val)) return { raw: val, type: 'domain', lookup: 'domain' };
+    if (PATTERNS.domain.test(val) && !FILE_EXTENSIONS.test(val)) return { raw: val, type: 'domain', lookup: 'domain' };
 
     return null;
   }
@@ -543,8 +546,9 @@
     filters.innerHTML = filterHtml;
     filters.style.display = '';
 
-    /* IOC cards — rich intelligence layout with smart analysis */
+    /* IOC cards — focused: threat assessment + priority sources only */
     var html = '';
+    var allNonPriorityLinks = {}; // keyed by source name to deduplicate
     parsed.iocs.forEach(function (ioc) {
       var display = shouldDefang ? defang(ioc.raw, ioc.lookup) : ioc.raw;
       var links = buildLinks(ioc);
@@ -580,11 +584,10 @@
         html += '</div>';
       }
 
-      /* ── Priority sources — "Start here" ── */
+      /* ── Priority sources — "Start here" (max 3) ── */
       if (analysis.priority.length > 0) {
         html += '<div class="ioc-card__priority">';
         html += '  <div class="ioc-card__section-title">' + (typeof scwIcon === 'function' ? scwIcon('zap') : '') + ' Start Investigation Here</div>';
-        var priorityNames = analysis.priority.map(function (p) { return p.name; });
         analysis.priority.forEach(function (p) {
           var matchedLink = links.find(function(l) { return l.name === p.name; });
           if (matchedLink) {
@@ -602,49 +605,58 @@
         html += '</div>';
       }
 
-      /* ── All source links ── */
-      var nonPriorityLinks = links.filter(function(l) {
-        return !analysis.priority.some(function(p) { return p.name === l.name; });
+      /* Collect non-priority links for consolidated section */
+      var priorityNames = analysis.priority.map(function(p) { return p.name; });
+      links.forEach(function(l) {
+        if (priorityNames.indexOf(l.name) === -1 && !allNonPriorityLinks[l.name]) {
+          allNonPriorityLinks[l.name] = l;
+        }
       });
-      if (nonPriorityLinks.length > 0) {
-        html += '<div class="ioc-card__section-title">' + (typeof scwIcon === 'function' ? scwIcon('search') : '') + ' Additional Sources (' + nonPriorityLinks.length + ')</div>';
-        html += '<div class="ioc-card__links">';
-        nonPriorityLinks.forEach(function (l) {
-          html += '<a href="' + escapeAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
-          html += '  <div class="ioc-link__header">';
-          html += '    <span class="ioc-link__icon">' + l.icon + '</span>';
-          html += '    <span class="ioc-link__name">' + escapeHtml(l.name) + '</span>';
-          html += '    <span class="ioc-link__arrow">↗</span>';
-          html += '  </div>';
-          if (l.desc) {
-            html += '  <p class="ioc-link__desc">' + escapeHtml(l.desc) + '</p>';
-          }
-          html += '</a>';
-        });
-        html += '</div>';
-      }
 
-      /* ── Contextual product recommendations (data-driven) ── */
-      var recs = (window.IOC_TOOL_RECS || []).filter(function (r) {
-        return r.types.indexOf(ioc.lookup) !== -1;
-      });
-      if (recs.length > 0) {
-        html += '<div class="ioc-card__recs">';
-        html += '  <div class="ioc-card__recs-title">' + (typeof scwIcon === 'function' ? scwIcon('shield') : '') + ' Protect yourself</div>';
-        recs.forEach(function (r) {
-          html += '<a href="' + escapeAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
-          html += '  <div class="ioc-rec__header">';
-          html += '    <strong class="ioc-rec__name">' + escapeHtml(r.name) + '</strong>';
-          if (r.badge) html += '    <span class="ioc-rec__badge">' + escapeHtml(r.badge) + '</span>';
-          html += '  </div>';
-          html += '  <p class="ioc-rec__desc">' + escapeHtml(r.desc) + '</p>';
-          html += '</a>';
-        });
-        html += '</div>';
-      }
-
-      html += '</div>';
+      html += '</div>'; // end ioc-card
     });
+
+    /* ── Consolidated: Additional Sources (once at bottom) ── */
+    var extraLinks = Object.keys(allNonPriorityLinks).map(function(k) { return allNonPriorityLinks[k]; });
+    if (extraLinks.length > 0) {
+      html += '<div class="ioc-consolidated">';
+      html += '  <div class="ioc-card__section-title">' + (typeof scwIcon === 'function' ? scwIcon('search') : '') + ' All Investigation Sources (' + extraLinks.length + ')</div>';
+      html += '  <div class="ioc-card__links ioc-card__links--grid">';
+      extraLinks.forEach(function (l) {
+        html += '<a href="' + escapeAttr(l.href) + '" target="_blank" rel="noopener noreferrer" class="ioc-link">';
+        html += '  <div class="ioc-link__header">';
+        html += '    <span class="ioc-link__icon">' + l.icon + '</span>';
+        html += '    <span class="ioc-link__name">' + escapeHtml(l.name) + '</span>';
+        html += '    <span class="ioc-link__arrow">↗</span>';
+        html += '  </div>';
+        if (l.desc) {
+          html += '  <p class="ioc-link__desc">' + escapeHtml(l.desc) + '</p>';
+        }
+        html += '</a>';
+      });
+      html += '  </div>';
+      html += '</div>';
+    }
+
+    /* ── Consolidated: Product recommendations (once at bottom) ── */
+    var allTypes = Object.keys(types);
+    var recs = (window.IOC_TOOL_RECS || []).filter(function (r) {
+      return allTypes.some(function(t) { return r.types.indexOf(t) !== -1; });
+    });
+    if (recs.length > 0) {
+      html += '<div class="ioc-consolidated ioc-consolidated--recs">';
+      html += '  <div class="ioc-card__recs-title">' + (typeof scwIcon === 'function' ? scwIcon('shield') : '') + ' Protect Yourself</div>';
+      recs.forEach(function (r) {
+        html += '<a href="' + escapeAttr(r.url) + '" target="_blank" rel="noopener noreferrer" class="ioc-rec">';
+        html += '  <div class="ioc-rec__header">';
+        html += '    <strong class="ioc-rec__name">' + escapeHtml(r.name) + '</strong>';
+        if (r.badge) html += '    <span class="ioc-rec__badge">' + escapeHtml(r.badge) + '</span>';
+        html += '  </div>';
+        html += '  <p class="ioc-rec__desc">' + escapeHtml(r.desc) + '</p>';
+        html += '</a>';
+      });
+      html += '</div>';
+    }
 
     results.innerHTML = html;
     exportDiv.style.display = '';
