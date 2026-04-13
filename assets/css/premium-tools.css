@@ -3339,3 +3339,22 @@
 [data-theme="light"] .ioc-priority-link__header { color: #333; }
 [data-theme="light"] .ioc-priority-link__badge { background: rgba(0,128,60,.12); color: #006830; }
 [data-theme="light"] .ioc-priority-link__reason { color: #666; }
+
+/* Consolidated sources section at bottom */
+.ioc-consolidated {
+  margin: 1.5rem 0;
+  padding: 1.2rem;
+  background: var(--card, #1a1a2e);
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: var(--r, 8px);
+}
+.ioc-consolidated--recs { margin-top: .5rem; }
+.ioc-card__links--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: .4rem;
+}
+@media (max-width: 600px) {
+  .ioc-card__links--grid { grid-template-columns: 1fr; }
+}
+[data-theme="light"] .ioc-consolidated { background: rgba(0,0,0,.02); }

@@ -113,7 +113,7 @@ permalink: /ioc-scanner/
   </div>
 </section>
 
-<link rel="stylesheet" href="/assets/css/premium-tools.css?v=13">
+<link rel="stylesheet" href="/assets/css/premium-tools.css?v=14">
 
 <!-- Source data for JS -->
 <script>
@@ -142,4 +142,4 @@ window.IOC_TOOL_RECS = [
 {% endfor %}
 ];
 </script>
-<script src="/assets/js/ioc-scanner.js?v=8" defer></script>
+<script src="/assets/js/ioc-scanner.js?v=9" defer></script>
