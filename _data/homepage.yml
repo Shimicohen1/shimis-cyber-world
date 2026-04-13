@@ -25,49 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Discourse continues to be a target, with multiple recent reports detailing various vulnerabilities.
-    detail: Recent posts highlight several security flaws in the Discourse platform, including issues with moderator access to private topics, network probing via email settings, subscription tier manipulation, and exposure of draft topic titles. Cybersecurity professionals should ensure Discourse instances are up-to-date and review access controls to mitigate these persistent risks.
-    link: https://discourse.org/blog/security-updates
-    link_label: Discourse Security Updates
+  - title: Discourse Vulnerabilities Continue to Surface
+    text: Multiple recent posts highlight ongoing security flaws in the Discourse platform, impacting various features.
+    detail: Discourse users should remain vigilant regarding new disclosures, particularly those affecting private topics, email settings, and subscription tiers. Regularly applying vendor patches and reviewing access controls is crucial to mitigate risks associated with these persistent vulnerabilities.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
+    link_label: Discourse Vulnerability Database
     badge: signal
     tags:
-      - vulnerability
       - discourse
+      - vulnerability
       - web-application
-  - title: Ransomware Groups Intensify Attacks on Business Services Sector
-    text: New threat actor TiMc emerges as ransomware groups target business services.
-    detail: Intelligence indicates a significant increase in ransomware attacks targeting the Business Services sector, with a new threat actor, TiMc, also identified. Organizations in this sector must bolster their defenses, focusing on robust backups, network segmentation, and employee awareness training to counter these escalating threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-284a
-    link_label: CISA Ransomware Guidance
-    badge: signal
-    tags:
-      - ransomware
-      - threat-intel
-      - business-services
-      - malware
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI-generated submissions are causing triage chaos on bug bounty platforms.
-    detail: Bug bounty platforms are struggling with an influx of AI-generated vulnerability reports, impacting their ability to triage and remediate. Security teams should implement stricter validation processes for incoming reports and focus on verifying the novelty and exploitability of findings, rather than relying solely on automated submissions.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: OWASP AI Security Risks
+  - title: AI Model Safety Concerns Escalate
+    text: Reports indicate AI models are being developed with capabilities deemed too dangerous for public release.
+    detail: The development of advanced AI models like Anthropic's 'Mythos' raises significant ethical and security questions. Organizations should establish robust AI governance frameworks and proactively assess potential misuse risks before deploying or interacting with cutting-edge AI technologies.
+    link: https://www.cisa.gov/news-events/news/artificial-intelligence-and-cybersecurity
+    link_label: CISA on AI and Cybersecurity
     badge: signal
     tags:
       - ai-security
-      - bug-bounty
       - threat-intel
-      - vulnerability
-  - title: SSRF and RCE Vulnerabilities Persist in Various Software Tools
-    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) flaws are prevalent.
-    detail: Multiple critical SSRF and RCE vulnerabilities have been disclosed across various tools, including OrangeHRM, Backstage, Alchemy CMS, Docling Core, Jeecgboot JimuReport, and atototo API. Organizations must prioritize patching these systems and implement network controls to prevent unauthorized access and potential command execution.
-    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
-    link_label: OWASP SSRF Guidance
+      - risk-management
+  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
+    text: Several vulnerabilities stem from insecure dependencies within software projects.
+    detail: The Docling Core RCE bug, linked to PyYAML, and others highlight the critical need for diligent dependency management. Organizations must implement Software Bill of Materials (SBOM) practices and regularly scan dependencies for known vulnerabilities to protect against supply chain attacks.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP Component Analysis
     badge: signal
     tags:
+      - supply-chain
+      - dependency-management
       - vulnerability
-      - rce
-      - ssrf
-      - tools
+  - title: New Threat Actors and Tactics Emerge from Dark Web
+    text: Emerging threat actors like TiMc and evolving tactics such as emoji obfuscation are observed.
+    detail: The cybersecurity landscape is dynamic, with new actors and sophisticated evasion techniques constantly appearing. Monitoring dark web channels and threat intelligence feeds is vital for staying ahead of novel threats and understanding evolving adversary methodologies.
+    link: https://www.mitre.org/threat-intelligence
+    link_label: MITRE Threat Intelligence
+    badge: signal
+    tags:
+      - darkweb
+      - threat-intel
+      - emerging-threats
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
