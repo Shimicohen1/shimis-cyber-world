@@ -26,48 +26,47 @@ identity:
     url: /about/
 quick_signals:
   - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple CVEs highlight ongoing security weaknesses in Discourse, impacting moderation, subscriptions, and data exposure.
-    detail: Discourse continues to be a target, with recent reports detailing vulnerabilities allowing unauthorized access to private topics, subscription tier manipulation, and exposure of draft topic titles. Organizations utilizing Discourse should prioritize patching and review access control configurations to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: CVE-2026-32615 Details
+    text: Multiple Discourse vulnerabilities are being disclosed, ranging from private topic access to subscription bypass.
+    detail: The popular open-source discussion platform, Discourse, continues to be a target for attackers. Recent disclosures highlight a range of vulnerabilities, including unauthorized access to private topics (CVE-2026-32615), subscription tier manipulation (CVE-2026-33074), and exposure of draft topic titles (CVE-2026-32951). Organizations using Discourse should prioritize patching and review access controls to mitigate risks.
+    link: https://github.com/discourse/discourse/security/advisories
+    link_label: Discourse Security Advisories
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - cve
-  - title: "AI Models Pose New Threats: Credential Theft and Risky Deployments"
-    text: AI interfaces are vulnerable to credential theft, and advanced AI models present deployment risks.
-    detail: The security of AI-driven platforms is a growing concern. Vulnerabilities in AI chat interfaces can lead to cloud credential theft, while advanced AI models themselves may be deemed too risky for public release due to their capabilities. Organizations must implement robust security for AI integrations and carefully assess model risks.
+      - vulnerability
+      - access-control
+  - title: AI Models and Interfaces Present New Attack Vectors
+    text: AI-specific tools and LLMs are emerging as targets for credential theft and potential misuse.
+    detail: The security landscape for AI is rapidly evolving. Vulnerabilities in AI chat interfaces, such as the RAG extensions in `text-generation-webui` (CVE-2026-XXXXX), expose cloud credentials. This trend highlights the need for specialized security practices around AI deployments, including strict credential management and secure coding for AI-integrated systems.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
     link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
-      - cloud
-      - identity
-      - threat-intel
-  - title: Ransomware Groups Actively Targeting Business Services Sector
-    text: Ransomware operations are intensifying attacks against the Business Services sector, with notable activity on the darkweb.
-    detail: Intelligence indicates a significant surge in ransomware attacks targeting the Business Services industry. Threat actors are actively using darkweb channels for operations, with some ransomware sites experiencing defacement, potentially indicating internal struggles or external takedowns. Stay vigilant and ensure robust ransomware defenses.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-313a
-    link_label: CISA Ransomware Guidance
-    badge: signal
-    tags:
-      - ransomware
-      - darkweb
-      - threat-intel
-      - business-services
-  - title: Supply Chain and Dependency Risks Remain Critical
-    text: Vulnerabilities in software dependencies, like PyYAML and Ruby eval, continue to be exploited.
-    detail: Recent advisories highlight critical RCE vulnerabilities stemming from insecure dependencies in popular software. Examples include flaws in PyYAML usage within Docling Core and Ruby's `eval()` function in Alchemy CMS. Developers must rigorously vet dependencies and implement secure coding practices to prevent supply chain attacks.
-    link: https://owasp.org/www-project-top-10-2021/risks/cwe-1104/
-    link_label: OWASP Dependency Confusion
+      - cloud-security
+      - credential-theft
+  - title: SSRF and RCE Remain Critical Threats Across Software Stacks
+    text: Server-Side Request Forgery and Remote Code Execution vulnerabilities continue to be prevalent.
+    detail: Recent advisories reveal ongoing threats from Server-Side Request Forgery (SSRF) in tools like Backstage (CVE-2026-XXXXX) and atototo API (CVE-2026-5832), alongside critical Remote Code Execution (RCE) flaws in Alchemy CMS (CVE-2026-23885) and Docling Core (CVE-2026-XXXXX). Organizations must maintain robust vulnerability management programs, focusing on timely patching and input validation.
+    link: https://owasp.org/www-project-top-10/
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - vulnerability
-      - supply-chain
-      - cve
-      - dependency-management
+      - rce
+      - ssrf
+      - patch-management
+  - title: New Threat Actors and Ransomware Operations Emerge
+    text: The threat landscape is dynamic with new actors like TiMc and evolving ransomware tactics.
+    detail: Cybercriminals continue to innovate, with new threat actors like TiMc appearing on the darkweb and ransomware groups like Kairos showing signs of disruption or deception. The Business Services sector is experiencing a heightened ransomware attack frequency. Organizations should bolster their defenses against ransomware and monitor emerging threat actors.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-329a
+    link_label: CISA Ransomware Guidance
+    badge: signal
+    tags:
+      - threat-intel
+      - darkweb
+      - ransomware
+      - threat-actor
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
