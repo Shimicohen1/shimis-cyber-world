@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Vulnerabilities Continue to Surface
-    text: Multiple recent posts highlight ongoing security flaws in the Discourse platform, impacting various features.
-    detail: Discourse users should remain vigilant regarding new disclosures, particularly those affecting private topics, email settings, and subscription tiers. Regularly applying vendor patches and reviewing access controls is crucial to mitigate risks associated with these persistent vulnerabilities.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
-    link_label: Discourse Vulnerability Database
+  - title: Discourse Platform Faces Multiple Vulnerabilities
+    text: Discourse is experiencing a surge in reported vulnerabilities affecting various features, including private topics, email settings, and subscriptions.
+    detail: Multiple CVEs highlight risks in Discourse, ranging from unauthorized access to subscription manipulation. Organizations using Discourse should prioritize patching and review access controls to mitigate potential exploitation of these diverse flaws.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: Discourse Vulnerabilities
     badge: signal
     tags:
       - discourse
       - vulnerability
-      - web-application
-  - title: AI Model Safety Concerns Escalate
-    text: Reports indicate AI models are being developed with capabilities deemed too dangerous for public release.
-    detail: The development of advanced AI models like Anthropic's 'Mythos' raises significant ethical and security questions. Organizations should establish robust AI governance frameworks and proactively assess potential misuse risks before deploying or interacting with cutting-edge AI technologies.
-    link: https://www.cisa.gov/news-events/news/artificial-intelligence-and-cybersecurity
-    link_label: CISA on AI and Cybersecurity
+      - cve
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Ransomware operations are actively targeting the Business Services sector, indicating a focused and coordinated offensive.
+    detail: The Business Services sector is a growing target for ransomware groups, with a notable increase in attacks. Organizations in this sector should reinforce their defenses, implement robust backup strategies, and conduct regular incident response drills to counter these escalating threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-291a
+    link_label: Ransomware Guidance
+    badge: signal
+    tags:
+      - ransomware
+      - threat-intel
+      - business-services
+  - title: AI Models Pose Emerging Security and Ethical Risks
+    text: New AI models are emerging with capabilities deemed too dangerous for public release, highlighting significant security and ethical concerns.
+    detail: The development of advanced AI models like Anthropic's 'Mythos' raises critical questions about safety and responsible deployment. Cybersecurity professionals must stay abreast of AI risks, including potential misuse and unforeseen emergent behaviors, and advocate for robust ethical guidelines.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: LLM Security Risks
     badge: signal
     tags:
       - ai-security
-      - threat-intel
-      - risk-management
-  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
-    text: Several vulnerabilities stem from insecure dependencies within software projects.
-    detail: The Docling Core RCE bug, linked to PyYAML, and others highlight the critical need for diligent dependency management. Organizations must implement Software Bill of Materials (SBOM) practices and regularly scan dependencies for known vulnerabilities to protect against supply chain attacks.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP Component Analysis
+      - llm
+      - ethics
+  - title: SSRF and RCE Vulnerabilities Proliferate Across Tools
+    text: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities are being discovered in various development tools and platforms.
+    detail: A consistent stream of SSRF and RCE vulnerabilities in tools like Backstage, Alchemy CMS, and Jeecgboot JimuReport underscores the need for rigorous code review and dependency management. Prioritizing patching and secure coding practices is crucial to prevent system compromise.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery_(SSRF)
+    link_label: SSRF Vulnerability Details
     badge: signal
     tags:
-      - supply-chain
-      - dependency-management
       - vulnerability
-  - title: New Threat Actors and Tactics Emerge from Dark Web
-    text: Emerging threat actors like TiMc and evolving tactics such as emoji obfuscation are observed.
-    detail: The cybersecurity landscape is dynamic, with new actors and sophisticated evasion techniques constantly appearing. Monitoring dark web channels and threat intelligence feeds is vital for staying ahead of novel threats and understanding evolving adversary methodologies.
-    link: https://www.mitre.org/threat-intelligence
-    link_label: MITRE Threat Intelligence
-    badge: signal
-    tags:
-      - darkweb
-      - threat-intel
-      - emerging-threats
+      - rce
+      - ssrf
+      - tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
