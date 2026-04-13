@@ -29,6 +29,7 @@ permalink: /posts/
     <button class="filter-pill" data-filter="cloud">Cloud</button>
     <button class="filter-pill" data-filter="ai-security">AI Security</button>
     <button class="filter-pill" data-filter="incd">INCD</button>
+    <button class="filter-pill" data-filter="daily-digest">Daily Digest</button>
   </div>
 </div>
 
