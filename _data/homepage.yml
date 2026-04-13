@@ -25,49 +25,50 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Multifaceted Vulnerabilities
-    text: Discourse is experiencing a surge in diverse security flaws, impacting subscriptions, draft visibility, and moderator permissions.
-    detail: Multiple recent advisories highlight significant vulnerabilities within the Discourse platform. These range from subscription tier abuse (CVE-2026-33074) and exposed draft titles (CVE-2026-32951) to moderator privilege escalation (CVE-2026-32615) and network probing via email settings (CVE-2026-33185). Organizations using Discourse should prioritize patching and review access controls.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=summary&query=Discourse
+  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
+    text: Discourse platforms are frequently targeted with vulnerabilities affecting moderation, subscriptions, and data exposure.
+    detail: Multiple recent advisories highlight ongoing security weaknesses in Discourse. Exploits range from unauthorized access to private topics and subscription tier manipulation to exposure of draft topic titles and network probing capabilities. Organizations using Discourse should prioritize patching and review access controls for moderators and users to mitigate these risks.
+    link: https://CVE-2026-32615
     link_label: Discourse Vulnerabilities
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - web-application
-  - title: RCE and File Read Flaws Plague Open Source Software
-    text: Open-source applications like OrangeHRM and Alchemy CMS are susceptible to RCE and local file read vulnerabilities.
-    detail: Recent alerts underscore critical vulnerabilities in open-source projects, including OrangeHRM (CVE-2026-39345) for local file reads and Alchemy CMS (CVE-2026-23885) for remote code execution via Ruby eval. Docling Core (versions 2.21.0 to 2.48.4) is also at risk due to a PyYAML dependency. Staying updated with patches for these foundational tools is crucial.
-    link: https://owasp.org/www-project-top-10-container/
-    link_label: OWASP Top 10
-    badge: signal
-    tags:
       - vulnerability
-      - rce
-      - open-source
-      - supply-chain
-  - title: SSRF Vulnerabilities Increasingly Exploited in Developer Tools
-    text: Developer tools like Backstage and API testing utilities are showing critical SSRF flaws.
-    detail: Server-Side Request Forgery (SSRF) vulnerabilities are a growing concern, particularly within developer-focused tools. Backstage (`@backstage/backend-defaults` prior to 0.15.0) and the `atototo api-lab-mcp` tool (up to 0.2.1) have been identified with critical SSRF flaws (CVE-2026-5832). These can expose internal systems. Implement strict input validation and network segmentation.
-    link: https://owasp.org/www-project-top-10-web-application-security/
-    link_label: OWASP Web Top 10
-    badge: signal
-    tags:
-      - vulnerability
-      - ssrf
-      - developer-tools
-      - api-security
+      - access-control
   - title: AI Models and Interfaces Present New Attack Vectors
-    text: AI-powered applications are emerging as targets for credential theft and pose risks with advanced capabilities.
-    detail: The rapid adoption of AI brings new security challenges. An AI chat interface (text-generation-webui prior to 4.3) is vulnerable to cloud credential theft. Furthermore, Anthropic's 'Mythos' AI model is reportedly deemed too dangerous for public release due to its advanced capabilities. Organizations must assess the security posture of their AI integrations.
-    link: https://cisa.gov/news-events/news/securing-artificial-intelligence-systems
-    link_label: CISA on AI Security
+    text: Emerging AI tools and interfaces are introducing novel vulnerabilities, including credential theft and potential for dangerous model capabilities.
+    detail: The integration of AI, particularly in chat interfaces and LLMs, is creating new security challenges. Vulnerabilities have been identified that could lead to cloud credential theft via RAG extensions. Furthermore, concerns are rising about the inherent capabilities of advanced AI models themselves, deeming them too risky for public release. Organizations should focus on securing AI infrastructure and vetting AI model risks.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
       - ai-security
       - cloud-security
+      - llm
       - vulnerability
+  - title: Ransomware Actors Intensify Attacks on Business Services Sector
+    text: Ransomware groups are increasingly targeting the Business Services sector, indicating a strategic shift in operational focus.
+    detail: Intelligence reports indicate a significant rise in ransomware attacks specifically aimed at the Business Services sector. This coordinated surge suggests a profitable and potentially less defended target area for cybercriminals. Organizations in this sector must bolster their defenses, focusing on endpoint security, robust backups, and comprehensive incident response plans to counter this escalating threat.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
+    link_label: CISA Ransomware Guidance
+    badge: signal
+    tags:
+      - ransomware
       - threat-intel
+      - business-services
+      - malware
+  - title: SSRF and RCE Vulnerabilities Remain Prevalent in Developer Tools
+    text: Server-Side Request Forgery and Remote Code Execution flaws continue to impact developer portals and CMS platforms.
+    detail: Recent advisories highlight critical SSRF and RCE vulnerabilities affecting widely used developer tools and content management systems. These flaws, often stemming from improper handling of external requests or insecure code execution, can lead to significant system compromise. Developers and system administrators must prioritize patching these tools and implement strict input validation and network segmentation to prevent exploitation.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF
+    badge: signal
+    tags:
+      - vulnerability
+      - ssrf
+      - rce
+      - developer-tools
+      - cms
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
