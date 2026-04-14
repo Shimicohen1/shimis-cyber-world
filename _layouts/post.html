@@ -133,9 +133,9 @@ layout: default
     <div class="post-sigma-rules">
       <div class="post-sigma-rules__header">
         <h2>🛡️ Detection Rules</h2>
-        <span class="post-sigma-rules__badge">{{ page.sigma_rules.count }} Sigma rules available</span>
+        <span class="post-sigma-rules__badge">{{ page.sigma_rules.count }} rules · 5 SIEM formats</span>
       </div>
-      <p class="post-sigma-rules__intro">Auto-generated <a href="https://github.com/SigmaHQ/sigma" target="_blank" rel="noopener">Sigma</a> detection rules based on the MITRE ATT&CK techniques in this post. Import into your SIEM (Splunk, Elastic, QRadar, Microsoft Sentinel).</p>
+      <p class="post-sigma-rules__intro">Auto-generated detection rules based on the MITRE ATT&CK techniques in this post. Pick your SIEM platform and copy directly — no conversion needed.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -144,21 +144,68 @@ layout: default
           <span class="sigma-tactic">{{ page.sigma_rules.preview_tactic }}</span>
         </div>
         <h3>{{ page.sigma_rules.preview_title }}</h3>
+        {% if page.sigma_rules.formats %}
+        <div class="sigma-siem-tabs">
+          <div class="sigma-siem-tabs__bar">
+            <button class="sigma-tab sigma-tab--active" data-siem="sigma">Sigma</button>
+            <button class="sigma-tab" data-siem="splunk">Splunk</button>
+            <button class="sigma-tab" data-siem="sentinel">Sentinel</button>
+            <button class="sigma-tab" data-siem="elastic">Elastic</button>
+            <button class="sigma-tab" data-siem="qradar">QRadar</button>
+          </div>
+          <div class="sigma-siem-tabs__content">
+            <pre class="sigma-yaml" id="sigma-siem-output"></pre>
+            <button class="sigma-copy-btn" id="sigma-copy-btn" aria-label="Copy to clipboard">📋 Copy</button>
+          </div>
+        </div>
+        <script>
+        (function(){
+          var fmts={
+            sigma:"{{ page.sigma_rules.formats.sigma }}",
+            splunk:"{{ page.sigma_rules.formats.splunk }}",
+            sentinel:"{{ page.sigma_rules.formats.sentinel }}",
+            elastic:"{{ page.sigma_rules.formats.elastic }}",
+            qradar:"{{ page.sigma_rules.formats.qradar }}"
+          };
+          var decoded={};
+          for(var k in fmts){try{decoded[k]=atob(fmts[k])}catch(e){decoded[k]="Format not available"}}
+          var out=document.getElementById('sigma-siem-output');
+          var copyBtn=document.getElementById('sigma-copy-btn');
+          var current='sigma';
+          if(out)out.textContent=decoded.sigma;
+          document.querySelectorAll('.sigma-tab').forEach(function(tab){
+            tab.addEventListener('click',function(){
+              document.querySelectorAll('.sigma-tab').forEach(function(t){t.classList.remove('sigma-tab--active')});
+              tab.classList.add('sigma-tab--active');
+              current=tab.getAttribute('data-siem');
+              if(out)out.textContent=decoded[current]||"Format not available";
+            });
+          });
+          if(copyBtn){copyBtn.addEventListener('click',function(){
+            navigator.clipboard.writeText(decoded[current]||'').then(function(){
+              copyBtn.textContent='✅ Copied!';
+              setTimeout(function(){copyBtn.textContent='📋 Copy'},2000);
+            });
+          })}
+        })();
+        </script>
+        {% else %}
         <details class="sigma-yaml-toggle">
           <summary>View Sigma YAML</summary>
           <pre class="sigma-yaml" id="sigma-preview-yaml"></pre>
         </details>
-      </div>
-      <script>
+        <script>
         (function(){
           var b64 = "{{ page.sigma_rules.preview_yaml_b64 }}";
           if(b64){try{document.getElementById('sigma-preview-yaml').textContent=atob(b64)}catch(e){}}
         })();
-      </script>
+        </script>
+        {% endif %}
+      </div>
       {% endif %}
       {% if page.sigma_rules.paid_count > 0 %}
       <div class="post-sigma-rules__cta">
-        <p><strong>{{ page.sigma_rules.paid_count }} more rules</strong> available in the full detection pack — covering additional techniques and custom indicators from this breach.</p>
+        <p><strong>{{ page.sigma_rules.paid_count }} more rules</strong> available in the full detection pack — all 5 formats included.</p>
         <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Full Pack via Intel Bot →</a>
         <span class="post-sigma-rules__price">250 ⭐ (~$5) · Free for Pro & Elite subscribers</span>
       </div>
