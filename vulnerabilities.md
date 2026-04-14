@@ -25,7 +25,7 @@ permalink: /vulnerabilities/
 <div class="archive">
   <div class="archive__list" id="vuln-list">
     {% for post in site.posts %}
-    {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" or post.channel == "NVD" %}
+    {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" or post.channel == "NVD" or post.section == "vulnerabilities" %}
     {% if post.score == "HIGH" or post.score == "CRITICAL" or post.score == "MEDIUM" %}
     <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}" data-score="{{ post.score }}">
           {% include post-card.html %}

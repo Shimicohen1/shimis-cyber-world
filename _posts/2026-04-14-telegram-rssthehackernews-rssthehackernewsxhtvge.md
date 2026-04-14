@@ -8,7 +8,7 @@ tags: [vulnerability]
 excerpt: "A critical remote code execution (RCE) vulnerability in ShowDoc, a document management and collaboration service widely used in China, is currently under active exploitation. The f"
 summary: "A critical remote code execution (RCE) vulnerability in ShowDoc, a document management and collaboration service widely used in China, is currently under active exploitation. The flaw, identified as CVE-2025-0520 (also tracked as CNVD-2020-26585), boasts a severe CVSS score of 9.4, indicating its hi"
 layout: post
-section: live-feed
+section: vulnerabilities
 score: HIGH
 curated: false
 featured: false
