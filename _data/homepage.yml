@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Under Scrutiny for Multiple Vulnerabilities
-    text: Discourse is experiencing a surge in reported vulnerabilities impacting various features.
-    detail: Multiple CVEs highlight risks in Discourse, including unauthorized access to private topics, email setting exploitation, subscription tier manipulation, and draft topic title exposure. Organizations using Discourse should prioritize patching and review access controls to mitigate these diverse threats.
-    link: https://github.com/discourse/discourse/security/advisories
-    link_label: Discourse Security Advisories
-    badge: signal
-    tags:
-      - vulnerability
-      - discourse
-      - web-application
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: Ransomware operations are increasingly targeting the Business Services sector.
-    detail: Recent intelligence indicates a concentrated effort by ransomware groups against the Business Services industry, with a notable increase in targeted attacks. This sector should bolster defenses, implement robust backup strategies, and conduct regular incident response drills.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
-    link_label: CISA Ransomware Guidance
-    badge: signal
-    tags:
-      - ransomware
-      - threat-intel
-      - business-services
-  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
-    text: AI-generated vulnerability reports are flooding bug bounty platforms, straining triage resources.
-    detail: Bug bounty platforms face challenges managing a surge of AI-created vulnerability submissions, impacting efficient remediation. Security teams should refine their processes for detecting and validating AI-assisted findings, ensuring genuine threats are prioritized over noise.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: OWASP AI Security Risks
+  - title: AI Guardrails Vulnerable to Prompt Injection
+    text: Sophisticated prompt injection attacks can bypass AI security measures in new systems.
+    detail: Researchers have demonstrated successful bypasses of AI guardrails in new systems like Apple Intelligence. This highlights the need for robust prompt engineering and ongoing security validation of AI models before widespread deployment. Organizations should prioritize testing AI integrations for such vulnerabilities.
+    link: https://owasp.org/www-community/LLM_Security_Top_10/
+    link_label: LLM Security Top 10
     badge: signal
     tags:
       - ai-security
+      - prompt-injection
       - threat-intel
-      - bug-bounty
-  - title: SSRF and RCE Vulnerabilities Persist in Development Tools
-    text: Server-Side Request Forgery and Remote Code Execution flaws are prevalent in developer tools.
-    detail: Recent advisories highlight critical SSRF and RCE vulnerabilities in popular developer frameworks and tools like Backstage and Alchemy CMS. Teams utilizing these tools must ensure they are updated to the latest secure versions to prevent exploitation of these dangerous flaws.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF Guidance
+  - title: Zero-Day Exploits Target Widely Used Software
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows is a growing concern.
+    detail: The wild exploitation of zero-day flaws in Adobe Reader and Windows (e.g., BlueHammer) underscores the critical importance of timely patching and robust endpoint detection. Organizations must maintain aggressive patching cycles and leverage threat intelligence feeds to stay ahead of emerging, unpatched threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Advisories
     badge: signal
     tags:
       - vulnerability
-      - rce
-      - ssrf
-      - developer-tools
+      - zero-day
+      - threat-intel
+  - title: Supply Chain Attacks Compromise Trusted Software Updates
+    text: Hijacked update mechanisms for popular plugins are delivering backdoors.
+    detail: The compromise of Smart Slider 3 Pro's update mechanism to distribute backdoored plugins exemplifies a critical supply chain risk. This trend necessitates stringent vetting of software dependencies and proactive monitoring of update channels. Implementing application whitelisting can mitigate the impact of such compromises.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: OWASP Supply Chain Security
+    badge: signal
+    tags:
+      - supply-chain
+      - malware
+      - threat-intel
+  - title: Targeted Phishing Exploits C-Suite Credentials
+    text: New phishing-as-a-service platforms specifically target senior executive Microsoft logins.
+    detail: The VENOM Phishing-as-a-Service platform's focus on C-suite Microsoft credentials signals a refined threat actor strategy. This emphasizes the need for advanced endpoint protection, multi-factor authentication for all accounts, and continuous security awareness training, especially for privileged users.
+    link: https://www.microsoft.com/en-us/security/business/security-insider/phishing-attacks-what-they-are-and-how-to-prevent-them
+    link_label: Microsoft on Phishing
+    badge: signal
+    tags:
+      - phishing
+      - credential-theft
+      - threat-intel
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
