@@ -25,51 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerability Exploitation
-    text: Multiple recent advisories highlight ongoing security weaknesses in the Discourse platform, affecting various functionalities.
-    detail: Discourse, a popular open-source discussion platform, continues to be a target for attackers. Recent vulnerabilities range from unauthorized access to private topics and subscription tier manipulation to exposing draft topic titles and enabling network probing. Organizations using Discourse should prioritize patching and review access controls to mitigate these risks. Maintaining up-to-date instances is critical.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
+  - title: Discourse Platform Faces Multiple Vulnerabilities
+    text: Discourse is experiencing a surge in reported vulnerabilities, impacting private topics, email settings, and subscription tiers.
+    detail: Multiple CVEs highlight a significant security posture issue for Discourse users. Professionals should prioritize patching and reviewing access controls, especially for private topics and subscription management, to mitigate risks like unauthorized data access and subscription circumvention.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
     link_label: Discourse Vulnerabilities
     badge: signal
     tags:
-      - vulnerability
       - discourse
-      - web-application
-  - title: RCE and File Read Vulnerabilities Plague Open Source Software
-    text: Critical RCE and local file read flaws are prevalent in popular open-source projects, demanding swift patching.
-    detail: Recent intelligence reveals critical Remote Code Execution (RCE) and local file read vulnerabilities in widely used open-source software like OrangeHRM, Alchemy CMS, and Docling Core. These flaws, often stemming from dependency management or insecure code practices, can lead to full system compromise. Organizations must implement robust software supply chain security practices and promptly update vulnerable components.
-    link: https://owasp.org/www-community/vulnerabilities/
-    link_label: OWASP Vulnerabilities
+      - vulnerability
+      - cve
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: The Business Services sector is under increased attack from ransomware groups, indicating a targeted campaign.
+    detail: A notable surge in ransomware attacks targeting the Business Services sector demands immediate attention. Organizations in this sector should bolster their defenses, focusing on robust backup strategies, network segmentation, and comprehensive incident response plans to counter evolving ransomware tactics.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-109a
+    link_label: Ransomware Guidance
     badge: signal
     tags:
-      - vulnerability
-      - rce
-      - open-source
-      - supply-chain
-  - title: AI Model Risks and LLM Interface Security Concerns Mount
-    text: Emerging AI models and interfaces present new security challenges, including potential credential theft and dangerous capabilities.
-    detail: The rapid advancement of AI introduces novel security landscapes. Vulnerabilities in AI chat interfaces can lead to cloud credential theft, while some advanced LLMs are deemed too dangerous for public release due to their capabilities. Cybersecurity professionals must focus on securing AI development pipelines, scrutinizing AI model safety, and protecting cloud infrastructure from AI-related threats.
-    link: https://www.cisa.gov/news-events/news/cybersecurity-considerations-artificial-intelligence
-    link_label: CISA on AI Security
+      - ransomware
+      - threat-intel
+      - business-services
+  - title: AI Model Risks Prompt Caution and Delayed Releases
+    text: Advanced AI models like Anthropic's 'Mythos' are deemed too dangerous for public release due to potential risks.
+    detail: The development of powerful AI models raises significant ethical and security concerns, leading some developers to withhold public releases. Cybersecurity professionals must stay informed about AI capabilities and potential misuse, advocating for responsible AI development and deployment practices.
+    link: https://www.nist.gov/artificial-intelligence/responsible-ai-practices
+    link_label: Responsible AI Practices
     badge: signal
     tags:
       - ai-security
-      - llm
-      - vulnerability
-      - cloud
       - threat-intel
-  - title: Threat Actors Leverage Evasion Tactics and Target Business Services
-    text: Attackers are using novel evasion methods like emojis and intensifying focus on the business services sector.
-    detail: Cybercriminals are adopting sophisticated evasion techniques, including the weaponization of emojis to bypass security controls. Concurrently, the Business Services sector is experiencing a significant surge in ransomware attacks. Security teams should enhance endpoint detection and response (EDR) capabilities, conduct regular phishing awareness training, and strengthen defenses against ransomware, particularly for critical business infrastructure.
-    link: https://www.mitre.org/threat-actor-attribution
-    link_label: MITRE ATT&CK®
+      - responsible-ai
+  - title: SSRF and RCE Vulnerabilities Plague Development Tools
+    text: Tools like Backstage and Alchemy CMS are affected by critical SSRF and RCE vulnerabilities.
+    detail: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in developer tools like Backstage and Alchemy CMS pose significant risks. Teams utilizing these tools must prioritize patching and review configurations to prevent unauthorized access and potential system compromise.
+    link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
+    link_label: SSRF Vulnerability Overview
     badge: signal
     tags:
-      - threat-intel
-      - evasion
-      - ransomware
-      - business-services
-      - malware
+      - ssrf
+      - rce
+      - tools
+      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
