@@ -25,46 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Zero-Day Exploits Continue to Plague Major Software
-    text: Zero-day vulnerabilities in widely used software like Adobe Reader and Windows remain actively exploited.
-    detail: The active exploitation of zero-day vulnerabilities in Adobe Reader and Windows highlights persistent supply chain risks and the need for proactive threat hunting. Organizations should prioritize patching known vulnerabilities and implement robust endpoint detection and response (EDR) solutions to mitigate risks from unknown threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/tip-2023-understanding-zero-day-vulnerabilities
-    link_label: Understanding Zero-Day Vulnerabilities
+  - title: Phishing-as-a-Service Platforms Proliferate
+    text: New 'VENOM' platform highlights the growing trend of sophisticated phishing-as-a-service offerings.
+    detail: Cybercriminals are increasingly leveraging specialized platforms like VENOM to conduct targeted phishing campaigns, often focusing on high-value credentials such as C-suite Microsoft logins. This trend signifies a commoditization of advanced attack infrastructure. Organizations should prioritize robust phishing awareness training and implement strong multi-factor authentication to mitigate risks.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-awareness-and-prevention
+    link_label: Phishing Prevention Tips
     badge: signal
     tags:
-      - zero-day
-      - vulnerability
       - threat-intel
-  - title: Phishing-as-a-Service Platforms Target High-Value Credentials
-    text: Sophisticated 'Phishing-as-a-Service' platforms are actively targeting C-suite Microsoft credentials.
-    detail: The emergence of platforms like VENOM, specifically designed to phish high-value Microsoft credentials from senior executives, signifies a growing trend in targeted, professionalized cybercrime. Implement multi-factor authentication (MFA) universally and conduct regular security awareness training, emphasizing spear-phishing recognition.
-    link: https://owasp.org/www-community/attacks/Phishing
-    link_label: OWASP Phishing Guidance
-    badge: signal
-    tags:
       - phishing
-      - microsoft
-      - threat-intel
-  - title: Supply Chain Attacks Escalate via Compromised Software Updates
-    text: Attackers are hijacking legitimate software update mechanisms to distribute malware.
-    detail: Recent incidents involving compromised WordPress/Joomla plugins and Smart Slider updates demonstrate a critical risk in the software supply chain. Organizations must rigorously vet third-party software, monitor update integrity, and consider implementing software composition analysis (SCA) tools to identify vulnerable dependencies.
-    link: https://www.mitre.org/modules/attack-navigator?version=4.1.2&techniqueIdlist=T1195
-    link_label: "MITRE ATT&CK: Compromise Software Supply Chain"
+      - phishing-as-a-service
+  - title: Exploitation of Zero-Days Continues Unabated
+    text: Active exploitation of zero-day vulnerabilities in Windows and Adobe Reader underscores ongoing disclosure challenges.
+    detail: Recent reports highlight the active exploitation of zero-day vulnerabilities in critical software like Windows ('BlueHammer') and Adobe Reader. This demonstrates that even with vendor efforts, unknown flaws remain a significant threat vector. Prioritize timely patching of known vulnerabilities and maintain a strong incident response plan to address novel exploits.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-347a
+    link_label: Known Exploited Vulnerabilities Catalog
     badge: signal
     tags:
+      - threat-intel
+      - vulnerability
+      - zero-day
+  - title: IoT Devices Remain Prime Botnet Targets
+    text: Masjesu botnet demonstrates a stealthy, targeted approach against Internet of Things (IoT) devices.
+    detail: The emergence of the Masjesu botnet, specifically targeting IoT devices with evasion tactics, highlights a persistent and evolving threat. These compromised devices can be leveraged for large-scale attacks. Security teams should segment IoT networks, enforce strong authentication, and regularly update device firmware to defend against botnet recruitment.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/ics-advisory/aa22-324a
+    link_label: IoT Cybersecurity Guidance
+    badge: signal
+    tags:
+      - threat-intel
+      - malware
+      - botnet
+      - iot
+  - title: Supply Chain Attacks Target Software Updates
+    text: Hijacked updates for Smart Slider 3 Pro push backdoored plugins, indicating sophisticated supply chain risks.
+    detail: The hijacking of legitimate update mechanisms for popular plugins like Smart Slider 3 Pro for WordPress and Joomla represents a significant supply chain attack vector. Attackers injected backdoors through seemingly official updates. Organizations must implement strict vetting of software sources and monitor for unexpected changes in application behavior.
+    link: https://owasp.org/www-community/Supply_Chain_Security
+    link_label: OWASP Supply Chain Security
+    badge: signal
+    tags:
+      - threat-intel
       - supply-chain
       - malware
-      - threat-intel
-  - title: AI Systems Face New Prompt Injection and API Key Leakage Risks
-    text: Emerging AI platforms are vulnerable to prompt injection and unsecured API key exposures.
-    detail: The successful bypassing of AI guardrails via prompt injection and the leakage of Gemini API keys in Android apps highlight the nascent security challenges of AI integration. Developers and users must be aware of these risks, implementing secure coding practices for AI and diligently managing API credentials.
-    link: https://owasp.org/www-community/vulnerabilities/Prompt_Injection
-    link_label: OWASP Prompt Injection
-    badge: signal
-    tags:
-      - ai-security
       - vulnerability
-      - threat-intel
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
