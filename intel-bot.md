@@ -164,6 +164,18 @@ permalink: /intel-bot/
   <h2>🛡️ Detection Rules</h2>
   <p>Generate SIEM-ready detection rules from real breach data. The bot creates Sigma rules from MITRE ATT&CK techniques found in threat posts, then converts them to your SIEM's native query language.</p>
 
+  <div class="bot-guide-note" style="background: rgba(0,200,255,0.05); border: 1px solid rgba(0,200,255,0.15); border-radius: 8px; padding: 1.2rem; margin: 1rem 0;">
+    <strong>How it works:</strong>
+    <ol style="margin: 0.5rem 0 0 1.2rem; padding: 0;">
+      <li>You search by organization name or domain</li>
+      <li>We find matching breach posts in our threat intel database</li>
+      <li>Each post is mapped to MITRE ATT&CK techniques (e.g. T1059.001 — PowerShell Execution)</li>
+      <li>We generate Sigma rules for those techniques — behavioral patterns that detect the same type of attack in <em>your</em> environment</li>
+      <li>Pick your SIEM format — Splunk, Sentinel, Elastic, or QRadar — and get a ready-to-paste query</li>
+    </ol>
+    <p style="margin: 0.5rem 0 0;"><strong>Example:</strong> If a breach involved PowerShell-based execution (T1059.001), you get a Sigma rule that detects suspicious PowerShell activity in your logs — catching the same attack technique, not the specific attacker.</p>
+  </div>
+
   <div class="bot-guide-cmd">
     <div class="bot-guide-cmd__header">
       <code class="bot-guide-cmd__name">/detect [org name or domain]</code>

@@ -171,7 +171,7 @@ layout: default
       </div>
       {% endif %}
       <div class="post-sigma-rules__cta">
-        <p><strong>{{ page.sigma_rules.count }} detection rules ready</strong> for your SIEM — click below and the bot will pull them up instantly.</p>
+        <p><strong>{{ page.sigma_rules.count }} Sigma rules</strong> mapped to the ATT&CK techniques from this breach — pick your SIEM and get a ready-to-paste query.</p>
         <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
         {% if page.sigma_rules.paid_count > 0 %}
         <span class="post-sigma-rules__price">{{ page.sigma_rules.free_count }} free · {{ page.sigma_rules.paid_count }} more in full pack (250 ⭐)</span>

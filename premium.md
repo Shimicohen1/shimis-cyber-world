@@ -187,6 +187,10 @@ permalink: /premium/
 <strong><span class="scw-icon" data-icon="crosshair"></span> SIEM-ready IOC Exports</strong>
 <span>Structured IOC data (CVEs, indicators, affected products) ready to paste into your SIEM or threat platform. No manual work.</span>
 </div>
+<div class="elite-bot__feature">
+<strong><span class="scw-icon" data-icon="shield"></span> Breach Detection Rules</strong>
+<span>Type <code>/detect</code> + org name → get Sigma rules mapped to the ATT&CK techniques from that breach. Pick your SIEM (Splunk, Sentinel, Elastic, QRadar) and paste. 1 free rule per breach, full pack with Pro/Elite.</span>
+</div>
 </div>
 
 <a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot — Free Preview Available →</a>
