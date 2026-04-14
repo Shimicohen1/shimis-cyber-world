@@ -25,51 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Ransomware and Malware Targeting Critical Infrastructure
-    text: Ransomware and malware attacks are increasingly disrupting essential services, with a notable incident impacting Dutch healthcare.
-    detail: Recent incidents highlight a growing trend of ransomware and malware attacks specifically targeting critical infrastructure sectors like healthcare. The ChipSoft ransomware attack serves as a stark reminder of the potential for widespread service disruption. Organizations in these sectors must prioritize robust endpoint protection, regular backups, and comprehensive incident response plans to mitigate such threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness-month-2023
-    link_label: Ransomware Awareness
+  - title: Phishing-as-a-Service Platforms Escalate C-Suite Targeting
+    text: Emerging PhaaS platforms like VENOM are increasingly targeting high-value Microsoft credentials of executives.
+    detail: Cybercriminals are leveraging sophisticated PhaaS platforms to conduct highly targeted attacks against C-suite executives, aiming to steal Microsoft credentials. This trend underscores the need for advanced email security solutions and robust multi-factor authentication for privileged accounts. Organizations should prioritize continuous security awareness training for leadership.
+    link: https://owasp.org/www-community/attacks/Phishing
+    link_label: OWASP Phishing
     badge: signal
     tags:
       - threat-intel
-      - ransomware
-      - malware
-      - critical-infrastructure
-  - title: Exploitation of Zero-Day Vulnerabilities Persists
-    text: Zero-day vulnerabilities in widely used software like Windows and Adobe Reader are being actively exploited in the wild.
-    detail: The emergence of 'BlueHammer' targeting Windows and an Adobe Reader zero-day exploit underscores the persistent threat of unknown vulnerabilities. Attackers are actively leveraging these flaws before patches are available, leading to potential system compromises and data breaches. It is crucial for organizations to maintain vigilant monitoring, employ proactive threat hunting, and apply patches as soon as they are released.
-    link: https://www.mitre.org/about/news/mitre-enables-faster-vulnerability-management-through-attack-techniques-and-threat-intelligence
-    link_label: Vulnerability Management
+      - phishing
+      - microsoft
+  - title: IoT and Industrial Devices Remain Prime Targets
+    text: Iranian state-backed actors and the Masjesu botnet highlight ongoing risks to industrial control systems and IoT devices.
+    detail: Both nation-state actors and botnets are actively targeting internet-connected industrial and IoT devices, indicating a persistent and growing threat surface. These devices often lack robust security controls, making them easy targets for espionage and disruption. Organizations must prioritize asset inventory, network segmentation, and timely patching of all connected devices.
+    link: https://www.cisa.gov/news-events/advisories/ics-advisory-2023-333-01
+    link_label: CISA ICS Advisories
+    badge: signal
+    tags:
+      - threat-intel
+      - iot
+      - industrial-control-systems
+  - title: Zero-Day Exploits Continue to Threaten Widely Used Software
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows OS presents immediate risks.
+    detail: The ongoing discovery and exploitation of zero-day vulnerabilities in common software like Adobe Reader and the Windows operating system highlight the critical need for rapid patching and proactive threat hunting. Users should enable automatic updates and security researchers should focus on rapid analysis of emerging threats to develop timely mitigations.
+    link: https://nvd.nist.gov/vuln/search
+    link_label: NVD Vulnerability Search
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-      - exploit
-  - title: Sophisticated Phishing Campaigns Target High-Value Credentials
-    text: Phishing-as-a-service platforms like VENOM are specifically targeting C-suite Microsoft logins.
-    detail: The VENOM phishing platform represents a sophisticated, targeted approach to credential harvesting, focusing on high-value executive accounts. This trend emphasizes the need for advanced email security, multi-factor authentication (MFA) for all accounts, and continuous security awareness training for employees, especially those in leadership positions, to recognize and report sophisticated phishing attempts.
-    link: https://owasp.org/www-community/attacks/Phishing
-    link_label: Phishing Attacks
-    badge: signal
-    tags:
-      - threat-intel
-      - phishing
-      - credential-theft
-      - microsoft
   - title: Supply Chain Attacks Evolve with Plugin Hijacking
-    text: Attackers are hijacking update mechanisms of popular plugins like Smart Slider 3 Pro.
-    detail: The hijacking of the Smart Slider 3 Pro update mechanism demonstrates a dangerous evolution in supply chain attacks, injecting backdoors via trusted software channels. This highlights the critical importance of vetting third-party software, monitoring software updates for anomalies, and segmenting networks to limit the blast radius of a compromised component. Implementing a robust software bill of materials (SBOM) is also advisable.
-    link: https://www.cisa.gov/news-events/advisories/aa23-289a
-    link_label: Supply Chain Security
+    text: Smart Slider 3 Pro plugin updates were hijacked, distributing backdoored versions to WordPress and Joomla users.
+    detail: The compromise of popular WordPress and Joomla plugins, like Smart Slider 3 Pro, through update mechanism hijacking demonstrates a significant supply chain risk. This attack vector allows threat actors to distribute malware directly to end-users. Companies must implement strict vetting of third-party software and monitor for integrity compromises.
+    link: https://owasp.org/www-community/Supply_Chain_Attacks
+    link_label: OWASP Supply Chain Attacks
     badge: signal
     tags:
       - threat-intel
       - supply-chain
       - malware
-      - wordpress
-      - joomla
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
