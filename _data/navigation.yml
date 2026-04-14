@@ -11,8 +11,6 @@
 - label: SCW Elite
   url: /premium/
   badge: true
-- label: Intel Bot
-  url: /intel-bot/
 - label: SCW Community
   url: /community/
 - label: Manifesto
