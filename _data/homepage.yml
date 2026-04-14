@@ -26,45 +26,45 @@ identity:
     url: /about/
 quick_signals:
   - title: Sophisticated Phishing Targets C-Suite and NGOs
-    text: New 'VENOM' platform and 'LucidRook' malware exploit spear-phishing for high-value credentials.
-    detail: Cybercriminals are increasingly using sophisticated phishing-as-a-service platforms and targeted malware like LucidRook to compromise high-value targets. Organizations, especially NGOs and academic institutions, must bolster defenses against advanced spear-phishing campaigns and educate executives on recognizing sophisticated social engineering tactics.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-you-need-know
-    link_label: Phishing Awareness
+    text: New 'VENOM' platform and 'LucidRook' malware target high-value credentials and organizations.
+    detail: The VENOM phishing-as-a-service platform is actively targeting Microsoft credentials of senior executives, while LucidRook malware employs spear-phishing against Taiwanese NGOs and universities. Prioritize multi-factor authentication (MFA) and robust email filtering to defend against these targeted campaigns.
+    link: https://www.cisa.gov/news-events/advisories/aa23-346a
+    link_label: CISA Phishing Advisory
     badge: signal
     tags:
+      - threat-intel
       - phishing
       - malware
-      - threat-intel
-  - title: Exploitation of Zero-Day Vulnerabilities Accelerates
-    text: Zero-day exploits for Adobe Reader and Windows are being actively used in the wild.
-    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows highlights the critical need for prompt patching and robust endpoint detection. Organizations should prioritize threat intelligence feeds for early warnings and implement layered security controls to mitigate risks.
-    link: https://www.nist.gov/cyberframework/threat-intelligence
-    link_label: Threat Intelligence
+  - title: Zero-Day Exploits Target Widely Used Software
+    text: Zero-day vulnerabilities are actively exploited in Adobe Reader and Windows, demanding rapid patching.
+    detail: Recent reports highlight active exploitation of zero-day vulnerabilities in Adobe Reader and Windows. The 'BlueHammer' exploit and another targeting Adobe Reader underscore the critical need for prompt patching and robust endpoint detection and response (EDR) solutions to mitigate risks from unknown threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/ics-advisory-ea-23-079-01
+    link_label: CISA Vulnerability Advisories
     badge: signal
     tags:
+      - threat-intel
       - vulnerability
       - zero-day
-      - threat-intel
-  - title: Supply Chain Attacks Leverage Trusted Software Updates
-    text: Hijacked update mechanisms for plugins like Smart Slider 3 Pro are distributing backdoored code.
-    detail: Attackers are increasingly compromising legitimate software update channels, as seen with Smart Slider 3 Pro. This highlights the critical risk of supply chain attacks. Implement strict software vetting, monitor for unexpected plugin behavior, and maintain robust backups to recover from such incidents.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerabilities
-    link_label: Supply Chain Risks
+  - title: Supply Chain Attacks Evolve with Plugin Hijacking
+    text: Smart Slider plugin updates hijacked to distribute backdoored WordPress and Joomla plugins.
+    detail: Attackers have compromised the update mechanism for the Smart Slider 3 Pro plugin, injecting backdoors into WordPress and Joomla versions. This highlights the persistent threat of supply chain attacks; maintain strict control over software updates and verify plugin integrity.
+    link: https://owasp.org/www-community/Supply_Chain_Security
+    link_label: OWASP Supply Chain Security
     badge: signal
     tags:
+      - threat-intel
       - supply-chain
       - malware
-      - threat-intel
-  - title: APT Groups Expand Global Reach and Tactics
-    text: Iranian and Russian APTs (Fancy Bear, GRU) are targeting industrial devices and critical infrastructure globally.
-    detail: Nation-state actors continue to evolve their tactics, targeting critical infrastructure and industrial control systems. Recent reports show Iranian actors targeting US industrial devices and Russian GRU operations being disrupted. Maintaining vigilance, segmenting networks, and staying informed on APT activities are crucial.
-    link: https://www.mitre.org/capabilities/cybersecurity/threat-modeling/attack-techniques
-    link_label: Attack Techniques
+  - title: AI Guardrails Under Attack Via Prompt Injection
+    text: AI guardrails in systems like Apple Intelligence are vulnerable to prompt injection attacks.
+    detail: Researchers have demonstrated successful bypasses of AI guardrails using prompt injection techniques, even in advanced systems like Apple Intelligence. This signifies a new attack vector for AI systems; developers and users must be aware of potential manipulation and data leakage risks.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
-      - apt
       - threat-intel
-      - ics
+      - ai
+      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
