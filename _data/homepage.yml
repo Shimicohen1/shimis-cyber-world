@@ -25,48 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Phishing-as-a-Service Platforms Proliferate
-    text: New 'VENOM' platform highlights the growing trend of sophisticated phishing-as-a-service offerings.
-    detail: Cybercriminals are increasingly leveraging specialized platforms like VENOM to conduct targeted phishing campaigns, often focusing on high-value credentials such as C-suite Microsoft logins. This trend signifies a commoditization of advanced attack infrastructure. Organizations should prioritize robust phishing awareness training and implement strong multi-factor authentication to mitigate risks.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-awareness-and-prevention
-    link_label: Phishing Prevention Tips
+  - title: Phishing-as-a-Service Platforms Escalate C-Suite Targeting
+    text: New PhaaS platforms like VENOM are sophisticatedly targeting executive Microsoft credentials.
+    detail: The emergence of highly selective PhaaS platforms like VENOM indicates a growing trend in targeted attacks against high-value executive accounts. These platforms streamline the creation and deployment of phishing campaigns, making sophisticated attacks accessible to a wider range of threat actors. Organizations should reinforce multi-factor authentication and conduct advanced phishing awareness training for C-suite personnel.
+    link: https://owasp.org/www-project-top-10-2021/04-A04_Insecure_Design
+    link_label: OWASP Top 10 - Insecure Design
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - phishing-as-a-service
-  - title: Exploitation of Zero-Days Continues Unabated
-    text: Active exploitation of zero-day vulnerabilities in Windows and Adobe Reader underscores ongoing disclosure challenges.
-    detail: Recent reports highlight the active exploitation of zero-day vulnerabilities in critical software like Windows ('BlueHammer') and Adobe Reader. This demonstrates that even with vendor efforts, unknown flaws remain a significant threat vector. Prioritize timely patching of known vulnerabilities and maintain a strong incident response plan to address novel exploits.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-347a
-    link_label: Known Exploited Vulnerabilities Catalog
+      - executive-security
+  - title: Zero-Day Exploits Exploit Vulnerability Disclosure Process
+    text: Zero-day vulnerabilities in Adobe Reader and Windows are being exploited, highlighting disclosure process issues.
+    detail: The active exploitation of zero-day flaws in widely used software like Adobe Reader and Windows underscores the persistent challenges in vulnerability management and disclosure. Attackers are quick to weaponize newly discovered vulnerabilities before patches are widely deployed. Prioritize prompt patching, implement robust endpoint detection and response (EDR), and maintain a defense-in-depth strategy.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-110a
+    link_label: CISA Known Exploited Vulnerabilities Catalog
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-  - title: IoT Devices Remain Prime Botnet Targets
-    text: Masjesu botnet demonstrates a stealthy, targeted approach against Internet of Things (IoT) devices.
-    detail: The emergence of the Masjesu botnet, specifically targeting IoT devices with evasion tactics, highlights a persistent and evolving threat. These compromised devices can be leveraged for large-scale attacks. Security teams should segment IoT networks, enforce strong authentication, and regularly update device firmware to defend against botnet recruitment.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/ics-advisory/aa22-324a
-    link_label: IoT Cybersecurity Guidance
+  - title: Malware Evolves to Target Specific Sectors and IoT
+    text: New malware like LucidRook and Masjesu target NGOs, universities, and IoT devices.
+    detail: The threat landscape shows increasing specialization, with malware like LucidRook targeting critical sectors such as NGOs and academia via spear-phishing, and Masjesu stealthily compromising IoT devices. This trend demands tailored defenses for diverse attack vectors. Organizations must enhance email security, segment networks to isolate IoT devices, and maintain up-to-date threat intelligence feeds.
+    link: https://attack.mitre.org/matrices/enterprise/
+    link_label: MITRE ATT&CK Enterprise Matrix
     badge: signal
     tags:
       - threat-intel
       - malware
-      - botnet
-      - iot
-  - title: Supply Chain Attacks Target Software Updates
-    text: Hijacked updates for Smart Slider 3 Pro push backdoored plugins, indicating sophisticated supply chain risks.
-    detail: The hijacking of legitimate update mechanisms for popular plugins like Smart Slider 3 Pro for WordPress and Joomla represents a significant supply chain attack vector. Attackers injected backdoors through seemingly official updates. Organizations must implement strict vetting of software sources and monitor for unexpected changes in application behavior.
-    link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: OWASP Supply Chain Security
+      - iot-security
+  - title: Supply Chain Attacks Targeting Software Updates Escalate
+    text: Hijacked update mechanisms for plugins like Smart Slider 3 Pro are distributing backdoored software.
+    detail: Supply chain attacks are increasingly leveraging compromised software update channels to distribute malware, as seen with Smart Slider 3 Pro. This highlights the critical need for vigilance in verifying software integrity and managing third-party dependencies. Implement strict controls over software updates, conduct regular code reviews for integrated components, and monitor for unexpected changes in application behavior.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP Software Component Analysis
     badge: signal
     tags:
       - threat-intel
       - supply-chain
       - malware
-      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
