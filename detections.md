@@ -168,7 +168,7 @@ permalink: /detections/
           <pre><code class="dl-siem-code"></code></pre>
         </div>
         {% if post.sigma_rules.paid_count and post.sigma_rules.paid_count > 0 %}
-        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules available via <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">Intel Bot</a></p>
+        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more SIEM-ready rules — type <code>/detect</code> in <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">Intel Bot</a> and search this organization</p>
         {% endif %}
       </div>
         {% endunless %}

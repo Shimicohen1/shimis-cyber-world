@@ -205,9 +205,14 @@ layout: default
       {% endif %}
       {% if page.sigma_rules.paid_count > 0 %}
       <div class="post-sigma-rules__cta">
-        <p><strong>{{ page.sigma_rules.paid_count }} more rules</strong> available in the full detection pack — all 5 formats included.</p>
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Full Pack via Intel Bot →</a>
+        <p><strong>{{ page.sigma_rules.paid_count }} more detection rules</strong> for this incident — ready to deploy in Splunk, Sentinel, Elastic, QRadar, or Sigma. Just type <code>/detect</code> in the bot, search the affected organization, and get copy-paste queries for your SIEM.</p>
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Pack →</a>
         <span class="post-sigma-rules__price">250 ⭐ (~$5) · Free for Pro & Elite subscribers</span>
+      </div>
+      {% else %}
+      <div class="post-sigma-rules__cta post-sigma-rules__cta--free">
+        <p>Need detection rules for other incidents? Use <code>/detect</code> in the Intel Bot — search any organization and get SIEM-ready queries instantly.</p>
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Try /detect in Bot →</a>
       </div>
       {% endif %}
     </div>
@@ -259,18 +264,21 @@ layout: default
         {% if page.bot_cta_title %}
         <strong>{{ page.bot_cta_title }}</strong>
         <span>{{ page.bot_cta_description }}</span>
+        {% elsif page.sigma_rules %}
+        <strong>Deploy detection rules for this incident</strong>
+        <span>Use <strong>/detect</strong> to get SIEM-ready queries (Splunk, Sentinel, Elastic, QRadar, Sigma). Search by organization, get copy-paste rules, and start hunting in minutes — no manual conversion needed.</span>
         {% elsif page.tags contains 'vulnerability' or page.tags contains 'cve' %}
-        <strong>Get the full picture on this threat</strong>
-        <span>Use /org to search affected organizations, generate IOC briefs with /brief, and set watchlist alerts — inside Telegram.</span>
+        <strong>Get the full picture on this vulnerability</strong>
+        <span>Use /detect to generate detection rules for your SIEM, /org to search affected organizations, and /brief for analyst-ready IOC reports — all inside Telegram.</span>
         {% elsif page.tags contains 'ransomware' or page.tags contains 'data-breach' %}
-        <strong>Is your vendor affected?</strong>
-        <span>Search by organization or domain. Set up watchlist alerts and get notified when your third parties appear in a breach — no noise.</span>
+        <strong>Is your vendor affected? Start hunting now.</strong>
+        <span>Use /detect to get SIEM detection rules for this breach. Search by organization or domain, set watchlist alerts, and get notified when your third parties are compromised.</span>
         {% else %}
         <strong>Stay ahead of this threat</strong>
-        <span>Search threats by organization, threat actor, or country. Generate analyst-ready briefs with IOCs — inside Telegram.</span>
+        <span>Search threats by organization, generate detection rules with /detect, or create analyst-ready briefs with IOCs — inside Telegram.</span>
         {% endif %}
       </div>
-      <a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener" class="btn btn--accent btn--sm">Try Intel Bot →</a>
+      <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener" class="btn btn--accent btn--sm">Open Intel Bot →</a>
     </div>
 
     {% comment %}── Mid-Post AdSense Slot ──{% endcomment %}
