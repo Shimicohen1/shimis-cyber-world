@@ -25,47 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Multiple Vulnerabilities
-    text: Discourse is experiencing a surge in reported vulnerabilities, impacting private topics, email settings, and subscription tiers.
-    detail: Multiple CVEs highlight a significant security posture issue for Discourse users. Professionals should prioritize patching and reviewing access controls, especially for private topics and subscription management, to mitigate risks like unauthorized data access and subscription circumvention.
+  - title: Discourse Plagued by Multiple Vulnerabilities
+    text: Discourse platform is facing a wave of vulnerabilities affecting moderation, subscriptions, and data exposure.
+    detail: Recent advisories highlight several critical flaws in Discourse, including unauthorized access to private topics (CVE-2026-32615), subscription tier manipulation (CVE-2026-33074), and exposure of draft topic titles (CVE-2026-32951). Prioritize patching and review access controls to mitigate risks.
     link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
-    link_label: Discourse Vulnerabilities
+    link_label: Discourse CVE Details
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - cve
+      - discourse
+      - web-app
   - title: Ransomware Groups Intensify Attacks on Business Services
-    text: The Business Services sector is under increased attack from ransomware groups, indicating a targeted campaign.
-    detail: A notable surge in ransomware attacks targeting the Business Services sector demands immediate attention. Organizations in this sector should bolster their defenses, focusing on robust backup strategies, network segmentation, and comprehensive incident response plans to counter evolving ransomware tactics.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-109a
-    link_label: Ransomware Guidance
+    text: New threat actor TiMc emerges as ransomware groups target the business services sector.
+    detail: The business services sector is experiencing a significant surge in ransomware attacks, with 18 incidents reported recently. The emergence of new threat actors like TiMc, coupled with active ransomware operations such as Kairos, indicates a coordinated escalation. Organizations should bolster defenses and incident response plans.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-138a
+    link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: AI Model Risks Prompt Caution and Delayed Releases
-    text: Advanced AI models like Anthropic's 'Mythos' are deemed too dangerous for public release due to potential risks.
-    detail: The development of powerful AI models raises significant ethical and security concerns, leading some developers to withhold public releases. Cybersecurity professionals must stay informed about AI capabilities and potential misuse, advocating for responsible AI development and deployment practices.
-    link: https://www.nist.gov/artificial-intelligence/responsible-ai-practices
-    link_label: Responsible AI Practices
+  - title: AI Models Pose New Security Challenges
+    text: AI models, like Anthropic's 'Mythos', are flagged as too dangerous for public release.
+    detail: The development of powerful AI models, such as Anthropic's 'Mythos,' raises concerns about potential misuse and unforeseen risks. Concurrently, AI-driven tools are complicating vulnerability management, with platforms like HackerOne struggling to triage AI-generated reports. Continuous evaluation of AI risks is crucial.
+    link: https://www.nist.gov/artificial-intelligence/nist-ai-risk-management-framework
+    link_label: NIST AI Risk Management
     badge: signal
     tags:
       - ai-security
       - threat-intel
-      - responsible-ai
-  - title: SSRF and RCE Vulnerabilities Plague Development Tools
-    text: Tools like Backstage and Alchemy CMS are affected by critical SSRF and RCE vulnerabilities.
-    detail: Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities in developer tools like Backstage and Alchemy CMS pose significant risks. Teams utilizing these tools must prioritize patching and review configurations to prevent unauthorized access and potential system compromise.
+      - vulnerability-management
+  - title: SSRF and RCE Flaws Persist in Developer Tools
+    text: Critical SSRF and RCE vulnerabilities continue to be discovered in popular developer tools and platforms.
+    detail: Recent findings show persistent Server-Side Request Forgery (SSRF) flaws in tools like Backstage and atototo API, alongside Remote Code Execution (RCE) vulnerabilities in Alchemy CMS and Docling Core due to dependency issues. Developers must prioritize patching and secure coding practices, especially around external input handling.
     link: https://owasp.org/www-community/vulnerabilities/Server_Side_Request_Forgery
-    link_label: SSRF Vulnerability Overview
+    link_label: OWASP SSRF Guidance
     badge: signal
     tags:
-      - ssrf
-      - rce
-      - tools
       - vulnerability
+      - rce
+      - ssrf
+      - developer-tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
