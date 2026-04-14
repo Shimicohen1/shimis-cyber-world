@@ -294,6 +294,6 @@ Posts originate from multiple intelligence pipelines:
 
 ### Contact
 
-For integration questions: [shimicyberworld@gmail.com](mailto:shimicyberworld@gmail.com)
+For integration questions: [admin@shimiscyberworld.com](mailto:admin@shimiscyberworld.com)
 
 </div>
