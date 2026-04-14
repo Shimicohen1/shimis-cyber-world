@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: Emerging PhaaS platforms like VENOM are specifically targeting C-suite credentials, demanding advanced defense strategies.
-    detail: The rise of 'Phishing-as-a-Service' (PhaaS) platforms like VENOM signifies a professionalization of phishing attacks, specifically targeting high-value Microsoft credentials of executives. Organizations must enhance multi-factor authentication (MFA) and conduct targeted phishing awareness training for leadership to counter these sophisticated campaigns.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
-    link_label: Phishing Defense Guide
+  - title: AI Guardrails Exploited Via Prompt Injection
+    text: Sophisticated prompt injection attacks are bypassing AI system security guardrails.
+    detail: Recent reports indicate that advanced prompt injection techniques can successfully circumvent security measures in AI systems, including those in Apple's new 'Apple Intelligence'. Professionals should prioritize understanding and implementing robust input validation and output monitoring for AI integrations to mitigate risks of manipulation and unauthorized actions.
+    link: https://owasp.org/www-community/attacks/Prompt_Injection
+    link_label: OWASP Prompt Injection
     badge: signal
     tags:
-      - threat-intel
-      - phishing
-      - account-security
-  - title: Exploitation of Unpatched Zero-Days Continues
-    text: Zero-day vulnerabilities in widely used software like Windows and Adobe Reader are being actively exploited, necessitating rapid patching.
-    detail: Recent reports highlight active exploitation of zero-day flaws in critical software, including Windows (BlueHammer) and Adobe Reader. This underscores the persistent threat posed by unknown vulnerabilities. Implement robust patch management processes, prioritize critical updates, and consider exploit mitigation technologies to reduce your attack surface.
-    link: https://www.cisa.gov/news-events/directives/emergency-directive-23-01
-    link_label: Vulnerability Management Best Practices
-    badge: signal
-    tags:
-      - threat-intel
-      - vulnerability
-      - patch-management
-  - title: Supply Chain Attacks Target Popular Software Plugins
-    text: Hijacked update mechanisms for WordPress and Joomla plugins are distributing backdoored versions, posing significant risks.
-    detail: Attackers are increasingly compromising legitimate software update channels, as seen with the Smart Slider 3 Pro plugin for WordPress and Joomla. This highlights the critical need for supply chain security. Verify plugin integrity, limit plugin usage, and monitor for unauthorized modifications to trusted software.
-    link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: Supply Chain Security Best Practices
-    badge: signal
-    tags:
-      - threat-intel
-      - supply-chain
-      - malware
-  - title: AI Guardrails Vulnerable to Prompt Injection
-    text: Even advanced AI systems like Apple Intelligence are susceptible to prompt injection attacks, requiring ongoing security research.
-    detail: The successful bypass of AI guardrails in Apple Intelligence via prompt injection demonstrates that current AI security measures are not foolproof. As AI becomes more integrated into critical systems, organizations must stay informed about emerging AI vulnerabilities and advocate for robust, evolving AI security frameworks.
-    link: https://csrc.nist.gov/publications/detail/nistir/8469/final
-    link_label: AI Security Considerations
-    badge: signal
-    tags:
-      - threat-intel
       - ai-security
       - prompt-injection
+      - threat-intel
+  - title: Zero-Day Exploits Continue to Target Widely Used Software
+    text: Zero-day vulnerabilities in Adobe Reader and Windows are actively exploited.
+    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Microsoft Windows underscores the persistent threat of unknown flaws. Organizations must maintain vigilant patch management and employ proactive threat hunting to detect and respond to novel exploits before they become widespread.
+    link: https://www.cisa.gov/news-events/advisories/aa23-283a
+    link_label: CISA Known Exploited Vulnerabilities Catalog
+    badge: signal
+    tags:
+      - zero-day
+      - vulnerability
+      - patch-management
+  - title: Supply Chain Attacks Target Software Update Mechanisms
+    text: Malicious actors are hijacking update channels for popular plugins like Smart Slider.
+    detail: The hijacking of legitimate software update mechanisms, as seen with Smart Slider 3 Pro, represents a significant supply chain risk. This tactic allows attackers to distribute backdoored versions of software. Defenders should focus on verifying software integrity, monitoring update sources, and implementing strict access controls for update servers.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: OWASP Supply Chain Security
+    badge: signal
+    tags:
+      - supply-chain
+      - malware
+      - wordpress-security
+  - title: APT Groups Leverage Phishing for C-Suite Credential Theft
+    text: Phishing-as-a-Service platforms are targeting executive Microsoft credentials.
+    detail: The emergence of sophisticated Phishing-as-a-Service (PhaaS) platforms like VENOM, specifically targeting C-suite Microsoft logins, highlights a growing trend in advanced persistent threats. Organizations must strengthen multi-factor authentication (MFA) policies, enhance employee security awareness training, and implement robust email filtering to combat these highly targeted attacks.
+    link: https://www.microsoft.com/en-us/security/business/security-insider/what-is-phishing
+    link_label: Microsoft Phishing Information
+    badge: signal
+    tags:
+      - apt
+      - phishing
+      - credential-theft
+      - microsoft
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
