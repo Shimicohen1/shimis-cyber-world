@@ -179,8 +179,8 @@ layout: default
       </div>
 
       {% else %}
-      {% comment %}── AGED POST (14+ days): Sigma YAML only, SIEM formats via bot ──{% endcomment %}
-      <p class="post-sigma-rules__intro">Auto-generated Sigma detection rule for this incident. Need it in Splunk, Sentinel, Elastic, or QRadar format? Use <code>/detect</code> in the Intel Bot for instant conversion.</p>
+      {% comment %}── AGED POST (14+ days): metadata teaser + bot CTA for full rules ──{% endcomment %}
+      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} auto-generated detection rules mapped to MITRE ATT&CK. Get the full rules — converted to your SIEM's query language — via the Intel Bot.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -189,52 +189,26 @@ layout: default
           <span class="sigma-tactic">{{ page.sigma_rules.preview_tactic }}</span>
         </div>
         <h3>{{ page.sigma_rules.preview_title }}</h3>
-        {% if page.sigma_rules.formats.sigma %}
-        <div class="sigma-yaml-block">
-          <pre class="sigma-yaml" id="sigma-preview-yaml"></pre>
-          <button class="sigma-copy-btn" id="sigma-copy-btn" aria-label="Copy Sigma YAML">📋 Copy Sigma</button>
+        <div class="sigma-gated">
+          <div class="sigma-gated__formats">
+            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sigma YAML</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
+          </div>
+          <p class="sigma-gated__text">All formats available in the Intel Bot — copy, paste, detect.</p>
         </div>
-        <script>
-        (function(){
-          var b64 = {{ page.sigma_rules.formats.sigma | jsonify }};
-          if(b64){try{document.getElementById('sigma-preview-yaml').textContent=atob(b64)}catch(e){}}
-          var btn = document.getElementById('sigma-copy-btn');
-          if(btn){btn.addEventListener('click',function(){
-            var text = document.getElementById('sigma-preview-yaml').textContent;
-            navigator.clipboard.writeText(text).then(function(){
-              btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent='📋 Copy Sigma'},2000);
-            });
-          })}
-        })();
-        </script>
-        <div class="sigma-siem-locked">
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
-        </div>
-        {% elsif page.sigma_rules.preview_yaml_b64 %}
-        <details class="sigma-yaml-toggle">
-          <summary>View Sigma YAML</summary>
-          <pre class="sigma-yaml" id="sigma-preview-yaml-old"></pre>
-        </details>
-        <script>
-        (function(){
-          var b64 = {{ page.sigma_rules.preview_yaml_b64 | jsonify }};
-          if(b64){try{document.getElementById('sigma-preview-yaml-old').textContent=atob(b64)}catch(e){}}
-        })();
-        </script>
-        {% endif %}
       </div>
       {% endif %}
       <div class="post-sigma-rules__cta">
         {% if page.sigma_rules.paid_count > 0 %}
-        <p><strong>{{ page.sigma_rules.paid_count }} more rules + all 5 SIEM formats</strong> — click below and the bot will convert to your SIEM format instantly.</p>
-        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get SIEM Formats →</a>
+        <p><strong>{{ page.sigma_rules.free_count }} free + {{ page.sigma_rules.paid_count }} premium rules</strong> across {{ page.sigma_rules.count }} detections — pick your SIEM and get ready-to-paste queries.</p>
+        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
         <span class="post-sigma-rules__price">250 ⭐ (~$5) · Free for Pro & Elite subscribers</span>
         {% else %}
-        <p>Need this in your SIEM's format? Click below — the bot will convert it to Splunk SPL, Sentinel KQL, Elastic, or QRadar AQL instantly.</p>
-        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get SIEM Formats →</a>
+        <p>Get these {{ page.sigma_rules.count }} rules converted to Splunk SPL, Sentinel KQL, Elastic, or QRadar AQL — ready to paste into your SIEM.</p>
+        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
         {% endif %}
       </div>
       {% endif %}
