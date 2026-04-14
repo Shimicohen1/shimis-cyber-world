@@ -33,12 +33,12 @@ layout: default
     {% comment %}── Cover image: own source image OR category fallback ──{% endcomment %}
     {% if page.image %}
     <div class="post-image{% if page.ai_rewritten %} post-image--ai{% endif %}">
-      <img src="{% if page.image contains "://" %}{{ page.image }}{% else %}{{ page.image | relative_url }}{% endif %}" alt="{{ page.title }}" loading="eager" fetchpriority="high" referrerpolicy="no-referrer">
+      <img src="{% if page.image contains "://" %}{{ page.image }}{% else %}{{ page.image | relative_url }}{% endif %}" alt="{{ page.title | escape }}" loading="eager" fetchpriority="high" referrerpolicy="no-referrer">
       {% unless page.ai_rewritten or page.image_pool_used %}{% assign img_domain = page.image | split: "//" | last | split: "/" | first %}{% if img_domain %}<p class="post-image__credit">Image via <a href="{{ page.source_url | default: page.image }}" target="_blank" rel="noopener noreferrer">{{ img_domain }}</a></p>{% endif %}{% endunless %}
     </div>
     {% elsif page.cover_image %}
     <div class="post-image post-image--cover">
-      <img src="{% if page.cover_image contains "://" %}{{ page.cover_image }}{% else %}{{ page.cover_image | relative_url }}{% endif %}" alt="{{ page.title }}" loading="lazy" referrerpolicy="no-referrer">
+      <img src="{% if page.cover_image contains "://" %}{{ page.cover_image }}{% else %}{{ page.cover_image | relative_url }}{% endif %}" alt="{{ page.title | escape }}" loading="lazy" referrerpolicy="no-referrer">
     </div>
     {% endif %}
 
@@ -86,17 +86,17 @@ layout: default
     <a href="{{ page.link_preview.url }}" class="link-preview" target="_blank" rel="noopener">
       {% if page.link_preview.image %}<img class="link-preview__img" src="{{ page.link_preview.image }}" alt="" loading="lazy">{% endif %}
       <div class="link-preview__body">
-        <div class="link-preview__title">{{ page.link_preview.title }}</div>
-        <div class="link-preview__domain">{{ page.link_preview.domain }}</div>
+        <div class="link-preview__title">{{ page.link_preview.title | escape }}</div>
+        <div class="link-preview__domain">{{ page.link_preview.domain | escape }}</div>
       </div>
     </a>
     {% endif %}
     {% endunless %}
 
     {% comment %}── Source link (not for AI posts, skip when link preview already shown) ──{% endcomment %}
-    {% unless page.ai_rewritten %}{% unless page.link_preview %}{% if page.source_url and page.source_url != '' %}
+    {% unless page.ai_rewritten %}{% unless page.link_preview %}{% if page.source_url and page.source_url != '' and page.source_url contains '://' %}
     <div class="post-read-original">
-      <a href="{{ page.source_url }}" target="_blank" rel="noopener">{{ page.source_url }}</a>
+      <a href="{{ page.source_url | escape }}" target="_blank" rel="noopener">{{ page.source_url | escape }}</a>
     </div>
     {% endif %}{% endunless %}{% endunless %}
 
@@ -106,7 +106,7 @@ layout: default
       <h2>What This Means For You</h2>
       <ul>
         {% for point in page.why_it_matters %}
-        <li>{{ point }}</li>
+        <li>{{ point | escape }}</li>
         {% endfor %}
       </ul>
     </div>
@@ -196,7 +196,7 @@ layout: default
         </div>
         <script>
         (function(){
-          var b64 = "{{ page.sigma_rules.formats.sigma }}";
+          var b64 = {{ page.sigma_rules.formats.sigma | jsonify }};
           if(b64){try{document.getElementById('sigma-preview-yaml').textContent=atob(b64)}catch(e){}}
           var btn = document.getElementById('sigma-copy-btn');
           if(btn){btn.addEventListener('click',function(){
@@ -220,7 +220,7 @@ layout: default
         </details>
         <script>
         (function(){
-          var b64 = "{{ page.sigma_rules.preview_yaml_b64 }}";
+          var b64 = {{ page.sigma_rules.preview_yaml_b64 | jsonify }};
           if(b64){try{document.getElementById('sigma-preview-yaml-old').textContent=atob(b64)}catch(e){}}
         })();
         </script>
@@ -266,7 +266,7 @@ layout: default
         </tbody>
       </table>
     </div>
-    <script id="ioc-data" type="application/json">{{ page.iocs | jsonify }}</script>
+    <script id="ioc-data" type="application/json">{{ page.iocs | jsonify | replace: '</script>', '<\/script>' }}</script>
     {% endif %}
 
         {% comment %}── AI author byline ──{% endcomment %}
