@@ -4,16 +4,21 @@ title: Detection Vault
 permalink: /detections/
 ---
 
-{% comment %}── Compute breach intel rule count (posts > 7 days with sigma_rules) ──{% endcomment %}
+{% comment %}── Compute breach intel rule count (posts > 7 days with sigma_rules, deduplicated) ──{% endcomment %}
 {% comment %}── TODO: Change back to 1209600 (14 days) after April 28 ──{% endcomment %}
 {% assign vault_age_secs = 604800 %}
 {% assign now_epoch = site.time | date: '%s' | plus: 0 %}
 {% assign vault_cutoff = now_epoch | minus: vault_age_secs %}
 {% assign breach_intel_count = 0 %}
+{% assign counted_titles = "" %}
 {% for post in site.posts %}
   {% assign pe = post.date | date: '%s' | plus: 0 %}
   {% if post.sigma_rules and pe < vault_cutoff %}
-    {% assign breach_intel_count = breach_intel_count | plus: 1 %}
+    {% assign ctkey = post.sigma_rules.preview_title | downcase | strip %}
+    {% unless counted_titles contains ctkey %}
+      {% assign counted_titles = counted_titles | append: "|||" | append: ctkey %}
+      {% assign breach_intel_count = breach_intel_count | plus: 1 %}
+    {% endunless %}
   {% endif %}
 {% endfor %}
 {% assign total_rules = site.data.detections.rules | size | plus: breach_intel_count %}
@@ -110,14 +115,16 @@ permalink: /detections/
     </div>
     {% endfor %}
 
-    {% comment %}── Breach Intel Rules (auto-generated, 14+ days old) ──{% endcomment %}
-    {% if breach_intel_count > 0 %}
-    <div class="dl-section-divider">
-      <span class="dl-section-divider__label">🔥 Breach Intelligence — auto-generated from real incidents</span>
-    </div>
+    {% comment %}── Breach Intel Rules (auto-generated, 7+ days old, deduplicated) ──{% endcomment %}
+    {% assign seen_titles = "" %}
+    {% assign unique_breach_count = 0 %}
     {% for post in site.posts %}
       {% assign pe = post.date | date: '%s' | plus: 0 %}
       {% if post.sigma_rules and pe < vault_cutoff %}
+        {% assign rule_key = post.sigma_rules.preview_title | downcase | strip %}
+        {% unless seen_titles contains rule_key %}
+          {% assign seen_titles = seen_titles | append: "|||" | append: rule_key %}
+          {% assign unique_breach_count = unique_breach_count | plus: 1 %}
       {% assign sev = post.sigma_rules.preview_level | default: 'medium' %}
       <div class="tool-card dl-rule dl-rule--breach reveal"
            data-category="{{ post.sigma_rules.preview_tactic | slugify }}"
@@ -162,8 +169,13 @@ permalink: /detections/
         <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules available via <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">Intel Bot</a></p>
         {% endif %}
       </div>
+        {% endunless %}
       {% endif %}
     {% endfor %}
+    {% if unique_breach_count > 0 %}
+    <div class="dl-section-divider" style="order: -1;">
+      <span class="dl-section-divider__label">🔥 Breach Intelligence — {{ unique_breach_count }} unique rules auto-generated from real incidents</span>
+    </div>
     {% endif %}
   </div>
 
