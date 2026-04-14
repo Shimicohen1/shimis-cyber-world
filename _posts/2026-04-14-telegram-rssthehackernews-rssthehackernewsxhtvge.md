@@ -1,0 +1,40 @@
+---
+title: "ShowDoc RCE Flaw CVE-2025-0520 Under Active Exploitation"
+date: 2026-04-14 05:50:00 +0000
+source: Telegram
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [vulnerability]
+excerpt: "A critical remote code execution (RCE) vulnerability in ShowDoc, a document management and collaboration service widely used in China, is currently under active exploitation. The f"
+summary: "A critical remote code execution (RCE) vulnerability in ShowDoc, a document management and collaboration service widely used in China, is currently under active exploitation. The flaw, identified as CVE-2025-0520 (also tracked as CNVD-2020-26585), boasts a severe CVSS score of 9.4, indicating its hi"
+layout: post
+section: live-feed
+score: HIGH
+curated: false
+featured: false
+priority: 80
+hidden: false
+cover_image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=400&fit=crop&auto=format&q=80"
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=400&fit=crop&auto=format&q=80"
+telegram_url: "https://t.me/c/rss-thehackernews/rss-thehackernews-xhtvge"
+tlp: "TLP:CLEAR"
+event_type: "vulnerability"
+organizations:
+  - name: "ShowDoc"
+    domain: "showdoc.com.cn"
+    role: "vendor"
+countries: [CN]
+why_it_matters:
+  - "If your organization utilizes ShowDoc, especially on internet-facing servers, you need to verify your patch status for CVE-2025-0520 immediately. This isn't a theoretical threat; it's actively being exploited. Prioritize patching, review access logs for suspicious file uploads, and scan your environments for any signs of compromise related to this RCE."
+bot_cta_title: "ShowDoc Vulnerability Intel"
+bot_cta_description: "Use /brief for an analyst-ready summary of critical vulnerabilities like CVE-2025-0520."
+---
+
+A critical remote code execution (RCE) vulnerability in ShowDoc, a document management and collaboration service widely used in China, is currently under active exploitation. The flaw, identified as CVE-2025-0520 (also tracked as CNVD-2020-26585), boasts a severe CVSS score of 9.4, indicating its high potential for impact.
+
+According to The Hacker News, this vulnerability stems from an unrestricted file upload issue. Essentially, ShowDoc's improper validation of file types allows attackers to upload malicious files, which can then be executed on unpatched servers. This kind of flaw is a dream for threat actors, providing a direct avenue for initial access and subsequent system compromise. Once an attacker can run arbitrary code, the game is pretty much over for the target organization.
