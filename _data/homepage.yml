@@ -25,46 +25,51 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Exploit Chain Vulnerabilities in Widely Used Software
-    text: Zero-day exploits are actively targeting Adobe Reader and Windows, demanding immediate patching.
-    detail: Recent reports highlight zero-day vulnerabilities being exploited in the wild, specifically impacting Adobe Reader and Windows OS. These exploits bypass standard defenses, underscoring the critical need for prompt patching and robust endpoint detection and response (EDR) solutions. Organizations should prioritize applying vendor-released security updates as soon as they become available to mitigate these risks.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
-    link_label: CISA Advisories
+  - title: Ransomware and Malware Targeting Critical Infrastructure
+    text: Ransomware and malware attacks are increasingly disrupting essential services, with a notable incident impacting Dutch healthcare.
+    detail: Recent incidents highlight a growing trend of ransomware and malware attacks specifically targeting critical infrastructure sectors like healthcare. The ChipSoft ransomware attack serves as a stark reminder of the potential for widespread service disruption. Organizations in these sectors must prioritize robust endpoint protection, regular backups, and comprehensive incident response plans to mitigate such threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness-month-2023
+    link_label: Ransomware Awareness
+    badge: signal
+    tags:
+      - threat-intel
+      - ransomware
+      - malware
+      - critical-infrastructure
+  - title: Exploitation of Zero-Day Vulnerabilities Persists
+    text: Zero-day vulnerabilities in widely used software like Windows and Adobe Reader are being actively exploited in the wild.
+    detail: The emergence of 'BlueHammer' targeting Windows and an Adobe Reader zero-day exploit underscores the persistent threat of unknown vulnerabilities. Attackers are actively leveraging these flaws before patches are available, leading to potential system compromises and data breaches. It is crucial for organizations to maintain vigilant monitoring, employ proactive threat hunting, and apply patches as soon as they are released.
+    link: https://www.mitre.org/about/news/mitre-enables-faster-vulnerability-management-through-attack-techniques-and-threat-intelligence
+    link_label: Vulnerability Management
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: New PhaaS platforms like VENOM are targeting C-suite Microsoft credentials with high selectivity.
-    detail: The emergence of sophisticated Phishing-as-a-Service (PhaaS) platforms, such as VENOM, presents a significant threat to executive credentials. These platforms are designed for highly targeted campaigns, making them difficult to detect. Organizations must enhance user awareness training, focusing on spear-phishing tactics and multi-factor authentication (MFA) enforcement for all privileged accounts.
+      - exploit
+  - title: Sophisticated Phishing Campaigns Target High-Value Credentials
+    text: Phishing-as-a-service platforms like VENOM are specifically targeting C-suite Microsoft logins.
+    detail: The VENOM phishing platform represents a sophisticated, targeted approach to credential harvesting, focusing on high-value executive accounts. This trend emphasizes the need for advanced email security, multi-factor authentication (MFA) for all accounts, and continuous security awareness training for employees, especially those in leadership positions, to recognize and report sophisticated phishing attempts.
     link: https://owasp.org/www-community/attacks/Phishing
-    link_label: OWASP Phishing
+    link_label: Phishing Attacks
     badge: signal
     tags:
       - threat-intel
       - phishing
+      - credential-theft
       - microsoft
-  - title: Supply Chain Attacks Target Software Updates
-    text: Compromised WordPress/Joomla plugins via hijacked updates pose significant supply chain risks.
-    detail: Attackers are hijacking legitimate software update mechanisms, as seen with Smart Slider 3 Pro for WordPress and Joomla, injecting backdoors. This highlights the critical importance of supply chain security. Organizations should implement strict controls on software updates, verify update sources, and conduct regular audits of installed plugins and third-party components.
-    link: https://www.mitre.org/attack-techniques/T1195
-    link_label: "MITRE ATT&CK: Compromise Software Supply Chain"
+  - title: Supply Chain Attacks Evolve with Plugin Hijacking
+    text: Attackers are hijacking update mechanisms of popular plugins like Smart Slider 3 Pro.
+    detail: The hijacking of the Smart Slider 3 Pro update mechanism demonstrates a dangerous evolution in supply chain attacks, injecting backdoors via trusted software channels. This highlights the critical importance of vetting third-party software, monitoring software updates for anomalies, and segmenting networks to limit the blast radius of a compromised component. Implementing a robust software bill of materials (SBOM) is also advisable.
+    link: https://www.cisa.gov/news-events/advisories/aa23-289a
+    link_label: Supply Chain Security
     badge: signal
     tags:
       - threat-intel
       - supply-chain
       - malware
-  - title: AI Guardrails Under Attack by Prompt Injection
-    text: AI guardrails in systems like Apple Intelligence are vulnerable to prompt injection attacks.
-    detail: Researchers have demonstrated successful bypasses of AI guardrails using prompt injection techniques, even in advanced systems like Apple Intelligence. This indicates a nascent but growing threat vector for AI-powered applications. Security teams should monitor AI security research and consider implementing input validation and output filtering for AI interactions.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
-    badge: signal
-    tags:
-      - threat-intel
-      - ai-security
-      - vulnerability
+      - wordpress
+      - joomla
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
