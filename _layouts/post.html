@@ -173,9 +173,6 @@ layout: default
       <div class="post-sigma-rules__cta">
         <p><strong>{{ page.sigma_rules.count }} Sigma rules</strong> mapped to the ATT&CK techniques from this breach — pick your SIEM and get a ready-to-paste query.</p>
         <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
-        {% if page.sigma_rules.paid_count > 0 %}
-        <span class="post-sigma-rules__price">{{ page.sigma_rules.free_count }} free · {{ page.sigma_rules.paid_count }} more in full pack (250 ⭐)</span>
-        {% endif %}
       </div>
 
       {% else %}
@@ -202,14 +199,8 @@ layout: default
       </div>
       {% endif %}
       <div class="post-sigma-rules__cta">
-        {% if page.sigma_rules.paid_count > 0 %}
-        <p><strong>{{ page.sigma_rules.free_count }} free + {{ page.sigma_rules.paid_count }} premium rules</strong> across {{ page.sigma_rules.count }} detections — pick your SIEM and get ready-to-paste queries.</p>
-        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
-        <span class="post-sigma-rules__price">250 ⭐ (~$5) · Free for Pro & Elite subscribers</span>
-        {% else %}
         <p>Get these {{ page.sigma_rules.count }} rules converted to Splunk SPL, Sentinel KQL, Elastic, or QRadar AQL — ready to paste into your SIEM.</p>
         <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
-        {% endif %}
       </div>
       {% endif %}
     </div>
