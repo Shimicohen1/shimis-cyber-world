@@ -8,10 +8,16 @@
 import http from 'http';
 import { exec } from 'child_process';
 
-const CLIENT_ID = 'REDACTED_CLIENT_ID';
+const CLIENT_ID = process.env.LINKEDIN_CLIENT_ID || '';
 const CLIENT_SECRET = process.argv[2] || '';
 const REDIRECT_URI = 'http://localhost:3000/callback';
 const SCOPES = 'w_member_social,openid,profile';
+
+if (!CLIENT_ID) {
+  console.error('\n❌ Set LINKEDIN_CLIENT_ID env var first.\n');
+  console.error('Example: LINKEDIN_CLIENT_ID=xxxxx node linkedin-oauth-local.mjs YOUR_SECRET\n');
+  process.exit(1);
+}
 
 if (!CLIENT_SECRET) {
   console.error('\n❌ Usage: node linkedin-oauth.mjs YOUR_CLIENT_SECRET\n');

@@ -21,3 +21,5 @@ _backup/
 *.key
 session.json
 .linkedin-secret
+INCIDENT-REPORT-*.md
+refresh-linkedin.sh
