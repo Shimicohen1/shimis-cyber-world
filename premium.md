@@ -48,12 +48,12 @@ permalink: /premium/
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>SCW Intel Bot</h3>
-<p>Search threats, monitor organizations, and generate analyst-ready outputs — directly inside Telegram. Our most powerful tool.</p>
+<p>Breach → SIEM detection rules in seconds. Monitor vendors with watchlist alerts. Search threats, export IOCs — all inside Telegram.</p>
 <div class="elite-card__meta">
-<span>Threat Search</span>
+<span>SIEM Detection Rules</span>
 <span>Watchlist Alerts</span>
+<span>Threat Search</span>
 <span>IOC Export</span>
-<span>Inside Telegram</span>
 </div>
 </div>
 </a>
@@ -168,7 +168,7 @@ permalink: /premium/
 <div class="elite-bot__card">
 <div class="elite-bot__icon">🔎</div>
 <h2 class="elite-bot__title">SCW Intel Bot</h2>
-<p class="elite-bot__desc">AI-powered cyber threat intelligence — built for real-world use. Search threats, monitor organizations, and generate analyst-ready outputs directly from Telegram. No dashboards. No noise. Just usable intel.</p>
+<p class="elite-bot__desc">Turn any breach into SIEM detection rules — Splunk, Sentinel, QRadar &amp; Elastic. Plus watchlist alerts, threat search, and IOC exports. All inside Telegram, no dashboards.</p>
 
 <div class="elite-bot__features">
 <div class="elite-bot__feature">
