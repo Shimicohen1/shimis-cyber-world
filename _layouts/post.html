@@ -133,7 +133,7 @@ layout: default
     {% assign post_epoch = page.date | date: '%s' | plus: 0 %}
     {% assign now_epoch = site.time | date: '%s' | plus: 0 %}
     {% assign post_age = now_epoch | minus: post_epoch %}
-    {% assign seven_days = 604800 %}
+    {% assign fourteen_days = 1209600 %}
     {% comment %}── Build deep link: detect_OrgName if org exists, else just detect ──{% endcomment %}
     {% if page.organizations and page.organizations.size > 0 %}
       {% assign _org_name = page.organizations[0].name | url_encode %}
@@ -147,7 +147,7 @@ layout: default
         <span class="post-sigma-rules__badge">{{ page.sigma_rules.count }} rules · 5 SIEM formats</span>
       </div>
 
-      {% if post_age < seven_days %}
+      {% if post_age < fourteen_days %}
       {% comment %}── FRESH POST: metadata only, query gated behind bot ──{% endcomment %}
       <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} auto-generated detection rules for this incident, mapped to MITRE ATT&CK. Available in Sigma, Splunk SPL, Sentinel KQL, Elastic Lucene, and QRadar AQL.</p>
       {% if page.sigma_rules.preview_title %}
@@ -179,7 +179,7 @@ layout: default
       </div>
 
       {% else %}
-      {% comment %}── AGED POST (7+ days): Sigma YAML only, SIEM formats via bot ──{% endcomment %}
+      {% comment %}── AGED POST (14+ days): Sigma YAML only, SIEM formats via bot ──{% endcomment %}
       <p class="post-sigma-rules__intro">Auto-generated Sigma detection rule for this incident. Need it in Splunk, Sentinel, Elastic, or QRadar format? Use <code>/detect</code> in the Intel Bot for instant conversion.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">

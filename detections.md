@@ -4,9 +4,8 @@ title: Detection Vault
 permalink: /detections/
 ---
 
-{% comment %}── Compute breach intel rule count (posts > 7 days with sigma_rules, deduplicated) ──{% endcomment %}
-{% comment %}── TODO: Change back to 1209600 (14 days) after April 28 ──{% endcomment %}
-{% assign vault_age_secs = 604800 %}
+{% comment %}── Compute breach intel rule count (posts > 14 days with sigma_rules, deduplicated) ──{% endcomment %}
+{% assign vault_age_secs = 1209600 %}
 {% assign now_epoch = site.time | date: '%s' | plus: 0 %}
 {% assign vault_cutoff = now_epoch | minus: vault_age_secs %}
 {% assign breach_intel_count = 0 %}
@@ -116,7 +115,7 @@ permalink: /detections/
     </div>
     {% endfor %}
 
-    {% comment %}── Breach Intel Rules (auto-generated, 7+ days old, deduplicated) ──{% endcomment %}
+    {% comment %}── Breach Intel Rules (auto-generated, 14+ days old, deduplicated) ──{% endcomment %}
     {% assign seen_titles = "" %}
     {% assign unique_breach_count = 0 %}
     {% for post in site.posts %}

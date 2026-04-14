@@ -1,0 +1,275 @@
+/* SCW Intel Bot — Full Guide Page */
+
+/* Hero */
+.bot-guide-hero {
+  text-align: center;
+  padding: 3rem 0 2rem;
+}
+.bot-guide-hero h1 {
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  margin: .75rem 0;
+}
+.bot-guide-hero__sub {
+  font-size: 1.05rem;
+  color: var(--gray);
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+}
+
+/* Sections */
+.bot-guide-section h2 {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.bot-guide-section > p {
+  color: var(--gray);
+  margin-bottom: 1.5rem;
+}
+
+/* Quick Start Steps */
+.bot-guide-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.bot-guide-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+}
+.bot-guide-step__num {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0,255,255,.1);
+  color: var(--cyan);
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: .85rem;
+}
+.bot-guide-step strong {
+  display: block;
+  margin-bottom: .25rem;
+}
+.bot-guide-step p {
+  margin: 0;
+  color: var(--gray);
+  font-size: .9rem;
+}
+
+/* Command Cards */
+.bot-guide-cmd {
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+  border-left: 3px solid rgba(0,255,255,.3);
+}
+.bot-guide-cmd__header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin-bottom: .5rem;
+}
+.bot-guide-cmd__name {
+  font-family: var(--f-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cyan);
+  background: rgba(0,255,255,.08);
+  padding: .2em .6em;
+  border-radius: 4px;
+}
+.bot-guide-cmd > p {
+  color: var(--gray);
+  font-size: .9rem;
+  margin: 0 0 .75rem;
+}
+
+/* Examples */
+.bot-guide-example {
+  margin-top: .75rem;
+  padding: .75rem 1rem;
+  background: rgba(0,0,0,.2);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.04);
+}
+.bot-guide-example__label {
+  font-family: var(--f-mono);
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--cyan);
+  display: block;
+  margin-bottom: .5rem;
+}
+.bot-guide-example pre {
+  font-family: var(--f-mono);
+  font-size: .85rem;
+  color: var(--fg);
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.bot-guide-example__result {
+  margin: .5rem 0 0;
+  font-size: .8rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+/* SIEM Format Chips */
+.bot-guide-formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .75rem;
+}
+.bot-guide-format {
+  font-family: var(--f-mono);
+  font-size: .7rem;
+  font-weight: 600;
+  padding: .3em .8em;
+  border-radius: 4px;
+  border: 1px solid rgba(0,255,255,.15);
+  background: rgba(0,255,255,.06);
+  color: var(--cyan);
+}
+
+/* Pricing inside commands */
+.bot-guide-pricing {
+  margin-top: .75rem;
+  padding: .75rem 1rem;
+  background: rgba(59,130,246,.05);
+  border: 1px solid rgba(59,130,246,.1);
+  border-radius: 6px;
+}
+.bot-guide-pricing p {
+  margin: .25rem 0;
+  font-size: .85rem;
+  color: var(--gray);
+}
+
+/* Pricing Table */
+.bot-guide-pricing-table {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+.bot-guide-tier {
+  padding: 1.5rem;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+}
+.bot-guide-tier h3 {
+  font-size: 1.1rem;
+  margin: 0 0 .5rem;
+}
+.bot-guide-tier__price {
+  font-family: var(--f-mono);
+  font-size: .85rem;
+  color: var(--cyan);
+  margin: 0 0 .75rem;
+}
+.bot-guide-tier ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.bot-guide-tier ul li {
+  padding: .3rem 0;
+  font-size: .85rem;
+  color: var(--gray);
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.bot-guide-tier ul li:last-child { border-bottom: none; }
+.bot-guide-tier ul li::before {
+  content: "▪️ ";
+}
+.bot-guide-tier--pro {
+  border-color: rgba(0,255,255,.2);
+  background: rgba(0,255,255,.03);
+}
+.bot-guide-tier--elite {
+  border-color: rgba(168,85,247,.2);
+  background: rgba(168,85,247,.03);
+}
+
+/* Use Cases */
+.bot-guide-usecase {
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+}
+.bot-guide-usecase h3 {
+  font-size: 1rem;
+  margin: 0 0 .75rem;
+  color: var(--cyan);
+}
+.bot-guide-usecase ol {
+  padding-left: 1.25rem;
+  margin: 0;
+}
+.bot-guide-usecase ol li {
+  padding: .3rem 0;
+  font-size: .88rem;
+  color: var(--gray);
+}
+
+/* CTA */
+.bot-guide-cta {
+  margin: 2rem 0;
+}
+
+/* ── Light Theme ── */
+[data-theme="light"] .bot-guide-step {
+  background: rgba(0,0,0,.02);
+  border-color: rgba(0,0,0,.08);
+}
+[data-theme="light"] .bot-guide-cmd {
+  background: rgba(0,0,0,.02);
+  border-color: rgba(0,0,0,.08);
+  border-left-color: rgba(0,180,200,.3);
+}
+[data-theme="light"] .bot-guide-example {
+  background: rgba(0,0,0,.03);
+  border-color: rgba(0,0,0,.06);
+}
+[data-theme="light"] .bot-guide-tier {
+  background: rgba(0,0,0,.02);
+  border-color: rgba(0,0,0,.08);
+}
+[data-theme="light"] .bot-guide-tier ul li {
+  border-bottom-color: rgba(0,0,0,.06);
+}
+[data-theme="light"] .bot-guide-tier--pro {
+  border-color: rgba(0,180,200,.2);
+  background: rgba(0,180,200,.03);
+}
+[data-theme="light"] .bot-guide-tier--elite {
+  border-color: rgba(168,85,247,.15);
+  background: rgba(168,85,247,.02);
+}
+[data-theme="light"] .bot-guide-usecase {
+  background: rgba(0,0,0,.02);
+  border-color: rgba(0,0,0,.08);
+}
