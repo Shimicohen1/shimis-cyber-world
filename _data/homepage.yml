@@ -25,46 +25,45 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Evolving Phishing-as-a-Service Platforms Target Executives
-    text: New PhaaS platforms like VENOM are sophisticatedly targeting C-suite Microsoft credentials.
-    detail: Attackers are increasingly leveraging specialized Phishing-as-a-Service (PhaaS) platforms to conduct highly targeted campaigns. VENOM specifically aims for Microsoft credentials of senior executives, indicating a growing trend of sophisticated social engineering attacks against high-value targets. Cybersecurity leaders should reinforce multi-factor authentication and implement advanced email filtering to mitigate these evolving threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-tips-protect-yourself
-    link_label: Phishing Prevention Tips
+  - title: Zero-Day Exploits Continue to Plague Major Software
+    text: Zero-day vulnerabilities in widely used software like Adobe Reader and Windows remain actively exploited.
+    detail: The active exploitation of zero-day vulnerabilities in Adobe Reader and Windows highlights persistent supply chain risks and the need for proactive threat hunting. Organizations should prioritize patching known vulnerabilities and implement robust endpoint detection and response (EDR) solutions to mitigate risks from unknown threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/tip-2023-understanding-zero-day-vulnerabilities
+    link_label: Understanding Zero-Day Vulnerabilities
+    badge: signal
+    tags:
+      - zero-day
+      - vulnerability
+      - threat-intel
+  - title: Phishing-as-a-Service Platforms Target High-Value Credentials
+    text: Sophisticated 'Phishing-as-a-Service' platforms are actively targeting C-suite Microsoft credentials.
+    detail: The emergence of platforms like VENOM, specifically designed to phish high-value Microsoft credentials from senior executives, signifies a growing trend in targeted, professionalized cybercrime. Implement multi-factor authentication (MFA) universally and conduct regular security awareness training, emphasizing spear-phishing recognition.
+    link: https://owasp.org/www-community/attacks/Phishing
+    link_label: OWASP Phishing Guidance
     badge: signal
     tags:
       - phishing
-      - credential-theft
+      - microsoft
       - threat-intel
-  - title: IoT Devices Remain Prime Targets for Botnet Infections
-    text: Botnets like Masjesu are stealthily targeting IoT devices, evading detection.
-    detail: The Masjesu botnet exemplifies a persistent trend of exploiting Internet of Things (IoT) devices. Its deliberate evasion tactics highlight the ongoing challenges in securing the expanding IoT landscape. Organizations must prioritize patching firmware, segmenting networks, and implementing strong access controls for all connected devices to reduce their attack surface.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/internet-things-iot-security-best-practices
-    link_label: IoT Security Best Practices
-    badge: signal
-    tags:
-      - iot
-      - botnet
-      - malware
-      - threat-intel
-  - title: Zero-Day Exploits Continue to Threaten Critical Software
-    text: Zero-day vulnerabilities in Adobe Reader and Windows (BlueHammer) are actively exploited.
-    detail: The recent exploitation of zero-day vulnerabilities in Adobe Reader and Windows (dubbed BlueHammer) underscores the persistent threat posed by unknown flaws. This trend emphasizes the critical need for rapid patching and robust endpoint detection and response (EDR) solutions. Proactive threat hunting and vulnerability management are essential to counter these advanced threats.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&is_cveId=false&cpeId=cpe%3A2.3%3Aa%3Aadobe%3Aacrobat_reader%3A%3A%3A%3A%3A%3A%3A%3A%3A&brand=adobe
-    link_label: Adobe Reader Vulnerabilities
-    badge: signal
-    tags:
-      - vulnerability
-      - zero-day
-      - threat-intel
-  - title: Supply Chain Attacks Leverage Trusted Update Mechanisms
-    text: Hijacked plugin updates for WordPress/Joomla (Smart Slider) push backdoored code.
-    detail: The hijacking of Smart Slider 3 Pro's update mechanism for WordPress and Joomla demonstrates a dangerous trend in supply chain attacks. Threat actors are compromising legitimate software distribution channels to deliver malicious payloads, making detection difficult. Organizations must implement strict software vetting processes and monitor for unexpected changes in trusted applications.
-    link: https://owasp.org/www-community/Supply_Chain_Attacks
-    link_label: OWASP Supply Chain Risks
+  - title: Supply Chain Attacks Escalate via Compromised Software Updates
+    text: Attackers are hijacking legitimate software update mechanisms to distribute malware.
+    detail: Recent incidents involving compromised WordPress/Joomla plugins and Smart Slider updates demonstrate a critical risk in the software supply chain. Organizations must rigorously vet third-party software, monitor update integrity, and consider implementing software composition analysis (SCA) tools to identify vulnerable dependencies.
+    link: https://www.mitre.org/modules/attack-navigator?version=4.1.2&techniqueIdlist=T1195
+    link_label: "MITRE ATT&CK: Compromise Software Supply Chain"
     badge: signal
     tags:
       - supply-chain
       - malware
+      - threat-intel
+  - title: AI Systems Face New Prompt Injection and API Key Leakage Risks
+    text: Emerging AI platforms are vulnerable to prompt injection and unsecured API key exposures.
+    detail: The successful bypassing of AI guardrails via prompt injection and the leakage of Gemini API keys in Android apps highlight the nascent security challenges of AI integration. Developers and users must be aware of these risks, implementing secure coding practices for AI and diligently managing API credentials.
+    link: https://owasp.org/www-community/vulnerabilities/Prompt_Injection
+    link_label: OWASP Prompt Injection
+    badge: signal
+    tags:
+      - ai-security
+      - vulnerability
       - threat-intel
 vault_picks:
   - name: OWASP Top 10
