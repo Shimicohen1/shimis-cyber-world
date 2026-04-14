@@ -38,5 +38,9 @@ jobs:
             echo "No new INCD publications"
           else
             git commit -m "Add INCD publications [automated]"
-            git push
+            for i in 1 2 3; do
+              git push && break
+              echo "Push failed (attempt $i), rebasing and retrying..."
+              git pull --rebase
+            done
           fi
