@@ -96,6 +96,12 @@
 [data-theme="light"] .mitre-attack__item { background: rgba(100,140,255,.06); border-color: rgba(100,140,255,.12); }
 [data-theme="light"] .mitre-attack__name { color: var(--white); }
 [data-theme="light"] .mitre-attack__tactic { color: var(--dim); }
+[data-theme="light"] .post-sigma-rules { background: rgba(0,200,130,.04); border-color: rgba(0,200,130,.15); }
+[data-theme="light"] .post-sigma-rules__preview { background: rgba(0,200,130,.06); border-color: rgba(0,200,130,.12); }
+[data-theme="light"] .post-sigma-rules__preview h3 { color: var(--white); }
+[data-theme="light"] .post-sigma-rules__intro { color: var(--gray); }
+[data-theme="light"] .sigma-yaml { background: rgba(0,0,0,.04); color: var(--white); }
+[data-theme="light"] .post-sigma-rules__cta p { color: var(--gray); }
 [data-theme="light"] .post-iocs__table thead th { color: var(--dim); border-bottom-color: var(--border); }
 [data-theme="light"] .post-iocs__table tbody tr { border-bottom-color: var(--border); }
 [data-theme="light"] .post-iocs__table td { color: var(--white); }
@@ -1760,6 +1766,32 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .mitre-attack__id { font-family: var(--f-mono); font-size: .8rem; font-weight: 700; color: rgba(100,160,255,.95); white-space: nowrap; min-width: 5.5rem; }
 .mitre-attack__name { flex: 1; font-size: .85rem; color: rgba(255,255,255,.9); font-weight: 500; }
 .mitre-attack__tactic { font-size: .72rem; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+
+/* Sigma Detection Rules */
+.post-sigma-rules { margin: 1.5rem 0; padding: 1rem 1.25rem; background: rgba(0,200,130,.04); border-radius: 8px; border: 1px solid rgba(0,200,130,.15); }
+.post-sigma-rules__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .5rem; flex-wrap: wrap; gap: .5rem; }
+.post-sigma-rules__header h2 { font-size: 1rem; margin: 0; color: rgba(0,220,140,.9); text-transform: uppercase; letter-spacing: .05em; }
+.post-sigma-rules__badge { font-size: .72rem; padding: .2rem .6rem; background: rgba(0,200,130,.12); border: 1px solid rgba(0,200,130,.25); border-radius: 10px; color: rgba(0,220,140,.9); font-weight: 600; white-space: nowrap; }
+.post-sigma-rules__intro { font-size: .82rem; color: rgba(255,255,255,.55); margin: 0 0 .75rem; line-height: 1.5; }
+.post-sigma-rules__intro a { color: rgba(0,200,130,.8); text-decoration: none; }
+.post-sigma-rules__intro a:hover { text-decoration: underline; }
+.post-sigma-rules__preview { margin: .75rem 0; padding: .75rem 1rem; background: rgba(0,200,130,.06); border: 1px solid rgba(0,200,130,.12); border-radius: 6px; }
+.post-sigma-rules__meta { display: flex; gap: .5rem; align-items: center; margin-bottom: .4rem; flex-wrap: wrap; }
+.post-sigma-rules__meta .tag--high { background: rgba(255,60,60,.15); color: rgba(255,100,100,.95); }
+.post-sigma-rules__meta .tag--medium { background: rgba(255,180,0,.12); color: rgba(255,200,60,.9); }
+.post-sigma-rules__meta .tag--low { background: rgba(100,200,255,.12); color: rgba(140,210,255,.85); }
+.sigma-technique { font-family: var(--f-mono); font-size: .75rem; color: rgba(0,200,130,.85); font-weight: 600; }
+.sigma-tactic { font-size: .7rem; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .04em; }
+.post-sigma-rules__preview h3 { font-size: .88rem; margin: 0 0 .5rem; color: rgba(255,255,255,.9); font-weight: 600; }
+.sigma-yaml-toggle { margin-top: .4rem; }
+.sigma-yaml-toggle summary { font-size: .78rem; color: rgba(0,200,130,.7); cursor: pointer; padding: .3rem 0; }
+.sigma-yaml-toggle summary:hover { color: rgba(0,220,140,.9); }
+.sigma-yaml { background: rgba(0,0,0,.3); border: 1px solid rgba(0,200,130,.15); border-radius: 4px; padding: .75rem; font-family: var(--f-mono); font-size: .72rem; line-height: 1.6; color: rgba(255,255,255,.85); overflow-x: auto; white-space: pre; margin: .5rem 0 0; }
+.post-sigma-rules__cta { margin-top: .75rem; padding: .75rem 1rem; background: rgba(0,200,130,.06); border-radius: 6px; text-align: center; }
+.post-sigma-rules__cta p { font-size: .82rem; color: rgba(255,255,255,.7); margin: 0 0 .6rem; }
+.post-sigma-rules__cta .btn--accent { background: rgba(0,200,130,.15); border: 1px solid rgba(0,200,130,.35); color: rgba(0,220,140,.95); font-weight: 600; padding: .45rem 1.2rem; border-radius: 6px; text-decoration: none; display: inline-block; transition: all .15s; }
+.post-sigma-rules__cta .btn--accent:hover { background: rgba(0,200,130,.25); border-color: rgba(0,220,140,.5); }
+.post-sigma-rules__price { display: block; font-size: .72rem; color: rgba(255,255,255,.4); margin-top: .4rem; }
 
 /* IOC Section */
 .post-iocs { margin: 1.5rem 0; padding: 1rem 1.25rem; background: rgba(255,60,60,.03); border-radius: 8px; border: 1px solid rgba(255,60,60,.15); }

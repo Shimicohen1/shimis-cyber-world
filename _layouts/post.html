@@ -128,6 +128,44 @@ layout: default
     </div>
     {% endif %}
 
+    {% comment %}── Sigma Detection Rules ──{% endcomment %}
+    {% if page.sigma_rules %}
+    <div class="post-sigma-rules">
+      <div class="post-sigma-rules__header">
+        <h2>🛡️ Detection Rules</h2>
+        <span class="post-sigma-rules__badge">{{ page.sigma_rules.count }} Sigma rules available</span>
+      </div>
+      <p class="post-sigma-rules__intro">Auto-generated <a href="https://github.com/SigmaHQ/sigma" target="_blank" rel="noopener">Sigma</a> detection rules based on the MITRE ATT&CK techniques in this post. Import into your SIEM (Splunk, Elastic, QRadar, Microsoft Sentinel).</p>
+      {% if page.sigma_rules.preview_title %}
+      <div class="post-sigma-rules__preview">
+        <div class="post-sigma-rules__meta">
+          <span class="tag tag--{{ page.sigma_rules.preview_level }}">{{ page.sigma_rules.preview_level }}</span>
+          <span class="sigma-technique">{{ page.sigma_rules.preview_technique }}</span>
+          <span class="sigma-tactic">{{ page.sigma_rules.preview_tactic }}</span>
+        </div>
+        <h3>{{ page.sigma_rules.preview_title }}</h3>
+        <details class="sigma-yaml-toggle">
+          <summary>View Sigma YAML</summary>
+          <pre class="sigma-yaml" id="sigma-preview-yaml"></pre>
+        </details>
+      </div>
+      <script>
+        (function(){
+          var b64 = "{{ page.sigma_rules.preview_yaml_b64 }}";
+          if(b64){try{document.getElementById('sigma-preview-yaml').textContent=atob(b64)}catch(e){}}
+        })();
+      </script>
+      {% endif %}
+      {% if page.sigma_rules.paid_count > 0 %}
+      <div class="post-sigma-rules__cta">
+        <p><strong>{{ page.sigma_rules.paid_count }} more rules</strong> available in the full detection pack — covering additional techniques and custom indicators from this breach.</p>
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Full Pack via Intel Bot →</a>
+        <span class="post-sigma-rules__price">250 ⭐ (~$5) · Free for Pro & Elite subscribers</span>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
     {% comment %}── IOC Section ──{% endcomment %}
     {% if page.iocs.size > 0 %}
     <div class="post-iocs">
