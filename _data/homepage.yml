@@ -25,49 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: "Discourse Vulnerabilities Accumulate: Patch Immediately"
-    text: Multiple Discourse vulnerabilities are being reported, impacting moderation, subscriptions, and data exposure.
-    detail: Discourse, a popular open-source discussion platform, is currently facing a barrage of reported vulnerabilities, including unauthorized access to private topics, subscription tier manipulation, and exposure of draft topic titles. Organizations relying on Discourse should prioritize patching these flaws to mitigate risks of data leakage and unauthorized actions. Reviewing moderation permissions and subscription logic is also advised.
+  - title: Discourse Platform Under Scrutiny for Multiple Vulnerabilities
+    text: Discourse is experiencing a surge in reported vulnerabilities impacting various features.
+    detail: Multiple CVEs highlight risks in Discourse, including unauthorized access to private topics, email setting exploitation, subscription tier manipulation, and draft topic title exposure. Organizations using Discourse should prioritize patching and review access controls to mitigate these diverse threats.
     link: https://github.com/discourse/discourse/security/advisories
     link_label: Discourse Security Advisories
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - patch-management
-  - title: AI Tooling and LLMs Present New Attack Surfaces
-    text: AI interfaces and models are emerging as targets for credential theft and other exploits.
-    detail: The increasing adoption of AI tools, particularly LLMs and their interfaces like text-generation-webui, introduces novel attack vectors. Vulnerabilities allowing cloud credential theft have been identified, underscoring the need for robust security practices around AI deployments. Organizations should implement strict access controls and regularly audit configurations for AI-powered systems.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
-    badge: signal
-    tags:
-      - ai-security
-      - vulnerability
-      - cloud-security
-      - threat-intel
-  - title: Ransomware Activity Surges, Targeting Business Services
-    text: Ransomware groups are intensifying attacks, with a notable focus on the business services sector.
-    detail: Recent intelligence indicates a significant increase in ransomware attacks, particularly against organizations within the business services sector. Threat actors are actively exploiting vulnerabilities and employing sophisticated tactics. Companies in this sector should reinforce their defenses, focusing on endpoint protection, regular backups, and employee security awareness training to counter these escalating threats.
-    link: https://www.cisa.gov/news-events/advisories/aa23-277a
+      - web-application
+  - title: Ransomware Groups Intensify Attacks on Business Services
+    text: Ransomware operations are increasingly targeting the Business Services sector.
+    detail: Recent intelligence indicates a concentrated effort by ransomware groups against the Business Services industry, with a notable increase in targeted attacks. This sector should bolster defenses, implement robust backup strategies, and conduct regular incident response drills.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
-      - malware
       - business-services
-  - title: OSINT Techniques Expand for Identity and Data Discovery
-    text: Advanced OSINT methods are revealing deeper insights into personal and business identities.
-    detail: Open Source Intelligence (OSINT) techniques are evolving, with new research highlighting the extensive personal data accessible through seemingly innocuous sources like phone numbers. Cybersecurity professionals must stay abreast of these methodologies to understand potential reconnaissance vectors used by adversaries and to bolster defenses against identity-related threats and data breaches.
-    link: https://www.mitre.org/capabilities/cybersecurity/all-threats/adversarial-tactic-techniques-and-common-knowledge-attack-matrix
-    link_label: MITRE ATT&CK Framework
+  - title: AI-Generated Vulnerability Reports Overwhelm Bug Bounty Platforms
+    text: AI-generated vulnerability reports are flooding bug bounty platforms, straining triage resources.
+    detail: Bug bounty platforms face challenges managing a surge of AI-created vulnerability submissions, impacting efficient remediation. Security teams should refine their processes for detecting and validating AI-assisted findings, ensuring genuine threats are prioritized over noise.
+    link: https://owasp.org/www-project-top-10-ai-security-risks/
+    link_label: OWASP AI Security Risks
     badge: signal
     tags:
-      - osint
+      - ai-security
       - threat-intel
-      - data-breach
-      - reconnaissance
+      - bug-bounty
+  - title: SSRF and RCE Vulnerabilities Persist in Development Tools
+    text: Server-Side Request Forgery and Remote Code Execution flaws are prevalent in developer tools.
+    detail: Recent advisories highlight critical SSRF and RCE vulnerabilities in popular developer frameworks and tools like Backstage and Alchemy CMS. Teams utilizing these tools must ensure they are updated to the latest secure versions to prevent exploitation of these dangerous flaws.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guidance
+    badge: signal
+    tags:
+      - vulnerability
+      - rce
+      - ssrf
+      - developer-tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
