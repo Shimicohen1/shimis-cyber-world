@@ -134,6 +134,13 @@ layout: default
     {% assign now_epoch = site.time | date: '%s' | plus: 0 %}
     {% assign post_age = now_epoch | minus: post_epoch %}
     {% assign seven_days = 604800 %}
+    {% comment %}── Build deep link: detect_OrgName if org exists, else just detect ──{% endcomment %}
+    {% if page.organizations and page.organizations.size > 0 %}
+      {% assign _org_name = page.organizations[0].name | url_encode %}
+      {% assign detect_link = "https://t.me/Shimiscyberworldbot?start=detect_" | append: _org_name %}
+    {% else %}
+      {% assign detect_link = "https://t.me/Shimiscyberworldbot?start=detect" %}
+    {% endif %}
     <div class="post-sigma-rules">
       <div class="post-sigma-rules__header">
         <h2>🛡️ Detection Rules</h2>
@@ -164,8 +171,8 @@ layout: default
       </div>
       {% endif %}
       <div class="post-sigma-rules__cta">
-        <p><strong>{{ page.sigma_rules.count }} detection rules ready</strong> — type <code>/detect</code> in the Intel Bot, search the affected organization, and get SIEM-ready queries you can deploy in seconds.</p>
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
+        <p><strong>{{ page.sigma_rules.count }} detection rules ready</strong> for your SIEM — click below and the bot will pull them up instantly.</p>
+        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
         {% if page.sigma_rules.paid_count > 0 %}
         <span class="post-sigma-rules__price">{{ page.sigma_rules.free_count }} free · {{ page.sigma_rules.paid_count }} more in full pack (250 ⭐)</span>
         {% endif %}
@@ -222,12 +229,12 @@ layout: default
       {% endif %}
       <div class="post-sigma-rules__cta">
         {% if page.sigma_rules.paid_count > 0 %}
-        <p><strong>{{ page.sigma_rules.paid_count }} more rules + all 5 SIEM formats</strong> — type <code>/detect</code> in the Intel Bot. Get copy-paste queries for Splunk, Sentinel, Elastic, and QRadar in seconds.</p>
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get SIEM Formats →</a>
+        <p><strong>{{ page.sigma_rules.paid_count }} more rules + all 5 SIEM formats</strong> — click below and the bot will convert to your SIEM format instantly.</p>
+        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get SIEM Formats →</a>
         <span class="post-sigma-rules__price">250 ⭐ (~$5) · Free for Pro & Elite subscribers</span>
         {% else %}
-        <p>Need this in your SIEM's format? Use <code>/detect</code> in the Intel Bot — instant conversion to Splunk SPL, Sentinel KQL, Elastic, and QRadar AQL.</p>
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get SIEM Formats →</a>
+        <p>Need this in your SIEM's format? Click below — the bot will convert it to Splunk SPL, Sentinel KQL, Elastic, or QRadar AQL instantly.</p>
+        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get SIEM Formats →</a>
         {% endif %}
       </div>
       {% endif %}
@@ -273,29 +280,28 @@ layout: default
     {% comment %} Affiliate recs removed from post pages to reduce clutter.
          Affiliates are promoted via Telegram feed + LinkedIn only. {% endcomment %}
 
-    {% comment %}── SCW Intel Bot CTA ──{% endcomment %}
+    {% comment %}── SCW Intel Bot CTA — skip if sigma_rules already promoted the bot above ──{% endcomment %}
+    {% unless page.sigma_rules %}
     <div class="post-bot-cta">
       <span class="post-bot-cta__icon">🔎</span>
       <div class="post-bot-cta__text">
         {% if page.bot_cta_title %}
         <strong>{{ page.bot_cta_title }}</strong>
         <span>{{ page.bot_cta_description }}</span>
-        {% elsif page.sigma_rules %}
-        <strong>Deploy detection rules for this incident</strong>
-        <span>Use <strong>/detect</strong> to get SIEM-ready queries (Splunk, Sentinel, Elastic, QRadar, Sigma). Search by organization, get copy-paste rules, and start hunting in minutes — no manual conversion needed.</span>
         {% elsif page.tags contains 'vulnerability' or page.tags contains 'cve' %}
         <strong>Get the full picture on this vulnerability</strong>
-        <span>Use /detect to generate detection rules for your SIEM, /org to search affected organizations, and /brief for analyst-ready IOC reports — all inside Telegram.</span>
+        <span>Search affected organizations with /org, generate detection rules with /detect, or create analyst-ready IOC reports with /brief — all inside Telegram.</span>
         {% elsif page.tags contains 'ransomware' or page.tags contains 'data-breach' %}
         <strong>Is your vendor affected? Start hunting now.</strong>
-        <span>Use /detect to get SIEM detection rules for this breach. Search by organization or domain, set watchlist alerts, and get notified when your third parties are compromised.</span>
+        <span>Search by organization or domain, set watchlist alerts, and get notified when your third parties are compromised.</span>
         {% else %}
         <strong>Stay ahead of this threat</strong>
-        <span>Search threats by organization, generate detection rules with /detect, or create analyst-ready briefs with IOCs — inside Telegram.</span>
+        <span>Search threats by organization, set watchlist alerts, or create analyst-ready briefs with IOCs — inside Telegram.</span>
         {% endif %}
       </div>
-      <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener" class="btn btn--accent btn--sm">Open Intel Bot →</a>
+      <a href="https://t.me/Shimiscyberworldbot" target="_blank" rel="noopener" class="btn btn--accent btn--sm">Open Intel Bot →</a>
     </div>
+    {% endunless %}
 
     {% comment %}── Mid-Post AdSense Slot ──{% endcomment %}
     {% include ad-slot.html type="adsense" slot="post-mid" %}
