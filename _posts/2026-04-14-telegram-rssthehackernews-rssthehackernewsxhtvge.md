@@ -33,6 +33,25 @@ why_it_matters:
   - "If your organization utilizes ShowDoc, especially on internet-facing servers, you need to verify your patch status for CVE-2025-0520 immediately. This isn't a theoretical threat; it's actively being exploited. Prioritize patching, review access logs for suspicious file uploads, and scan your environments for any signs of compromise related to this RCE."
 bot_cta_title: "ShowDoc Vulnerability Intel"
 bot_cta_description: "Use /brief for an analyst-ready summary of critical vulnerabilities like CVE-2025-0520."
+iocs:
+  - id: "CVE-2025-0520"
+    type: "RCE"
+    indicator: "ShowDoc document management platform — unrestricted file upload leading to remote code execution"
+  - id: "CVE-2025-0520"
+    type: "Unrestricted File Upload"
+    indicator: "ShowDoc improper file type validation allows malicious file upload and execution (CVSS 9.4)"
+  - id: "CVE-2025-0520"
+    type: "Affected Product"
+    indicator: "ShowDoc (also tracked as CNVD-2020-26585) — under active exploitation"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1505.003"
+    name: "Web Shell"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1505/003/"
 ---
 
 A critical remote code execution (RCE) vulnerability in ShowDoc, a document management and collaboration service widely used in China, is currently under active exploitation. The flaw, identified as CVE-2025-0520 (also tracked as CNVD-2020-26585), boasts a severe CVSS score of 9.4, indicating its high potential for impact.

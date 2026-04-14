@@ -46,6 +46,32 @@ why_it_matters:
   - "If your organization uses AI tools or downloads software from unofficial sources, scrutinize all installers. Verify the authenticity of download sites and ensure your endpoint detection and response (EDR) solutions are up-to-date to catch DLL sideloading attempts and known malware families like PlugX."
 bot_cta_title: "Track PlugX and AI-themed threats"
 bot_cta_description: "Use /actor PlugX to see related threats and intelligence."
+iocs:
+  - id: "PlugX-Claude-Fake"
+    type: "Malware"
+    indicator: "PlugX RAT deployed via fake Anthropic Claude AI installer"
+  - id: "PlugX-Claude-Fake"
+    type: "DLL Sideloading"
+    indicator: "NOVUpdate.exe (legitimate G DATA updater) loads malicious avk.dll (T1574.002)"
+  - id: "PlugX-Claude-Fake"
+    type: "Indicator"
+    indicator: "Dropped files: NOVUpdate.exe, avk.dll, encrypted .dat payload in Windows Startup folder"
+  - id: "PlugX-Claude-Fake"
+    type: "C2 Infrastructure"
+    indicator: "Command-and-control server hosted on Alibaba Cloud"
+mitre_attack:
+  - id: "T1574.002"
+    name: "DLL Side-Loading"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1574/002/"
+  - id: "T1204.002"
+    name: "Malicious File"
+    tactic: "Execution"
+    url: "https://attack.mitre.org/techniques/T1204/002/"
+  - id: "T1036"
+    name: "Masquerading"
+    tactic: "Defense Evasion"
+    url: "https://attack.mitre.org/techniques/T1036/"
 ---
 
 Cybercriminals are leveraging the buzz around AI chatbots to lure unsuspecting users into malware traps. Security Affairs reports that a fake website, masquerading as Anthropic's popular Claude AI service, has been caught distributing the notorious PlugX remote access trojan (RAT). The attackers are pushing a ZIP archive, falsely advertised as a "pro version" installer, which silently deploys the PlugX payload.

@@ -34,6 +34,18 @@ why_it_matters:
   - "If your organization relies on SAP systems, you need to prioritize these patches immediately, especially the critical ABAP vulnerability. Unpatched SAP systems are a prime target for threat actors looking to disrupt operations or exfiltrate sensitive data. Confirm your patch management team has applied these fixes without delay and audit systems for any signs of compromise."
 bot_cta_title: "Track SAP Vulnerabilities with SCW Intel Bot"
 bot_cta_description: "Use /org sap.com to see if your SAP systems are exposed to known threats."
+iocs:
+  - id: "SAP-Patch-Apr-2026"
+    type: "Security Patch"
+    indicator: "SAP ABAP Platform — critical vulnerability patched in April 2026 Patch Tuesday"
+  - id: "SAP-Patch-Apr-2026"
+    type: "Affected Product"
+    indicator: "SAP Advanced Business Application Programming (ABAP) and 12+ enterprise products"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
 ---
 
 SAP has dropped a hefty patch Tuesday, releasing 19 new security notes to address vulnerabilities across more than a dozen of its enterprise products. According to SecurityWeek, the standout fix targets a critical flaw in SAP's proprietary Advanced Business Application Programming (ABAP) platform.

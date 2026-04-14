@@ -43,6 +43,25 @@ why_it_matters:
   - "If your WordPress site uses the Kali Forms plugin, you need to check its version *right now*. If it's anything before 2.4.10, you are vulnerable. Patch immediately to version 2.4.10 or later. Audit your web server logs for any suspicious activity around March 20, 2026, and especially between April 4–10, 2026, for signs of exploitation."
 bot_cta_title: "Check WordPress Vulnerabilities with SCW Intel Bot"
 bot_cta_description: "Use /brief to get an analyst-ready weekly threat summary that includes new vulnerabilities like this one."
+iocs:
+  - id: "Kali-Forms-RCE"
+    type: "RCE"
+    indicator: "Kali Forms WordPress plugin versions <= 2.4.9 — unauthenticated Remote Code Execution"
+  - id: "Kali-Forms-RCE"
+    type: "Affected Product"
+    indicator: "Kali Forms WordPress plugin — 10,000+ active installations, patched in v2.4.10 (March 20, 2026)"
+  - id: "Kali-Forms-RCE"
+    type: "Code Injection"
+    indicator: "form_process → prepare_post_data() → call_user_func() in _save_data() allows arbitrary PHP function execution"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1059.001"
+    name: "PowerShell"
+    tactic: "Execution"
+    url: "https://attack.mitre.org/techniques/T1059/001/"
 ---
 
 A critical Remote Code Execution (RCE) vulnerability in the Kali Forms WordPress plugin has escalated into an active threat, allowing unauthenticated attackers to compromise sites. According to The Cyber Express, this flaw, impacting a drag-and-drop form builder with over 10,000 active installations, was exploited in the wild almost immediately after its public disclosure.

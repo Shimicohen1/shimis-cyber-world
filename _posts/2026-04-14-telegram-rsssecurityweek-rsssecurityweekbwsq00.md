@@ -37,6 +37,18 @@ why_it_matters:
   - "If your organization handles sensitive contractor or third-party data, this RCI Hospitality breach is a wake-up call. Immediately audit your web applications for IDOR vulnerabilities, especially in areas where user input dictates resource access. Implement robust authorization checks on all object references to ensure users can only access data they are explicitly permitted to see."
 bot_cta_title: "Track Breaches: RCI Hospitality"
 bot_cta_description: "Use /breach to view the latest data breaches and ransomware events, including this incident."
+iocs:
+  - id: "RCI-IDOR-2026"
+    type: "IDOR"
+    indicator: "RCI Internet Services — Insecure Direct Object Reference exposing contractor data"
+  - id: "RCI-IDOR-2026"
+    type: "Data Breach"
+    indicator: "RCI Hospitality contractor data exposed via IDOR vulnerability"
+mitre_attack:
+  - id: "T1530"
+    name: "Data from Cloud Storage"
+    tactic: "Collection"
+    url: "https://attack.mitre.org/techniques/T1530/"
 ---
 
 Nightclub conglomerate RCI Hospitality recently disclosed a data breach stemming from an Insecure Direct Object Reference (IDOR) vulnerability. According to SecurityWeek, the company detailed the incident in an SEC filing, confirming that the flaw in RCI Internet Services led to the exposure of contractor data.

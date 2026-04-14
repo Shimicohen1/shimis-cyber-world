@@ -55,6 +55,15 @@ why_it_matters:
   - "If your organization is involved in AI development or utilizes advanced AI models like Mythos (even through controlled programs), you must immediately assess your security posture. Audit access controls for AI tools, implement strict monitoring for anomalous AI behavior that could indicate vulnerability exploitation, and ensure your incident response plans account for AI-driven attack vectors."
 bot_cta_title: "Track AI-related security risks"
 bot_cta_description: "Use /org goldmansachs to check for related threats."
+iocs:
+  - id: "Anthropic-Mythos"
+    type: "AI Risk"
+    indicator: "Anthropic 'Mythos' AI model — capable of autonomous vulnerability discovery and exploitation"
+mitre_attack:
+  - id: "T1588.005"
+    name: "Exploits"
+    tactic: "Resource Development"
+    url: "https://attack.mitre.org/techniques/T1588/005/"
 ---
 
 Goldman Sachs is voicing serious concerns about the cybersecurity implications of Anthropic's new AI model, dubbed 'Mythos.' According to The Cyber Express, Goldman's CEO David Solomon stated the financial giant is "hyperaware" of the risks posed by advanced AI, including large language models and Mythos, which can identify and exploit software vulnerabilities at an unprecedented level.
