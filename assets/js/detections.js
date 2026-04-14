@@ -1,4 +1,4 @@
-/* SCW Detection Vault — search, filter, copy */
+/* SCW Detection Vault — search, filter, copy, SIEM tabs */
 (function () {
   'use strict';
 
@@ -14,6 +14,9 @@
 
   var activeCat  = 'all';
   var activePlat = 'all';
+
+  /* Update initial count to include breach intel cards */
+  if (count) count.textContent = cards.length;
 
   function applyFilters() {
     var q = (search ? search.value : '').toLowerCase().trim();
@@ -74,5 +77,44 @@
         btn.classList.remove('copied');
       }, 1500);
     });
+  });
+
+  /* ── Breach Intel SIEM tabs ── */
+  function b64decode(s) {
+    try { return atob(s); } catch (e) { return 'Format not available'; }
+  }
+
+  /* Initialize breach intel cards — decode default (sigma) format */
+  var breachCards = grid.querySelectorAll('.dl-rule--breach');
+  breachCards.forEach(function (card) {
+    var codeEl = card.querySelector('.dl-siem-code');
+    if (!codeEl) return;
+    var sigmaB64 = card.dataset.fmtSigma;
+    if (sigmaB64) {
+      codeEl.textContent = b64decode(sigmaB64);
+    }
+  });
+
+  /* SIEM tab switching for breach intel cards */
+  grid.addEventListener('click', function (e) {
+    var tab = e.target.closest('.dl-siem-tab');
+    if (!tab) return;
+    var card = tab.closest('.dl-rule--breach');
+    if (!card) return;
+
+    /* Update active tab */
+    card.querySelectorAll('.dl-siem-tab').forEach(function (t) {
+      t.classList.remove('dl-siem-tab--active');
+    });
+    tab.classList.add('dl-siem-tab--active');
+
+    /* Decode and display selected format */
+    var fmt = tab.dataset.fmt;
+    var attrMap = { sigma: 'fmtSigma', splunk: 'fmtSplunk', sentinel: 'fmtSentinel', elastic: 'fmtElastic', qradar: 'fmtQradar' };
+    var b64 = card.dataset[attrMap[fmt]];
+    var codeEl = card.querySelector('.dl-siem-code');
+    if (codeEl) {
+      codeEl.textContent = b64 ? b64decode(b64) : 'Format not available';
+    }
   });
 })();

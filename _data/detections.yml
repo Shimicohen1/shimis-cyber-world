@@ -19,6 +19,7 @@ platforms:
   - KQL (Sentinel)
   - Sigma
   - Splunk SPL
+  - Multi-SIEM
 
 severity_levels:
   - critical

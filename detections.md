@@ -4,6 +4,19 @@ title: Detection Vault
 permalink: /detections/
 ---
 
+{% comment %}── Compute breach intel rule count (posts > 14 days with sigma_rules) ──{% endcomment %}
+{% assign vault_age_secs = 1209600 %}
+{% assign now_epoch = site.time | date: '%s' | plus: 0 %}
+{% assign vault_cutoff = now_epoch | minus: vault_age_secs %}
+{% assign breach_intel_count = 0 %}
+{% for post in site.posts %}
+  {% assign pe = post.date | date: '%s' | plus: 0 %}
+  {% if post.sigma_rules and pe < vault_cutoff %}
+    {% assign breach_intel_count = breach_intel_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
+{% assign total_rules = site.data.detections.rules | size | plus: breach_intel_count %}
+
 <div class="page-head">
   <div class="label label--cyan page-head__label">SCW TOOLS</div>
   <h1 class="page-head__title">Detection Vault</h1>
@@ -24,7 +37,7 @@ permalink: /detections/
 <section class="dl-stats reveal">
   <div class="dl-stats__grid">
     <div class="dl-stat">
-      <span class="dl-stat__number">{{ site.data.detections.rules | size }}</span>
+      <span class="dl-stat__number">{{ total_rules }}</span>
       <span class="dl-stat__label">Detection Rules</span>
     </div>
     <div class="dl-stat">
@@ -95,6 +108,62 @@ permalink: /detections/
       {% endif %}
     </div>
     {% endfor %}
+
+    {% comment %}── Breach Intel Rules (auto-generated, 14+ days old) ──{% endcomment %}
+    {% if breach_intel_count > 0 %}
+    <div class="dl-section-divider">
+      <span class="dl-section-divider__label">🔥 Breach Intelligence — auto-generated from real incidents</span>
+    </div>
+    {% for post in site.posts %}
+      {% assign pe = post.date | date: '%s' | plus: 0 %}
+      {% if post.sigma_rules and pe < vault_cutoff %}
+      {% assign sev = post.sigma_rules.preview_level | default: 'medium' %}
+      <div class="tool-card dl-rule dl-rule--breach reveal"
+           data-category="{{ post.sigma_rules.preview_tactic | slugify }}"
+           data-platform="multi-siem"
+           data-name="{{ post.sigma_rules.preview_title | downcase }}"
+           data-tags="{{ post.tags | join: ' ' | downcase }}"
+           data-mitre="{{ post.sigma_rules.preview_technique | downcase }}"
+           {% if post.sigma_rules.formats %}
+           data-fmt-sigma="{{ post.sigma_rules.formats.sigma }}"
+           data-fmt-splunk="{{ post.sigma_rules.formats.splunk }}"
+           data-fmt-sentinel="{{ post.sigma_rules.formats.sentinel }}"
+           data-fmt-elastic="{{ post.sigma_rules.formats.elastic }}"
+           data-fmt-qradar="{{ post.sigma_rules.formats.qradar }}"
+           {% elsif post.sigma_rules.preview_yaml_b64 %}
+           data-fmt-sigma="{{ post.sigma_rules.preview_yaml_b64 }}"
+           {% endif %}>
+        <div class="tool-card__head">
+          <h4>{{ post.sigma_rules.preview_title }}</h4>
+          <span class="dl-breach-badge">Breach Intel</span>
+        </div>
+        <p class="community-card__tagline">{{ post.sigma_rules.preview_technique }} — {{ post.sigma_rules.preview_tactic }}</p>
+        <p>Auto-generated from <a href="{{ post.url | relative_url }}">{{ post.title | truncate: 60 }}</a></p>
+        <div class="dl-rule__meta">
+          <span class="badge badge--{% if sev == 'critical' %}live{% elsif sev == 'high' %}signal{% elsif sev == 'medium' %}drop{% else %}vault{% endif %}">{{ sev }}</span>
+          <span class="tag">Multi-SIEM</span>
+          <span class="tag">{{ post.date | date: "%b %d, %Y" }}</span>
+        </div>
+        {% if post.sigma_rules.formats %}
+        <div class="dl-siem-tabs">
+          <button class="dl-siem-tab dl-siem-tab--active" data-fmt="sigma">Sigma</button>
+          <button class="dl-siem-tab" data-fmt="splunk">Splunk</button>
+          <button class="dl-siem-tab" data-fmt="sentinel">Sentinel</button>
+          <button class="dl-siem-tab" data-fmt="elastic">Elastic</button>
+          <button class="dl-siem-tab" data-fmt="qradar">QRadar</button>
+        </div>
+        {% endif %}
+        <div class="dl-rule__code">
+          <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
+          <pre><code class="dl-siem-code"></code></pre>
+        </div>
+        {% if post.sigma_rules.paid_count and post.sigma_rules.paid_count > 0 %}
+        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules available via <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">Intel Bot</a></p>
+        {% endif %}
+      </div>
+      {% endif %}
+    {% endfor %}
+    {% endif %}
   </div>
 
   <div class="empty-state" id="dlEmpty" style="display:none; margin-top: 2rem;">
@@ -108,7 +177,7 @@ permalink: /detections/
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
     <h2 class="cs-cta__title">New rules ship regularly.</h2>
-    <p class="cs-cta__text">{{ site.data.detections.rules | size }} production-ready queries and growing. Subscribe to get notified when new detection rules drop.</p>
+    <p class="cs-cta__text">{{ total_rules }} production-ready queries and growing. Subscribe to get notified when new detection rules drop.</p>
     <div class="cs-cta__actions">
       <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--primary">WarRoom →</a>
       <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to Feed</a>
