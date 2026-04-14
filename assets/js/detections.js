@@ -84,7 +84,7 @@
     try { return atob(s); } catch (e) { return 'Format not available'; }
   }
 
-  /* Initialize breach intel cards — decode default (sigma) format */
+  /* Initialize breach intel cards — decode Sigma YAML only */
   var breachCards = grid.querySelectorAll('.dl-rule--breach');
   breachCards.forEach(function (card) {
     var codeEl = card.querySelector('.dl-siem-code');
@@ -92,29 +92,6 @@
     var sigmaB64 = card.dataset.fmtSigma;
     if (sigmaB64) {
       codeEl.textContent = b64decode(sigmaB64);
-    }
-  });
-
-  /* SIEM tab switching for breach intel cards */
-  grid.addEventListener('click', function (e) {
-    var tab = e.target.closest('.dl-siem-tab');
-    if (!tab) return;
-    var card = tab.closest('.dl-rule--breach');
-    if (!card) return;
-
-    /* Update active tab */
-    card.querySelectorAll('.dl-siem-tab').forEach(function (t) {
-      t.classList.remove('dl-siem-tab--active');
-    });
-    tab.classList.add('dl-siem-tab--active');
-
-    /* Decode and display selected format */
-    var fmt = tab.dataset.fmt;
-    var attrMap = { sigma: 'fmtSigma', splunk: 'fmtSplunk', sentinel: 'fmtSentinel', elastic: 'fmtElastic', qradar: 'fmtQradar' };
-    var b64 = card.dataset[attrMap[fmt]];
-    var codeEl = card.querySelector('.dl-siem-code');
-    if (codeEl) {
-      codeEl.textContent = b64 ? b64decode(b64) : 'Format not available';
     }
   });
 })();

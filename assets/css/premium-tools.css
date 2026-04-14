@@ -3427,3 +3427,98 @@
 [data-theme="light"] .dl-siem-tab { border-color: rgba(0,0,0,.08); color: #666; }
 [data-theme="light"] .dl-siem-tab:hover { color: #333; background: rgba(0,0,0,.03); }
 [data-theme="light"] .dl-siem-tab--active { color: var(--cyan); background: rgba(0,180,200,.05); border-color: rgba(0,180,200,.15); }
+
+/* ══════════════════════════════════════════════════════════
+   TIERED ACCESS — Gated SIEM format chips & Sigma-only view
+   ══════════════════════════════════════════════════════════ */
+
+/* Gated format chips (shown on fresh posts & vault) */
+.sigma-gated { margin-top: 1rem; }
+.sigma-gated__formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+.sigma-gated__chip {
+  font-family: var(--f-mono, monospace);
+  font-size: .7rem;
+  font-weight: 600;
+  padding: .3em .8em;
+  border-radius: 4px;
+  border: 1px solid rgba(0,255,255,.15);
+  background: rgba(0,255,255,.06);
+  color: var(--cyan, #0ff);
+}
+.sigma-gated__chip--locked {
+  border-color: rgba(255,255,255,.1);
+  background: rgba(255,255,255,.03);
+  color: var(--gray, #888);
+  opacity: .7;
+}
+.sigma-gated__text {
+  font-size: .85rem;
+  color: var(--gray, #888);
+  margin: 0;
+}
+
+/* Locked SIEM formats row */
+.sigma-siem-locked {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.sigma-siem-locked--vault { margin-bottom: .5rem; }
+.sigma-gated__unlock {
+  font-family: var(--f-mono, monospace);
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--cyan, #0ff);
+  text-decoration: none;
+  margin-left: auto;
+}
+.sigma-gated__unlock:hover { text-decoration: underline; }
+
+/* Sigma YAML block (aged post preview) */
+.sigma-yaml-block {
+  position: relative;
+  margin-top: 1rem;
+}
+.sigma-yaml-block .sigma-yaml {
+  background: rgba(0,0,0,.3);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: .78rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--fg, #e0e0e0);
+}
+.sigma-yaml-block .sigma-copy-btn {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  background: rgba(0,255,255,.1);
+  border: 1px solid rgba(0,255,255,.2);
+  border-radius: 4px;
+  padding: .3em .7em;
+  font-size: .75rem;
+  color: var(--cyan, #0ff);
+  cursor: pointer;
+  transition: all .15s;
+}
+.sigma-yaml-block .sigma-copy-btn:hover {
+  background: rgba(0,255,255,.2);
+}
+
+/* Light theme overrides */
+[data-theme="light"] .sigma-gated__chip { border-color: rgba(0,180,200,.2); background: rgba(0,180,200,.06); color: var(--cyan); }
+[data-theme="light"] .sigma-gated__chip--locked { border-color: rgba(0,0,0,.1); background: rgba(0,0,0,.03); color: #999; }
+[data-theme="light"] .sigma-siem-locked { border-top-color: rgba(0,0,0,.08); }
+[data-theme="light"] .sigma-yaml-block .sigma-yaml { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.1); color: #333; }
+[data-theme="light"] .sigma-yaml-block .sigma-copy-btn { background: rgba(0,180,200,.08); border-color: rgba(0,180,200,.2); color: var(--cyan); }

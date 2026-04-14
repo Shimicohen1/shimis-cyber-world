@@ -128,14 +128,21 @@ layout: default
     </div>
     {% endif %}
 
-    {% comment %}── Sigma Detection Rules ──{% endcomment %}
+    {% comment %}── Sigma Detection Rules (tiered: metadata → Sigma YAML → SIEM via bot) ──{% endcomment %}
     {% if page.sigma_rules %}
+    {% assign post_epoch = page.date | date: '%s' | plus: 0 %}
+    {% assign now_epoch = site.time | date: '%s' | plus: 0 %}
+    {% assign post_age = now_epoch | minus: post_epoch %}
+    {% assign seven_days = 604800 %}
     <div class="post-sigma-rules">
       <div class="post-sigma-rules__header">
         <h2>🛡️ Detection Rules</h2>
         <span class="post-sigma-rules__badge">{{ page.sigma_rules.count }} rules · 5 SIEM formats</span>
       </div>
-      <p class="post-sigma-rules__intro">Auto-generated detection rules based on the MITRE ATT&CK techniques in this post. Pick your SIEM platform and copy directly — no conversion needed.</p>
+
+      {% if post_age < seven_days %}
+      {% comment %}── FRESH POST: metadata only, query gated behind bot ──{% endcomment %}
+      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} auto-generated detection rules for this incident, mapped to MITRE ATT&CK. Available in Sigma, Splunk SPL, Sentinel KQL, Elastic Lucene, and QRadar AQL.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -144,75 +151,84 @@ layout: default
           <span class="sigma-tactic">{{ page.sigma_rules.preview_tactic }}</span>
         </div>
         <h3>{{ page.sigma_rules.preview_title }}</h3>
-        {% if page.sigma_rules.formats %}
-        <div class="sigma-siem-tabs">
-          <div class="sigma-siem-tabs__bar">
-            <button class="sigma-tab sigma-tab--active" data-siem="sigma">Sigma</button>
-            <button class="sigma-tab" data-siem="splunk">Splunk</button>
-            <button class="sigma-tab" data-siem="sentinel">Sentinel</button>
-            <button class="sigma-tab" data-siem="elastic">Elastic</button>
-            <button class="sigma-tab" data-siem="qradar">QRadar</button>
+        <div class="sigma-gated">
+          <div class="sigma-gated__formats">
+            <span class="sigma-gated__chip">Sigma</span>
+            <span class="sigma-gated__chip">Splunk SPL</span>
+            <span class="sigma-gated__chip">Sentinel KQL</span>
+            <span class="sigma-gated__chip">Elastic</span>
+            <span class="sigma-gated__chip">QRadar AQL</span>
           </div>
-          <div class="sigma-siem-tabs__content">
-            <pre class="sigma-yaml" id="sigma-siem-output"></pre>
-            <button class="sigma-copy-btn" id="sigma-copy-btn" aria-label="Copy to clipboard">📋 Copy</button>
-          </div>
+          <p class="sigma-gated__text">Get this rule in your SIEM's native format — copy, paste, detect. No manual conversion.</p>
+        </div>
+      </div>
+      {% endif %}
+      <div class="post-sigma-rules__cta">
+        <p><strong>{{ page.sigma_rules.count }} detection rules ready</strong> — type <code>/detect</code> in the Intel Bot, search the affected organization, and get SIEM-ready queries you can deploy in seconds.</p>
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
+        {% if page.sigma_rules.paid_count > 0 %}
+        <span class="post-sigma-rules__price">{{ page.sigma_rules.free_count }} free · {{ page.sigma_rules.paid_count }} more in full pack (250 ⭐)</span>
+        {% endif %}
+      </div>
+
+      {% else %}
+      {% comment %}── AGED POST (7+ days): Sigma YAML only, SIEM formats via bot ──{% endcomment %}
+      <p class="post-sigma-rules__intro">Auto-generated Sigma detection rule for this incident. Need it in Splunk, Sentinel, Elastic, or QRadar format? Use <code>/detect</code> in the Intel Bot for instant conversion.</p>
+      {% if page.sigma_rules.preview_title %}
+      <div class="post-sigma-rules__preview">
+        <div class="post-sigma-rules__meta">
+          <span class="tag tag--{{ page.sigma_rules.preview_level }}">{{ page.sigma_rules.preview_level }}</span>
+          <span class="sigma-technique">{{ page.sigma_rules.preview_technique }}</span>
+          <span class="sigma-tactic">{{ page.sigma_rules.preview_tactic }}</span>
+        </div>
+        <h3>{{ page.sigma_rules.preview_title }}</h3>
+        {% if page.sigma_rules.formats.sigma %}
+        <div class="sigma-yaml-block">
+          <pre class="sigma-yaml" id="sigma-preview-yaml"></pre>
+          <button class="sigma-copy-btn" id="sigma-copy-btn" aria-label="Copy Sigma YAML">📋 Copy Sigma</button>
         </div>
         <script>
         (function(){
-          var fmts={
-            sigma:"{{ page.sigma_rules.formats.sigma }}",
-            splunk:"{{ page.sigma_rules.formats.splunk }}",
-            sentinel:"{{ page.sigma_rules.formats.sentinel }}",
-            elastic:"{{ page.sigma_rules.formats.elastic }}",
-            qradar:"{{ page.sigma_rules.formats.qradar }}"
-          };
-          var decoded={};
-          for(var k in fmts){try{decoded[k]=atob(fmts[k])}catch(e){decoded[k]="Format not available"}}
-          var out=document.getElementById('sigma-siem-output');
-          var copyBtn=document.getElementById('sigma-copy-btn');
-          var current='sigma';
-          if(out)out.textContent=decoded.sigma;
-          document.querySelectorAll('.sigma-tab').forEach(function(tab){
-            tab.addEventListener('click',function(){
-              document.querySelectorAll('.sigma-tab').forEach(function(t){t.classList.remove('sigma-tab--active')});
-              tab.classList.add('sigma-tab--active');
-              current=tab.getAttribute('data-siem');
-              if(out)out.textContent=decoded[current]||"Format not available";
-            });
-          });
-          if(copyBtn){copyBtn.addEventListener('click',function(){
-            navigator.clipboard.writeText(decoded[current]||'').then(function(){
-              copyBtn.textContent='✅ Copied!';
-              setTimeout(function(){copyBtn.textContent='📋 Copy'},2000);
+          var b64 = "{{ page.sigma_rules.formats.sigma }}";
+          if(b64){try{document.getElementById('sigma-preview-yaml').textContent=atob(b64)}catch(e){}}
+          var btn = document.getElementById('sigma-copy-btn');
+          if(btn){btn.addEventListener('click',function(){
+            var text = document.getElementById('sigma-preview-yaml').textContent;
+            navigator.clipboard.writeText(text).then(function(){
+              btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent='📋 Copy Sigma'},2000);
             });
           })}
         })();
         </script>
-        {% else %}
+        <div class="sigma-siem-locked">
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
+        </div>
+        {% elsif page.sigma_rules.preview_yaml_b64 %}
         <details class="sigma-yaml-toggle">
           <summary>View Sigma YAML</summary>
-          <pre class="sigma-yaml" id="sigma-preview-yaml"></pre>
+          <pre class="sigma-yaml" id="sigma-preview-yaml-old"></pre>
         </details>
         <script>
         (function(){
           var b64 = "{{ page.sigma_rules.preview_yaml_b64 }}";
-          if(b64){try{document.getElementById('sigma-preview-yaml').textContent=atob(b64)}catch(e){}}
+          if(b64){try{document.getElementById('sigma-preview-yaml-old').textContent=atob(b64)}catch(e){}}
         })();
         </script>
         {% endif %}
       </div>
       {% endif %}
-      {% if page.sigma_rules.paid_count > 0 %}
       <div class="post-sigma-rules__cta">
-        <p><strong>{{ page.sigma_rules.paid_count }} more detection rules</strong> for this incident — ready to deploy in Splunk, Sentinel, Elastic, QRadar, or Sigma. Just type <code>/detect</code> in the bot, search the affected organization, and get copy-paste queries for your SIEM.</p>
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Pack →</a>
+        {% if page.sigma_rules.paid_count > 0 %}
+        <p><strong>{{ page.sigma_rules.paid_count }} more rules + all 5 SIEM formats</strong> — type <code>/detect</code> in the Intel Bot. Get copy-paste queries for Splunk, Sentinel, Elastic, and QRadar in seconds.</p>
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get SIEM Formats →</a>
         <span class="post-sigma-rules__price">250 ⭐ (~$5) · Free for Pro & Elite subscribers</span>
-      </div>
-      {% else %}
-      <div class="post-sigma-rules__cta post-sigma-rules__cta--free">
-        <p>Need detection rules for other incidents? Use <code>/detect</code> in the Intel Bot — search any organization and get SIEM-ready queries instantly.</p>
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Try /detect in Bot →</a>
+        {% else %}
+        <p>Need this in your SIEM's format? Use <code>/detect</code> in the Intel Bot — instant conversion to Splunk SPL, Sentinel KQL, Elastic, and QRadar AQL.</p>
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get SIEM Formats →</a>
+        {% endif %}
       </div>
       {% endif %}
     </div>

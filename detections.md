@@ -136,10 +136,6 @@ permalink: /detections/
            data-mitre="{{ post.sigma_rules.preview_technique | downcase }}"
            {% if post.sigma_rules.formats %}
            data-fmt-sigma="{{ post.sigma_rules.formats.sigma }}"
-           data-fmt-splunk="{{ post.sigma_rules.formats.splunk }}"
-           data-fmt-sentinel="{{ post.sigma_rules.formats.sentinel }}"
-           data-fmt-elastic="{{ post.sigma_rules.formats.elastic }}"
-           data-fmt-qradar="{{ post.sigma_rules.formats.qradar }}"
            {% elsif post.sigma_rules.preview_yaml_b64 %}
            data-fmt-sigma="{{ post.sigma_rules.preview_yaml_b64 }}"
            {% endif %}>
@@ -151,24 +147,22 @@ permalink: /detections/
         <p>Auto-generated from <a href="{{ post.url | relative_url }}">{{ post.title | truncate: 60 }}</a></p>
         <div class="dl-rule__meta">
           <span class="badge badge--{% if sev == 'critical' %}live{% elsif sev == 'high' %}signal{% elsif sev == 'medium' %}drop{% else %}vault{% endif %}">{{ sev }}</span>
-          <span class="tag">Multi-SIEM</span>
+          <span class="tag">Sigma</span>
           <span class="tag">{{ post.date | date: "%b %d, %Y" }}</span>
         </div>
-        {% if post.sigma_rules.formats %}
-        <div class="dl-siem-tabs">
-          <button class="dl-siem-tab dl-siem-tab--active" data-fmt="sigma">Sigma</button>
-          <button class="dl-siem-tab" data-fmt="splunk">Splunk</button>
-          <button class="dl-siem-tab" data-fmt="sentinel">Sentinel</button>
-          <button class="dl-siem-tab" data-fmt="elastic">Elastic</button>
-          <button class="dl-siem-tab" data-fmt="qradar">QRadar</button>
-        </div>
-        {% endif %}
         <div class="dl-rule__code">
           <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
           <pre><code class="dl-siem-code"></code></pre>
         </div>
+        <div class="sigma-siem-locked sigma-siem-locked--vault">
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
+          <a href="https://t.me/Shimiscyberworldbot?start=detect" class="sigma-gated__unlock" target="_blank" rel="noopener">Unlock SIEM Formats →</a>
+        </div>
         {% if post.sigma_rules.paid_count and post.sigma_rules.paid_count > 0 %}
-        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more SIEM-ready rules — type <code>/detect</code> in <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">Intel Bot</a> and search this organization</p>
+        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules — type <code>/detect</code> in <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">Intel Bot</a></p>
         {% endif %}
       </div>
         {% endunless %}
