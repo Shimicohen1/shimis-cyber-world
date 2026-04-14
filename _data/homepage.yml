@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Ecosystem Faces Multiple Exploitable Vulnerabilities
-    text: Discourse platforms are currently affected by several CVEs, impacting moderation, subscriptions, and data exposure.
-    detail: Recent advisories highlight multiple vulnerabilities within the Discourse platform, including unauthorized access to private topics (CVE-2026-32615), subscription tier manipulation (CVE-2026-33074), and exposure of draft topic titles (CVE-2026-32951). Organizations using Discourse should prioritize patching and reviewing access controls to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=basic&results_type=overview&query=Discourse
-    link_label: Discourse Vulnerabilities on NVD
+  - title: Discourse Platform Remains a Prime Vulnerability Target
+    text: Multiple recent advisories highlight recurring vulnerabilities in the Discourse platform, spanning access control to subscription abuse.
+    detail: Discourse continues to be a target for various exploits, including unauthorized access to private topics (CVE-2026-32615) and subscription tier manipulation (CVE-2026-33074). Organizations using Discourse should prioritize patching and review access controls to mitigate these ongoing risks.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: Discourse Vulnerability Details
     badge: signal
     tags:
       - vulnerability
       - discourse
-      - data-exposure
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: AI platforms and interfaces, particularly LLMs, are targets for credential theft and prompt injection.
-    detail: The emergence of vulnerabilities in AI chat interfaces, such as those affecting `text-generation-webui` (CVEs related to RAG extensions), highlights risks of cloud credential theft. Cybersecurity professionals must secure AI infrastructure and monitor for prompt injection and data leakage.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLMs
-    badge: signal
-    tags:
-      - ai-security
-      - cloud-security
-      - vulnerability
-  - title: Ransomware Groups Intensify Attacks on Business Services
-    text: The Business Services sector is experiencing a surge in ransomware attacks, indicating a targeted campaign.
-    detail: Intelligence reports indicate a concentrated increase in ransomware activity targeting the Business Services sector. Threat actors like TiMc and operations such as Kairos are active. Organizations in this sector should bolster their defenses against ransomware, focusing on endpoint protection and incident response.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-103a
+      - access-control
+  - title: Ransomware Groups Aggressively Target Business Services Sector
+    text: Intelligence indicates a significant increase in ransomware attacks specifically targeting the Business Services sector.
+    detail: The Business Services sector is experiencing a surge in ransomware activity, with 18 attacks noted in a single week. This coordinated effort suggests a strategic focus by threat actors. Organizations in this sector must bolster their defenses, focusing on endpoint protection, regular backups, and user awareness training.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-287a
     link_label: CISA Ransomware Guidance
     badge: signal
     tags:
       - ransomware
       - threat-intel
       - business-services
-  - title: Supply Chain Risks Highlighted by Dependency Vulnerabilities
-    text: Core libraries and dependencies in various software stacks are revealing critical vulnerabilities.
-    detail: Recent advisories point to significant risks stemming from software dependencies, such as PyYAML in Docling Core (CVEs related to RCE) and Ruby eval in Alchemy CMS (CVE-2026-23885). Organizations must implement robust Software Bill of Materials (SBOM) and dependency scanning to identify and mitigate risks.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
+  - title: AI Model Safety Concerns Escalate with 'Mythos' Revelation
+    text: A new AI model, 'Mythos,' is deemed too dangerous for public release due to concerning capabilities.
+    detail: Anthropic's 'Mythos' AI model raises significant safety concerns, being classified as too risky for public deployment. This highlights the growing challenge of managing advanced AI capabilities and potential misuse. Developers and researchers must implement robust safety protocols and ethical guidelines as AI technology advances.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
-      - supply-chain
+      - ai-security
+      - threat-intel
+      - large-language-models
+  - title: SSRF and RCE Vulnerabilities Persist in Development Tools
+    text: Recent alerts identify critical SSRF and RCE flaws in widely used developer tools like Backstage and Alchemy CMS.
+    detail: Critical Server-Side Request Forgery (SSRF) and Remote Code Execution (RCE) vulnerabilities continue to be discovered in developer tools such as Backstage (CVE-2026-5832) and Alchemy CMS (CVE-2026-23885). Teams using these or similar platforms should immediately apply patches and review their security configurations to prevent exploitation.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Information
+    badge: signal
+    tags:
       - vulnerability
-      - dependency-management
+      - rce
+      - ssrf
+      - developer-tools
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
