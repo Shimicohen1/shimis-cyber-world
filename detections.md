@@ -15,8 +15,9 @@ permalink: /detections/
   {% assign pe = post.date | date: '%s' | plus: 0 %}
   {% if post.sigma_rules and pe < vault_cutoff %}
     {% assign ctkey = post.sigma_rules.preview_title | downcase | strip %}
-    {% unless counted_titles contains ctkey %}
-      {% assign counted_titles = counted_titles | append: "|||" | append: ctkey %}
+    {% assign ctcheck = "||" | append: ctkey | append: "||" %}
+    {% unless counted_titles contains ctcheck %}
+      {% assign counted_titles = counted_titles | append: ctcheck %}
       {% assign breach_intel_count = breach_intel_count | plus: 1 %}
     {% endunless %}
   {% endif %}
@@ -122,8 +123,9 @@ permalink: /detections/
       {% assign pe = post.date | date: '%s' | plus: 0 %}
       {% if post.sigma_rules and pe < vault_cutoff %}
         {% assign rule_key = post.sigma_rules.preview_title | downcase | strip %}
-        {% unless seen_titles contains rule_key %}
-          {% assign seen_titles = seen_titles | append: "|||" | append: rule_key %}
+        {% assign rule_check = "||" | append: rule_key | append: "||" %}
+        {% unless seen_titles contains rule_check %}
+          {% assign seen_titles = seen_titles | append: rule_check %}
           {% assign unique_breach_count = unique_breach_count | plus: 1 %}
       {% assign sev = post.sigma_rules.preview_level | default: 'medium' %}
       <div class="tool-card dl-rule dl-rule--breach reveal"
