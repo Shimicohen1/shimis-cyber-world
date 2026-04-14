@@ -25,46 +25,49 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Discourse Platform Faces Persistent Vulnerabilities
-    text: Multiple recent posts highlight ongoing security flaws in the Discourse platform, affecting various features.
-    detail: Discourse continues to be a target, with recent vulnerabilities impacting moderator privileges, email settings, subscription tiers, and draft topic exposure. Organizations using Discourse should prioritize patching and review access controls to mitigate risks associated with CVE-2026-32615, CVE-2026-33185, CVE-2026-33074, and CVE-2026-32951.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=Discourse
-    link_label: Discourse Vulnerabilities on NVD
+  - title: Discourse Platform Faces Multiple Vulnerabilities
+    text: Discourse is experiencing a surge of reported vulnerabilities affecting various functionalities, from private topic access to subscription tiers.
+    detail: Multiple CVEs highlight risks in Discourse, including unauthorized access to private topics (CVE-2026-32615) and subscription manipulation (CVE-2026-33074). Administrators should prioritize patching and review access controls to mitigate these diverse threats.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32615
+    link_label: Discourse Vulnerability Details
     badge: signal
     tags:
-      - discourse
       - vulnerability
-      - web-application
-  - title: AI Models and Interfaces Present New Attack Vectors
-    text: Emerging threats target AI models and interfaces, including credential theft and potential misuse.
-    detail: The increasing integration of AI, particularly LLMs and their interfaces, introduces novel security challenges. Vulnerabilities in AI chat interfaces can lead to cloud credential theft, and the development of powerful AI models like Anthropic's 'Mythos' raises concerns about potential misuse. Stay vigilant against threats targeting AI infrastructure and data.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+      - discourse
+      - cve
+  - title: RCE and File Read Flaws in Open Source Tools
+    text: Several open-source projects like OrangeHRM and Alchemy CMS are affected by critical RCE and file read vulnerabilities.
+    detail: Authenticated users can exploit flaws in OrangeHRM (CVE-2026-39345) for local file reads, while Alchemy CMS (CVE-2026-23885) suffers from RCE via Ruby eval. Staying updated with vendor advisories and patching promptly is crucial for these widely used tools.
+    link: https://owasp.org/www-project-top-10/
+    link_label: OWASP Top 10
+    badge: signal
+    tags:
+      - vulnerability
+      - rce
+      - open-source
+      - tools
+  - title: AI Security Risks Escalate with New LLM Vulnerabilities
+    text: AI interfaces and models are becoming targets, with vulnerabilities exposing credentials and raising concerns about model safety.
+    detail: An AI chat interface (text-generation-webui) is vulnerable to cloud credential theft, and Anthropic's 'Mythos' AI model is deemed too dangerous for release. Organizations must implement robust security for AI deployments and stay informed on AI-specific threats.
+    link: https://www.nist.gov/itl/ai-risk-management-framework
+    link_label: NIST AI Risk Management
     badge: signal
     tags:
       - ai-security
-      - cloud-security
-      - threat-intel
-  - title: Supply Chain Risks Magnified by Dependency Vulnerabilities
-    text: Vulnerabilities in software dependencies continue to pose significant risks across various applications.
-    detail: The Docling Core RCE bug, stemming from a PyYAML dependency, and the Jeecgboot JimuReport vulnerability highlight the persistent dangers of insecure software supply chains. Organizations must implement robust dependency scanning and management practices to identify and remediate vulnerable components before they are exploited.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
-    badge: signal
-    tags:
-      - supply-chain
       - vulnerability
-      - dependency-management
-  - title: Threat Actors Exploit Emojis for Stealthy Communications
-    text: Cybercriminals are increasingly using emojis to bypass security controls and conceal malicious activity.
-    detail: A growing trend sees threat actors leveraging emojis for sophisticated evasion techniques, making detection harder. This tactic can be used in phishing campaigns or to obfuscate command-and-control communications. Security teams should enhance their threat detection capabilities to recognize emoji-based obfuscation methods.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-awareness
-    link_label: CISA Phishing Awareness
+      - llm
+      - cloud
+  - title: New Threat Actors and Ransomware Activity Surge
+    text: Emerging threat actors like TiMc and increased ransomware attacks on business services highlight evolving cybercrime tactics.
+    detail: The emergence of new actors like TiMc and a rise in ransomware targeting business services indicate a dynamic threat landscape. Monitoring darkweb activity and understanding attacker TTPs are vital for proactive defense.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Alerts
     badge: signal
     tags:
       - threat-intel
+      - ransomware
+      - darkweb
       - malware
-      - evasion-techniques
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
