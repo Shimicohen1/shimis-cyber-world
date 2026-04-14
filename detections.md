@@ -37,6 +37,18 @@ permalink: /detections/
   </div>
 </section>
 
+<!-- Breach-specific CTA -->
+<section class="cs-cta reveal" style="margin: 2rem 0;">
+  <div class="cs-cta__box" style="background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0,200,255,0.05) 100%); border-left: 3px solid var(--accent);">
+    <h3 style="margin-top:0;">🛡️ Need rules for a specific breach?</h3>
+    <p>The rules below are generic detection patterns. Our Intel Bot generates <strong>Sigma rules tailored to real breaches</strong> — mapped to the exact ATT&CK techniques observed in each incident. Pick your SIEM and get a ready-to-paste query.</p>
+    <div class="cs-cta__actions">
+      <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Generate Breach Rules →</a>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">Free: 1 rule per breach · Full pack: 250 ⭐ · Included with Pro/Elite</span>
+    </div>
+  </div>
+</section>
+
 <hr class="section-break">
 
 <!-- Stats bar -->
@@ -184,10 +196,10 @@ permalink: /detections/
 <!-- CTA -->
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
-    <h2 class="cs-cta__title">New rules ship regularly.</h2>
-    <p class="cs-cta__text">{{ total_rules }} production-ready queries and growing. Subscribe to get notified when new detection rules drop.</p>
+    <h2 class="cs-cta__title">New rules ship with every breach.</h2>
+    <p class="cs-cta__text">{{ total_rules }} detection rules and growing. Use <code>/detect</code> in the Intel Bot to generate Sigma rules for any breach — converted to your SIEM format instantly.</p>
     <div class="cs-cta__actions">
-      <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--primary">WarRoom →</a>
+      <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--primary" target="_blank" rel="noopener">Open Intel Bot →</a>
       <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to Feed</a>
     </div>
   </div>
