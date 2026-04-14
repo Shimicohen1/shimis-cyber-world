@@ -59,6 +59,20 @@ why_it_matters:
   - "If you're running a modern Android device, especially a Pixel, this is good news. While you can't directly 'patch' your modem firmware, understanding that vendors like Google are investing in memory-safe languages like Rust for critical components means your device is getting more resilient by design. It reduces the likelihood of zero-days exploiting fundamental networking operations. Keep your device updated, as these architectural improvements often roll out with regular security patches."
 bot_cta_title: "Stay Ahead of Device Vulnerabilities"
 bot_cta_description: "Use /brief to get an analyst-ready weekly threat summary with vulnerability rankings."
+sigma_rules:
+  count: 1
+  free_count: 1
+  paid_count: 0
+  preview_title: "DNS Tunneling Detection — Google"
+  preview_level: "medium"
+  preview_technique: "T1071.004"
+  preview_tactic: "Command and Control"
+  formats:
+    sigma: "dGl0bGU6IEROUyBUdW5uZWxpbmcgRGV0ZWN0aW9uIOKAlCBHb29nbGUKaWQ6IHNjdy0yMDI2LTA0LTE0LTEKc3RhdHVzOiBleHBlcmltZW50YWwKbGV2ZWw6IG1lZGl1bQpkZXNjcmlwdGlvbjogfAogIERldGVjdHMgdW51c3VhbGx5IGxvbmcgRE5TIHF1ZXJpZXMgdG8gZ29vZ2xlLmNvbSBzdWJkb21haW5zLCBhIHBvdGVudGlhbCBpbmRpY2F0b3Igb2YgRE5TLWJhc2VkIGRhdGEgZXhmaWx0cmF0aW9uIG9yIEMyIHR1bm5lbGluZy4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKGF1dG8tZ2VuZXJhdGVkKQpkYXRlOiAyMDI2LTA0LTE0CnJlZmVyZW5jZXM6CiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA0LTE0LXJzcy1yc3N0aGVoYWNrZXJuZXdzLXJzc3RoZWhhY2tlcm5ld3NhY3d5c3MKdGFnczoKICAtIGF0dGFjay5jb21tYW5kX2FuZF9jb250cm9sCiAgLSBhdHRhY2sudDEwNzEuMDA0CmxvZ3NvdXJjZToKICAgIGNhdGVnb3J5OiBkbnMKZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgcXVlcnl8ZW5kc3dpdGg6CiAgICAgICAgLSAnZ29vZ2xlLmNvbScKICAgICAgcXVlcnlfbGVuZ3RofGd0OiA1MAogICAgICBjb25kaXRpb246IHNlbGVjdGlvbgpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWN0aXZpdHkgZnJvbSBHb29nbGU="
+    splunk: "aW5kZXg9ZG5zIHNvdXJjZXR5cGU9ImRucyIKfCB3aGVyZSBxdWVyeT0iKmdvb2dsZS5jb20iIEFORCBxdWVyeV9sZW5ndGg9NTA="
+    sentinel: "RG5zRXZlbnRzCnwgd2hlcmUgUXVlcnlOYW1lIGVuZHN3aXRoICJnb29nbGUuY29tIgogICAgYW5kIHF1ZXJ5X2xlbmd0aCA9PSA1MA=="
+    elastic: "ZG5zLnF1ZXN0aW9uLm5hbWU6Kmdvb2dsZS5jb20gQU5EIHF1ZXJ5X2xlbmd0aDoiNTAi"
+    qradar: "U0VMRUNUICoKRlJPTSBldmVudHMKV0hFUkUgRE5TX1F1ZXJ5IElMSUtFICclZ29vZ2xlLmNvbScKICBBTkQgcXVlcnlfbGVuZ3RoID0gNTAKICBBTkQgTE9HU09VUkNFVFlQRU5BTUUobG9nc291cmNlaWQpID0gJ0ROUycKTEFTVCAyNCBIT1VSUw=="
 ---
 
 Google is stepping up its security game on Pixel devices, integrating a Rust-based Domain Name System (DNS) parser directly into the modem firmware. This move, reported by The Hacker News, is part of a broader push to embed memory-safe code at a foundational level, significantly reducing the attack surface.
