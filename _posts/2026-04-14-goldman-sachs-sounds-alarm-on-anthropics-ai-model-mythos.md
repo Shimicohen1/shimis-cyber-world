@@ -64,6 +64,15 @@ mitre_attack:
     name: "Exploits"
     tactic: "Resource Development"
     url: "https://attack.mitre.org/techniques/T1588/005/"
+sigma_rules:
+  count: 1
+  free_count: 1
+  paid_count: 0
+  preview_title: "Exploitation Attempt — Goldman Sachs Sounds Alarm on Anthropic'"
+  preview_level: "high"
+  preview_technique: "vulnerability"
+  preview_tactic: "event-type"
+
 ---
 
 Goldman Sachs is voicing serious concerns about the cybersecurity implications of Anthropic's new AI model, dubbed 'Mythos.' According to The Cyber Express, Goldman's CEO David Solomon stated the financial giant is "hyperaware" of the risks posed by advanced AI, including large language models and Mythos, which can identify and exploit software vulnerabilities at an unprecedented level.
