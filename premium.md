@@ -103,9 +103,9 @@ permalink: /premium/
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>Detection Vault</h3>
-<p>KQL, Sigma, and Splunk detection rules mapped to MITRE ATT&CK. Copy-paste ready.</p>
+<p>KQL, Sigma, Splunk, and Wazuh detection rules mapped to MITRE ATT&CK. Copy-paste ready.</p>
 <div class="elite-card__meta">
-<span>KQL / Sigma / Splunk</span>
+<span>KQL / Sigma / Splunk / Wazuh</span>
 <span>MITRE mapped</span>
 </div>
 </div>
@@ -168,7 +168,7 @@ permalink: /premium/
 <div class="elite-bot__card">
 <div class="elite-bot__icon">🔎</div>
 <h2 class="elite-bot__title">SCW Intel Bot</h2>
-<p class="elite-bot__desc">Turn any breach into SIEM detection rules — Splunk, Sentinel, QRadar &amp; Elastic. Plus watchlist alerts, threat search, and IOC exports. All inside Telegram, no dashboards.</p>
+<p class="elite-bot__desc">Turn any breach into SIEM detection rules — Splunk, Sentinel, QRadar, Elastic &amp; Wazuh. Plus watchlist alerts, threat search, and IOC exports. All inside Telegram, no dashboards.</p>
 
 <div class="elite-bot__features">
 <div class="elite-bot__feature">
@@ -189,7 +189,7 @@ permalink: /premium/
 </div>
 <div class="elite-bot__feature">
 <strong><span class="scw-icon" data-icon="shield"></span> Breach Detection Rules</strong>
-<span>Type <code>/detect</code> + org name → get Sigma rules mapped to the ATT&CK techniques from that breach. Pick your SIEM (Splunk, Sentinel, Elastic, QRadar) and paste. 1 free rule per breach, full pack with Pro/Elite.</span>
+<span>Type <code>/detect</code> + org name → get Sigma rules mapped to the ATT&CK techniques from that breach. Pick your SIEM (Splunk, Sentinel, Elastic, QRadar, Wazuh) and paste. 1 free rule per breach, full pack with Pro/Elite.</span>
 </div>
 </div>
 

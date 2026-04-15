@@ -26,7 +26,7 @@ permalink: /detections/
 <div class="page-head">
   <div class="label label--cyan page-head__label">SCW TOOLS</div>
   <h1 class="page-head__title">Detection Vault</h1>
-  <p class="page-head__desc">Production-ready detection rules for real SOC environments. KQL, Sigma, and Splunk — mapped to MITRE ATT&CK. Copy, paste, detect.</p>
+  <p class="page-head__desc">Production-ready detection rules for real SOC environments. KQL, Sigma, Splunk, and Wazuh — mapped to MITRE ATT&CK. Copy, paste, detect.</p>
 </div>
 
 <section class="cs-intro reveal">
@@ -170,6 +170,7 @@ permalink: /detections/
           <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
           <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
           <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>
           <a href="https://t.me/Shimiscyberworldbot?start=detect" class="sigma-gated__unlock" target="_blank" rel="noopener">Unlock SIEM Formats →</a>
         </div>
         {% if post.sigma_rules.paid_count and post.sigma_rules.paid_count > 0 %}

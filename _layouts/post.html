@@ -144,12 +144,12 @@ layout: default
     <div class="post-sigma-rules">
       <div class="post-sigma-rules__header">
         <h2>🛡️ Detection Rules</h2>
-        <span class="post-sigma-rules__badge">{{ page.sigma_rules.count }} rules · 5 SIEM formats</span>
+        <span class="post-sigma-rules__badge">{{ page.sigma_rules.count }} rules · 6 SIEM formats</span>
       </div>
 
       {% if post_age < fourteen_days %}
       {% comment %}── FRESH POST: metadata only, query gated behind bot ──{% endcomment %}
-      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} auto-generated detection rules for this incident, mapped to MITRE ATT&CK. Available in Sigma, Splunk SPL, Sentinel KQL, Elastic Lucene, and QRadar AQL.</p>
+      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} auto-generated detection rules for this incident, mapped to MITRE ATT&CK. Available in Sigma, Splunk SPL, Sentinel KQL, Elastic Lucene, QRadar AQL, and Wazuh.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -165,6 +165,7 @@ layout: default
             <span class="sigma-gated__chip">Sentinel KQL</span>
             <span class="sigma-gated__chip">Elastic</span>
             <span class="sigma-gated__chip">QRadar AQL</span>
+            <span class="sigma-gated__chip">Wazuh</span>
           </div>
           <p class="sigma-gated__text">Get this rule in your SIEM's native format — copy, paste, detect. No manual conversion.</p>
         </div>
@@ -193,13 +194,14 @@ layout: default
             <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
             <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
             <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>
           </div>
           <p class="sigma-gated__text">All formats available in the Intel Bot — copy, paste, detect.</p>
         </div>
       </div>
       {% endif %}
       <div class="post-sigma-rules__cta">
-        <p>Get these {{ page.sigma_rules.count }} rules converted to Splunk SPL, Sentinel KQL, Elastic, or QRadar AQL — ready to paste into your SIEM.</p>
+        <p>Get these {{ page.sigma_rules.count }} rules converted to Splunk SPL, Sentinel KQL, Elastic, QRadar AQL, or Wazuh — ready to paste into your SIEM.</p>
         <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get Detection Rules →</a>
       </div>
       {% endif %}
