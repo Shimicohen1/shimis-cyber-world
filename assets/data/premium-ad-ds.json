@@ -1,0 +1,253 @@
+{
+  "ads-001": {
+    "attackPerspective": "Without tiered access, a single compromised workstation admin account can reach Domain Controllers. Mimikatz extracts cached Tier 0 credentials from lower-tier machines. The NotPetya attack (2017) exploited flat admin models to move laterally across entire enterprises within minutes.",
+    "implementationNotes": "1. Create dedicated Tier 0 admin accounts (e.g., t0-admin-jsmith)\n2. Create \"Tier 0 Servers\" and \"Tier 0 Admins\" OUs\n3. Link GPO to deny Tier 0 logon on workstations and member servers\n4. Deploy Privileged Access Workstations (PAWs) for Tier 0 admins\n5. Block internet access on PAWs via firewall rules\n",
+    "validationNotes": "# Verify Tier 0 accounts cannot log into workstations\n# Attempt logon to a workstation with Tier 0 account - should fail\n# Check GPO application:\ngpresult /r /scope:computer | findstr \"Tier\"\n# Verify OU membership:\nGet-ADUser -Filter * -SearchBase \"OU=Tier0-Admins,DC=corp,DC=local\" | Select Name\n",
+    "tuningNotes": "Legacy applications may require Tier 0 credentials on lower-tier systems. Identify these first and plan migration to gMSA or dedicated service accounts before enforcement.",
+    "advancedDetection": "# Detect Tier 0 accounts logging into non-Tier 0 systems\n# Event ID 4624 where account is in Tier 0 group but target is not a DC\nindex=windows EventCode=4624 TargetUserName=\"t0-*\"\n| where NOT match(WorkstationName, \"DC\\d+\")\n| stats count by TargetUserName, WorkstationName, LogonType\n",
+    "relatedIds": [
+      "ads-002",
+      "ads-004",
+      "ads-006"
+    ]
+  },
+  "ads-002": {
+    "attackPerspective": "Protected Users group is the single most effective defense against credential theft. Without it, Mimikatz can extract NTLM hashes, TGTs can be captured for Golden Ticket attacks, and credentials cached on machines become Pass-the-Hash targets. This directly blocks tools like Rubeus and Impacket secretsdump.",
+    "implementationNotes": "1. Inventory all Domain Admins, Enterprise Admins, Schema Admins\n2. Test each account for NTLM dependencies before adding\n3. Add accounts incrementally and monitor for auth failures\n4. Service accounts CANNOT be added (they need delegation) — use gMSA instead\n5. Requires domain functional level Windows Server 2012 R2+\n",
+    "validationNotes": "# List Protected Users members\nGet-ADGroupMember \"Protected Users\" | Select Name, ObjectClass\n# Verify a member cannot use NTLM\n# Test: runas /user:domain\\protecteduser cmd — NTLM should fail\n# Check Kerberos ticket is AES only\nklist\n",
+    "tuningNotes": "Some legacy applications require NTLM. Test thoroughly before adding accounts. Protected Users also disables credential delegation, which breaks apps that need Kerberos delegation.",
+    "advancedDetection": "# Monitor removals from Protected Users (Event 4729)\nindex=windows EventCode=4729 TargetUserName=\"Protected Users\"\n| table _time, SubjectUserName, MemberName\n| sort -_time\n",
+    "relatedIds": [
+      "ads-001",
+      "ads-007",
+      "ads-011"
+    ]
+  },
+  "ads-003": {
+    "attackPerspective": "Shared local admin passwords are the",
+    "implementationNotes": "1. Extend AD schema: Update-LapsADSchema (requires Schema Admin)\n2. Configure GPO: Computer Config > Admin Templates > LAPS\n3. Set password complexity (14+ chars, special chars)\n4. Set rotation interval (30 days recommended)\n5. Delegate read permissions to Tier 1/2 helpdesk groups\n6. Deploy LAPS CSE via GPO or SCCM\n",
+    "validationNotes": "# Check LAPS password is set on a computer\nGet-LapsADPassword -Identity \"WKS001\" -AsPlainText\n# Verify GPO is applied\ngpresult /r | findstr \"LAPS\"\n# Check schema extension\nGet-ADObject \"CN=ms-Mcs-AdmPwd,CN=Schema,CN=Configuration,DC=corp,DC=local\"\n",
+    "tuningNotes": "Windows LAPS (built-in to Server 2019+/Win 11) replaces legacy LAPS. It supports Azure AD backup and password encryption. Migrate from legacy LAPS if still in use.",
+    "advancedDetection": "# Detect LAPS password reads (Event 4662 on ms-Mcs-AdmPwd attribute)\nindex=windows EventCode=4662 ObjectType=\"*ms-Mcs-AdmPwd*\"\n| stats count by SubjectUserName, ObjectName\n| where count > 10\n| sort -count\n",
+    "relatedIds": [
+      "ads-001",
+      "ads-004"
+    ]
+  },
+  "ads-004": {
+    "attackPerspective": "AdminSDHolder is a stealthy persistence mechanism. An attacker with Domain Admin adds a custom ACE to AdminSDHolder, and within 60 minutes, SDProp copies it to every protected group (Domain Admins, Enterprise Admins, etc). Even if the direct backdoor is removed, it gets re-applied automatically. This is a favorite post-exploitation technique for APT groups.",
+    "implementationNotes": "1. Document baseline AdminSDHolder ACL\n2. Remove any non-default ACEs (only SYSTEM, Domain Admins, Enterprise Admins should have access)\n3. Set up monitoring for ACL changes on AdminSDHolder\n4. Consider reducing SDProp interval during incident response\n",
+    "validationNotes": "# Export AdminSDHolder ACL for baseline\n$acl = Get-ACL \"AD:CN=AdminSDHolder,CN=System,DC=corp,DC=local\"\n$acl.Access | Export-Csv \"AdminSDHolder-ACL-Baseline.csv\" -NoTypeInformation\n# Compare current vs baseline regularly\n# Check SDProp run interval\nGet-ADObject \"CN=Directory Service,CN=Windows NT,CN=Services,CN=Configuration,DC=corp,DC=local\" -Properties \"adminSDProtectFrequency\"\n",
+    "tuningNotes": "Default SDProp interval is 60 minutes. Do not reduce below 60 in production — it adds DC load. Only decrease temporarily during incident response.",
+    "advancedDetection": "# Detect AdminSDHolder ACL modification (Event 5136)\nindex=windows EventCode=5136 ObjectDN=\"CN=AdminSDHolder,CN=System,*\"\n| table _time, SubjectUserName, AttributeLDAPDisplayName, AttributeValue\n| sort -_time\n",
+    "relatedIds": [
+      "ads-001",
+      "ads-002"
+    ]
+  },
+  "ads-005": {
+    "attackPerspective": "Traditional service accounts with SPNs are prime Kerberoasting targets. Rubeus and Impacket's GetUserSPNs request service tickets encrypted with the account's password hash, then crack them offline. Weak service account passwords crack in minutes. gMSAs use 240-byte random passwords that are impossible to brute-force.",
+    "implementationNotes": "1. Create KDS root key: Add-KdsRootKey -EffectiveImmediately (test) or -EffectiveTime ((Get-Date).AddHours(-10)) (prod)\n2. Create computer group for servers that will use the gMSA\n3. Create gMSA with New-ADServiceAccount\n4. Install gMSA on target servers: Install-ADServiceAccount -Identity \"gMSA-SQLSvc\"\n5. Update service to use gMSA (password field left blank)\n6. Remove old service account and its SPN\n",
+    "validationNotes": "# Test gMSA on target server\nTest-ADServiceAccount -Identity \"gMSA-SQLSvc\"\n# Verify password was retrieved\nGet-ADServiceAccount \"gMSA-SQLSvc\" -Properties PasswordLastSet\n# List all gMSAs\nGet-ADServiceAccount -Filter * | Select Name, PasswordLastSet, Enabled\n",
+    "tuningNotes": "gMSAs require domain functional level 2012+. Some legacy apps don't support gMSA (they require interactive logon). For these, use long random passwords (25+ chars) and rotate frequently.",
+    "advancedDetection": "# Detect Kerberoasting against remaining service accounts\nindex=windows EventCode=4769 TicketEncryptionType=0x17 ServiceName!=\"krbtgt\" ServiceName!=\"*$\"\n| stats count by ServiceName, ClientAddress\n| where count > 3\n| sort -count\n",
+    "relatedIds": [
+      "ads-002",
+      "ads-011"
+    ]
+  },
+  "ads-006": {
+    "attackPerspective": "Unconstrained delegation stores the user's full TGT in memory on the delegated server. An attacker who compromises that server can extract all cached TGTs with Rubeus/Mimikatz and impersonate any user, including Domain Admins. The Printer Bug (SpoolSample) forces DCs to authenticate to attacker-controlled machines with unconstrained delegation, yielding the DC machine account TGT — instant domain compromise.",
+    "implementationNotes": "1. Audit: Find all unconstrained delegation accounts\n2. For each, determine if delegation is actually needed\n3. Convert to constrained delegation with protocol transition\n4. Set Account is sensitive and cannot be delegated on privileged accounts\n5. Add privileged accounts to Protected Users (disables delegation)\n",
+    "validationNotes": "# Verify no unconstrained delegation (except DCs)\nGet-ADComputer -Filter {TrustedForDelegation -eq $true} -Properties TrustedForDelegation |\n  Where-Object { $_.DistinguishedName -notlike \"*Domain Controllers*\" }\n# Should return empty\n# Check constrained delegation targets\nGet-ADComputer -Filter {msDS-AllowedToDelegateTo -ne \"$null\"} -Properties msDS-AllowedToDelegateTo |\n  Select Name, msDS-AllowedToDelegateTo\n",
+    "tuningNotes": "Web servers behind load balancers often use delegation. Convert to RBCD which is more secure and doesn't require SeEnableDelegation privilege.",
+    "advancedDetection": "# Detect delegation abuse — TGT requests from non-DC machines\nindex=windows EventCode=4624 LogonType=3\n| where TargetUserName LIKE \"%-$\" AND WorkstationName NOT LIKE \"DC%\"\n| stats count by TargetUserName, WorkstationName\n",
+    "relatedIds": [
+      "ads-002",
+      "ads-005",
+      "ads-011"
+    ]
+  },
+  "ads-007": {
+    "attackPerspective": "NTLM relay (ntlmrelayx, Responder) is one of the most reliable initial access techniques in Active Directory environments. An attacker on the network captures NTLM challenges and relays them to another server, gaining authenticated access without knowing the password. Tools like Responder + ntlmrelayx automate this into a single command. Disabling NTLM forces Kerberos, which cannot be relayed.",
+    "implementationNotes": "1. Enable NTLM audit logging domain-wide via GPO (audit mode first!)\n2. Monitor for 30+ days to identify NTLM-dependent applications\n3. Add exceptions for required applications to allowlist\n4. Gradually restrict: Deny NTLM for domain accounts first\n5. Final phase: Deny all NTLM authentication\nWARNING: Blocking NTLM prematurely WILL break things. Extended audit period is critical.\n",
+    "validationNotes": "# Check NTLM audit events\nGet-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-NTLM/Operational'; ID=8001,8002,8003,8004} |\n  Select TimeCreated, Message | Format-List\n# Verify GPO setting\ngpresult /r | findstr -i \"NTLM\"\n",
+    "tuningNotes": "Legacy systems (old printers, NAS devices, pre-2008 servers) often require NTLM. Create server-level exceptions via the NTLM allowlist GPO setting rather than keeping NTLM fully enabled.",
+    "advancedDetection": "# Detect NTLM relay attempts\nindex=windows EventCode=4624 AuthenticationPackageName=\"NTLM\" LogonType=3\n| stats count by TargetUserName, IpAddress, WorkstationName\n| where count > 20\n| sort -count\n",
+    "relatedIds": [
+      "ads-002",
+      "ads-008",
+      "ads-010"
+    ]
+  },
+  "ads-008": {
+    "attackPerspective": "Without LDAP signing, attackers can use ntlmrelayx to relay captured NTLM authentication to LDAP on a DC, then modify AD objects — adding users to Domain Admins, configuring delegation, or performing DCSync. The \"LDAP relay to DA\" attack chain is one of the most common paths from network access to domain compromise.",
+    "implementationNotes": "1. Audit first: Set LDAPServerIntegrity=1 (request signing, don't require)\n2. Check Event ID 2887 on DCs for unsigned LDAP binds\n3. Fix applications doing unsigned binds (update connection strings to use signing)\n4. Enforce: Set LDAPServerIntegrity=2 (require signing)\n5. Set LdapEnforceChannelBinding=2 (require channel binding)\n",
+    "validationNotes": "# Check current LDAP signing setting\nGet-ItemProperty \"HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters\" | Select LDAPServerIntegrity, LdapEnforceChannelBinding\n# Check for unsigned bind events (last 24 hours)\nGet-WinEvent -FilterHashtable @{LogName='Directory Service'; ID=2887} -MaxEvents 10\n# Value 0 in event = no unsigned binds in period\n",
+    "tuningNotes": "Legacy Linux/LDAP clients (especially older Java apps using JNDI) may not support LDAP signing. Update to modern LDAP libraries or configure SSL/TLS instead.",
+    "advancedDetection": "# Monitor unsigned LDAP binds (Event 2889 shows source IP)\nindex=windows source=\"Directory Service\" EventCode=2889\n| stats count by Client_IP_Address\n| sort -count\n",
+    "relatedIds": [
+      "ads-007",
+      "ads-009",
+      "ads-014"
+    ]
+  },
+  "ads-009": {
+    "attackPerspective": "SMB relay is the bread and butter of internal network attacks. Responder captures NTLM hashes on the wire, ntlmrelayx relays them to SMB on other machines, and the attacker gets remote code execution. Without SMB signing, there is no way for the server to verify the authentication wasn't relayed. This attack works on default Windows configurations.",
+    "implementationNotes": "1. Enable via GPO: Computer Config > Windows Settings > Security Settings > Local Policies > Security Options\n2. Microsoft network server: Digitally sign communications (always) = Enabled\n3. Microsoft network client: Digitally sign communications (always) = Enabled\n4. Apply to ALL computers in domain, not just DCs\n5. Note: SMB signing adds ~10-15% overhead on file transfer heavy workloads\n",
+    "validationNotes": "# Verify SMB signing on local machine\nGet-SmbServerConfiguration | Select RequireSecuritySignature\nGet-SmbClientConfiguration | Select RequireSecuritySignature\n# Both should return True\n# Check remote machine\nGet-SmbConnection | Select ServerName, SigningRequired\n",
+    "tuningNotes": "SMB signing can impact performance on high-throughput file servers. Consider SMB encryption (SMB 3.0+) as a superior alternative that provides both signing and encryption.",
+    "advancedDetection": "# Detect unsigned SMB connections\nindex=windows EventCode=551\n| stats count by SourceAddress\n| sort -count\n",
+    "relatedIds": [
+      "ads-007",
+      "ads-008"
+    ]
+  },
+  "ads-010": {
+    "attackPerspective": "Responder.py is the go-to tool for poisoning LLMNR/NBT-NS/WPAD. When a machine sends a broadcast name resolution query, Responder answers \"that's me!\" and captures NTLMv2 hashes. These are then cracked offline with Hashcat or relayed with ntlmrelayx. This attack works from any machine on the same network segment — it's often the first thing a pentester or attacker runs.",
+    "implementationNotes": "1. Disable LLMNR via GPO: Computer Config > Admin Templates > Network > DNS Client > Turn off multicast name resolution = Enabled\n2. Disable NetBIOS via DHCP options (Option 001 = 0x2) or per-adapter\n3. Disable WPAD: Create DNS entry \"wpad\" pointing to a non-existent IP, or block in proxy\n4. Ensure DNS is properly configured so LLMNR/NBT-NS aren't needed\n",
+    "validationNotes": "# Verify LLMNR is disabled\nGet-ItemProperty \"HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient\" -Name EnableMulticast\n# Should be 0\n# Check NetBIOS setting\nGet-WmiObject Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled} | Select Description, TcpipNetbiosOptions\n# 2 = disabled\n# Check WPAD DNS entry\nResolve-DnsName wpad.corp.local -ErrorAction SilentlyContinue\n",
+    "tuningNotes": "Some legacy applications and printers rely on NetBIOS for name resolution. Ensure DNS is functioning properly before disabling. Create static DNS entries for any devices that relied on broadcast resolution.",
+    "advancedDetection": "# Detect LLMNR/NBT-NS traffic on network\n# Suricata/Zeek rule for LLMNR (UDP 5355) and NBT-NS (UDP 137)\n# SIEM query:\nindex=network dest_port IN (5355, 137)\n| stats count by src_ip, dest_port\n| sort -count\n",
+    "relatedIds": [
+      "ads-007",
+      "ads-009"
+    ]
+  },
+  "ads-011": {
+    "attackPerspective": "Kerberoasting with RC4 is trivial — Hashcat cracks RC4 TGS tickets at billions of attempts per second on modern GPUs. AES tickets crack at millions per second — orders of magnitude slower. Disabling RC4 forces AES, making Kerberoasting practically infeasible for accounts with strong passwords. Rubeus and Impacket specifically request RC4 tickets by default for this reason.",
+    "implementationNotes": "1. Audit: Find all accounts with RC4-only encryption\n   Get-ADUser -Filter * -Properties msDS-SupportedEncryptionTypes | Where {$_.'msDS-SupportedEncryptionTypes' -band 0x4}\n2. Update accounts to support AES: Set msDS-SupportedEncryptionTypes to 0x18 (AES128+AES256)\n3. Test with key applications before domain-wide enforcement\n4. Apply GPO to require AES\n5. Monitor for Kerberos failures (Event 4769 with failure code)\nWARNING: Disabling RC4 breaks Windows XP/2003 and some legacy apps.\n",
+    "validationNotes": "# Check domain-wide encryption type\nGet-ADDefaultDomainPasswordPolicy | Select -ExpandProperty ComplexityEnabled\n# Check specific accounts\nGet-ADUser -Filter * -Properties msDS-SupportedEncryptionTypes |\n  Select Name, @{N='EncTypes';E={$_.'msDS-SupportedEncryptionTypes'}} |\n  Where-Object { $_.EncTypes -band 0x4 }\n# Should return empty (no RC4-only accounts)\n",
+    "tuningNotes": "Legacy systems (pre-2008 R2) may require RC4. For these, create a dedicated OU with a GPO exception while planning migration. Track RC4 usage via Event ID 4769 with TicketEncryptionType 0x17.",
+    "advancedDetection": "# Detect RC4 Kerberos ticket requests (Kerberoasting indicator)\nindex=windows EventCode=4769 TicketEncryptionType=0x17 ServiceName!=\"krbtgt\" ServiceName!=\"*$\"\n| stats count by ServiceName, ClientAddress, TargetUserName\n| where count > 5\n| sort -count\n",
+    "relatedIds": [
+      "ads-002",
+      "ads-005",
+      "ads-014"
+    ]
+  },
+  "ads-012": {
+    "attackPerspective": "Unencrypted LDAP exposes cleartext credentials during simple binds and sensitive directory information. Attackers with network position can sniff LDAP traffic to harvest credentials, enumerate the directory, and map trust relationships. Even with LDAP signing, the data is visible — LDAPS provides full confidentiality.",
+    "implementationNotes": "1. Deploy AD CS or use a third-party CA to issue DC certificates\n2. Certificate must have Server Authentication EKU\n3. Certificate subject must match DC FQDN\n4. Install certificate in Local Machine > Personal store\n5. LDAPS becomes available automatically on port 636\n6. Configure applications to use LDAPS connection strings\n7. Eventually block port 389 externally (keep internal for DC-to-DC replication)\n",
+    "validationNotes": "# Test LDAPS from remote machine\n$ldapConn = New-Object System.DirectoryServices.DirectoryEntry(\"LDAP://DC01.corp.local:636\")\n# Check certificate\nopenssl s_client -connect DC01.corp.local:636 -showcerts\n# Or PowerShell\nTest-NetConnection -ComputerName \"DC01.corp.local\" -Port 636\n",
+    "tuningNotes": "LDAP port 389 is still required for DC-to-DC replication within the forest. Block 389 only at the perimeter firewall, not internally between DCs.",
+    "advancedDetection": "# Monitor for cleartext LDAP binds (Event 2889)\nindex=windows source=\"Directory Service\" EventCode=2889\n| stats count by Client_IP_Address\n| sort -count\n",
+    "relatedIds": [
+      "ads-008",
+      "ads-011"
+    ]
+  },
+  "ads-013": {
+    "attackPerspective": "Without proper audit policies, attacks like DCSync, Golden Ticket, Kerberoasting, and GPO abuse are invisible. Advanced audit policies provide the telemetry needed to detect these attacks. Event IDs 4662 (DCSync), 4769 (Kerberoasting), 4768 (AS-REP Roasting), 5136 (AD object changes) are critical for detection.",
+    "implementationNotes": "1. Force advanced audit policy: Set SCENoApplyLegacyAuditPolicy = 1\n2. Configure via GPO (Advanced Audit Policy Configuration):\n   - Account Logon: Kerberos Auth Service (S+F), Kerberos Service Ticket Ops (S+F)\n   - Account Management: All subcategories (S+F)\n   - DS Access: Directory Service Access (S), Directory Service Changes (S)\n   - Logon/Logoff: Logon (S+F), Special Logon (S)\n   - Object Access: SAM (S), Kernel Object (S)\n   - Policy Change: Audit Policy Change (S+F)\n   - Privilege Use: Sensitive Privilege Use (S+F)\n3. Forward events to SIEM via WEF or agent\n",
+    "validationNotes": "# Verify audit policy settings\nauditpol /get /category:*\n# Check specific critical subcategories\nauditpol /get /subcategory:\"Directory Service Changes\"\nauditpol /get /subcategory:\"Kerberos Service Ticket Operations\"\nauditpol /get /subcategory:\"Credential Validation\"\n",
+    "tuningNotes": "Audit success events for Directory Service Access can generate enormous volume. Start with changes only, then add access auditing selectively on critical objects (AdminSDHolder, GPOs, DNS).",
+    "advancedDetection": "# Verify audit events are flowing to SIEM\nindex=windows EventCode IN (4662,4769,4768,5136,4724,4728)\n| stats count by EventCode\n| sort -count\n",
+    "relatedIds": [
+      "ads-014",
+      "ads-015",
+      "ads-016"
+    ]
+  },
+  "ads-014": {
+    "attackPerspective": "DCSync (Mimikatz lsadump::dcsync or Impacket secretsdump.py) allows any account with Replicating Directory Changes All permissions to extract all password hashes from the domain, including the krbtgt hash needed for Golden Ticket attacks. It's often the final step in domain compromise and requires no code execution on the DC itself.",
+    "implementationNotes": "1. Audit: Identify all accounts with replication rights (should only be DCs and specific replication accounts)\n2. Remove replication rights from any non-DC accounts\n3. Configure SACL on domain root for replication GUID auditing\n4. Forward Event ID 4662 with replication GUIDs to SIEM\n5. Create alerting rule for DCSync detection\n",
+    "validationNotes": "# List accounts with replication rights\n$domainDN = (Get-ADDomain).DistinguishedName\n$repGUIDs = @(\"1131f6ad-9c07-11d1-f79f-00c04fc2dcd2\",\"1131f6aa-9c07-11d1-f79f-00c04fc2dcd2\")\n(Get-ACL \"AD:$domainDN\").Access |\n  Where-Object { $repGUIDs -contains $_.ObjectType.ToString() } |\n  Select IdentityReference | Sort IdentityReference -Unique\n# Should only show Domain Controllers and replication accounts\n",
+    "tuningNotes": "Azure AD Connect service accounts legitimately need replication rights for password hash sync. Allowlist these in your SIEM detection rule.",
+    "advancedDetection": "# DCSync detection rule\n# Event 4662 with replication GUIDs from non-DC source\nindex=windows EventCode=4662\n  Properties IN (\"1131f6ad-9c07-11d1-f79f-00c04fc2dcd2\",\"1131f6aa-9c07-11d1-f79f-00c04fc2dcd2\")\n| where SubjectUserName NOT LIKE \"%DC%$\"\n| stats count by SubjectUserName, SubjectDomainName, ClientAddress\n| sort -count\n",
+    "relatedIds": [
+      "ads-013",
+      "ads-004"
+    ]
+  },
+  "ads-015": {
+    "attackPerspective": "GPO abuse is a devastating post-exploitation technique. Tools like SharpGPOAbuse and pyGPOAbuse allow attackers to add Immediate Scheduled Tasks to GPOs, executing arbitrary code on every machine the GPO applies to. A single compromised GPO editor account can push ransomware or backdoors domain-wide within the next GPO refresh (90 minutes).",
+    "implementationNotes": "1. Enable Directory Service Changes auditing (Event 5136)\n2. Set SACL on GroupPolicyContainer objects for write access\n3. Create SIEM alert for GPO modifications\n4. Restrict GPO editing to specific admin accounts\n5. Use GPO versioning and backup for change management\n",
+    "validationNotes": "# List all GPOs and their modification dates\nGet-GPO -All | Select DisplayName, ModificationTime, Owner |\n  Sort ModificationTime -Descending | Format-Table\n# Check GPO permissions\n(Get-GPO -Name \"Default Domain Policy\").GetSecurityInfo() | Format-Table\n",
+    "tuningNotes": "Filter out known service accounts that legitimately modify GPOs (SCCM, Intune connectors). Focus alerts on GPO changes outside of change windows.",
+    "advancedDetection": "# Detect GPO modification\nindex=windows EventCode=5136 ObjectClass=\"groupPolicyContainer\"\n| stats count by SubjectUserName, ObjectDN, AttributeLDAPDisplayName\n| sort -_time\n",
+    "relatedIds": [
+      "ads-013",
+      "ads-016",
+      "ads-019"
+    ]
+  },
+  "ads-016": {
+    "attackPerspective": "AS-REP Roasting (Rubeus asreproast, Impacket GetNPUsers) requests a TGT for accounts without pre-auth and receives an encrypted response that can be cracked offline. Unlike Kerberoasting, this requires NO valid domain credentials — just a username list. Accounts with Do not require Kerberos preauthentication checked are instant targets.",
+    "implementationNotes": "1. Find all accounts with pre-auth disabled\n2. Re-enable pre-auth on all accounts (unless there's a documented exception)\n3. For service accounts that \"need\" it — investigate and fix the root cause\n4. Monitor for the DoesNotRequirePreAuth flag being set\n5. Create automated detection for this misconfiguration\n",
+    "validationNotes": "# Verify no accounts have pre-auth disabled\nGet-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Properties DoesNotRequirePreAuth | Measure-Object\n# Should return Count = 0\n# Monitor for AS-REP requests (Event 4768 with failure code 0x0)\nGet-WinEvent -FilterHashtable @{LogName='Security'; ID=4768} |\n  Where-Object { $_.Properties[8].Value -eq \"0x0\" } | Select -First 10\n",
+    "tuningNotes": "Some legacy Kerberos implementations may require pre-auth to be disabled. These should be documented, tracked, and migrated. Use a dedicated monitoring rule for these exceptions.",
+    "advancedDetection": "# Detect AS-REP Roasting attempts\nindex=windows EventCode=4768 PreAuthType=0 Status=0x0\n| stats count by TargetUserName, IpAddress\n| where count > 3\n| sort -count\n",
+    "relatedIds": [
+      "ads-011",
+      "ads-005",
+      "ads-013"
+    ]
+  },
+  "ads-017": {
+    "attackPerspective": "The Print Spooler has been the source of multiple critical exploits: PrintNightmare (CVE-2021-34527) provides remote code execution as SYSTEM, and the Printer Bug (SpoolSample/dementor.py) forces a DC to authenticate to an attacker-controlled machine, yielding the DC machine account TGT. Combined with unconstrained delegation, this gives instant domain compromise. There is never a legitimate reason to run Print Spooler on a DC.",
+    "implementationNotes": "1. Disable Spooler on ALL Domain Controllers\n2. Deploy via GPO: Computer Config > Preferences > Control Panel Settings > Services\n3. Service name: Spooler, Startup type: Disabled, Service action: Stop\n4. Apply to Domain Controllers OU\n5. Verify on each DC after GPO refresh\n",
+    "validationNotes": "# Check Spooler on all DCs\nGet-ADDomainController -Filter * | ForEach-Object {\n  $svc = Get-Service -Name Spooler -ComputerName $_.HostName -ErrorAction SilentlyContinue\n  [PSCustomObject]@{\n    DC = $_.HostName\n    Status = $svc.Status\n    StartType = $svc.StartType\n  }\n} | Format-Table\n",
+    "tuningNotes": "If a DC also serves as a print server (bad practice), migrate print services to a dedicated member server before disabling Spooler on the DC.",
+    "advancedDetection": "# Detect Spooler exploitation attempts (PrintNightmare)\nindex=windows EventCode=808 OR (EventCode=316 AND source=\"Microsoft-Windows-PrintService\")\n| stats count by ComputerName, _time\n| sort -_time\n",
+    "relatedIds": [
+      "ads-006",
+      "ads-019"
+    ]
+  },
+  "ads-018": {
+    "attackPerspective": "If regular users or Tier 1/2 admins can log on to DCs, their credentials are cached in LSASS memory. Mimikatz can extract these, giving attackers lateral movement paths. Every interactive logon on a DC is a potential credential exposure. Physical DC logon should be treated with the same sensitivity as vault access.",
+    "implementationNotes": "1. Create GPO linked to Domain Controllers OU\n2. Allow log on locally: Domain Admins, Enterprise Admins (Tier 0 only)\n3. Allow log on through Remote Desktop: Domain Admins (Tier 0 only)\n4. Deny log on locally: All standard users, Tier 1/2 admin groups\n5. Deny access from network: Guest, Local accounts\n6. Test with Tier 0 account before enforcing deny rules\n",
+    "validationNotes": "# Export and review current user rights\nsecedit /export /cfg C:\\Security\\secpol.cfg /quiet\nSelect-String -Path C:\\Security\\secpol.cfg -Pattern \"SeInteractiveLogonRight|SeDenyInteractiveLogonRight|SeRemoteInteractiveLogonRight\"\n# Verify GPO application\ngpresult /r /scope:computer | findstr -i \"logon\"\n",
+    "tuningNotes": "Ensure break-glass procedures allow emergency DC access. Keep a documented offline admin account that bypasses GPO restrictions for disaster recovery.",
+    "advancedDetection": "# Detect non-Tier0 logons to DCs\nindex=windows EventCode=4624 LogonType IN (2,10) dest_category=\"domain_controller\"\n| where NOT match(TargetUserName, \"^(t0-|admin-)\")\n| stats count by TargetUserName, LogonType, WorkstationName\n",
+    "relatedIds": [
+      "ads-001",
+      "ads-017"
+    ]
+  },
+  "ads-019": {
+    "attackPerspective": "GPP passwords in SYSVOL are a classic quick win for attackers. The AES key Microsoft used to \"encrypt\" these passwords was published in MSDN documentation. Tools like gpp-decrypt and Get-GPPPassword (PowerSploit) decrypt them instantly. SYSVOL is readable by all authenticated domain users by default, so any domain user can harvest these passwords.",
+    "implementationNotes": "1. Scan SYSVOL for cpassword entries in all XML files\n2. Remove any Group Policy Preferences that set passwords\n3. Migrate FRS to DFS-R if not done: dfsrmig /setglobalstate 3\n4. Enable UNC hardened access for SYSVOL and NETLOGON paths\n5. Set RequireMutualAuthentication=1, RequireIntegrity=1\n",
+    "validationNotes": "# Scan for GPP passwords\nGet-ChildItem \"\\\\$env:USERDNSDOMAIN\\SYSVOL\" -Recurse -Include \"*.xml\" |\n  Select-String \"cpassword\" | Select Path, LineNumber\n# Should return NOTHING\n# Check DFS-R state\ndfsrmig /getglobalstate\n# Should be \"Eliminated\" (State 3 = fully migrated)\n",
+    "tuningNotes": "Some organizations still use GPP for drive mappings and printer connections (without passwords). These are fine to keep. Only GPP entries with cpassword are dangerous.",
+    "advancedDetection": "# Detect SYSVOL enumeration (possible GPP password hunting)\nindex=windows EventCode=5145 ShareName=\"*SYSVOL*\" RelativeTargetName=\"*.xml\"\n| stats count by SubjectUserName, IpAddress\n| where count > 50\n| sort -count\n",
+    "relatedIds": [
+      "ads-015",
+      "ads-017"
+    ]
+  },
+  "ads-020": {
+    "attackPerspective": "DNS zone transfers (AXFR) dump the entire DNS zone, giving attackers a complete map of all hosts in the domain. Tools like dig, nslookup, and dnsenum automate this. DNS also enables attacks like ADIDNS record injection — creating new DNS entries pointing to attacker-controlled machines for man-in-the-middle or relay attacks.",
+    "implementationNotes": "1. Restrict zone transfers: Only to specific secondary DNS servers\n2. Enable DNS debug logging for security events\n3. Monitor for AXFR requests from non-DNS servers\n4. Consider DNS over HTTPS (DoH) for client queries\n5. Restrict dynamic DNS updates to secure-only\n6. Increase DNS socket pool size for cache poisoning protection\n",
+    "validationNotes": "# Check zone transfer restrictions\nGet-DnsServerZone -Name \"corp.local\" | Select ZoneName, SecureSecondaries, SecondaryServers\n# Check DNS logging\nGet-DnsServerDiagnostics | Select EnableLoggingForLocalLookupEvent, EnableLoggingForRemoteServerEvent\n# Test zone transfer (should fail from non-authorized host)\nnslookup\n# > server DC01\n# > ls -d corp.local (should be refused)\n",
+    "tuningNotes": "DNS logging can generate very high volume. Enable selectively — focus on query logging for security-relevant queries (TXT records, AXFR) rather than all queries.",
+    "advancedDetection": "# Detect zone transfer attempts\nindex=dns query_type=AXFR\n| stats count by src_ip, query\n| sort -count\n\n# Detect ADIDNS record injection\nindex=windows EventCode=5136 ObjectClass=\"dnsNode\"\n| stats count by SubjectUserName, ObjectDN\n",
+    "relatedIds": [
+      "ads-008",
+      "ads-013"
+    ]
+  },
+  "ads-021": {
+    "attackPerspective": "The NTDS.dit file contains all domain user password hashes. If a DC disk is stolen, cloned from a VM snapshot, or a backup tape is compromised, an attacker can extract every hash offline using secretsdump. BitLocker prevents this by encrypting the disk at rest. In cloud/virtual environments, also consider VM encryption.",
+    "implementationNotes": "1. Install BitLocker feature: Install-WindowsFeature BitLocker -IncludeManagementTools\n2. Configure TPM or network unlock for automatic boot\n3. Store recovery keys in AD (configure GPO for AD backup)\n4. Enable on system (C:) and data drives\n5. Use XTS-AES 256-bit encryption\n6. For VMs: also enable host-level disk encryption\n",
+    "validationNotes": "# Check BitLocker status on all drives\nGet-BitLockerVolume | Select MountPoint, VolumeStatus, EncryptionMethod, ProtectionStatus\n# Verify recovery key is backed up to AD\nGet-ADComputer -Identity \"DC01\" -Properties msFVE-RecoveryInformation\n# Check TPM status\nGet-Tpm | Select TpmPresent, TpmReady, TpmEnabled\n",
+    "tuningNotes": "For virtual DCs, BitLocker protects against VM snapshot theft. Use TPM+PIN or network unlock for physical DCs. Ensure recovery keys are stored in AD AND a secure offline location.",
+    "advancedDetection": "# Monitor BitLocker status changes\nindex=windows source=\"Microsoft-Windows-BitLocker\" EventCode IN (768,769,770)\n| stats count by EventCode, ComputerName\n",
+    "relatedIds": [
+      "ads-012",
+      "ads-014"
+    ]
+  },
+  "ads-022": {
+    "attackPerspective": "Unpatched DCs are prime targets for known exploits. ZeroLogon (CVE-2020-1472) allowed unauthenticated domain takeover. PrintNightmare (CVE-2021-34527) gave SYSTEM on DCs. PetitPotam (CVE-2021-36942) enabled NTLM relay to AD CS. Each of these was weaponized within days of disclosure. A single unpatched DC compromises the entire forest.",
+    "implementationNotes": "1. Patch DCs monthly within 72 hours of Patch Tuesday\n2. Patch sequence: PDC emulator LAST\n3. Patch one DC at a time, verify replication between each\n4. Test patches on staging DC or VM clone first\n5. Schema updates: Run adprep /forestprep and /domainprep before OS upgrades\n6. Maintain rollback plan: full system state backup before patching\n",
+    "validationNotes": "# Verify replication health after patching\nrepadmin /replsummary\nrepadmin /showrepl\ndcdiag /a /q\n# Check all DCs are on same patch level\nGet-ADDomainController -Filter * | ForEach-Object {\n  Get-HotFix -ComputerName $_.HostName | Sort InstalledOn -Desc | Select -First 3\n}\n",
+    "tuningNotes": "For forests with multiple domains, patch child domain DCs before root domain DCs. Always snapshot virtual DCs before patching. Keep at least one DC unpatched for 24 hours as rollback insurance.",
+    "advancedDetection": "# Alert on DCs missing patches > 7 days after Patch Tuesday\n# Compare installed hotfix dates across all DCs\nindex=windows source=\"System\" EventCode=19\n| stats latest(_time) as last_update by ComputerName\n| where last_update < relative_time(now(), \"-30d\")\n",
+    "relatedIds": [
+      "ads-017",
+      "ads-013"
+    ]
+  }
+}

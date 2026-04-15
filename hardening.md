@@ -153,6 +153,7 @@ window.HARDEN_ITEMS = [
     description: {{ item.description | jsonify | replace: "</", "<\\/" }},
     reference: {{ item.reference | jsonify | replace: "</", "<\\/" }},
     command: {{ item.command | jsonify | replace: "</", "<\\/" }},
+    commandFull: {{ item.commandFull | jsonify | replace: "</", "<\\/" }},
     commandLanguage: {{ item.commandLanguage | jsonify | default: '"bash"' }},
     tags: {{ item.tags | jsonify | default: '[]' }},
     hasPremium: {% if item.premium %}true{% else %}false{% endif %}
@@ -160,4 +161,4 @@ window.HARDEN_ITEMS = [
 {% endfor %}
 ];
 </script>
-<script src="/assets/js/hardening.js?v=8" defer></script>
+<script src="/assets/js/hardening.js?v=9" defer></script>
