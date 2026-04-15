@@ -44,7 +44,7 @@ permalink: /detections/
     <p>The rules below are generic detection patterns. Our Intel Bot generates <strong>Sigma rules tailored to real breaches</strong> — mapped to the exact ATT&CK techniques observed in each incident. Pick your SIEM and get a ready-to-paste query.</p>
     <div class="cs-cta__actions">
       <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Generate Breach Rules →</a>
-      <span style="color: var(--text-muted); font-size: 0.85rem;">Free: 1 rule per breach · Full pack: 99 ⭐ · Included with Pro/Elite · Elite: weekly SIEM digest matched to your watchlist</span>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">Free: 1 rule per breach · Full pack via Bot · Included with Pro/Elite · Elite: weekly SIEM digest matched to your watchlist</span>
     </div>
   </div>
 </section>
@@ -271,7 +271,7 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
     <p style="margin-bottom:0.75rem;">The Intel Bot generates detection rules for <strong>every breach we track</strong> and converts them to all 6 SIEM formats instantly. Type <code>/detect</code> to get started.</p>
     <div class="cs-cta__actions">
       <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Open Intel Bot →</a>
-      <span style="color: var(--text-muted); font-size: 0.85rem;">Free: Sigma YAML · Full SIEM pack: 250 ⭐ · Included with Pro/Elite</span>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">Free: Sigma YAML · Full SIEM pack via Bot · Included with Pro/Elite</span>
     </div>
   </div>
 </section>
