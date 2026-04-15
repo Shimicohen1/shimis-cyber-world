@@ -94,4 +94,21 @@
       codeEl.textContent = b64decode(sigmaB64);
     }
   });
+
+  /* ── Showcase SIEM format tabs ── */
+  var showcaseTabs = document.querySelectorAll('.showcase-tabs');
+  showcaseTabs.forEach(function (tabBar) {
+    tabBar.addEventListener('click', function (e) {
+      var tab = e.target.closest('.showcase-tab');
+      if (!tab) return;
+      var panels = tabBar.nextElementSibling;
+      var fmt = tab.dataset.fmt;
+      tabBar.querySelectorAll('.showcase-tab').forEach(function (t) {
+        t.classList.toggle('active', t === tab);
+      });
+      panels.querySelectorAll('.showcase-panel').forEach(function (p) {
+        p.classList.toggle('active', p.dataset.fmt === fmt);
+      });
+    });
+  });
 })();
