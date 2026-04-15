@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Phishing-as-a-Service Platforms Evolve
-    text: Sophisticated PhaaS platforms like VENOM are now targeting C-suite Microsoft logins.
-    detail: The VENOM platform represents a growing trend of specialized phishing services. Threat actors are increasingly leveraging these platforms to conduct highly targeted attacks against senior executives, focusing on high-value credentials. Organizations should reinforce multi-factor authentication and conduct advanced phishing awareness training for leadership.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
-    link_label: Phishing Prevention
-    badge: signal
-    tags:
-      - threat-intel
-      - phishing
-      - microsoft
-  - title: Zero-Days Exploit Software Disclosure Gaps
-    text: Zero-day exploits for Windows and Adobe Reader highlight ongoing vendor vulnerability disclosure challenges.
-    detail: The emergence of zero-day vulnerabilities like 'BlueHammer' and Adobe Reader exploits underscores persistent issues with how software vendors handle vulnerability disclosure. This trend emphasizes the critical need for robust patch management and proactive threat hunting. Prioritize rapid patching for critical vulnerabilities and implement layered security controls.
-    link: https://nvd.nist.gov/vuln/categories
-    link_label: Vulnerability Categories
+  - title: Zero-Day Exploits Target Widely Used Software
+    text: Zero-day exploits are actively targeting common software like Adobe Reader and Windows.
+    detail: Recent intelligence highlights zero-day vulnerabilities being actively exploited in Adobe Reader and Windows. These exploits bypass traditional defenses and underscore the critical need for prompt patching and proactive threat hunting. Organizations should prioritize rapid deployment of vendor patches and monitor for unusual system behavior.
+    link: https://www.cisa.gov/news-events/advisories
+    link_label: CISA Advisories
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-  - title: IoT and Android SDKs Remain Key Attack Vectors
-    text: Malware like Masjesu targets IoT devices, while Android SDK flaws expose millions of wallets.
-    detail: The Masjesu botnet's focus on IoT devices and the discovery of critical vulnerabilities in Android SDKs highlight the expanding attack surface. These vectors are often overlooked, making them prime targets for data breaches and botnet expansion. Implement strict IoT security policies and conduct regular audits of third-party SDKs in mobile applications.
-    link: https://owasp.org/www-project-mobile-security-testing-guide/
-    link_label: Mobile Security Testing
+  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
+    text: New PhaaS platforms like VENOM are targeting high-value Microsoft credentials.
+    detail: Emerging Phishing-as-a-Service (PhaaS) platforms, such as VENOM, are specifically targeting C-suite Microsoft logins. This trend indicates a maturation of cybercrime operations, making sophisticated attacks more accessible. Users should be vigilant against targeted spear-phishing attempts and enable multi-factor authentication for all accounts.
+    link: https://owasp.org/www-community/vulnerabilities/Phishing
+    link_label: OWASP Phishing Info
     badge: signal
     tags:
       - threat-intel
-      - malware
-      - iot
-      - android
-  - title: APT Groups Diversify Global Targeting
-    text: Advanced Persistent Groups like Fancy Bear and Iranian state-sponsored actors broaden their targets.
-    detail: Recent intelligence reveals that nation-state actors, including Russia's Fancy Bear and Iranian groups, are expanding their reach to industrial control systems and critical infrastructure. This diversification signals a strategic shift towards disrupting essential services. Organizations must enhance their defenses against sophisticated, state-sponsored threats with tailored incident response plans.
-    link: https://www.mitre.org/threat-intelligence
-    link_label: Threat Actor Intelligence
+      - phishing
+      - microsoft
+  - title: APT Groups Expand Global Reach and Tactics
+    text: Nation-state actors like Fancy Bear and Iranian-backed groups are increasing their global targeting.
+    detail: Advanced Persistent Threat (APT) groups, including Russia's Fancy Bear and Iranian state-backed actors, are demonstrating expanded global reach, targeting industrial devices and diverse entities. This persistent activity necessitates robust defenses against nation-state-level threats, including network segmentation and continuous monitoring.
+    link: https://www.mitre.org/attack
+    link_label: MITRE ATT&CK Framework
     badge: signal
     tags:
       - threat-intel
       - apt
-      - state-sponsored
+      - nation-state
+  - title: AI Systems Face Prompt Injection Vulnerabilities
+    text: AI guardrails, including those in Apple Intelligence, are susceptible to prompt injection attacks.
+    detail: Even advanced AI systems like Apple Intelligence are vulnerable to prompt injection attacks, demonstrating that AI guardrails can be bypassed. This highlights the need for ongoing research into AI security and robust input validation. Organizations deploying AI should implement strict monitoring and consider adversarial testing.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
+    badge: signal
+    tags:
+      - threat-intel
+      - ai
+      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
