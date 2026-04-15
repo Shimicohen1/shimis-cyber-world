@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Evolving Phishing-as-a-Service Targets High-Value Credentials
-    text: New 'VENOM' platform specifically targets C-suite Microsoft logins, indicating sophisticated, high-value phishing campaigns.
-    detail: The emergence of PhaaS platforms like VENOM highlights a growing trend of specialized, targeted attacks against executive credentials. Cybersecurity teams should reinforce multi-factor authentication and conduct targeted phishing simulations for senior leadership to counter this threat.
-    link: https://owasp.org/www-community/vulnerabilities/Phishing
-    link_label: Phishing Vulnerabilities
+  - title: Phishing-as-a-Service Platforms Evolve to Target Executives
+    text: New PhaaS platforms like VENOM are specifically targeting C-suite Microsoft logins.
+    detail: The emergence of sophisticated PhaaS platforms like VENOM, specifically designed to compromise high-value Microsoft credentials of senior executives, indicates a growing trend in targeted cybercrime. Professionals should enhance executive-level security awareness training and implement advanced email filtering to detect and block these sophisticated phishing attempts.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
+    link_label: Phishing Protection
     badge: signal
     tags:
       - threat-intel
       - phishing
       - microsoft
-  - title: Zero-Day Exploits Continue to Target Core Software
-    text: Active exploitation of zero-days in Adobe Reader and Windows (BlueHammer) underscore ongoing software vulnerability risks.
-    detail: The persistent discovery and exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows demand proactive patching and robust endpoint detection. Prioritize threat intelligence feeds for zero-day disclosures and ensure rapid deployment of vendor patches.
-    link: https://www.cisa.gov/news-events/advisories/aa23-289a
-    link_label: CISA Alert on Zero-Days
+  - title: Zero-Day Exploits Target Widely Used Software
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows highlights critical patching gaps.
+    detail: Recent reports of zero-day exploits in Adobe Reader and Windows (BlueHammer) underscore the persistent threat of unpatched vulnerabilities. Organizations must prioritize rapid patching of critical software, especially end-of-life products, and implement robust endpoint detection and response (EDR) solutions to mitigate the impact of in-the-wild exploits.
+    link: https://www.cisa.gov/news-events/directives/binding-operational-directive-22-01
+    link_label: Patch Management
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-  - title: "Malware Evolution: From Stealth to Supply Chain Attacks"
-    text: New malware variants like LucidRook and ClickFix show evolving tactics, alongside sophisticated supply chain compromises.
-    detail: Observe the dual trend of new malware families employing targeted tactics (LucidRook) and the continued exploitation of trusted software update mechanisms (Smart Slider 3 Pro). Organizations must strengthen software supply chain security and implement strict validation for all software updates.
-    link: https://owasp.org/www-community/vulnerabilities/Supply-Chain-Attacks
-    link_label: Supply Chain Risks
-    badge: signal
-    tags:
-      - threat-intel
-      - malware
-      - supply-chain
   - title: AI Guardrails Vulnerable to Prompt Injection Attacks
-    text: Sophisticated prompt injection attacks have successfully bypassed AI guardrails in systems like Apple Intelligence.
-    detail: The successful bypass of AI guardrails by prompt injection attacks signals a new frontier in adversarial AI. Developers and security teams must prioritize robust input validation, develop context-aware AI models, and implement continuous monitoring for emergent adversarial techniques.
+    text: Researchers have demonstrated successful bypasses of AI guardrails in systems like Apple Intelligence.
+    detail: The successful exploitation of AI guardrails through prompt injection attacks, as seen with Apple Intelligence, signals a new frontier in cybersecurity threats against AI systems. Organizations leveraging AI should implement strict input validation, monitor AI model outputs for anomalies, and stay updated on emerging AI security best practices and mitigation techniques.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Application Security
+    link_label: LLM Security
     badge: signal
     tags:
       - threat-intel
-      - ai
-      - vulnerability
+      - ai-security
+      - prompt-injection
+  - title: Supply Chain Attacks Increasingly Target Software Updates
+    text: Hijacked update mechanisms for plugins like Smart Slider 3 Pro are distributing malware.
+    detail: The hijacking of legitimate software update channels, as evidenced by the Smart Slider 3 Pro incident, represents a significant supply chain risk. Organizations should rigorously vet third-party software, implement strict access controls for update servers, and consider integrity checks for critical software components to prevent the deployment of backdoored updates.
+    link: https://www.cisa.gov/news-events/advisories/aa23-281a
+    link_label: Supply Chain Risk
+    badge: signal
+    tags:
+      - threat-intel
+      - supply-chain
+      - malware
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
