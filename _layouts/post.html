@@ -260,9 +260,8 @@ layout: default
     </div>
     {% endif %}
 
-    {% comment %}── Contextual Product Recommendations — REMOVED ──{% endcomment %}
-    {% comment %} Affiliate recs removed from post pages to reduce clutter.
-         Affiliates are promoted via Telegram feed + LinkedIn only. {% endcomment %}
+    {% comment %}── Contextual Product Recommendations ──{% endcomment %}
+    {% include post-affiliate-bar.html tags=page.tags %}
 
     {% comment %}── SCW Intel Bot CTA — skip if sigma_rules already promoted the bot above ──{% endcomment %}
     {% unless page.sigma_rules %}

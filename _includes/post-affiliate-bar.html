@@ -1,0 +1,44 @@
+{% comment %}
+  post-affiliate-bar.html — Contextual affiliate recommendations
+  
+  Shows 1-2 relevant products based on post tags.
+  Renders as a subtle, native-looking "Recommended Tools" bar.
+  Only shows when a tag match exists — no match = no bar.
+  
+  Uses: _data/monetization.yml → recommendations[].match_tags
+{% endcomment %}
+
+{% assign _matched = false %}
+{% assign _products = "" | split: "" %}
+
+{% for rec in site.data.monetization.recommendations %}
+  {% unless _matched %}
+    {% for mtag in rec.match_tags %}
+      {% if include.tags contains mtag %}
+        {% assign _matched = true %}
+        {% assign _products = rec.products %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endunless %}
+{% endfor %}
+
+{% if _matched and _products.size > 0 %}
+<div class="post-rec-bar">
+  <div class="post-rec-bar__header">
+    <span class="post-rec-bar__icon">🛡️</span>
+    <span class="post-rec-bar__title">Recommended Tools</span>
+  </div>
+  <div class="post-rec-bar__items">
+    {% for prod in _products limit: 2 %}
+    <a href="{{ prod.url }}" target="_blank" rel="noopener noreferrer" class="post-rec-bar__item" data-track="affiliate-post">
+      <div class="post-rec-bar__info">
+        <strong>{{ prod.name }}</strong>
+        <span>{{ prod.desc }}</span>
+      </div>
+      <span class="post-rec-bar__badge">{{ prod.badge }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
