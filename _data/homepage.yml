@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: "AI Guardrails Under Siege: Prompt Injection Risks"
-    text: AI systems, including Apple Intelligence, are vulnerable to prompt injection attacks.
-    detail: Researchers have demonstrated the ability to bypass AI guardrails through clever prompt manipulation. This highlights a critical emerging threat vector for AI-powered systems. Cybersecurity professionals should prioritize understanding prompt injection techniques and advocate for robust input validation and output filtering mechanisms in AI deployments to mitigate risks.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Top 10 Project
+  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
+    text: New PhaaS platforms like VENOM are increasingly targeting high-value Microsoft credentials.
+    detail: The VENOM platform represents a growing trend in specialized phishing services, focusing on C-suite Microsoft 365 accounts. This indicates a shift towards more targeted and professionalized phishing operations. Organizations should enhance multi-factor authentication and user training to mitigate risks against these advanced social engineering tactics.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-133a
+    link_label: CISA Phishing Guidance
+    badge: signal
+    tags:
+      - phishing
+      - threat-intel
+      - microsoft
+  - title: Zero-Day Exploits Continue to Target Widely Used Software
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows highlights ongoing risks.
+    detail: The recent discovery and exploitation of zero-day flaws in widely adopted software like Adobe Reader and Windows underscore the persistent threat of unknown vulnerabilities. Organizations must prioritize prompt patching and investigate security advisories for critical software, implementing robust endpoint detection and response (EDR) solutions to counter in-the-wild exploits.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2023-27351
+    link_label: Adobe Reader Vulnerability
+    badge: signal
+    tags:
+      - vulnerability
+      - zero-day
+      - threat-intel
+  - title: Supply Chain Attacks Target Popular CMS Plugins
+    text: Hijacked updates for WordPress and Joomla plugins are distributing backdoored versions.
+    detail: A recent attack on the Smart Slider 3 Pro plugin demonstrates a critical supply chain risk where legitimate update mechanisms are compromised to distribute malware. This highlights the need for rigorous vetting of plugin sources, disabling auto-updates for critical components, and implementing security monitoring for unexpected code changes.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: OWASP Supply Chain Security
+    badge: signal
+    tags:
+      - supply-chain
+      - malware
+      - threat-intel
+  - title: Emergence of Autonomous and Agentic SOC Models
+    text: The future of Security Operations Centers (SOCs) is shifting towards autonomous defense systems.
+    detail: The concept of an 'agentic SOC' signifies a move towards AI-driven, autonomous defense capabilities operating at machine speed. This evolution necessitates a re-evaluation of SOC team roles, focusing on strategic oversight, complex incident analysis, and the management of AI agents rather than manual threat detection. Investing in AI integration and training is crucial.
+    link: https://www.microsoft.com/en-us/security/business/security-101/what-is-a-security-operations-center-soc
+    link_label: Microsoft SOC Overview
     badge: signal
     tags:
       - threat-intel
       - ai
-      - vulnerability
-  - title: Zero-Day Exploits Continue to Plague Widely Used Software
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows persists.
-    detail: The ongoing exploitation of zero-day flaws in widely adopted software like Adobe Reader and Microsoft Windows underscores the persistent threat of unknown vulnerabilities. Organizations must adopt a proactive patching strategy and implement robust endpoint detection and response (EDR) solutions to detect and mitigate attacks exploiting these unknown weaknesses.
-    link: https://www.cisa.gov/news-events/advisories/aa23-292a
-    link_label: CISA Known Exploited Vulnerabilities Catalog
-    badge: signal
-    tags:
-      - threat-intel
-      - vulnerability
-      - zero-day
-  - title: Supply Chain Attacks Target Popular CMS Plugins
-    text: Compromised updates for WordPress and Joomla plugins pose significant risks.
-    detail: Attackers are hijacking update mechanisms for popular plugins like Smart Slider 3 Pro to distribute backdoored versions. This supply chain attack vector highlights the critical need for rigorous vetting of third-party software and strict access controls for update processes. Organizations should implement software composition analysis and regularly audit plugin integrity.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerabilities
-    link_label: OWASP Supply Chain
-    badge: signal
-    tags:
-      - threat-intel
-      - supply-chain
-      - malware
-  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: New 'VENOM' platform targets C-suite Microsoft credentials via phishing.
-    detail: The emergence of sophisticated Phishing-as-a-Service (PhaaS) platforms like VENOM, specifically targeting high-value Microsoft credentials, indicates an evolving threat landscape. This demands enhanced user awareness training, multi-factor authentication (MFA) implementation, and advanced email security solutions to detect and block these highly targeted attacks.
-    link: https://www.microsoft.com/en-us/security/blog/2024/01/18/new-phishing-as-a-service-platform-venom-targets-microsoft-365-accounts/
-    link_label: Microsoft Security Blog
-    badge: signal
-    tags:
-      - threat-intel
-      - phishing
-      - microsoft
+      - soc
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
