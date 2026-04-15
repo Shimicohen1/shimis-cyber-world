@@ -168,7 +168,7 @@ permalink: /premium/
 <div class="elite-bot__card">
 <div class="elite-bot__icon">🔎</div>
 <h2 class="elite-bot__title">SCW Intel Bot</h2>
-<p class="elite-bot__desc">Turn any breach into SIEM detection rules — Splunk, Sentinel, QRadar, Elastic &amp; Wazuh. Plus watchlist alerts, threat search, and IOC exports. All inside Telegram, no dashboards.</p>
+<p class="elite-bot__desc">Turn any breach into SIEM detection rules — Splunk, Sentinel, QRadar, Elastic &amp; Wazuh. Plus watchlist alerts, weekly SIEM digest, threat search, and IOC exports. All inside Telegram, no dashboards.</p>
 
 <div class="elite-bot__features">
 <div class="elite-bot__feature">
@@ -190,6 +190,10 @@ permalink: /premium/
 <div class="elite-bot__feature">
 <strong><span class="scw-icon" data-icon="shield"></span> Breach Detection Rules</strong>
 <span>Type <code>/detect</code> + org name → get Sigma rules mapped to the ATT&CK techniques from that breach. Pick your SIEM (Splunk, Sentinel, Elastic, QRadar, Wazuh) and paste. 1 free rule per breach, full pack with Pro/Elite.</span>
+</div>
+<div class="elite-bot__feature">
+<strong><span class="scw-icon" data-icon="mail"></span> Weekly SIEM Digest</strong>
+<span>Elite subscribers get a personalized weekly digest — detection rules in your chosen SIEM format, matched to your watchlist organizations. Delivered automatically every Sunday.</span>
 </div>
 </div>
 
