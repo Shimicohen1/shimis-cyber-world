@@ -26,46 +26,47 @@ identity:
     url: /about/
 quick_signals:
   - title: Phishing-as-a-Service Platforms Escalate C-Suite Targeting
-    text: Emerging PhaaS platforms like VENOM are specifically targeting C-suite Microsoft credentials.
-    detail: Sophisticated 'Phishing-as-a-Service' platforms are increasingly sophisticated, with VENOM now actively targeting Microsoft credentials of senior executives. Organizations must enhance their executive protection programs and implement advanced phishing detection and prevention measures to counter these highly selective attacks.
+    text: New PhaaS platforms like VENOM are specifically targeting executive credentials for high-impact breaches.
+    detail: The emergence of sophisticated PhaaS platforms like VENOM indicates a growing trend of highly targeted attacks against senior executives. These platforms lower the barrier for entry for malicious actors, enabling them to conduct more precise and damaging campaigns. Organizations must enhance executive security awareness training and implement robust multi-factor authentication to counter this evolving threat.
     link: https://owasp.org/www-community/vulnerabilities/Phishing
-    link_label: Phishing Best Practices
+    link_label: OWASP Phishing
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - microsoft
-  - title: Zero-Day Exploits Remain a Persistent Threat
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows highlights ongoing risks.
-    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows underscores the critical need for prompt patching and robust exploit mitigation strategies. Organizations should prioritize threat intelligence feeds for early warnings and maintain vigilant monitoring for anomalous system behavior.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-349a
-    link_label: Exploit Mitigation
+      - credential-theft
+  - title: Zero-Day Exploits Continue to Target Widely Used Software
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows highlights ongoing software supply chain risks.
+    detail: The recent exploitation of zero-day flaws in Adobe Reader and Windows underscores the persistent danger of unpatched vulnerabilities. Attackers are actively leveraging these unknown weaknesses before patches are available. Prioritize rapid patching, implement robust endpoint detection and response (EDR), and maintain a strong vulnerability management program to mitigate risks.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/vulnerability-management
+    link_label: CISA Vulnerability Management
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-  - title: Supply Chain Attacks Target Popular CMS Plugins
-    text: Hijacked update mechanisms for Smart Slider 3 Pro are distributing backdoored WordPress/Joomla plugins.
-    detail: A recent supply chain attack compromised the Smart Slider 3 Pro update mechanism, injecting backdoored versions into WordPress and Joomla environments. This highlights the critical importance of vetting software updates and implementing strict supply chain security controls to prevent the introduction of malicious code.
-    link: https://owasp.org/www-community/attacks/Supply_chain_attack
-    link_label: Supply Chain Security
-    badge: signal
-    tags:
-      - threat-intel
-      - supply-chain
-      - malware
-  - title: IoT Botnets Evolve with Stealthy Evasion Tactics
-    text: The Masjesu botnet is stealthily targeting IoT devices, evading detection through sophisticated methods.
-    detail: Newer botnets like Masjesu are employing advanced evasion techniques to target IoT devices, posing a significant threat to network infrastructure. Defenders must implement specialized IoT security measures, segment networks, and monitor for unusual device communication patterns to detect and mitigate these evolving threats.
-    link: https://www.mitre.org/capabilities/cybersecurity/overview/threat-actors/att-ck-techniques
-    link_label: MITRE ATT&CK Techniques
+  - title: IoT and Mobile SDKs Present Emerging Attack Surfaces
+    text: Masjesu botnet targets IoT devices, while an Android SDK flaw risks millions of financial wallets.
+    detail: The increasing use of IoT devices and third-party SDKs in mobile applications creates new vectors for cyberattacks. The Masjesu botnet's stealthy IoT targeting and a critical Android SDK flaw exposing financial data highlight the need for diligent supply chain security and code auditing. Regularly vet third-party components and monitor for unusual device behavior.
+    link: https://www.mitre.org/capabilities/attack-techniques/attack-matrix/enterprise/iot-exploitation
+    link_label: MITRE IoT Exploitation
     badge: signal
     tags:
       - threat-intel
       - malware
       - iot
-      - botnet
+      - android-sdk
+  - title: State-Sponsored Actors Escalate Industrial and Infrastructure Targeting
+    text: Iranian and Russian state-backed groups are actively targeting critical infrastructure and industrial control systems globally.
+    detail: Recent intelligence indicates a significant increase in state-sponsored cyberattacks targeting industrial devices and critical infrastructure, with Iranian and Russian actors being particularly active. These campaigns pose a severe risk to national security and essential services. Implement network segmentation, monitor ICS/SCADA environments closely, and adhere to sector-specific security guidelines.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-300a
+    link_label: CISA ICS Advisory
+    badge: signal
+    tags:
+      - threat-intel
+      - apt
+      - ics-scada
+      - industrial-control-systems
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
