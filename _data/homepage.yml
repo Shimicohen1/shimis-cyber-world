@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: AI Guardrails Vulnerable to Prompt Injection
-    text: Sophisticated prompt injection attacks can bypass AI safety features.
-    detail: New research demonstrates that advanced prompt injection techniques can successfully circumvent AI guardrails, including those in Apple's Intelligence system. This highlights the need for robust input sanitization and ongoing security assessments of AI models to prevent unintended actions or data exposure.
-    link: https://owasp.org/www-community/LLM_Security_Top_10/
-    link_label: LLM Security Top 10
+  - title: Phishing-as-a-Service Platforms Evolve
+    text: Sophisticated PhaaS platforms like VENOM are now targeting C-suite Microsoft logins.
+    detail: The VENOM platform represents a growing trend of specialized phishing services. Threat actors are increasingly leveraging these platforms to conduct highly targeted attacks against senior executives, focusing on high-value credentials. Organizations should reinforce multi-factor authentication and conduct advanced phishing awareness training for leadership.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
+    link_label: Phishing Prevention
     badge: signal
     tags:
-      - ai-security
-      - prompt-injection
       - threat-intel
-  - title: Zero-Day Exploits Proliferate Across Software
-    text: Zero-day exploits in widely used software demand rapid patching.
-    detail: Recent intelligence indicates active exploitation of zero-day vulnerabilities in Adobe Reader and Windows (BlueHammer). This underscores the critical importance of timely patching and proactive threat hunting for unknown vulnerabilities, especially in widely distributed software.
-    link: https://www.cisa.gov/news-events/advisories/aa23-281a
-    link_label: CISA Known Exploited Vulnerabilities Catalog
-    badge: signal
-    tags:
-      - zero-day
-      - vulnerability
-      - patch-management
-  - title: Supply Chain Attacks Targeting Software Updates
-    text: Software update mechanisms are a prime target for supply chain attacks.
-    detail: The hijacking of Smart Slider 3 Pro's update mechanism to distribute backdoored plugins exemplifies a critical supply chain risk. Organizations must scrutinize software update sources and implement robust integrity checks to mitigate the impact of compromised legitimate channels.
-    link: https://owasp.org/www-project-software-supply-chain-security/
-    link_label: OWASP Software Supply Chain Security
-    badge: signal
-    tags:
-      - supply-chain
-      - malware
-      - threat-intel
-  - title: Targeted Phishing Evolves to C-Suite Credentials
-    text: Phishing-as-a-Service platforms now focus on high-value executive credentials.
-    detail: The VENOM phishing platform's targeting of C-suite Microsoft logins signifies a shift towards more sophisticated, high-value phishing operations. This necessitates enhanced user awareness training for executives and multi-factor authentication adoption across all critical accounts.
-    link: https://www.microsoft.com/en-us/security/business/security-101/what-is-phishing
-    link_label: Microsoft Phishing Information
-    badge: signal
-    tags:
       - phishing
-      - credential-theft
       - microsoft
+  - title: Zero-Days Exploit Software Disclosure Gaps
+    text: Zero-day exploits for Windows and Adobe Reader highlight ongoing vendor vulnerability disclosure challenges.
+    detail: The emergence of zero-day vulnerabilities like 'BlueHammer' and Adobe Reader exploits underscores persistent issues with how software vendors handle vulnerability disclosure. This trend emphasizes the critical need for robust patch management and proactive threat hunting. Prioritize rapid patching for critical vulnerabilities and implement layered security controls.
+    link: https://nvd.nist.gov/vuln/categories
+    link_label: Vulnerability Categories
+    badge: signal
+    tags:
+      - threat-intel
+      - vulnerability
+      - zero-day
+  - title: IoT and Android SDKs Remain Key Attack Vectors
+    text: Malware like Masjesu targets IoT devices, while Android SDK flaws expose millions of wallets.
+    detail: The Masjesu botnet's focus on IoT devices and the discovery of critical vulnerabilities in Android SDKs highlight the expanding attack surface. These vectors are often overlooked, making them prime targets for data breaches and botnet expansion. Implement strict IoT security policies and conduct regular audits of third-party SDKs in mobile applications.
+    link: https://owasp.org/www-project-mobile-security-testing-guide/
+    link_label: Mobile Security Testing
+    badge: signal
+    tags:
+      - threat-intel
+      - malware
+      - iot
+      - android
+  - title: APT Groups Diversify Global Targeting
+    text: Advanced Persistent Groups like Fancy Bear and Iranian state-sponsored actors broaden their targets.
+    detail: Recent intelligence reveals that nation-state actors, including Russia's Fancy Bear and Iranian groups, are expanding their reach to industrial control systems and critical infrastructure. This diversification signals a strategic shift towards disrupting essential services. Organizations must enhance their defenses against sophisticated, state-sponsored threats with tailored incident response plans.
+    link: https://www.mitre.org/threat-intelligence
+    link_label: Threat Actor Intelligence
+    badge: signal
+    tags:
+      - threat-intel
+      - apt
+      - state-sponsored
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
