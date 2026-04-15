@@ -25,46 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Zero-Day Exploits Escalate, Patching Remains Critical
-    text: Active exploitation of zero-day vulnerabilities in widely used software like Windows and Adobe Reader continues to surge.
-    detail: Recent reports highlight active exploitation of zero-day flaws in Windows (BlueHammer) and Adobe Reader. This trend underscores the persistent danger of unknown vulnerabilities and the critical need for prompt patching and robust exploit mitigation strategies. Organizations should prioritize timely updates and implement proactive threat hunting to detect and respond to novel attack vectors.
-    link: https://www.cisa.gov/news-events/advisories/aa22-290a
-    link_label: CISA Known Exploited Vulnerabilities Catalog
+  - title: Phishing-as-a-Service Platforms Escalate C-Suite Targeting
+    text: Emerging PhaaS platforms like VENOM are specifically targeting senior executive Microsoft credentials.
+    detail: The rise of sophisticated PhaaS platforms necessitates enhanced executive awareness training and advanced email filtering. Organizations should implement multi-factor authentication and regularly review access logs for Microsoft 365 environments to detect and prevent credential compromise.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-how-recognize-and-report
+    link_label: Phishing Awareness
     badge: signal
     tags:
+      - threat-intel
+      - phishing
+      - microsoft
+  - title: Zero-Day Exploits Actively Leveraged in Attacks
+    text: Zero-day vulnerabilities in widely used software like Adobe Reader and Windows are being exploited in the wild.
+    detail: The active exploitation of zero-days underscores the critical need for rapid patching and proactive threat hunting. Organizations must prioritize timely updates for all software and consider exploit mitigation technologies to defend against novel attack vectors.
+    link: https://www.cisa.gov/news-events/directives/codex00001
+    link_label: Vulnerability Management
+    badge: signal
+    tags:
+      - threat-intel
       - vulnerability
       - zero-day
-      - threat-intel
-  - title: Phishing-as-a-Service Platforms Target High-Value Credentials
-    text: Sophisticated PhaaS platforms like VENOM are actively targeting C-suite Microsoft logins, demanding advanced defenses.
-    detail: The emergence of advanced Phishing-as-a-Service (PhaaS) platforms, such as VENOM, specifically targeting executive Microsoft credentials signifies a growing threat to sensitive corporate data. Organizations must reinforce multi-factor authentication (MFA) for all users, especially privileged accounts, and implement advanced email filtering and user awareness training to counter these targeted attacks.
-    link: https://owasp.org/www-community/vulnerabilities/Phishing
-    link_label: OWASP Phishing Guidance
+  - title: IoT and Mobile SDKs Present Growing Attack Surfaces
+    text: Malware like Masjesu targets IoT devices, while Android SDK flaws risk millions of mobile wallets.
+    detail: Securing the expanding IoT landscape and scrutinizing third-party SDKs in mobile applications is paramount. Implement network segmentation for IoT devices and conduct thorough code reviews for mobile app dependencies to mitigate risks of compromise and data leakage.
+    link: https://owasp.org/www-project-mobile-top-10/
+    link_label: Mobile Security
     badge: signal
     tags:
-      - phishing
-      - credential-theft
       - threat-intel
-  - title: Supply Chain Attacks Evolve with Hijacked Updates
-    text: Attackers are compromising legitimate update mechanisms for popular plugins like Smart Slider to distribute malware.
-    detail: The hijacking of update mechanisms for widely used plugins like Smart Slider 3 Pro for WordPress and Joomla demonstrates a significant evolution in supply chain attacks. This tactic injects backdoored versions directly into user systems. Organizations must rigorously vet software sources, monitor update integrity, and implement a strong software bill of materials (SBOM) strategy.
-    link: https://owasp.org/www-project-software-supply-chain-security/
-    link_label: OWASP Supply Chain Security
-    badge: signal
-    tags:
-      - supply-chain
       - malware
-      - threat-intel
-  - title: IoT and Android SDKs Present Growing Attack Surfaces
-    text: New botnets like Masjesu target IoT devices, while Android SDK flaws expose millions of financial wallets.
-    detail: The increasing focus on IoT devices by botnets like Masjesu, coupled with critical vulnerabilities in common Android SDKs affecting financial applications, highlights expanding attack surfaces. Security teams must implement robust network segmentation for IoT devices and ensure all third-party SDKs are rigorously audited for security flaws before deployment.
-    link: https://www.mitre.org/capabilities/cybersecurity/overview/iot-security
-    link_label: MITRE IoT Security
-    badge: signal
-    tags:
       - iot
       - android
-      - vulnerability
+  - title: Supply Chain Attacks Target Popular Plugins and Software
+    text: Hijacked update mechanisms for plugins like Smart Slider are distributing backdoored versions.
+    detail: Supply chain vulnerabilities require robust vendor risk management and vigilant monitoring of software updates. Establish strict controls for software integrations and deploy integrity checks to verify the authenticity of delivered software and updates.
+    link: https://www.mitre.org/mitre-attack/supply-chain
+    link_label: Supply Chain Security
+    badge: signal
+    tags:
+      - threat-intel
+      - supply-chain
       - malware
 vault_picks:
   - name: OWASP Top 10
