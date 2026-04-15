@@ -134,10 +134,13 @@ layout: default
     {% assign now_epoch = site.time | date: '%s' | plus: 0 %}
     {% assign post_age = now_epoch | minus: post_epoch %}
     {% assign fourteen_days = 1209600 %}
-    {% comment %}── Build deep link: detect_OrgName if org exists, else just detect ──{% endcomment %}
+    {% comment %}── Build deep link: detect_OrgName if org exists, else CVE ID, else generic ──{% endcomment %}
     {% if page.organizations and page.organizations.size > 0 %}
-      {% assign _org_name = page.organizations[0].name | url_encode %}
-      {% assign detect_link = "https://t.me/Shimiscyberworldbot?start=detect_" | append: _org_name %}
+      {% assign _detect_q = page.organizations[0].name | url_encode %}
+      {% assign detect_link = "https://t.me/Shimiscyberworldbot?start=detect_" | append: _detect_q %}
+    {% elsif page.iocs and page.iocs.size > 0 %}
+      {% assign _detect_q = page.iocs[0].id | url_encode %}
+      {% assign detect_link = "https://t.me/Shimiscyberworldbot?start=detect_" | append: _detect_q %}
     {% else %}
       {% assign detect_link = "https://t.me/Shimiscyberworldbot?start=detect" %}
     {% endif %}
