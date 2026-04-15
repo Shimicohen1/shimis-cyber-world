@@ -7,6 +7,8 @@ score: "CRITICAL"
 source_name: "SCW"
 ai_rewritten: true
 featured: true
+cover_image: "/assets/images/covers/threat-intel.svg"
+image: "/assets/images/covers/threat-intel.svg"
 summary: "14 vulnerability disclosures (4 Critical, 10 High) and 1 curated intelligence stories from 1 sources."
 tags:
   - daily-digest
