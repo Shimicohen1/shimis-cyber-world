@@ -2,20 +2,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://adservice.google.com https://www.googleadservices.com https://tpc.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://scw-nl.azurewebsites.net https://pagead2.googlesyndication.com; frame-src https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://www.google.com; object-src 'none'; base-uri 'self'; upgrade-insecure-requests;">
 <title>{% if page.title %}{{ page.title | escape }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
-<meta name="description" content="{{ page.summary | default: page.description | default: site.description | strip_html | truncatewords: 30 }}">
+{% comment %}── Smart meta description: prefer summary, fall back to excerpt (first paragraph) ──{% endcomment %}
+{% assign _seo_desc = page.summary | default: page.excerpt | default: page.description | default: site.description | strip_html | strip_newlines | truncatewords: 30 %}
+<meta name="description" content="{{ _seo_desc }}">
+{% if page.tags %}<meta name="keywords" content="{{ page.tags | join: ', ' }}">
+{% endif %}
 <meta property="og:title" content="{{ page.title | default: site.title | escape }}">
-<meta property="og:description" content="{{ page.summary | default: page.description | default: site.description | strip_html | truncatewords: 50 | escape }}">
+<meta property="og:description" content="{{ _seo_desc | truncatewords: 50 | escape }}">
 {% if page.image %}<meta property="og:image" content="{% if page.image contains '://' %}{{ page.image }}{% else %}{{ page.image | absolute_url }}{% endif %}">
 {% elsif page.cover_image %}<meta property="og:image" content="{% if page.cover_image contains '://' %}{{ page.cover_image }}{% else %}{{ page.cover_image | absolute_url }}{% endif %}">
 {% else %}<meta property="og:image" content="{{ '/assets/img/logos/logo-full.png' | absolute_url }}">
 {% endif %}<meta property="og:url" content="{{ page.url | absolute_url }}">
 {% if page.layout == 'post' %}<meta property="og:type" content="article">
 <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
-{% else %}<meta property="og:type" content="website">
+{% if page.section %}<meta property="article:section" content="{{ page.section }}">
+{% endif %}{% for tag in page.tags %}<meta property="article:tag" content="{{ tag }}">
+{% endfor %}{% else %}<meta property="og:type" content="website">
 {% endif %}<meta property="og:site_name" content="{{ site.title }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ page.title | default: site.title | escape }}">
-<meta name="twitter:description" content="{{ page.summary | default: page.description | default: site.description | strip_html | truncatewords: 50 | escape }}">
+<meta name="twitter:description" content="{{ _seo_desc | truncatewords: 50 | escape }}">
 {% if page.image %}<meta name="twitter:image" content="{% if page.image contains '://' %}{{ page.image }}{% else %}{{ page.image | absolute_url }}{% endif %}">
 {% elsif page.cover_image %}<meta name="twitter:image" content="{% if page.cover_image contains '://' %}{{ page.cover_image }}{% else %}{{ page.cover_image | absolute_url }}{% endif %}">
 {% else %}<meta name="twitter:image" content="{{ '/assets/img/logos/logo-full.png' | absolute_url }}">
@@ -32,13 +38,24 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ page.url | absolute_url }}"
+  },
   "headline": {{ page.title | jsonify | replace: "</", "<\\/" }},
-  "description": {{ page.summary | default: page.description | default: site.description | strip_html | truncatewords: 50 | jsonify | replace: "</", "<\\/" }},
+  "description": {{ page.summary | default: page.excerpt | default: site.description | strip_html | strip_newlines | truncatewords: 50 | jsonify | replace: "</", "<\\/" }},
   "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
   "image": "{% if page.image %}{% if page.image contains '://' %}{{ page.image }}{% else %}{{ page.image | absolute_url }}{% endif %}{% elsif page.cover_image %}{% if page.cover_image contains '://' %}{{ page.cover_image }}{% else %}{{ page.cover_image | absolute_url }}{% endif %}{% else %}{{ '/assets/img/logos/logo-full.png' | absolute_url }}{% endif %}",
-  "author": {
+  {% if page.tags %}"keywords": {{ page.tags | jsonify }},
+  {% endif %}{% if page.section %}"articleSection": {{ page.section | jsonify }},
+  {% endif %}{% if page.content %}"wordCount": {{ page.content | number_of_words }},
+  {% endif %}{% if page.lang %}"inLanguage": "{{ page.lang }}",
+  {% else %}"inLanguage": "en",
+  {% endif %}"author": {
     "@type": "Organization",
-    "name": "Shimi's Cyber World"
+    "name": "Shimi's Cyber World",
+    "url": "{{ site.url }}"
   },
   "publisher": {
     "@type": "Organization",
