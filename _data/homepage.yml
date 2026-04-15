@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Supply Chain Attacks Escalate Against CMS Plugins
-    text: Hijacked updates for popular WordPress and Joomla plugins are delivering backdoors.
-    detail: Attackers are compromising legitimate plugin update mechanisms, as seen with Smart Slider 3 Pro, to distribute malware. This highlights a critical supply chain vulnerability. Cybersecurity teams must implement rigorous vetting of plugin updates and maintain strict access controls to prevent unauthorized modifications.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerabilities
-    link_label: OWASP Supply Chain
+  - title: Targeted Phishing-as-a-Service Platforms Escalate
+    text: Emerging PhaaS platforms like VENOM are specifically targeting C-suite Microsoft credentials.
+    detail: Sophisticated PhaaS platforms are increasingly targeting high-value credentials. Professionals should enhance multi-factor authentication and conduct targeted phishing awareness training for executive leadership to mitigate risks associated with these evolving, selective attacks.
+    link: https://www.cisa.gov/news-events/advisories/aa23-339a
+    link_label: CISA Phishing Advisory
     badge: signal
     tags:
-      - supply-chain
-      - malware
-      - cms
-  - title: Zero-Day Exploits Target Widely Used Software
-    text: New zero-days in Windows and Adobe Reader are actively exploited in the wild.
-    detail: The emergence of 'BlueHammer' for Windows and an Adobe Reader exploit underscores the persistent threat of zero-day vulnerabilities. Organizations should prioritize rapid patching and robust endpoint detection and response (EDR) solutions to mitigate risks associated with unknown threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/tip-week-5-understanding-and-managing-zero-day-vulnerabilities
-    link_label: CISA Zero-Day Tips
-    badge: signal
-    tags:
-      - vulnerability
-      - zero-day
       - threat-intel
-  - title: Phishing-as-a-Service Platforms Target High-Value Credentials
-    text: New 'VENOM' platform specifically targets C-suite Microsoft logins via phishing.
-    detail: The VENOM platform represents a sophisticated phishing-as-a-service (PhaaS) model, focusing on high-value executive credentials. Organizations must reinforce multi-factor authentication (MFA) for all accounts, especially privileged ones, and conduct regular security awareness training emphasizing spear-phishing tactics.
-    link: https://www.mitre.org/threat-actor-attribution/threat-actor-groups/apt29-royal-cyber
-    link_label: MITRE ATT&CK Phishing
-    badge: signal
-    tags:
       - phishing
       - microsoft
-      - threat-actor
-  - title: IoT and Mobile SDKs Remain Critical Attack Vectors
-    text: New botnets target IoT devices, while Android SDK flaws expose financial data.
-    detail: The Masjesu botnet's focus on IoT and a critical Android SDK vulnerability affecting millions of wallets highlight ongoing risks in these ecosystems. Continuous monitoring of IoT device security and thorough auditing of third-party SDKs in mobile applications are essential defenses.
-    link: https://www.nist.gov/cyberframework/nist-cybersecurity-framework
+  - title: Zero-Day Exploits in Widely Used Software Persist
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows continues to be a major concern.
+    detail: The ongoing discovery and exploitation of zero-day vulnerabilities in common software like Adobe Reader and Windows highlights the critical need for robust patch management and rapid incident response capabilities. Organizations must prioritize timely patching and maintain strong endpoint detection and response (EDR) for unknown threats.
+    link: https://www.nist.gov/cyberframework
     link_label: NIST Cybersecurity Framework
     badge: signal
     tags:
-      - iot
-      - mobile-security
-      - malware
+      - threat-intel
       - vulnerability
+      - zero-day
+  - title: Supply Chain Attacks Target Software Update Mechanisms
+    text: Hijacked update mechanisms for popular plugins like Smart Slider are pushing malicious backdoored versions.
+    detail: Supply chain attacks are evolving to compromise legitimate software update channels, injecting backdoors into widely used plugins. Organizations should implement strict software vetting processes, monitor for unexpected plugin behavior, and maintain an up-to-date inventory of all deployed software.
+    link: https://owasp.org/www-community/Supply_Chain_Security
+    link_label: OWASP Supply Chain Security
+    badge: signal
+    tags:
+      - threat-intel
+      - supply-chain
+      - malware
+  - title: IoT and Infrastructure Devices Remain Prime Targets
+    text: Botnets like Masjesu and state-sponsored actors are actively targeting IoT and industrial control systems.
+    detail: The increasing sophistication of botnets targeting IoT devices, coupled with state-sponsored actors exploiting industrial control systems, presents a significant threat to critical infrastructure. Network segmentation, regular vulnerability scanning of connected devices, and strong access controls are essential defensive measures.
+    link: https://www.cisa.gov/news-events/directives/directive-02-22-reduce-known-exploited-vulnerabilities-federal-information-systems
+    link_label: CISA Known Exploited Vulnerabilities
+    badge: signal
+    tags:
+      - threat-intel
+      - iot
+      - ics
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
