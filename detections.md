@@ -395,6 +395,7 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
         </div>
         {% endif %}
         <div class="sigma-siem-locked sigma-siem-locked--vault">
+          <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
           <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
           <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
           <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
@@ -448,6 +449,7 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
 .showcase-panel.active{display:block}
 .showcase-panel pre{margin:0;padding:1rem 1.25rem;background:rgba(0,0,0,.3);overflow-x:auto;font-size:.8rem;line-height:1.5}
 .showcase-panel .dl-copy-btn{position:absolute;top:.5rem;right:.5rem}
+.sigma-gated__chip--free{background:rgba(0,200,100,.12);color:#00c864;border-color:rgba(0,200,100,.3)}
 </style>
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
 <script src="{{ '/assets/js/detections.js' | relative_url }}" defer></script>
