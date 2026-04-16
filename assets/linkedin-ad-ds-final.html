@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AD DS — Shimi's Cyber World LockDown</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  :root {
+    --black: #08080c;
+    --deep: #0d0d14;
+    --surface: #121219;
+    --card: #16161f;
+    --card-hi: #1c1c28;
+    --border: rgba(255,255,255,.06);
+    --border-hi: rgba(255,255,255,.12);
+    --white: #f0f0f5;
+    --gray: #888898;
+    --dim: #555566;
+    --faint: rgba(255,255,255,.04);
+    --electric: #3b82f6;
+    --acid: #a855f7;
+    --cyan: #06b6d4;
+    --red: #ef4444;
+    --orange: #f97316;
+    --lime: #84cc16;
+    --r: 10px;
+    --r-sm: 5px;
+    --f-display: 'Space Grotesk', 'Inter', sans-serif;
+    --f-body: 'Inter', -apple-system, sans-serif;
+    --f-mono: 'JetBrains Mono', 'SF Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--black);
+    font-family: var(--f-body);
+    color: var(--white);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── REAL HEADER ─── */
+  .site-header {
+    background: rgba(8,8,12,.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-wrap {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 8px;
+  }
+  .logo-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+    margin-right: 16px;
+  }
+  .nav-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid rgba(255,255,255,.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  /* Fake logo icon */
+  .nav-logo-inner {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #0f1829, #1a2744);
+    border: 1.5px solid rgba(59,130,246,.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .site-name {
+    font-family: var(--f-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    white-space: nowrap;
+  }
+  .nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+  .nav-links li a {
+    font-family: var(--f-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: color .15s;
+  }
+  .nav-links li a:hover { color: var(--white); }
+  .nav-links li a.active { color: var(--cyan); }
+  .nav-badge {
+    font-family: var(--f-mono);
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    background: linear-gradient(135deg, var(--cyan), var(--electric));
+    color: #000;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 4px;
+    vertical-align: super;
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .nav-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .nav-icon svg { width: 15px; height: 15px; }
+  .nav-icon.telegram { background: rgba(59,130,246,.15); color: #3b82f6; }
+  .nav-icon.linkedin { background: rgba(59,130,246,.15); color: #3b82f6; }
+  .nav-icon.rss { background: rgba(249,115,22,.15); color: #f97316; }
+  .nav-subscribe-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--f-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .nav-subscribe-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .theme-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: var(--dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .theme-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* ─── PAGE CONTENT ─── */
+  .page-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px 40px;
+  }
+
+  /* Platform selector */
+  .platforms-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 24px 0 16px;
+    align-items: stretch;
+  }
+  .platform-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    cursor: pointer;
+    min-width: 140px;
+    transition: all .15s;
+  }
+  .platform-btn:hover {
+    border-color: rgba(6,182,212,.3);
+    background: var(--card);
+  }
+  .platform-btn.active {
+    border-color: var(--cyan);
+    background: rgba(6,182,212,.05);
+    box-shadow: 0 0 16px rgba(6,182,212,.08);
+  }
+  .platform-btn__icon { font-size: 24px; margin-bottom: 6px; }
+  .platform-btn__name {
+    font-family: var(--f-display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .platform-btn__count {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--dim);
+  }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .vault-filter {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .03em;
+    padding: 5px 14px;
+    border-radius: 20px;
+    background: var(--faint);
+    border: 1px solid var(--border);
+    color: var(--gray);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .vault-filter.active-cyan {
+    background: rgba(6,182,212,.12);
+    border-color: rgba(6,182,212,.35);
+    color: var(--cyan);
+  }
+  .vault-filter.active-red {
+    background: rgba(239,68,68,.12);
+    border-color: rgba(239,68,68,.35);
+    color: var(--red);
+  }
+
+  /* Progress */
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 14px 0;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--cyan);
+    border-radius: 4px;
+    width: 0%;
+  }
+  .progress-text {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--dim);
+    white-space: nowrap;
+  }
+
+  /* Stats */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-card__num {
+    font-family: var(--f-mono);
+    font-size: 24px;
+    font-weight: 700;
+    display: block;
+    line-height: 1.2;
+  }
+  .stat-card__num.cyan { color: var(--cyan); }
+  .stat-card__num.red { color: var(--red); }
+  .stat-card__num.orange { color: var(--orange); }
+  .stat-card__num.dim { color: var(--dim); }
+  .stat-card__label {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  /* ─── CHECKLIST ITEMS ─── */
+  .harden-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+  .harden-item--has-premium { border-left: 2.5px solid rgba(6,182,212,.3); }
+  .harden-item--done { opacity: .5; }
+  .harden-item--done .hi-title { text-decoration: line-through; color: var(--dim); }
+
+  .hi-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .hi-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+  }
+  .hi-check input[type="checkbox"] {
+    accent-color: var(--cyan);
+    width: 15px;
+    height: 15px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .hi-title {
+    font-family: var(--f-display);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .hi-badges {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .badge {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: var(--r-sm);
+  }
+  .badge-crit { background: rgba(239,68,68,.15); color: #ef4444; }
+  .badge-high { background: rgba(249,115,22,.15); color: #f97316; }
+  .badge-prem {
+    background: linear-gradient(135deg, rgba(6,182,212,.15), rgba(59,130,246,.15));
+    color: #67e8f9;
+    border: 1px solid rgba(6,182,212,.3);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: var(--faint);
+    color: var(--gray);
+    border: 1px solid var(--border);
+  }
+
+  .hi-desc {
+    font-size: 12.5px;
+    color: var(--gray);
+    line-height: 1.6;
+    margin-left: 24px;
+    margin-bottom: 6px;
+  }
+  .hi-ref {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--dim);
+    margin-left: 24px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .hi-ref svg { width: 12px; height: 12px; stroke: var(--dim); fill: none; stroke-width: 2; flex-shrink: 0; }
+
+  /* Code block */
+  .hi-code {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 12px 14px;
+    margin: 0 0 8px 24px;
+    position: relative;
+  }
+  .hi-code pre { margin: 0; }
+  .hi-code code {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--gray);
+    white-space: pre-wrap;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--dim);
+    padding: 3px 6px;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  /* Tags */
+  .hi-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-left: 24px;
+    margin-top: 6px;
+  }
+  .hi-tag {
+    font-family: var(--f-mono);
+    font-size: 9.5px;
+    color: var(--dim);
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    padding: 1px 8px;
+    border-radius: 3px;
+  }
+
+  /* Premium toggle */
+  .prem-toggle {
+    font-family: var(--f-display);
+    font-size: 12px;
+    font-weight: 600;
+    color: #67e8f9;
+    margin: 10px 0 0 24px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Premium body */
+  .prem-body {
+    margin: 10px 0 0 24px;
+    padding: 16px 18px;
+    background: rgba(6,182,212,.03);
+    border: 1px solid rgba(6,182,212,.12);
+    border-radius: 8px;
+  }
+  .prem-body h4 {
+    font-family: var(--f-display);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #67e8f9;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+  .prem-body h4:first-child { margin-top: 0; }
+  .prem-body p, .prem-body .prem-text {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.65;
+  }
+  .prem-body code {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    color: #67e8f9;
+    background: rgba(6,182,212,.08);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .prem-body strong { color: var(--white); font-weight: 700; }
+  .prem-code {
+    background: rgba(0,0,0,.35);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-top: 6px;
+  }
+  .prem-code pre { margin: 0; }
+  .prem-code code {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--white);
+    white-space: pre-wrap;
+    line-height: 1.5;
+    background: none;
+    padding: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ REAL HEADER ═══════════ -->
+<header class="site-header">
+  <nav class="nav-wrap">
+    <a class="logo-link" href="#">
+      <div class="nav-logo-inner">🛡️</div>
+      <span class="site-name">Shimi's Cyber World</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Feed</a></li>
+      <li><a href="#">Posts</a></li>
+      <li><a href="#">Vulnerabilities</a></li>
+      <li><a href="#">Vault</a></li>
+      <li><a href="#">Toolkit</a></li>
+      <li><a href="#" class="active">SCW Elite<span class="nav-badge">ELITE</span></a></li>
+      <li><a href="#">SCW Community</a></li>
+      <li><a href="#">Manifesto</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="nav-icon telegram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0 12 12 0 0 0 11.944 0Zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      </div>
+      <div class="nav-icon linkedin">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </div>
+      <div class="nav-icon rss">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.503 20.752c0 1.794-1.456 3.248-3.251 3.248-1.796 0-3.252-1.454-3.252-3.248 0-1.794 1.456-3.248 3.252-3.248 1.795 0 3.251 1.454 3.251 3.248zm-6.503-12.572v4.811c6.05.062 10.96 4.966 11.022 11.009h4.817c-.062-8.742-7.098-15.772-15.839-15.82zm0-8.18v4.819c11.715.062 21.198 9.535 21.26 21.181h4.74c-.062-14.323-11.677-25.931-26-25.999z"/></svg>
+      </div>
+      <button class="nav-subscribe-btn">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Subscribe
+      </button>
+      <button class="theme-btn">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════ PAGE ═══════════ -->
+<div class="page-content">
+
+  <!-- Platform selector (partial — matching screenshot) -->
+  <div class="platforms-row">
+    <div class="platform-btn">
+      <span class="platform-btn__icon">☸️</span>
+      <span class="platform-btn__name">Kubernetes</span>
+      <span class="platform-btn__count">10 items</span>
+    </div>
+    <div class="platform-btn">
+      <span class="platform-btn__icon">🔄</span>
+      <span class="platform-btn__name">GitHub / CI-CD</span>
+      <span class="platform-btn__count">10 items</span>
+    </div>
+    <div class="platform-btn active">
+      <span class="platform-btn__icon">🏛️</span>
+      <span class="platform-btn__name">Active Directory DS</span>
+      <span class="platform-btn__count">22 items</span>
+    </div>
+    <div class="platform-btn">
+      <span class="platform-btn__icon">🤖</span>
+      <span class="platform-btn__name">M365 Copilot</span>
+      <span class="platform-btn__count">8 items</span>
+    </div>
+    <div class="platform-btn">
+      <span class="platform-btn__icon">🧪</span>
+      <span class="platform-btn__name">Copilot Studio</span>
+      <span class="platform-btn__count">7 items</span>
+    </div>
+  </div>
+
+  <!-- Category filters -->
+  <div class="filters">
+    <button class="vault-filter active-cyan">All Categories</button>
+    <button class="vault-filter">🔑 Identity & Access</button>
+    <button class="vault-filter">🌐 Network Security</button>
+    <button class="vault-filter">📊 Logging & Monitoring</button>
+    <button class="vault-filter">🔒 Encryption & Data</button>
+    <button class="vault-filter">⚙️ Services & Configuration</button>
+    <button class="vault-filter">📦 Patching & Updates</button>
+    <button class="vault-filter">🤖 AI Security</button>
+  </div>
+
+  <!-- Severity filters -->
+  <div class="filters">
+    <button class="vault-filter active-red">All Severities</button>
+    <button class="vault-filter">🔴 Critical</button>
+    <button class="vault-filter">🟠 High</button>
+    <button class="vault-filter">🟡 Medium</button>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress">
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+    <span class="progress-text">0 / 22 completed (0%)</span>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card"><span class="stat-card__num cyan">22</span><span class="stat-card__label">Total Items</span></div>
+    <div class="stat-card"><span class="stat-card__num red">10</span><span class="stat-card__label">Critical</span></div>
+    <div class="stat-card"><span class="stat-card__num orange">12</span><span class="stat-card__label">High</span></div>
+    <div class="stat-card"><span class="stat-card__num dim">0</span><span class="stat-card__label">Completed</span></div>
+  </div>
+
+  <!-- ═══════════ CHECKLIST ITEMS ═══════════ -->
+
+  <!-- Item 1 — collapsed -->
+  <div class="harden-item harden-item--has-premium">
+    <div class="hi-header">
+      <label class="hi-check">
+        <input type="checkbox">
+        <span class="hi-title">Implement tiered administration model (Tier 0/1/2)</span>
+      </label>
+      <div class="hi-badges">
+        <span class="badge badge-crit">CRITICAL</span>
+        <span class="tag">identity</span>
+        <span class="badge badge-prem">★</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Item 2 — collapsed -->
+  <div class="harden-item harden-item--has-premium">
+    <div class="hi-header">
+      <label class="hi-check">
+        <input type="checkbox">
+        <span class="hi-title">Add sensitive accounts to Protected Users group</span>
+      </label>
+      <div class="hi-badges">
+        <span class="badge badge-crit">CRITICAL</span>
+        <span class="tag">identity</span>
+        <span class="badge badge-prem">★</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Item 3 — DCSync FULLY EXPANDED -->
+  <div class="harden-item harden-item--has-premium">
+    <div class="hi-header">
+      <label class="hi-check">
+        <input type="checkbox">
+        <span class="hi-title">Monitor and detect DCSync attacks</span>
+      </label>
+      <div class="hi-badges">
+        <span class="badge badge-crit">CRITICAL</span>
+        <span class="tag">logging</span>
+        <span class="badge badge-prem">★</span>
+      </div>
+    </div>
+    <p class="hi-desc">Configure SACL and SIEM rules to detect DCSync attacks. DCSync uses the Directory Replication Service (DRS) protocol to extract password hashes from DCs. Only Domain Controllers and specific replication accounts should have replication rights.</p>
+    <p class="hi-ref">
+      <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+      MITRE ATT&CK T1003.006; Microsoft AD Security Best Practices
+    </p>
+    <div class="hi-code">
+      <button class="copy-btn">📋</button>
+      <pre><code># Find accounts with DCSync rights (Replicating Directory Changes)
+Import-Module ActiveDirectory
+$domainDN = (Get-ADDomain).DistinguishedName
+(Get-ACL "AD:$domainDN").Access |
+  Where-Object { $_.ObjectType -eq "1131f6ad-9c07-11d1-f79f-00c04fc2dcd2" } |
+  Select IdentityReference, ActiveDirectoryRights | Format-Table</code></pre>
+    </div>
+    <div class="hi-tags">
+      <span class="hi-tag">dcsync</span>
+      <span class="hi-tag">mimikatz</span>
+      <span class="hi-tag">impacket</span>
+      <span class="hi-tag">credential-theft</span>
+      <span class="hi-tag">golden-ticket</span>
+      <span class="hi-tag">replication</span>
+      <span class="hi-tag">detection</span>
+    </div>
+
+    <!-- Elite Guidance OPEN -->
+    <div class="prem-toggle">★ Elite Guidance ▾</div>
+    <div class="prem-body">
+      <h4>🎯 Attack Perspective</h4>
+      <p>DCSync (Mimikatz <code>lsadump::dcsync</code> or Impacket <code>secretsdump.py</code>) allows any account with Replicating Directory Changes All permissions to extract all password hashes from the domain, including the <strong>krbtgt hash</strong> needed for Golden Ticket attacks. It's often the final step in domain compromise and requires no code execution on the DC itself.</p>
+
+      <h4>🔧 Implementation Notes</h4>
+      <div class="prem-code">
+        <pre><code>1. Audit: Identify all accounts with replication rights (should only be DCs)
+2. Remove replication rights from any non-DC accounts
+3. Configure SACL on domain root for replication GUID auditing
+4. Forward Event ID 4662 with replication GUIDs to SIEM
+5. Create alerting rule for DCSync detection</code></pre>
+      </div>
+
+      <h4>✅ Validation Notes</h4>
+      <div class="prem-code">
+        <pre><code># List accounts with replication rights
+$domainDN = (Get-ADDomain).DistinguishedName
+$repGUIDs = @("1131f6ad-9c07-11d1-f79f-00c04fc2dcd2",
+              "1131f6aa-9c07-11d1-f79f-00c04fc2dcd2")
+(Get-ACL "AD:$domainDN").Access |
+  Where-Object { $repGUIDs -contains $_.ObjectType.ToString() } |
+  Select IdentityReference | Sort -Unique
+# Should only show Domain Controllers and replication accounts</code></pre>
+      </div>
+
+      <h4>🔍 Advanced Detection</h4>
+      <div class="prem-code">
+        <pre><code># DCSync detection — Event 4662 with replication GUIDs from non-DC
+index=windows EventCode=4662
+  Properties IN ("1131f6ad-*","1131f6aa-*")
+| where SubjectUserName NOT LIKE "%DC%$"
+| stats count by SubjectUserName, SubjectDomainName, ClientAddress
+| sort -count</code></pre>
+      </div>
+
+      <h4>⚙️ Tuning Notes</h4>
+      <p class="prem-text">Azure AD Connect service accounts legitimately need replication rights for password hash sync. Allowlist these in your SIEM detection rule.</p>
+    </div>
+  </div>
+
+  <!-- Item 4 — collapsed -->
+  <div class="harden-item harden-item--has-premium">
+    <div class="hi-header">
+      <label class="hi-check">
+        <input type="checkbox">
+        <span class="hi-title">Monitor Group Policy Object changes</span>
+      </label>
+      <div class="hi-badges">
+        <span class="badge badge-high">HIGH</span>
+        <span class="tag">logging</span>
+        <span class="badge badge-prem">★</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Item 5 — collapsed -->
+  <div class="harden-item harden-item--has-premium">
+    <div class="hi-header">
+      <label class="hi-check">
+        <input type="checkbox">
+        <span class="hi-title">Detect AS-REP Roasting vulnerable accounts</span>
+      </label>
+      <div class="hi-badges">
+        <span class="badge badge-high">HIGH</span>
+        <span class="tag">logging</span>
+        <span class="badge badge-prem">★</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Item 6 — collapsed -->
+  <div class="harden-item harden-item--has-premium">
+    <div class="hi-header">
+      <label class="hi-check">
+        <input type="checkbox">
+        <span class="hi-title">Disable Print Spooler on Domain Controllers</span>
+      </label>
+      <div class="hi-badges">
+        <span class="badge badge-crit">CRITICAL</span>
+        <span class="tag">services</span>
+        <span class="badge badge-prem">★</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Item 7 — collapsed -->
+  <div class="harden-item harden-item--has-premium">
+    <div class="hi-header">
+      <label class="hi-check">
+        <input type="checkbox">
+        <span class="hi-title">Require AES Kerberos encryption and disable RC4</span>
+      </label>
+      <div class="hi-badges">
+        <span class="badge badge-crit">CRITICAL</span>
+        <span class="tag">encryption</span>
+        <span class="badge badge-prem">★</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fade out -->
+  <div style="text-align:center; padding:14px 0; position:relative;">
+    <div style="position:absolute; top:-36px; left:0; right:0; height:36px; background: linear-gradient(transparent, var(--black)); pointer-events:none;"></div>
+    <span style="font-family:var(--f-mono); font-size:11px; color:var(--dim);">⋯ 15 more items below ⋯</span>
+  </div>
+
+</div>
+
+</body>
+</html>

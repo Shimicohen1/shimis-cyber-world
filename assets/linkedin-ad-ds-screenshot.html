@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AD DS Screenshot — shimiscyberworld.com/hardening</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  :root {
+    --black: #08080c;
+    --deep: #0d0d14;
+    --surface: #121219;
+    --card: #16161f;
+    --card-hi: #1c1c28;
+    --border: rgba(255,255,255,.06);
+    --border-hi: rgba(255,255,255,.12);
+    --white: #f0f0f5;
+    --gray: #888898;
+    --dim: #555566;
+    --faint: rgba(255,255,255,.04);
+    --electric: #3b82f6;
+    --acid: #a855f7;
+    --cyan: #06b6d4;
+    --red: #ef4444;
+    --orange: #f97316;
+    --lime: #84cc16;
+    --r: 10px;
+    --r-sm: 5px;
+    --f-display: 'Space Grotesk', 'Inter', sans-serif;
+    --f-body: 'Inter', -apple-system, sans-serif;
+    --f-mono: 'JetBrains Mono', 'SF Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #05050a;
+    font-family: var(--f-body);
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+  }
+
+  /* Browser window chrome */
+  .browser {
+    width: 1200px;
+    background: var(--black);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05);
+  }
+
+  .browser-bar {
+    background: #111118;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .browser-dots {
+    display: flex;
+    gap: 7px;
+  }
+  .browser-dots span {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .browser-dots span:nth-child(1) { background: #ff5f57; }
+  .browser-dots span:nth-child(2) { background: #febc2e; }
+  .browser-dots span:nth-child(3) { background: #28c840; }
+
+  .browser-url {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .browser-url .lock { color: #28c840; font-size: 11px; }
+
+  .page {
+    padding: 32px 56px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Page Head */
+  .page-head {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .label {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .label--elite {
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    color: #000;
+  }
+  .page-head h1 {
+    font-family: var(--f-display);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .page-head p {
+    font-size: 13.5px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  /* Hero Stats */
+  .hero-stats {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    margin: 24px 0;
+    padding: 18px 0;
+    background: rgba(255,255,255,.015);
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+  }
+  .hero-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .hero-stat__num {
+    font-family: var(--f-mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  .hero-stat__label {
+    font-size: 10px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  /* Active Platform Button */
+  .active-platform {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: rgba(6,182,212,.06);
+    border: 1.5px solid var(--cyan);
+    border-radius: var(--r);
+    margin-bottom: 16px;
+  }
+  .active-platform__icon { font-size: 22px; }
+  .active-platform__name {
+    font-family: var(--f-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .active-platform__count {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--dim);
+  }
+
+  /* Other platform pills (greyed out) */
+  .other-platforms {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .other-pill {
+    padding: 8px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    font-family: var(--f-display);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Filter buttons */
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .vault-filter {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .04em;
+    padding: 5px 12px;
+    border-radius: var(--r-sm);
+    background: var(--faint);
+    border: 1px solid var(--border);
+    color: var(--gray);
+    cursor: pointer;
+  }
+  .vault-filter.active {
+    background: rgba(6,182,212,.1);
+    border-color: rgba(6,182,212,.3);
+    color: var(--cyan);
+  }
+
+  /* Progress */
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--cyan);
+    border-radius: 4px;
+    width: 18%;
+  }
+  .progress-text {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--dim);
+    white-space: nowrap;
+  }
+
+  /* Stats */
+  .dl-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .dl-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 12px;
+    text-align: center;
+  }
+  .dl-stat__number {
+    font-family: var(--f-mono);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+  }
+  .dl-stat__label {
+    font-size: 10px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  /* Hardening Items */
+  .harden-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+  .harden-item--has-premium {
+    border-left: 2px solid rgba(6,182,212,.3);
+  }
+  .harden-item--done {
+    opacity: .55;
+    border-color: rgba(6,182,212,.2);
+  }
+  .harden-item--done .harden-item__title {
+    text-decoration: line-through;
+    color: var(--dim);
+  }
+
+  .harden-item__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .harden-item__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .harden-item__check input[type="checkbox"] {
+    accent-color: var(--cyan);
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .harden-item__title {
+    font-family: var(--f-display);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .harden-item__badges {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .badge {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: var(--r-sm);
+  }
+  .badge--live { background: rgba(239,68,68,.15); color: #ef4444; }
+  .badge--beta { background: rgba(249,115,22,.15); color: #f97316; }
+  .badge--signal { background: rgba(59,130,246,.15); color: #3b82f6; }
+  .badge--premium {
+    background: linear-gradient(135deg, rgba(6,182,212,.15), rgba(59,130,246,.15));
+    color: #67e8f9;
+    border: 1px solid rgba(6,182,212,.3);
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 5px;
+    background: var(--faint);
+    color: var(--gray);
+    border: 1px solid var(--border);
+  }
+
+  .harden-item__desc {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.6;
+    margin-left: 24px;
+    margin-bottom: 6px;
+  }
+  .harden-item__ref {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--dim);
+    margin-left: 24px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .harden-item__ref svg {
+    width: 12px; height: 12px;
+    stroke: var(--dim);
+    flex-shrink: 0;
+  }
+
+  /* Code block */
+  .harden-item__code {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 10px 14px;
+    margin-left: 24px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .harden-item__code pre {
+    margin: 0;
+  }
+  .harden-item__code code {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--gray);
+    white-space: pre-wrap;
+  }
+  .harden-item__code--full {
+    border-left: 2px solid rgba(168,85,247,.3);
+  }
+  .code-label {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    color: #c084fc;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    color: var(--dim);
+    padding: 4px 7px;
+    font-size: 10px;
+    cursor: pointer;
+  }
+
+  /* Tags */
+  .harden-item__tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-left: 24px;
+    margin-top: 6px;
+  }
+  .harden-item__tag {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    color: var(--dim);
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    padding: 1px 7px;
+    border-radius: 3px;
+  }
+
+  /* Premium toggle */
+  .premium-toggle {
+    font-family: var(--f-display);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #67e8f9;
+    margin-left: 24px;
+    margin-top: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Premium section */
+  .premium-body {
+    margin-left: 24px;
+    margin-top: 10px;
+    padding: 14px;
+    background: rgba(6,182,212,.03);
+    border: 1px solid rgba(6,182,212,.12);
+    border-radius: 8px;
+  }
+  .premium-body h4 {
+    font-family: var(--f-display);
+    font-size: 11px;
+    font-weight: 600;
+    color: #67e8f9;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+    margin-top: 12px;
+  }
+  .premium-body h4:first-child { margin-top: 0; }
+  .premium-body p {
+    font-size: 11.5px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+  .premium-body .premium-code {
+    background: rgba(0,0,0,.3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 6px;
+  }
+  .premium-body .premium-code code {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    color: var(--white);
+    white-space: pre-wrap;
+    line-height: 1.5;
+  }
+
+  /* SCW watermark */
+  .watermark {
+    text-align: center;
+    padding: 24px 0 8px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+  }
+  .watermark__brand {
+    font-family: var(--f-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .watermark__url {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: .03em;
+  }
+</style>
+</head>
+<body>
+
+<div class="browser">
+  <!-- Browser chrome -->
+  <div class="browser-bar">
+    <div class="browser-dots"><span></span><span></span><span></span></div>
+    <div class="browser-url">
+      <span class="lock">🔒</span>
+      shimiscyberworld.com/hardening/
+    </div>
+  </div>
+
+  <div class="page">
+    <!-- Page header -->
+    <div class="page-head">
+      <div class="label label--elite">SCW ELITE</div>
+      <h1>LockDown</h1>
+      <p>884 hardening checks across 21 platforms. Pick your stack, get real commands, check them off, export the report.</p>
+    </div>
+
+    <!-- Hero stats -->
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="hero-stat__num">884</span><span class="hero-stat__label">Checks</span></div>
+      <div class="hero-stat"><span class="hero-stat__num">21</span><span class="hero-stat__label">Platforms</span></div>
+      <div class="hero-stat"><span class="hero-stat__num">7</span><span class="hero-stat__label">Categories</span></div>
+    </div>
+
+    <!-- Platform selector -->
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; align-items:flex-start;">
+      <div class="other-pill">🐧 Linux</div>
+      <div class="other-pill">🪟 Windows</div>
+      <div class="other-pill">☁️ AWS</div>
+      <div class="other-pill">🔷 Azure</div>
+      <div class="other-pill">🌐 GCP</div>
+      <div class="active-platform">
+        <span class="active-platform__icon">🏰</span>
+        <div>
+          <div class="active-platform__name">AD DS</div>
+          <div class="active-platform__count">22 items</div>
+        </div>
+      </div>
+      <div class="other-pill">📧 M365 Collab</div>
+      <div class="other-pill">🛡️ Defender</div>
+      <div class="other-pill">🤖 Copilot</div>
+      <div class="other-pill">⋯ +12 more</div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <button class="vault-filter active">All Categories</button>
+      <button class="vault-filter">👤 Identity</button>
+      <button class="vault-filter">🌐 Network</button>
+      <button class="vault-filter">🔐 Encryption</button>
+      <button class="vault-filter">📋 Logging</button>
+      <button class="vault-filter">⚙️ Services</button>
+      <button class="vault-filter">📦 Patching</button>
+    </div>
+    <div class="filters">
+      <button class="vault-filter active">All Severities</button>
+      <button class="vault-filter"><span style="color:#ef4444;">●</span> Critical</button>
+      <button class="vault-filter"><span style="color:#f97316;">●</span> High</button>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress">
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <span class="progress-text">4 / 22 completed (18%)</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="dl-stats">
+      <div class="dl-stat"><span class="dl-stat__number">22</span><span class="dl-stat__label">Total Items</span></div>
+      <div class="dl-stat"><span class="dl-stat__number" style="color:#ef4444;">10</span><span class="dl-stat__label">Critical</span></div>
+      <div class="dl-stat"><span class="dl-stat__number" style="color:#f97316;">12</span><span class="dl-stat__label">High</span></div>
+      <div class="dl-stat"><span class="dl-stat__number" style="color:var(--cyan);">4</span><span class="dl-stat__label">Completed</span></div>
+    </div>
+
+    <!-- Item 1 — checked off -->
+    <div class="harden-item harden-item--has-premium harden-item--done">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox" checked>
+          <span class="harden-item__title">Implement tiered administration model (Tier 0/1/2)</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--live">CRITICAL</span>
+          <span class="tag">identity</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 2 — checked off -->
+    <div class="harden-item harden-item--has-premium harden-item--done">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox" checked>
+          <span class="harden-item__title">Add sensitive accounts to Protected Users group</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--live">CRITICAL</span>
+          <span class="tag">identity</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 3 — collapsed -->
+    <div class="harden-item harden-item--has-premium">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox">
+          <span class="harden-item__title">Deploy LAPS for local admin password management</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--live">CRITICAL</span>
+          <span class="tag">identity</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 4 — collapsed -->
+    <div class="harden-item harden-item--has-premium">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox">
+          <span class="harden-item__title">Harden AdminSDHolder and SDProp process</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--beta">HIGH</span>
+          <span class="tag">identity</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 5 — checked off -->
+    <div class="harden-item harden-item--has-premium harden-item--done">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox" checked>
+          <span class="harden-item__title">Replace service accounts with Group Managed Service Accounts (gMSA)</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--beta">HIGH</span>
+          <span class="tag">identity</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 6 — collapsed -->
+    <div class="harden-item harden-item--has-premium">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox">
+          <span class="harden-item__title">Restrict Kerberos delegation</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--beta">HIGH</span>
+          <span class="tag">identity</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div style="font-family:var(--f-mono); font-size:10px; color:var(--dim); padding:6px 0 2px; letter-spacing:.04em;">── LOGGING & DETECTION ──</div>
+
+    <!-- Item DCSync — EXPANDED with premium open -->
+    <div class="harden-item harden-item--has-premium">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox">
+          <span class="harden-item__title">Monitor and detect DCSync attacks</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--live">CRITICAL</span>
+          <span class="tag">logging</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+      <p class="harden-item__desc">Configure SACL and SIEM rules to detect DCSync attacks. DCSync uses the Directory Replication Service (DRS) protocol to extract password hashes from DCs. Only Domain Controllers and specific replication accounts should have replication rights.</p>
+      <p class="harden-item__ref">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        MITRE ATT&CK T1003.006; Microsoft AD Security Best Practices
+      </p>
+      <div class="harden-item__code">
+        <button class="copy-btn">📋</button>
+        <pre><code># Find accounts with DCSync rights (Replicating Directory Changes)
+Import-Module ActiveDirectory
+$domainDN = (Get-ADDomain).DistinguishedName
+(Get-ACL "AD:$domainDN").Access |
+  Where-Object { $_.ObjectType -eq "1131f6ad-9c07-11d1-f79f-00c04fc2dcd2" } |
+  Select IdentityReference, ActiveDirectoryRights | Format-Table</code></pre>
+      </div>
+      <div class="harden-item__tags">
+        <span class="harden-item__tag">dcsync</span>
+        <span class="harden-item__tag">mimikatz</span>
+        <span class="harden-item__tag">impacket</span>
+        <span class="harden-item__tag">credential-theft</span>
+        <span class="harden-item__tag">golden-ticket</span>
+        <span class="harden-item__tag">replication</span>
+        <span class="harden-item__tag">detection</span>
+      </div>
+
+      <!-- Premium section OPEN -->
+      <div class="premium-toggle">★ Elite Guidance ▾</div>
+      <div class="premium-body">
+        <h4>🎯 Attack Perspective</h4>
+        <p>DCSync (Mimikatz <code style="font-size:10px;color:#67e8f9;">lsadump::dcsync</code> or Impacket <code style="font-size:10px;color:#67e8f9;">secretsdump.py</code>) allows any account with Replicating Directory Changes All permissions to extract all password hashes from the domain, including the <strong style="color:var(--white);">krbtgt hash</strong> needed for Golden Ticket attacks. It's often the final step in domain compromise and requires no code execution on the DC itself.</p>
+
+        <h4>🔧 Implementation Notes</h4>
+        <div class="premium-code">
+          <pre><code>1. Audit: Identify all accounts with replication rights (should only be DCs)
+2. Remove replication rights from any non-DC accounts
+3. Configure SACL on domain root for replication GUID auditing
+4. Forward Event ID 4662 with replication GUIDs to SIEM
+5. Create alerting rule for DCSync detection</code></pre>
+        </div>
+
+        <h4>✅ Validation Notes</h4>
+        <div class="premium-code">
+          <pre><code># List accounts with replication rights
+$domainDN = (Get-ADDomain).DistinguishedName
+$repGUIDs = @("1131f6ad-9c07-11d1-f79f-00c04fc2dcd2",
+              "1131f6aa-9c07-11d1-f79f-00c04fc2dcd2")
+(Get-ACL "AD:$domainDN").Access |
+  Where-Object { $repGUIDs -contains $_.ObjectType.ToString() } |
+  Select IdentityReference | Sort -Unique
+# Should only show Domain Controllers and replication accounts</code></pre>
+        </div>
+
+        <h4>🔍 Advanced Detection</h4>
+        <div class="premium-code">
+          <pre><code># DCSync detection — Event 4662 with replication GUIDs from non-DC
+index=windows EventCode=4662
+  Properties IN ("1131f6ad-*","1131f6aa-*")
+| where SubjectUserName NOT LIKE "%DC%$"
+| stats count by SubjectUserName, SubjectDomainName, ClientAddress
+| sort -count</code></pre>
+        </div>
+
+        <h4>⚙️ Tuning Notes</h4>
+        <p>Azure AD Connect service accounts legitimately need replication rights for password hash sync. Allowlist these in your SIEM detection rule.</p>
+      </div>
+    </div>
+
+    <!-- Item — collapsed -->
+    <div class="harden-item harden-item--has-premium">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox">
+          <span class="harden-item__title">Monitor Group Policy Object changes</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--beta">HIGH</span>
+          <span class="tag">logging</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item — collapsed -->
+    <div class="harden-item harden-item--has-premium">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox">
+          <span class="harden-item__title">Detect AS-REP Roasting vulnerable accounts</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--beta">HIGH</span>
+          <span class="tag">logging</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item — collapsed -->
+    <div class="harden-item harden-item--has-premium">
+      <div class="harden-item__header">
+        <label class="harden-item__check">
+          <input type="checkbox">
+          <span class="harden-item__title">Disable Print Spooler on Domain Controllers</span>
+        </label>
+        <div class="harden-item__badges">
+          <span class="badge badge--live">CRITICAL</span>
+          <span class="tag">services</span>
+          <span class="badge badge--premium">★</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fade-out hint showing more items -->
+    <div style="text-align:center; padding:16px 0 4px; position:relative;">
+      <div style="position:absolute; top:-40px; left:0; right:0; height:40px; background: linear-gradient(transparent, var(--black)); pointer-events:none;"></div>
+      <span style="font-family:var(--f-mono); font-size:11px; color:var(--dim);">⋯ 11 more items below (encryption · logging · services · patching) ⋯</span>
+    </div>
+
+    <!-- Watermark -->
+    <div class="watermark">
+      <div class="watermark__brand">Shimi's Cyber World</div>
+      <div class="watermark__url">shimiscyberworld.com/hardening</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
