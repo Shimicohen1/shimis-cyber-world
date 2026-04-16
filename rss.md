@@ -90,8 +90,9 @@ permalink: /rss/
     <h3>Source Attribution</h3>
     <table class="rss-schema__table">
       <tr><th>Element</th><th>Attributes</th></tr>
-      <tr><td><code>&lt;scw:source&gt;</code></td><td><code>name</code> — source name (e.g., "National Vulnerability Database", "Cyber Threat Intelligence")<br><code>channel</code> — feed channel identifier<br><code>url</code> — original source URL (if external)<br><code>telegram_url</code> — Telegram message link (if applicable)</td></tr>
+      <tr><td><code>&lt;scw:source&gt;</code></td><td><code>name</code> — generalized source name: "National Vulnerability Database", "SCW Curated Intelligence", or "SCW Daily Digest"<br><code>channel</code> — feed channel type: NVD, OSINT, or Digest</td></tr>
     </table>
+    <p class="rss-schema__note">Source URLs and direct links are not included in the public feed. Full attribution is available on each post's page.</p>
   </div>
 
   <div class="rss-schema__section">

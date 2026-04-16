@@ -33,8 +33,11 @@ layout: null
     {% if post.event_type %}<scw:event_type>{{ post.event_type }}</scw:event_type>{% elsif post.section == "vulnerabilities" or post.channel == "NVD" %}<scw:event_type>vulnerability</scw:event_type>{% endif %}
     {% if post.section %}<scw:section>{{ post.section }}</scw:section>{% endif %}
     {% if post.tlp %}<scw:tlp>{{ post.tlp }}</scw:tlp>{% else %}<scw:tlp>TLP:CLEAR</scw:tlp>{% endif %}
-    {% comment %}── Source Attribution ──{% endcomment %}
-    {% if post.source_name %}<scw:source name="{{ post.source_name | xml_escape }}"{% if post.channel %} channel="{{ post.channel | xml_escape }}"{% endif %}{% if post.telegram_url %} telegram_url="{{ post.telegram_url }}"{% endif %}{% if post.source_url and post.source_url != "" %} url="{{ post.source_url | xml_escape }}"{% endif %} />{% endif %}
+    {% comment %}── Source Attribution (no direct URLs — Option C) ──{% endcomment %}
+    {% if post.channel == "NVD" %}<scw:source name="National Vulnerability Database" channel="NVD" />
+    {% elsif post.channel == "Daily Digest" %}<scw:source name="SCW Daily Digest" channel="Digest" />
+    {% elsif post.source_name %}<scw:source name="SCW Curated Intelligence" channel="OSINT" />
+    {% endif %}
     {% comment %}── Vulnerability Data (NVD) ──{% endcomment %}
     {% if post.cwe %}{% for c in post.cwe %}
     <scw:cwe>{{ c }}</scw:cwe>{% endfor %}{% endif %}
