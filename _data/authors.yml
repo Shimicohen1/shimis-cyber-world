@@ -4,12 +4,12 @@
 #  and a writing_style hint used by the Gemini rewriter.
 # ─────────────────────────────────────────────────────────
 
-# ── Founder (real person — manual + own-source attribution) ──
+# ── Shimi Cohen (real person — manual + own-source attribution) ──
 - slug: shimi-cohen
   name: "Shimi Cohen"
-  role: "Founder"
-  bio: "Founder of Shimi's Cyber World. Security practitioner, builder, and field analyst covering the threat landscape since day one."
-  avatar: "/assets/img/authors/shimi-cohen.svg"
+  role: ""
+  bio: "Founder of Shimi's Cyber World."
+  avatar: "/assets/images/authors/shimi-cohen.jpg"
   writing_style: null   # real person — not AI-generated
 
 # ── Automated Desks ──

@@ -17,8 +17,8 @@ layout: default
       <div class="post-byline">
         <img src="{{ a.avatar | relative_url }}" alt="" class="post-byline__avatar" width="32" height="32">
         <div class="post-byline__info">
-          <span class="post-byline__name">{{ a.name }}</span>
-          <span class="post-byline__role">{{ a.role }}</span>
+          <span class="post-byline__name">Written by {{ a.name }}</span>
+          {% if a.role and a.role != '' %}<span class="post-byline__role">{{ a.role }}</span>{% endif %}
         </div>
       </div>
       {% endif %}{% endfor %}
@@ -59,7 +59,7 @@ layout: default
     {% if page.editor_note %}
     <blockquote class="editor-note">
       <div class="editor-note__header">
-        <img src="{{ '/assets/img/authors/shimi-cohen.svg' | relative_url }}" alt="" class="editor-note__avatar" width="24" height="24">
+        <img src="{{ '/assets/images/authors/shimi-cohen.jpg' | relative_url }}" alt="" class="editor-note__avatar" width="24" height="24">
         <strong>Editor's Note — Shimi Cohen</strong>
       </div>
       <p>{{ page.editor_note }}</p>
@@ -282,7 +282,7 @@ layout: default
       {% for a in site.data.authors %}{% if a.slug == page.author %}
     <div class="post-byline post-byline--footer">
       <img src="{{ a.avatar | relative_url }}" alt="" class="post-byline__avatar" width="28" height="28">
-      <p>By <strong>{{ a.name }}</strong> · {{ a.role }}</p>
+      <p>Written by <strong>{{ a.name }}</strong></p>
     </div>
       {% endif %}{% endfor %}
     {% elsif page.ai_rewritten %}
