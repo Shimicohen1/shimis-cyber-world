@@ -4,14 +4,36 @@
   url: /posts/
 - label: Vulnerabilities
   url: /vulnerabilities/
-- label: Vault
-  url: /library/
-- label: Toolkit
-  url: /tools/
+- label: Tools
+  dropdown: true
+  items:
+    - label: LockDown
+      url: /hardening/
+      desc: Hardening checklists
+      icon: 🔒
+    - label: Detection Vault
+      url: /detections/
+      desc: Sigma & KQL rules
+      icon: 🛡️
+    - label: ThreatLens
+      url: /ioc-scanner/
+      desc: IOC investigation
+      icon: 🔎
+    - label: GoFish
+      url: /gofish/
+      desc: Phishing detection
+      icon: 🎣
+    - label: BreachRadar
+      url: /breach-radar/
+      desc: Dark web intel
+      icon: 📡
 - label: SCW Elite
   url: /premium/
   badge: true
-- label: SCW Community
-  url: /community/
-- label: Manifesto
-  url: /about/
+
+# Footer-only pages (not in main nav):
+# - Manifesto (/about/)
+# - Toolkit (/tools/)
+# - Vault (/library/)
+# - Community Stage (/community/)
+# - Get Featured (/submit-startup/)

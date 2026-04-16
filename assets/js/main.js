@@ -19,6 +19,27 @@
     });
   }
 
+  // --- Nav dropdown ---
+  document.querySelectorAll('.nav-dropdown').forEach(function (dd) {
+    var btn = dd.querySelector('.nav-dropdown__toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var wasOpen = dd.classList.contains('open');
+      // Close all other dropdowns
+      document.querySelectorAll('.nav-dropdown.open').forEach(function (d) { d.classList.remove('open'); });
+      if (!wasOpen) dd.classList.add('open');
+      btn.setAttribute('aria-expanded', !wasOpen);
+    });
+  });
+  // Close dropdown on outside click
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.nav-dropdown.open').forEach(function (d) {
+      d.classList.remove('open');
+      d.querySelector('.nav-dropdown__toggle').setAttribute('aria-expanded', 'false');
+    });
+  });
+
   // --- Scroll reveal ---
   var reveals = document.querySelectorAll('.reveal');
   if (reveals.length && 'IntersectionObserver' in window) {

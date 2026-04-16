@@ -9,8 +9,22 @@
         <div class="footer__col">
           <div class="footer__col-title">Navigate</div>
           {% for item in site.data.navigation %}
-          <a href="{{ item.url | relative_url }}">{{ item.label }}</a>
+          {% if item.dropdown %}
+          {% for sub in item.items %}
+          <a href="{{ sub.url | relative_url }}">{{ sub.label }}</a>
           {% endfor %}
+          {% else %}
+          <a href="{{ item.url | relative_url }}">{{ item.label }}</a>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">More</div>
+          <a href="{{ '/about/' | relative_url }}">Manifesto</a>
+          <a href="{{ '/tools/' | relative_url }}">Toolkit</a>
+          <a href="{{ '/library/' | relative_url }}">Resource Vault</a>
+          <a href="{{ '/community/' | relative_url }}">Community Stage</a>
+          <a href="{{ '/submit-startup/' | relative_url }}">Get Featured</a>
         </div>
         <div class="footer__col">
           <div class="footer__col-title">Connect</div>
