@@ -1866,6 +1866,41 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 
 .post-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .5rem; }
 
+/* ── Author Byline (post page) ── */
+.post-byline {
+  display: flex; align-items: center; gap: .6rem;
+  margin-top: .75rem; padding-top: .6rem;
+}
+.post-byline__avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  object-fit: cover;
+}
+.post-byline__info { display: flex; flex-direction: column; }
+.post-byline__name {
+  font-family: var(--f-display);
+  font-size: .8rem; font-weight: 600;
+  color: var(--white);
+}
+.post-byline__role {
+  font-family: var(--f-mono);
+  font-size: .65rem; color: var(--dim);
+}
+.post-byline--footer {
+  display: flex; align-items: center; gap: .5rem;
+  margin-top: 2rem; padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.post-byline--footer p { font-size: .8rem; color: var(--dim); margin: 0; }
+.post-byline--footer strong { color: var(--white); }
+
+/* ── Author name in feed cards ── */
+.feed-item__author {
+  font-size: .7rem; color: var(--electric, #00d4ff);
+  font-weight: 500; white-space: nowrap;
+}
+[data-theme="light"] .feed-item__author { color: var(--electric-light, #0077cc); }
+
 .post-read-original { margin: 1.5rem 0; }
 .post-read-original a { color: var(--electric, #00b4d8); font-size: .85rem; word-break: break-all; text-decoration: none; opacity: .8; }
 .post-read-original a:hover { opacity: 1; text-decoration: underline; }

@@ -20,7 +20,7 @@ layout: null
     <updated>{{ post.date | date_to_xmlschema }}</updated>
     <id>{{ post.url | absolute_url }}</id>
     <content type="html" xml:base="{{ post.url | absolute_url }}"><![CDATA[{{ post.content }}]]></content>
-    <author><name>{{ site.title | xml_escape }}</name></author>
+    {% if post.author %}{% for a in site.data.authors %}{% if a.slug == post.author %}<author><name>{{ a.name | xml_escape }}</name></author>{% endif %}{% endfor %}{% else %}<author><name>{{ site.title | xml_escape }}</name></author>{% endif %}
     {% for tag in post.tags %}<category term="{{ tag }}" />
     {% endfor %}
     <summary type="html"><![CDATA[{{ post.summary | default: post.excerpt | strip_html | truncate: 180 }}]]></summary>

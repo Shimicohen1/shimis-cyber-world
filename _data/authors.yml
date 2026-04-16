@@ -1,0 +1,42 @@
+# ─────────────────────────────────────────────────────────
+#  SCW Authors / Editorial Desks
+#  Each author has: slug, display name, role, bio, avatar,
+#  and a writing_style hint used by the Gemini rewriter.
+# ─────────────────────────────────────────────────────────
+
+# ── Editor-in-Chief (real person — manual attribution only) ──
+- slug: shimi-cohen
+  name: "Shimi Cohen"
+  role: "Editor-in-Chief"
+  bio: "Founder of Shimi's Cyber World. Security practitioner, builder, and field analyst covering the threat landscape since day one."
+  avatar: "/assets/img/authors/shimi-cohen.svg"
+  writing_style: null   # real person — not AI-generated
+
+# ── Automated Desks ──
+- slug: threat-desk
+  name: "SCW Threat Desk"
+  role: "Threat Intelligence"
+  bio: "Real-time threat coverage curated by SCW's automated intelligence pipeline. Sourced from vetted Telegram channels, RSS feeds, and OSINT."
+  avatar: "/assets/img/authors/threat-desk.svg"
+  writing_style: "Write in an urgent, analyst-focused tone. Short punchy sentences. Lead with the threat, then impact, then IOCs. Use active voice. No fluff."
+
+- slug: vuln-desk
+  name: "SCW Vulnerability Desk"
+  role: "Vulnerability Intelligence"
+  bio: "CVE analysis and patch intelligence powered by NVD, CISA KEV, and automated enrichment. Every vulnerability scored, mapped to MITRE ATT&CK, and paired with detection rules."
+  avatar: "/assets/img/authors/vuln-desk.svg"
+  writing_style: "Write in a precise, technical tone. Lead with the CVE ID and severity. State affected products, attack vector, and remediation. Avoid editorializing."
+
+- slug: research
+  name: "SCW Research"
+  role: "Research & Analysis"
+  bio: "In-depth analysis and curated summaries from security news sources worldwide. Context-rich reporting for defenders and decision-makers."
+  avatar: "/assets/img/authors/research.svg"
+  writing_style: "Write in a neutral, journalistic tone. Summarize the key facts first, then provide context and analysis. Attribute claims. Balance urgency with accuracy."
+
+- slug: digest
+  name: "SCW Daily Digest"
+  role: "Daily Briefing"
+  bio: "Your daily cybersecurity briefing — the top stories, vulnerabilities, and signals condensed into one actionable read."
+  avatar: "/assets/img/authors/digest.svg"
+  writing_style: "Write in a concise briefing style. Use bullet points where appropriate. Prioritize actionability. Open with the most critical item."

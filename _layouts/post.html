@@ -10,6 +10,19 @@ layout: default
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y %H:%M" }}</time>
         {% if page.score %}<span class="meta-sep">/</span><span class="tag tag--{{ page.score | downcase }}">{{ page.score }}</span>{% endif %}
       </div>
+
+      {% comment %}── Author byline ──{% endcomment %}
+      {% if page.author %}
+      {% for a in site.data.authors %}{% if a.slug == page.author %}
+      <div class="post-byline">
+        <img src="{{ a.avatar | relative_url }}" alt="" class="post-byline__avatar" width="32" height="32">
+        <div class="post-byline__info">
+          <span class="post-byline__name">{{ a.name }}</span>
+          <span class="post-byline__role">{{ a.role }}</span>
+        </div>
+      </div>
+      {% endif %}{% endfor %}
+      {% endif %}
       <div class="post-tags">
         {% if page.ai_rewritten %}<span class="tag tag--source">SCW</span>
         {% elsif page.source_name %}<span class="tag tag--source">{{ page.source_name }}</span>
@@ -254,8 +267,15 @@ layout: default
     {% endif %}
 
         {% comment %}── AI author byline ──{% endcomment %}
-    {% if page.ai_rewritten %}
-    <div class="post-byline">
+    {% if page.author %}
+      {% for a in site.data.authors %}{% if a.slug == page.author %}
+    <div class="post-byline post-byline--footer">
+      <img src="{{ a.avatar | relative_url }}" alt="" class="post-byline__avatar" width="28" height="28">
+      <p>By <strong>{{ a.name }}</strong> · {{ a.role }}</p>
+    </div>
+      {% endif %}{% endfor %}
+    {% elsif page.ai_rewritten %}
+    <div class="post-byline post-byline--footer">
       <p>By <strong>Shimi's Cyber World</strong> Editorial</p>
     </div>
     {% endif %}

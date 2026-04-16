@@ -73,6 +73,7 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
           </div>
           <div class="feed-item__meta">
             <time>{{ post.date | date: "%b %d, %Y %H:%M" }}</time>
+            {% if post.author %}{% for a in site.data.authors %}{% if a.slug == post.author %}<span class="feed-item__sep">/</span><span class="feed-item__author">{{ a.name }}</span>{% endif %}{% endfor %}{% endif %}
             {% if post.score %}<span class="feed-item__sep">/</span><span class="feed-item__score feed-item__score--{{ post.score | downcase }}">{{ post.score }}</span>{% endif %}
           </div>
         </div>
@@ -127,6 +128,7 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
           </div>
           <div class="feed-item__meta">
             <time>{{ post.date | date: "%b %d, %Y %H:%M" }}</time>
+            {% if post.author %}{% for a in site.data.authors %}{% if a.slug == post.author %}<span class="feed-item__sep">/</span><span class="feed-item__author">{{ a.name }}</span>{% endif %}{% endfor %}{% endif %}
             {% if post.score %}<span class="feed-item__sep">/</span><span class="feed-item__score feed-item__score--{{ post.score | downcase }}">{{ post.score }}</span>{% endif %}
             {% if post.iocs and post.iocs.size > 0 %}<span class="feed-item__sep">/</span><span class="feed-item__ioc-badge" title="{{ post.iocs.size }} indicators">&#9873; {{ post.iocs.size }} IOC{% if post.iocs.size > 1 %}s{% endif %}</span>{% endif %}
           </div>
