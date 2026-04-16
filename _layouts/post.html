@@ -55,6 +55,17 @@ layout: default
     </div>
     {% endif %}
 
+    {% comment %}── Editor's Note (Shimi Cohen's personal commentary on curated picks) ──{% endcomment %}
+    {% if page.editor_note %}
+    <blockquote class="editor-note">
+      <div class="editor-note__header">
+        <img src="{{ '/assets/img/authors/shimi-cohen.svg' | relative_url }}" alt="" class="editor-note__avatar" width="24" height="24">
+        <strong>Editor's Note — Shimi Cohen</strong>
+      </div>
+      <p>{{ page.editor_note }}</p>
+    </blockquote>
+    {% endif %}
+
     {% comment %}── Summary (skip for AI posts — body IS the content) ──{% endcomment %}
     {% unless page.ai_rewritten %}
     {% if page.summary %}

@@ -1894,6 +1894,56 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .post-byline--footer p { font-size: .8rem; color: var(--dim); margin: 0; }
 .post-byline--footer strong { color: var(--white); }
 
+/* ── Editor's Note (Shimi Cohen picks) ── */
+.editor-note {
+  background: rgba(0, 212, 255, .06);
+  border-left: 3px solid var(--electric, #00d4ff);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: .8rem 1rem;
+  margin: 1.2rem 0;
+  font-size: .9rem;
+  color: var(--gray);
+}
+.editor-note__header {
+  display: flex; align-items: center; gap: .4rem;
+  margin-bottom: .4rem;
+}
+.editor-note__header strong {
+  font-family: var(--f-display);
+  font-size: .8rem; color: var(--electric, #00d4ff);
+}
+.editor-note__avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+}
+.editor-note p { margin: 0; line-height: 1.6; }
+[data-theme="light"] .editor-note { background: rgba(0, 119, 204, .06); border-left-color: var(--electric-light, #0077cc); }
+[data-theme="light"] .editor-note__header strong { color: var(--electric-light, #0077cc); }
+
+/* ── Editor's Note (Shimi Cohen picks) ── */
+.editor-note {
+  background: rgba(0, 212, 255, .06);
+  border-left: 3px solid var(--electric, #00d4ff);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: .8rem 1rem;
+  margin: 1.2rem 0;
+  font-size: .9rem;
+  color: var(--gray);
+}
+.editor-note__header {
+  display: flex; align-items: center; gap: .4rem;
+  margin-bottom: .4rem;
+}
+.editor-note__header strong {
+  font-family: var(--f-display);
+  font-size: .8rem; color: var(--electric, #00d4ff);
+}
+.editor-note__avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+}
+.editor-note p { margin: 0; line-height: 1.6; }
+[data-theme="light"] .editor-note { background: rgba(0, 119, 204, .06); border-left-color: var(--electric-light, #0077cc); }
+[data-theme="light"] .editor-note__header strong { color: var(--electric-light, #0077cc); }
+
 /* ── Author name in feed cards ── */
 .feed-item__author {
   font-size: .7rem; color: var(--electric, #00d4ff);
