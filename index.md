@@ -47,6 +47,9 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
 
     {% assign non_cve_posts = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.section != 'vulnerabilities'" %}
     {% assign posts = non_cve_posts | slice: 0, 30 %}
+    {% assign ad_freq = site.data.monetization.feed_ads.frequency | default: 6 %}
+    {% assign ad_items = site.data.monetization.feed_ads.items %}
+    {% assign ad_count = ad_items | size %}
     {% if posts.size > 0 %}
     <div class="feed__list reveal" id="home-drops-list">
       {% for post in posts %}
@@ -78,6 +81,17 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
           </div>
         </div>
       </a>
+      {% comment %}── In-feed affiliate ad every N posts ──{% endcomment %}
+      {% assign mod_check = forloop.index | modulo: ad_freq %}
+      {% if mod_check == 0 and ad_count > 0 %}
+        {% assign ad_idx = forloop.index | divided_by: ad_freq | minus: 1 | modulo: ad_count %}
+        {% assign ad = ad_items[ad_idx] %}
+        {% if ad.type == "premium-cta" %}
+          {% include ad-slot.html type="feed-native" title=ad.title desc=ad.desc url=ad.url badge=ad.badge button="Explore SCW Elite →" %}
+        {% else %}
+          {% include ad-slot.html type="feed-native" title=ad.title desc=ad.desc url=ad.url badge=ad.badge %}
+        {% endif %}
+      {% endif %}
       {% endfor %}
     </div>
     {% else %}
