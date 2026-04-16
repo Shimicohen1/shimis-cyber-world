@@ -3,7 +3,7 @@ layout: null
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:scw="https://shimiscyberworld.com/ns/1.0" xmlns:media="http://search.yahoo.com/mrss/">
-  <generator uri="https://shimiscyberworld.com/" version="2.0">SCW Feed Engine</generator>
+  <generator uri="https://shimiscyberworld.com/" version="3.0">SCW Feed Engine</generator>
   <link href="{{ '/feed.xml' | absolute_url }}" rel="self" type="application/atom+xml" />
   <link href="{{ site.url }}" rel="alternate" type="text/html" />
   <updated>{{ site.time | date_to_xmlschema }}</updated>
@@ -26,23 +26,35 @@ layout: null
     <summary type="html"><![CDATA[{{ post.summary | default: post.excerpt | strip_html | truncate: 180 }}]]></summary>
     {% if post.image %}<media:thumbnail url="{{ post.image | xml_escape }}" />
     <media:content medium="image" url="{{ post.image | xml_escape }}" />{% endif %}
-    {% comment %}── SCW Extended Fields ──{% endcomment %}
-    {% if post.score %}<scw:score>{{ post.score }}</scw:score>{% endif %}
-    {% if post.event_type %}<scw:event_type>{{ post.event_type }}</scw:event_type>{% endif %}
-    {% if post.tlp %}<scw:tlp>{{ post.tlp }}</scw:tlp>{% endif %}
-    {% if post.source_name %}<scw:source_name>{{ post.source_name | xml_escape }}</scw:source_name>{% endif %}
-    {% if post.telegram_url %}<scw:telegram_url>{{ post.telegram_url }}</scw:telegram_url>{% endif %}
-    {% if post.source_url and post.source_url != "" %}<scw:source_url>{{ post.source_url | xml_escape }}</scw:source_url>{% endif %}
+    {% comment %}── SCW Structured Threat Intelligence ──{% endcomment %}
+    {% comment %}── Classification ──{% endcomment %}
+    {% if post.score %}<scw:severity>{{ post.score }}</scw:severity>{% endif %}
+    {% if post.cvss_score %}<scw:cvss score="{{ post.cvss_score }}" severity="{{ post.cvss_severity }}"{% if post.cvss_vector %} vector="{{ post.cvss_vector }}"{% endif %} />{% endif %}
+    {% if post.event_type %}<scw:event_type>{{ post.event_type }}</scw:event_type>{% elsif post.section == "vulnerabilities" or post.channel == "NVD" %}<scw:event_type>vulnerability</scw:event_type>{% endif %}
+    {% if post.section %}<scw:section>{{ post.section }}</scw:section>{% endif %}
+    {% if post.tlp %}<scw:tlp>{{ post.tlp }}</scw:tlp>{% else %}<scw:tlp>TLP:CLEAR</scw:tlp>{% endif %}
+    {% comment %}── Source Attribution ──{% endcomment %}
+    {% if post.source_name %}<scw:source name="{{ post.source_name | xml_escape }}"{% if post.channel %} channel="{{ post.channel | xml_escape }}"{% endif %}{% if post.telegram_url %} telegram_url="{{ post.telegram_url }}"{% endif %}{% if post.source_url and post.source_url != "" %} url="{{ post.source_url | xml_escape }}"{% endif %} />{% endif %}
+    {% comment %}── Vulnerability Data (NVD) ──{% endcomment %}
+    {% if post.cwe %}{% for c in post.cwe %}
+    <scw:cwe>{{ c }}</scw:cwe>{% endfor %}{% endif %}
+    {% comment %}── Entities ──{% endcomment %}
     {% if post.organizations %}{% for org in post.organizations %}
     <scw:organization name="{{ org.name | xml_escape }}"{% if org.domain %} domain="{{ org.domain | xml_escape }}"{% endif %}{% if org.role %} role="{{ org.role }}"{% endif %} />{% endfor %}{% endif %}
     {% if post.threat_actors %}{% for actor in post.threat_actors %}
     <scw:threat_actor>{{ actor | xml_escape }}</scw:threat_actor>{% endfor %}{% endif %}
+    {% if post.malware_families %}{% for mw in post.malware_families %}
+    <scw:malware>{{ mw | xml_escape }}</scw:malware>{% endfor %}{% endif %}
     {% if post.countries %}{% for country in post.countries %}
     <scw:country>{{ country }}</scw:country>{% endfor %}{% endif %}
-    {% if post.iocs %}{% for ioc in post.iocs %}
-    <scw:ioc id="{{ ioc.id | xml_escape }}" type="{{ ioc.type | xml_escape }}"{% if ioc.indicator %} indicator="{{ ioc.indicator | xml_escape }}"{% endif %} />{% endfor %}{% endif %}
+    {% comment %}── IOCs ──{% endcomment %}
+    {% if post.iocs %}{% for ioc in post.iocs %}{% unless ioc.type == "cve" or ioc.type == "weakness" %}
+    <scw:ioc type="{{ ioc.type | xml_escape }}" indicator="{{ ioc.indicator | xml_escape }}" />{% endunless %}{% endfor %}{% endif %}
+    {% comment %}── MITRE ATT&CK ──{% endcomment %}
     {% if post.mitre_attack %}{% for m in post.mitre_attack %}
     <scw:mitre id="{{ m.id }}" name="{{ m.name | xml_escape }}" tactic="{{ m.tactic | xml_escape }}" />{% endfor %}{% endif %}
+    {% comment %}── Detection ──{% endcomment %}
+    {% if post.sigma_rules %}<scw:detection rules="{{ post.sigma_rules.count | default: 0 }}" free="{{ post.sigma_rules.free | default: 0 }}" />{% endif %}
   </entry>
   {% endfor %}
 </feed>

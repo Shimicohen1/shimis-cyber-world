@@ -69,6 +69,112 @@ permalink: /rss/
   </div>
 </div>
 
+<!-- ── Schema Documentation ── -->
+<div id="schema" class="rss-schema">
+  <h2 class="rss-schema__title">Feed Schema for Integrators</h2>
+  <p class="rss-schema__desc">SCW uses the <code>scw:</code> XML namespace (<code>https://shimiscyberworld.com/ns/1.0</code>) to expose structured threat intelligence alongside standard Atom fields. All fields are consistent across post types.</p>
+
+  <div class="rss-schema__section">
+    <h3>Classification</h3>
+    <table class="rss-schema__table">
+      <tr><th>Element</th><th>Values</th><th>Always Present</th></tr>
+      <tr><td><code>&lt;scw:severity&gt;</code></td><td>CRITICAL, HIGH, MEDIUM, LOW</td><td>Yes</td></tr>
+      <tr><td><code>&lt;scw:cvss&gt;</code></td><td>Attributes: <code>score</code> (float), <code>severity</code>, <code>vector</code></td><td>NVD posts only</td></tr>
+      <tr><td><code>&lt;scw:event_type&gt;</code></td><td>vulnerability, data-breach, ransomware, espionage, fraud, supply-chain, defacement, advisory, tool-release, research, other</td><td>Yes</td></tr>
+      <tr><td><code>&lt;scw:section&gt;</code></td><td>vulnerabilities, live-feed</td><td>Yes</td></tr>
+      <tr><td><code>&lt;scw:tlp&gt;</code></td><td>TLP:CLEAR (default), TLP:GREEN, TLP:AMBER</td><td>Yes</td></tr>
+    </table>
+  </div>
+
+  <div class="rss-schema__section">
+    <h3>Source Attribution</h3>
+    <table class="rss-schema__table">
+      <tr><th>Element</th><th>Attributes</th></tr>
+      <tr><td><code>&lt;scw:source&gt;</code></td><td><code>name</code> — source name (e.g., "National Vulnerability Database", "Cyber Threat Intelligence")<br><code>channel</code> — feed channel identifier<br><code>url</code> — original source URL (if external)<br><code>telegram_url</code> — Telegram message link (if applicable)</td></tr>
+    </table>
+  </div>
+
+  <div class="rss-schema__section">
+    <h3>Vulnerability Data</h3>
+    <table class="rss-schema__table">
+      <tr><th>Element</th><th>Description</th></tr>
+      <tr><td><code>&lt;scw:cwe&gt;</code></td><td>CWE weakness identifier (e.g., CWE-79, CWE-89). Multiple elements per entry.</td></tr>
+    </table>
+  </div>
+
+  <div class="rss-schema__section">
+    <h3>Entities</h3>
+    <table class="rss-schema__table">
+      <tr><th>Element</th><th>Attributes / Values</th></tr>
+      <tr><td><code>&lt;scw:organization&gt;</code></td><td><code>name</code> — organization name<br><code>domain</code> — domain name (when known)<br><code>role</code> — <strong>victim</strong>, <strong>vendor</strong>, <strong>threat-actor</strong>, or <strong>other</strong></td></tr>
+      <tr><td><code>&lt;scw:threat_actor&gt;</code></td><td>Named threat group (e.g., APT28, LockBit, Handala)</td></tr>
+      <tr><td><code>&lt;scw:malware&gt;</code></td><td>Malware family name (e.g., BlackCat, QakBot)</td></tr>
+      <tr><td><code>&lt;scw:country&gt;</code></td><td>ISO 3166-1 alpha-2 code (e.g., US, IL, CN)</td></tr>
+    </table>
+  </div>
+
+  <div class="rss-schema__section">
+    <h3>Indicators of Compromise</h3>
+    <table class="rss-schema__table">
+      <tr><th>Element</th><th>Attributes</th></tr>
+      <tr><td><code>&lt;scw:ioc&gt;</code></td><td><code>type</code> — ipv4, ipv6, domain, url, md5, sha1, sha256, email, affected-product<br><code>indicator</code> — the IOC value</td></tr>
+    </table>
+    <p class="rss-schema__note">Note: Generic stub IOCs (CVE IDs and CWE IDs repeated as indicators) are excluded from the feed. Only actionable IOCs are emitted.</p>
+  </div>
+
+  <div class="rss-schema__section">
+    <h3>MITRE ATT&CK</h3>
+    <table class="rss-schema__table">
+      <tr><th>Element</th><th>Attributes</th></tr>
+      <tr><td><code>&lt;scw:mitre&gt;</code></td><td><code>id</code> — technique ID (e.g., T1190, T1059.001)<br><code>name</code> — technique name<br><code>tactic</code> — tactic name (e.g., Initial Access, Execution)</td></tr>
+    </table>
+  </div>
+
+  <div class="rss-schema__section">
+    <h3>Detection</h3>
+    <table class="rss-schema__table">
+      <tr><th>Element</th><th>Attributes</th></tr>
+      <tr><td><code>&lt;scw:detection&gt;</code></td><td><code>rules</code> — total detection rule count<br><code>free</code> — number of free/open rules</td></tr>
+    </table>
+  </div>
+
+  <div class="rss-schema__section">
+    <h3>Tags (Atom <code>&lt;category&gt;</code>)</h3>
+    <p>Standard Atom <code>&lt;category term="..."&gt;</code> elements. Tags follow a controlled vocabulary:</p>
+    <table class="rss-schema__table">
+      <tr><th>Category</th><th>Tags</th></tr>
+      <tr><td>Severity</td><td><code>critical</code>, <code>high-severity</code>, <code>medium-severity</code></td></tr>
+      <tr><td>Type</td><td><code>vulnerability</code>, <code>cve</code>, <code>malware</code>, <code>ransomware</code>, <code>data-breach</code>, <code>phishing</code>, <code>threat-intel</code></td></tr>
+      <tr><td>Domain</td><td><code>cloud</code>, <code>microsoft</code>, <code>identity</code>, <code>ai-security</code>, <code>tools</code></td></tr>
+      <tr><td>Weakness</td><td><code>cwe-79</code>, <code>cwe-89</code>, etc.</td></tr>
+      <tr><td>Vendor</td><td>Slugified vendor names from affected products (e.g., <code>wordpress</code>, <code>cisco</code>)</td></tr>
+    </table>
+  </div>
+
+  <div class="rss-schema__example">
+    <h3>Example Entry</h3>
+    <pre><code>&lt;entry&gt;
+  &lt;title&gt;Critical RCE in Apache Struts&lt;/title&gt;
+  &lt;published&gt;2026-04-16T08:00:00Z&lt;/published&gt;
+  &lt;category term="vulnerability" /&gt;
+  &lt;category term="cve" /&gt;
+  &lt;category term="critical" /&gt;
+  &lt;category term="cwe-94" /&gt;
+  &lt;category term="apache" /&gt;
+  &lt;scw:severity&gt;CRITICAL&lt;/scw:severity&gt;
+  &lt;scw:cvss score="9.8" severity="CRITICAL" vector="CVSS:3.1/..." /&gt;
+  &lt;scw:event_type&gt;vulnerability&lt;/scw:event_type&gt;
+  &lt;scw:section&gt;vulnerabilities&lt;/scw:section&gt;
+  &lt;scw:tlp&gt;TLP:CLEAR&lt;/scw:tlp&gt;
+  &lt;scw:source name="National Vulnerability Database" channel="NVD" /&gt;
+  &lt;scw:cwe&gt;CWE-94&lt;/scw:cwe&gt;
+  &lt;scw:organization name="Apache" domain="apache.org" role="vendor" /&gt;
+  &lt;scw:mitre id="T1190" name="Exploit Public-Facing Application" tactic="Initial Access" /&gt;
+  &lt;scw:detection rules="3" free="1" /&gt;
+&lt;/entry&gt;</code></pre>
+  </div>
+</div>
+
 </div>
 
 <style>
@@ -119,4 +225,25 @@ permalink: /rss/
   .rss-readers__grid { grid-template-columns: 1fr; }
   .rss-feed-url__row { flex-direction: column; }
 }
+
+.rss-schema { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.rss-schema__title { font-family: var(--f-display); font-size: 1.2rem; font-weight: 700; color: var(--white); margin: 0 0 .5rem; }
+.rss-schema__desc { color: var(--gray); font-size: .85rem; line-height: 1.6; margin: 0 0 1.5rem; }
+.rss-schema__desc code { background: rgba(255,255,255,.06); padding: .15rem .4rem; border-radius: 3px; font-size: .78rem; }
+.rss-schema__section { margin-bottom: 1.5rem; }
+.rss-schema__section h3 { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cyan); margin: 0 0 .6rem; }
+.rss-schema__table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.rss-schema__table th { text-align: left; padding: .5rem .6rem; background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--dim); font-weight: 600; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; }
+.rss-schema__table td { padding: .5rem .6rem; border: 1px solid var(--border); color: var(--gray); vertical-align: top; line-height: 1.5; }
+.rss-schema__table td code { background: rgba(6,182,212,.08); color: var(--cyan); padding: .1rem .35rem; border-radius: 3px; font-size: .75rem; white-space: nowrap; }
+.rss-schema__note { color: var(--dim); font-size: .75rem; font-style: italic; margin: .5rem 0 0; }
+.rss-schema__example { margin-top: 1.5rem; }
+.rss-schema__example h3 { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cyan); margin: 0 0 .6rem; }
+.rss-schema__example pre { background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: var(--r-md); padding: 1rem; overflow-x: auto; }
+.rss-schema__example code { color: var(--gray); font-size: .75rem; line-height: 1.7; }
+
+[data-theme="light"] .rss-schema__title { color: var(--fg); }
+[data-theme="light"] .rss-schema__table th { background: rgba(0,0,0,.03); }
+[data-theme="light"] .rss-schema__table td code { background: rgba(6,182,212,.08); }
+[data-theme="light"] .rss-schema__example pre { background: rgba(0,0,0,.03); }
 </style>
