@@ -4,10 +4,10 @@
 #  and a writing_style hint used by the Gemini rewriter.
 # ─────────────────────────────────────────────────────────
 
-# ── Editor-in-Chief (real person — manual attribution only) ──
+# ── Founder (real person — manual + own-source attribution) ──
 - slug: shimi-cohen
   name: "Shimi Cohen"
-  role: "Editor-in-Chief"
+  role: "Founder"
   bio: "Founder of Shimi's Cyber World. Security practitioner, builder, and field analyst covering the threat landscape since day one."
   avatar: "/assets/img/authors/shimi-cohen.svg"
   writing_style: null   # real person — not AI-generated
