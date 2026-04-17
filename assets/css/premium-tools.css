@@ -3582,6 +3582,24 @@
 [data-theme="light"] .sigma-export-strip__btn { color: #0077aa; border-color: rgba(0,119,170,.2); background: rgba(0,119,170,.04); }
 [data-theme="light"] .sigma-export-strip__btn:hover { color: #004466; background: rgba(0,119,170,.1); }
 
+/* Mobile: stack SIEM chips and make button full-width */
+@media (max-width: 600px) {
+  .sigma-export-strip {
+    flex-wrap: wrap;
+    gap: .3rem;
+    padding: .4rem .6rem;
+    font-size: .72rem;
+  }
+  .sigma-export-strip__btn {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+    margin-top: .25rem;
+    padding: .35em .6em;
+  }
+  .sigma-export-strip__sep { display: none; }
+}
+
 .sigma-gated__text {
   font-size: .85rem;
   color: var(--gray, #888);
