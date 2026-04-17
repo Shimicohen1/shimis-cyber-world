@@ -22,49 +22,46 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Phishing-as-a-Service Platforms Evolve
-    text: New PhaaS platforms like VENOM are increasingly targeting high-value credentials, especially C-suite Microsoft logins.
-    detail: The VENOM platform exemplifies a growing trend in sophisticated phishing-as-a-service operations. Cybersecurity teams must enhance awareness training for executives and implement advanced email filtering and multi-factor authentication to counter these targeted attacks. Monitor for new phishing infrastructure and indicators of compromise.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-294a
-    link_label: CISA Alert on Phishing
+  - title: Emerging Phishing-as-a-Service Platforms Threaten C-Suite
+    text: New 'VENOM' platform targets Microsoft credentials, highlighting sophisticated PhaaS evolution.
+    detail: The VENOM platform represents a growing trend in phishing-as-a-service, specifically targeting high-value Microsoft credentials of executives. Professionals should reinforce multi-factor authentication and employee training on sophisticated spear-phishing attempts to mitigate this evolving threat.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-awareness
+    link_label: Phishing Awareness Guide
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - credentials
-  - title: Exploitation of Unpatched Third-Party SDKs
-    text: Vulnerabilities in common third-party SDKs, like the Android SDK flaw, pose widespread risks to applications and user data.
-    detail: The recent discovery of an Android SDK intent redirection vulnerability underscores the critical need for supply chain security. Developers must rigorously vet third-party libraries, implement secure coding practices, and ensure timely patching. Users should exercise caution with app permissions, especially for financial applications.
-    link: https://owasp.org/www-community/vulnerabilities/Mobile_Security_Testing_Guide
-    link_label: OWASP Mobile Security Testing Guide
+      - microsoft
+  - title: Zero-Day Exploits Continue to Target Widely Used Software
+    text: Active exploitation of zero-days in Adobe Reader and Windows highlights disclosure process challenges.
+    detail: The recent discovery and exploitation of zero-day vulnerabilities in Adobe Reader and Windows underscore the persistent threat of unknown flaws. Organizations must prioritize rapid patching and implement robust endpoint detection and response (EDR) solutions to counter these high-impact threats.
+    link: https://www.cisa.gov/news-events/directives/emergency-directive-22-01
+    link_label: Exploit Mitigation Guidance
     badge: signal
     tags:
       - threat-intel
       - vulnerability
-      - supply-chain
-      - android
-  - title: APT Groups Leverage Evolving Malware Tactics
-    text: Advanced Persistent Threats (APTs) like Fancy Bear and GRU-affiliated actors continue to evolve their malware and exploitation techniques globally.
-    detail: Reports indicate persistent global activities from APT groups, utilizing evolving malware and exploiting zero-day vulnerabilities. Organizations should bolster endpoint detection and response (EDR), conduct regular vulnerability assessments, and stay informed on APT TTPs via threat intelligence feeds.
-    link: https://attack.mitre.org/matrices/enterprise/
-    link_label: MITRE ATT&CK Enterprise
+      - zero-day
+  - title: Supply Chain Attacks Expand to CMS Plugins and SDKs
+    text: Hijacked updates for WordPress/Joomla plugins and Android SDK flaws expose users to risks.
+    detail: Recent incidents show attackers compromising update mechanisms for popular CMS plugins and exploiting vulnerabilities in third-party Android SDKs. This highlights the critical need for rigorous vetting of software dependencies and prompt patching of all third-party components.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: Supply Chain Security
     badge: signal
     tags:
       - threat-intel
-      - apt
+      - supply-chain
       - malware
-      - espionage
-  - title: AI Guardrails Under Attack via Prompt Injection
-    text: Sophisticated prompt injection techniques are successfully bypassing AI system guardrails, posing new security challenges.
-    detail: The successful bypass of AI guardrails in systems like Apple Intelligence highlights the emerging threat of prompt injection. Developers and security professionals must prioritize robust input validation, context-aware filtering, and continuous monitoring of AI model behavior to mitigate these risks.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
+  - title: AI Guardrails Challenged by Prompt Injection Attacks
+    text: New research demonstrates bypass of AI security measures, raising concerns for AI adoption.
+    detail: The successful circumvention of 'Apple Intelligence' AI guardrails through prompt injection signals a significant challenge for AI security. Organizations integrating AI must implement continuous monitoring and develop robust input validation and output filtering mechanisms to prevent malicious manipulation.
+    link: https://www.nist.gov/cyberframework/trustworthy-ai
+    link_label: NIST AI Trust Framework
     badge: signal
     tags:
       - threat-intel
       - ai
       - vulnerability
-      - prompt-injection
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
