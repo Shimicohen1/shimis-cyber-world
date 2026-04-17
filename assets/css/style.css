@@ -692,6 +692,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .feed-item__score--medium { color: rgba(255, 180, 0, .9); }
 .feed-item__score--low { color: var(--dim); }
 .feed-item__ioc-badge { font-family: var(--f-mono); font-size: .65rem; font-weight: 600; color: rgba(255,100,100,.8); letter-spacing: .02em; }
+.feed-item__sigma-badge { font-family: var(--f-mono); font-size: .65rem; font-weight: 600; color: rgba(0,200,150,.85); letter-spacing: .02em; }
 
 /* RTL feed items */
 [dir="rtl"].feed-item { flex-direction: row-reverse; }

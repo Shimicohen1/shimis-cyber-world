@@ -28,14 +28,13 @@ permalink: /posts/
     <button class="filter-pill" data-filter="darkweb">Darkweb</button>
     <button class="filter-pill" data-filter="cloud">Cloud</button>
     <button class="filter-pill" data-filter="ai-security">AI Security</button>
-    <button class="filter-pill" data-filter="incd">INCD</button>
     <button class="filter-pill" data-filter="daily-digest">Daily Digest</button>
   </div>
 </div>
 
 <div class="archive">
   <div class="archive__list" id="feed-list">
-    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'CISA KEV'" | where_exp: "post", "post.section != 'vulnerabilities'" %}
+    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'CISA KEV'" | where_exp: "post", "post.channel != 'INCD'" | where_exp: "post", "post.section != 'vulnerabilities'" %}
     {% assign ad_freq = site.data.monetization.feed_ads.frequency | default: 6 %}
     {% assign ad_items = site.data.monetization.feed_ads.items %}
     {% assign ad_count = ad_items | size %}

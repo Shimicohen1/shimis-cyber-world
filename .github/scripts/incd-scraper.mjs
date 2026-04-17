@@ -102,6 +102,78 @@ function sigmaFrontmatter(rules, slug) {
   return yaml;
 }
 
+// ── Telegram Publishing ──
+const TG_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
+const TG_CHANNEL   = process.env.TELEGRAM_CHANNEL_ID || "@shimiscyberworld";
+const SITE_URL     = "https://shimiscyberworld.com";
+
+function escTg(str) {
+  if (!str) return "";
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+async function sendTelegram(method, body) {
+  if (!TG_BOT_TOKEN) { console.log("[INCD-TG] ⚠️ No TELEGRAM_BOT_TOKEN — skipping"); return { ok: false }; }
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/${method}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: TG_CHANNEL, parse_mode: "HTML", ...body }),
+    });
+    const data = await res.json();
+    if (!data.ok) console.error(`[INCD-TG] ❌ ${method} failed: ${data.description}`);
+    return data;
+  } catch (err) {
+    console.error(`[INCD-TG] ❌ ${method} error: ${err.message}`);
+    return { ok: false };
+  }
+}
+
+async function publishToTelegram(post) {
+  const slug = post.filename.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, "");
+  const url = `${SITE_URL}/posts/${slug}/`;
+
+  const score = post.classification?.score || "MEDIUM";
+  const scoreEmoji = score === "CRITICAL" ? "🔴" : score === "HIGH" ? "🔴" : "🟡";
+
+  let msg = `🇮🇱 <b>SCW</b> │ INCD Alert\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  msg += `<b>${escTg(post.title?.substring(0, 200))}</b>\n\n`;
+
+  if (post.summary) {
+    const short = post.summary.length > 250 ? post.summary.substring(0, 247) + "…" : post.summary;
+    msg += `${escTg(short)}\n\n`;
+  }
+
+  msg += `🇮🇱 #INCD  🛡️ #vulnerability\n`;
+  msg += `${scoreEmoji} ${score}\n\n`;
+  msg += `<a href="${url}">📖 Read full analysis →</a>`;
+
+  // Sigma promo if rules exist
+  if (post.sigmaCount > 0) {
+    msg += `\n\n🛡️ <b>${post.sigmaCount} Sigma detection rules</b> included`;
+    msg += `\n<a href="https://t.me/Shimiscyberworldbot?start=detect">Export to all SIEM formats →</a>`;
+  }
+
+  msg += `\n\n━━━━━━━━━━━━━━━━━━━━`;
+  msg += `\n🌐 <a href="https://t.me/shimiscyberworld">@shimiscyberworld</a>`;
+  msg += ` · <a href="${SITE_URL}">shimiscyberworld.com</a>`;
+
+  // Try with image, fall back to text
+  let result = { ok: false };
+  if (post.imageUrl) {
+    result = await sendTelegram("sendPhoto", { photo: post.imageUrl, caption: msg });
+  }
+  if (!result.ok) {
+    result = await sendTelegram("sendMessage", { text: msg, disable_web_page_preview: false });
+  }
+
+  if (result.ok) {
+    console.log(`[INCD-TG] ✅ Published to Telegram: "${post.title?.substring(0, 50)}" (msg ${result.result?.message_id})`);
+  }
+  return result;
+}
+
 // ── Constants ────────────────────────────────────────────
 const INCD_PAGE_URL =
   "https://www.gov.il/he/collectors/publications?officeId=4bcc13f5-fed6-4b8c-b8ee-7bf4a6bc81c8";
@@ -559,6 +631,18 @@ function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
     }
   }
 
+  // Sigma detection rules
+  let sigmaYaml = "";
+  if (mitreAttack && mitreAttack.length > 0 && (iocs.length > 0 || isVuln)) {
+    const postUrl = `https://shimiscyberworld.com/posts/incd-${slug}/`;
+    const sigmaData = { title, iocs, mitre_attack: mitreAttack, date: `${yyyy}-${mm}-${dd}` };
+    const allRules = generateSigmaForIncd(sigmaData, postUrl);
+    if (allRules.length > 0) {
+      sigmaYaml = sigmaFrontmatter(allRules, slug);
+      console.log(`[INCD] 🛡️  Sigma: ${allRules.length} rules for ${slug} (${allRules.filter(r => r.tier === "free").length} free)`);
+    }
+  }
+
   const markdown = [
     "---",
     `title: "${yamlSafe(title)}"`,
@@ -595,7 +679,8 @@ function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
     .join("\n");
 
   const filename = `${yyyy}-${mm}-${dd}-incd-${slug}.md`;
-  return { markdown, filename, title, slug, classification };
+  const sigmaCount = (sigmaYaml.match(/count: (\d+)/) || [])[1] || 0;
+  return { markdown, filename, title, slug, classification, summary: translated.summary, imageUrl: coverImage, sigmaCount: Number(sigmaCount) };
 }
 
 // ── Main ────────────────────────────────────────────────
@@ -801,6 +886,10 @@ async function main() {
         console.log(
           `[INCD] ✅ Created ${post.filename} [${post.classification.section}/${post.classification.score}]`
         );
+
+        // Publish to Telegram channel
+        await publishToTelegram(post);
+
         publishedSet.add(entry.url);
         published++;
 
