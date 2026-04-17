@@ -153,20 +153,30 @@ permalink: /detections/
         </a>
       </div>
       {% else %}
-      <!-- Standard rule: show own format, others locked -->
+      <!-- Standard rule: only Sigma queries visible, all others locked -->
+      {% assign plat_slug = rule.platform | downcase %}
+      {% if plat_slug contains "sigma" %}
       <div class="dl-rule__code">
         <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
         <pre><code>{{ rule.query | strip | xml_escape }}</code></pre>
       </div>
+      {% else %}
+      <div class="dl-rule__code dl-rule__code--locked">
+        <div class="dl-locked-overlay">
+          <span>🔒</span>
+          <p>This {{ rule.platform }} query is available via the Intel Bot</p>
+          <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Unlock via Bot →</a>
+        </div>
+      </div>
+      {% endif %}
 
       <div class="sigma-siem-locked sigma-siem-locked--static">
-        {% assign plat_slug = rule.platform | downcase %}
-        {% if plat_slug contains "sigma" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sigma</span>{% endif %}
-        {% if plat_slug contains "splunk" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Splunk SPL</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>{% endif %}
-        {% if plat_slug contains "sentinel" or plat_slug contains "kql" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ {{ rule.platform }}</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>{% endif %}
-        {% if plat_slug contains "elastic" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Elastic</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>{% endif %}
-        {% if plat_slug contains "qradar" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ QRadar AQL</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>{% endif %}
-        {% if plat_slug contains "wazuh" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Wazuh</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>{% endif %}
+        <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
+        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
+        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
+        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
+        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
+        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>
       </div>
       <div class="dl-rule__export-cta">
         <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">
@@ -301,6 +311,13 @@ permalink: /detections/
 /* INCD badge */
 .dl-breach-badge--incd{background:rgba(0,100,200,.15);color:#4da6ff;border-color:rgba(0,100,200,.3)}
 .tag--incd{background:rgba(0,100,200,.12);color:#4da6ff;border-color:rgba(0,100,200,.2)}
+
+/* Locked query overlay */
+.dl-rule__code--locked{position:relative;min-height:80px;background:rgba(0,0,0,.2);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+.dl-locked-overlay{text-align:center;padding:1rem}
+.dl-locked-overlay span{font-size:1.5rem}
+.dl-locked-overlay p{color:var(--text-muted);font-size:.8rem;margin:.5rem 0}
+.dl-locked-overlay .btn{font-size:.75rem;padding:.3rem .8rem}
 </style>
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
 <script src="{{ '/assets/js/detections.js' | relative_url }}" defer></script>
