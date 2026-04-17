@@ -215,6 +215,18 @@ permalink: /detections/
       {% assign sev = post.sigma_rules.preview_level | default: 'medium' %}
       {% assign extra_cat = "" %}
       {% if is_incd %}{% assign extra_cat = " incd" %}{% endif %}
+      {% comment %}Build deeplink query: first CVE ID, or INCD alert number, or post slug{% endcomment %}
+      {% assign detect_q = "" %}
+      {% for ioc in post.iocs %}
+        {% if detect_q == "" %}
+          {% assign ioc_id_lower = ioc.id | downcase %}
+          {% if ioc_id_lower contains "cve-" %}{% assign detect_q = ioc.id %}{% endif %}
+        {% endif %}
+      {% endfor %}
+      {% if detect_q == "" %}
+        {% assign fn_slug = post.path | split: "/" | last | remove: ".md" %}
+        {% assign detect_q = fn_slug %}
+      {% endif %}
       <div class="tool-card dl-rule dl-rule--breach reveal"
            data-category="{{ post.sigma_rules.preview_tactic | slugify }}{{ extra_cat }}"
            data-platform="multi-siem"
@@ -248,10 +260,10 @@ permalink: /detections/
           <span class="dl-siem-strip__free">✓ Sigma</span>
           <span class="dl-siem-strip__sep">·</span>
           <span class="dl-siem-strip__fmts">Splunk · KQL · Elastic · QRadar · Wazuh</span>
-          <a href="https://t.me/Shimiscyberworldbot?start=detect" class="dl-siem-strip__cta" target="_blank" rel="noopener">Export via Bot →</a>
+          <a href="https://t.me/Shimiscyberworldbot?start=detect_{{ detect_q | url_encode }}" class="dl-siem-strip__cta" target="_blank" rel="noopener">Export via Bot →</a>
         </div>
         {% if post.sigma_rules.paid_count and post.sigma_rules.paid_count > 0 %}
-        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules via <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">/detect</a></p>
+        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules via <a href="https://t.me/Shimiscyberworldbot?start=detect_{{ detect_q | url_encode }}" target="_blank" rel="noopener">/detect</a></p>
         {% endif %}
       </div>
         {% endunless %}

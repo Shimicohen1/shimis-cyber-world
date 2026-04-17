@@ -655,7 +655,7 @@ function yamlSafe(str) {
     .trim();
 }
 
-function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
+async function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
   const pubType = pub.tags?.promotedMetaData?.["סוג"]?.[0]?.title || "unknown";
   const dateStr = pub.tags?.metaData?.["תאריך פרסום"]?.[0]?.title || "";
   const sourceUrl = INCD_BASE_URL + pub.url;
@@ -971,7 +971,7 @@ async function main() {
         }
 
         // Build post
-        const post = buildPostMarkdown(entry, translated, attachments, iocs, mitreAttack);
+        const post = await buildPostMarkdown(entry, translated, attachments, iocs, mitreAttack);
         const filePath = path.join(POSTS_DIR, post.filename);
 
         // Check if file already exists
