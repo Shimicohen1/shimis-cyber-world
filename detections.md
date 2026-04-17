@@ -83,12 +83,7 @@ permalink: /detections/
       {% endfor %}
       {% if incd_count > 0 %}<button class="vault-filter" data-filter="incd">🇮🇱 INCD</button>{% endif %}
     </div>
-    <div class="vault-filters dl-platform-filters" id="dlPlatformFilters">
-      <button class="vault-filter active" data-filter="all">All Platforms</button>
-      {% for plat in site.data.detections.platforms %}
-      <button class="vault-filter" data-filter="{{ plat | slugify }}">{{ plat }}</button>
-      {% endfor %}
-    </div>
+
   </div>
 
   <!-- Rules Grid -->
@@ -184,9 +179,7 @@ permalink: /detections/
       </div>
       {% endif %}
       {% else %}
-      <!-- Standard rule -->
-      {% assign plat_slug = rule.platform | downcase %}
-      {% if plat_slug contains "sigma" %}
+      <!-- Standard Sigma rule -->
       <div class="dl-rule__code">
         <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
         <pre><code>{{ rule.query | strip | xml_escape }}</code></pre>
@@ -197,15 +190,6 @@ permalink: /detections/
         <span class="dl-siem-strip__fmts">Splunk · KQL · Elastic · QRadar · Wazuh</span>
         <a href="https://t.me/Shimiscyberworldbot?start=detect" class="dl-siem-strip__cta" target="_blank" rel="noopener">Export via Bot →</a>
       </div>
-      {% else %}
-      <div class="dl-siem-strip dl-siem-strip--gated">
-        <div class="dl-siem-strip__info">
-          <span class="dl-siem-strip__icon">🛡️</span>
-          <span class="dl-siem-strip__text">Detection available in <strong>Sigma + 5 SIEM formats</strong></span>
-        </div>
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="dl-siem-strip__cta" target="_blank" rel="noopener">/detect →</a>
-      </div>
-      {% endif %}
       {% endif %}
 
       {% if rule.notes %}
@@ -323,14 +307,7 @@ permalink: /detections/
 .dl-siem-strip__cta{margin-left:auto;color:var(--accent);text-decoration:none;font-weight:600;white-space:nowrap;transition:color .2s}
 .dl-siem-strip__cta:hover{color:#fff}
 
-/* Gated variant — for non-Sigma rules with no visible query */
-.dl-siem-strip--gated{padding:.85rem 1rem;background:linear-gradient(135deg,rgba(0,200,255,.03),rgba(0,200,255,.07));border-color:rgba(0,200,255,.15);gap:.6rem .8rem}
-.dl-siem-strip__info{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
-.dl-siem-strip__icon{font-size:1.1rem;flex-shrink:0}
-.dl-siem-strip__text{font-size:.82rem;color:var(--text-muted)}
-.dl-siem-strip__text strong{color:var(--text)}
-.dl-siem-strip--gated .dl-siem-strip__cta{padding:.35rem .9rem;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:5px;font-size:.8rem}
-.dl-siem-strip--gated .dl-siem-strip__cta:hover{background:rgba(0,200,255,.2)}
+/* Gated variant — not used currently, kept for future */
 
 /* Rule Tester widget */
 .dl-rule-tester{margin-top:.75rem;border:1px solid var(--border);border-radius:8px;overflow:hidden}
