@@ -147,11 +147,6 @@ permalink: /detections/
           <pre><code>{{ rule.siem_wazuh | strip | xml_escape }}</code></pre>
         </div>
       </div>
-      <div class="dl-rule__export-cta">
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">
-          <span class="dl-export-icon">⚡</span> Get this for every breach — <code>/detect</code> in the Intel Bot
-        </a>
-      </div>
       <!-- Rule Tester: simulate detection -->
       {% if rule.sample_log %}
       <div class="dl-rule-tester">
@@ -189,36 +184,28 @@ permalink: /detections/
       </div>
       {% endif %}
       {% else %}
-      <!-- Standard rule: only Sigma queries visible, all others locked -->
+      <!-- Standard rule -->
       {% assign plat_slug = rule.platform | downcase %}
       {% if plat_slug contains "sigma" %}
       <div class="dl-rule__code">
         <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
         <pre><code>{{ rule.query | strip | xml_escape }}</code></pre>
       </div>
+      <div class="dl-siem-strip">
+        <span class="dl-siem-strip__free">✓ Sigma</span>
+        <span class="dl-siem-strip__sep">·</span>
+        <span class="dl-siem-strip__fmts">Splunk · KQL · Elastic · QRadar · Wazuh</span>
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="dl-siem-strip__cta" target="_blank" rel="noopener">Export via Bot →</a>
+      </div>
       {% else %}
-      <div class="dl-rule__code dl-rule__code--locked">
-        <div class="dl-locked-overlay">
-          <span>🔒</span>
-          <p>This {{ rule.platform }} query is available via the Intel Bot</p>
-          <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Unlock via Bot →</a>
+      <div class="dl-siem-strip dl-siem-strip--gated">
+        <div class="dl-siem-strip__info">
+          <span class="dl-siem-strip__icon">🛡️</span>
+          <span class="dl-siem-strip__text">Detection available in <strong>Sigma + 5 SIEM formats</strong></span>
         </div>
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" class="dl-siem-strip__cta" target="_blank" rel="noopener">/detect →</a>
       </div>
       {% endif %}
-
-      <div class="sigma-siem-locked sigma-siem-locked--static">
-        <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
-        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
-        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
-        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
-        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
-        <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>
-      </div>
-      <div class="dl-rule__export-cta">
-        <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">
-          <span class="dl-export-icon">⚡</span> Export to all 6 SIEM formats instantly — try <code>/detect</code>
-        </a>
-      </div>
       {% endif %}
 
       {% if rule.notes %}
@@ -273,18 +260,14 @@ permalink: /detections/
           <pre><code class="dl-siem-code"></code></pre>
         </div>
         {% endif %}
-        <div class="sigma-export-strip">
-          <span class="sigma-export-strip__free">✓ Sigma</span>
-          <span class="sigma-export-strip__sep">·</span>
-          <span class="sigma-export-strip__fmt">Splunk SPL</span>
-          <span class="sigma-export-strip__fmt">Sentinel KQL</span>
-          <span class="sigma-export-strip__fmt">Elastic</span>
-          <span class="sigma-export-strip__fmt">QRadar AQL</span>
-          <span class="sigma-export-strip__fmt">Wazuh</span>
-          <a href="https://t.me/Shimiscyberworldbot?start=detect" class="sigma-export-strip__btn" target="_blank" rel="noopener">Export via Bot →</a>
+        <div class="dl-siem-strip">
+          <span class="dl-siem-strip__free">✓ Sigma</span>
+          <span class="dl-siem-strip__sep">·</span>
+          <span class="dl-siem-strip__fmts">Splunk · KQL · Elastic · QRadar · Wazuh</span>
+          <a href="https://t.me/Shimiscyberworldbot?start=detect" class="dl-siem-strip__cta" target="_blank" rel="noopener">Export via Bot →</a>
         </div>
         {% if post.sigma_rules.paid_count and post.sigma_rules.paid_count > 0 %}
-        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules — type <code>/detect</code> in <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">Intel Bot</a></p>
+        <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules via <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">/detect</a></p>
         {% endif %}
       </div>
         {% endunless %}
@@ -309,7 +292,7 @@ permalink: /detections/
 <section class="cs-cta reveal">
   <div class="cs-cta__box">
     <h2 class="cs-cta__title">New rules ship with every breach.</h2>
-    <p class="cs-cta__text">{{ total_rules }} detection rules and growing. Use <code>/detect</code> in the Intel Bot to generate Sigma rules for any breach — converted to your SIEM format instantly.</p>
+    <p class="cs-cta__text">{{ total_rules }} detection rules and growing. Use <code>/detect</code> to generate Sigma rules for any breach — converted to your SIEM format instantly.</p>
     <div class="cs-cta__actions">
       <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--primary" target="_blank" rel="noopener">Open Intel Bot →</a>
       <a href="{{ '/' | relative_url }}" class="btn btn--ghost">Back to Feed</a>
@@ -319,9 +302,6 @@ permalink: /detections/
 
 <style>
 /* Showcase SIEM tabs */
-.showcase-rules{display:flex;flex-direction:column;gap:1.5rem;margin-bottom:0}
-.showcase-rule{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.showcase-rule__header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.5rem}
 .showcase-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
 .showcase-tab{padding:.5rem 1rem;background:none;border:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
 .showcase-tab:hover{color:var(--text)}
@@ -330,30 +310,27 @@ permalink: /detections/
 .showcase-panel.active{display:block}
 .showcase-panel pre{margin:0;padding:1rem 1.25rem;background:rgba(0,0,0,.3);overflow-x:auto;font-size:.8rem;line-height:1.5}
 .showcase-panel .dl-copy-btn{position:absolute;top:.5rem;right:.5rem}
-.sigma-gated__chip--free{background:rgba(0,200,100,.12);color:#00c864;border-color:rgba(0,200,100,.3)}
-
-/* SIEM lock chips on static rules */
-.sigma-siem-locked--static{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem;padding:0 .25rem}
-.sigma-siem-locked--static .sigma-gated__chip{font-size:.7rem;padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border)}
-.sigma-siem-locked--static .sigma-gated__chip--locked{opacity:.55}
-
-/* Export CTA per rule */
-.dl-rule__export-cta{margin-top:.6rem;padding:.5rem .75rem;background:linear-gradient(135deg,rgba(0,200,255,.04) 0%,rgba(0,200,255,.08) 100%);border-radius:6px;border:1px solid rgba(0,200,255,.12)}
-.dl-rule__export-cta a{color:var(--accent);text-decoration:none;font-size:.8rem;display:flex;align-items:center;gap:.4rem;transition:color .2s}
-.dl-rule__export-cta a:hover{color:#fff}
-.dl-rule__export-cta code{font-size:.75rem;background:rgba(0,200,255,.1);padding:.1rem .35rem;border-radius:3px}
-.dl-export-icon{font-size:.9rem}
 
 /* INCD badge */
 .dl-breach-badge--incd{background:rgba(0,100,200,.15);color:#4da6ff;border-color:rgba(0,100,200,.3)}
 .tag--incd{background:rgba(0,100,200,.12);color:#4da6ff;border-color:rgba(0,100,200,.2)}
 
-/* Locked query overlay */
-.dl-rule__code--locked{position:relative;min-height:80px;background:rgba(0,0,0,.2);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
-.dl-locked-overlay{text-align:center;padding:1rem}
-.dl-locked-overlay span{font-size:1.5rem}
-.dl-locked-overlay p{color:var(--text-muted);font-size:.8rem;margin:.5rem 0}
-.dl-locked-overlay .btn{font-size:.75rem;padding:.3rem .8rem}
+/* ── Unified SIEM strip (replaces all old CTA / lock / chip blocks) ── */
+.dl-siem-strip{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .7rem;margin-top:.75rem;padding:.55rem .85rem;background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.10);border-radius:6px;font-size:.78rem;line-height:1.4}
+.dl-siem-strip__free{color:#00c864;font-weight:600}
+.dl-siem-strip__sep{color:var(--border);user-select:none}
+.dl-siem-strip__fmts{color:var(--text-muted)}
+.dl-siem-strip__cta{margin-left:auto;color:var(--accent);text-decoration:none;font-weight:600;white-space:nowrap;transition:color .2s}
+.dl-siem-strip__cta:hover{color:#fff}
+
+/* Gated variant — for non-Sigma rules with no visible query */
+.dl-siem-strip--gated{padding:.85rem 1rem;background:linear-gradient(135deg,rgba(0,200,255,.03),rgba(0,200,255,.07));border-color:rgba(0,200,255,.15);gap:.6rem .8rem}
+.dl-siem-strip__info{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
+.dl-siem-strip__icon{font-size:1.1rem;flex-shrink:0}
+.dl-siem-strip__text{font-size:.82rem;color:var(--text-muted)}
+.dl-siem-strip__text strong{color:var(--text)}
+.dl-siem-strip--gated .dl-siem-strip__cta{padding:.35rem .9rem;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:5px;font-size:.8rem}
+.dl-siem-strip--gated .dl-siem-strip__cta:hover{background:rgba(0,200,255,.2)}
 
 /* Rule Tester widget */
 .dl-rule-tester{margin-top:.75rem;border:1px solid var(--border);border-radius:8px;overflow:hidden}
