@@ -22,46 +22,47 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: AI Guardrails Vulnerable to Prompt Injection
-    text: AI safety measures, like those in Apple Intelligence, can be bypassed by clever prompt engineering.
-    detail: Researchers have demonstrated that sophisticated prompt injection techniques can circumvent AI guardrails. This highlights the need for continuous research into AI security and robust defense mechanisms against adversarial attacks. Professionals should monitor developments in AI security and consider implementing AI-specific threat detection strategies.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Top 10
+  - title: APT Groups Leverage Sophisticated Phishing-as-a-Service
+    text: Advanced persistent threats increasingly use PaaS platforms to target high-value credentials.
+    detail: Sophisticated phishing-as-a-service platforms like VENOM are enabling threat actors, including APT groups, to precisely target executive Microsoft credentials. Professionals should prioritize advanced phishing awareness training and implement robust multi-factor authentication to defend against these targeted attacks.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-and-how-protect-yourself
+    link_label: Phishing Defense Guide
     badge: signal
     tags:
-      - threat-intel
-      - ai-security
-      - vulnerability
-  - title: Supply Chain Attacks Target CMS Plugins
-    text: Compromised updates for popular CMS plugins like Smart Slider are distributing backdoors.
-    detail: Attackers are hijacking update mechanisms for widely used plugins (e.g., Smart Slider for WordPress/Joomla) to distribute backdoored versions. This underscores the critical importance of supply chain security and vigilant monitoring of software updates. Organizations should implement strict vetting processes for third-party components and consider software composition analysis (SCA) tools.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerabilities
-    link_label: Supply Chain Risks
-    badge: signal
-    tags:
-      - threat-intel
-      - supply-chain
-      - malware
-  - title: Zero-Day Exploits Targeting Widely Used Software
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows persists.
-    detail: Recent intelligence indicates active exploitation of zero-day flaws in Adobe Reader and Windows (e.g., BlueHammer). This emphasizes the ongoing threat posed by unknown vulnerabilities and the critical need for rapid patching and robust endpoint detection. Stay informed about vendor advisories and prioritize patching high-impact vulnerabilities immediately.
-    link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
-    link_label: Known Exploited Vulnerabilities
-    badge: signal
-    tags:
-      - threat-intel
-      - vulnerability
-      - zero-day
-  - title: APT Groups Evolve Tactics, Target Critical Infrastructure
-    text: Advanced Persistent Threats (APTs) like Fancy Bear and Iranian actors continue to target critical infrastructure and industrial devices.
-    detail: Nation-state actors, including Russian (Fancy Bear/APT28) and Iranian groups, are actively targeting industrial control systems and over 5,200 internet-connected devices globally. This necessitates enhanced focus on OT/ICS security, threat intelligence sharing, and robust network segmentation to protect critical infrastructure from sophisticated state-sponsored attacks.
-    link: https://www.mitre.org/attack-matrix
-    link_label: MITRE ATT&CK
-    badge: signal
-    tags:
-      - threat-intel
       - apt
-      - ics-security
+      - phishing
+      - threat-intel
+  - title: Zero-Day Exploits Targeting Widely Used Software Persist
+    text: Zero-day vulnerabilities in common applications like Adobe Reader and Windows continue to be exploited.
+    detail: The active exploitation of zero-day vulnerabilities in widely used software, such as Adobe Reader and Windows, underscores the persistent threat of unpatched flaws. Organizations must maintain aggressive patch management cycles and deploy endpoint detection and response (EDR) solutions capable of identifying anomalous behavior.
+    link: https://www.mitre.org/about/news/mitre-adds-attack-techniques-techniques-zero-day-exploitation-common-vulnerabilities-and-ex
+    link_label: Vulnerability Management
+    badge: signal
+    tags:
+      - zero-day
+      - vulnerability
+      - patch-management
+  - title: IoT and SCADA Devices Present Growing Attack Surface
+    text: Botnets and threat actors are increasingly targeting IoT and industrial control systems.
+    detail: The emergence of botnets like Masjesu specifically targeting IoT devices, alongside reports of Iranian hackers compromising thousands of US industrial devices, highlights a critical expansion of the attack surface. Securing these often-overlooked endpoints with network segmentation and regular vulnerability assessments is paramount.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-285a
+    link_label: Securing IoT Devices
+    badge: signal
+    tags:
+      - iot
+      - scada
+      - botnet
+      - threat-intel
+  - title: AI Guardrails Vulnerable to Prompt Injection Attacks
+    text: AI systems, including those in consumer products, are susceptible to sophisticated prompt injection.
+    detail: The successful bypassing of AI guardrails in systems like Apple Intelligence via prompt injection demonstrates that even advanced AI defenses can be subverted. Cybersecurity teams must stay abreast of AI security best practices and consider implementing AI-specific security controls and monitoring for unexpected AI behavior.
+    link: https://owasp.org/www-project-top-10-for-large-language-application-security/
+    link_label: LLM Application Security
+    badge: signal
+    tags:
+      - ai-security
+      - prompt-injection
+      - threat-intel
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
