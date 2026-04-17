@@ -22,46 +22,50 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: AI Guardrails Vulnerable to Prompt Injection
-    text: Sophisticated prompt injection attacks can bypass AI security guardrails.
-    detail: Researchers have demonstrated successful bypassing of AI guardrails in systems like Apple Intelligence. This highlights a critical need for robust defenses against prompt injection, as malicious actors can manipulate AI outputs and potentially compromise sensitive operations. Prioritize AI security testing and continuous monitoring for emergent attack vectors.
-    link: https://owasp.org/www-community/generative-ai-security/Prompt-Injection
-    link_label: OWASP Prompt Injection
-    badge: signal
-    tags:
-      - ai-security
-      - vulnerability
-      - prompt-injection
-  - title: Zero-Day Exploits Target Widely Used Software
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows continues.
-    detail: The ongoing wild exploitation of zero-day flaws in Adobe Reader and Windows underscores the persistent threat posed by unknown vulnerabilities. Prompt patching and diligent analysis of suspicious files are crucial. Organizations should maintain robust endpoint detection and response (EDR) capabilities to identify and mitigate novel threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-137a
-    link_label: CISA Known Exploited Vulnerabilities
-    badge: signal
-    tags:
-      - zero-day
-      - vulnerability
-      - patch-management
   - title: Supply Chain Attacks Target Popular CMS Plugins
-    text: Hijacked updates for Smart Slider plugins inject backdoors into WordPress/Joomla.
-    detail: A recent supply chain attack compromised the update mechanism for Smart Slider 3 Pro, distributing backdoored versions for WordPress and Joomla. This incident emphasizes the critical need for vigilance in software supply chains, including verifying plugin integrity and monitoring update sources. Implement strict change control and software composition analysis.
-    link: https://owasp.org/www-project/supply-chain-security/
+    text: Hijacked updates for Smart Slider 3 Pro are pushing backdoored WordPress/Joomla plugins.
+    detail: Supply chain attacks are increasingly targeting widely used CMS plugins. Attackers compromised the update mechanism for Smart Slider 3 Pro, distributing malicious versions with backdoors. Organizations must verify plugin integrity and consider staged rollouts for updates to mitigate risks.
+    link: https://owasp.org/www-community/Supply_Chain_Security
+    link_label: Supply Chain Security Best Practices
     badge: signal
     tags:
       - supply-chain
-      - malware
       - wordpress
       - joomla
-  - title: APT Activity Targets Critical Infrastructure and Organizations
-    text: Iranian and Russian APTs target industrial devices and global entities.
-    detail: Advanced Persistent Threats (APTs) from Iran and Russia are actively targeting critical infrastructure, industrial devices, and various organizations globally. These campaigns often involve sophisticated spear-phishing and exploit known vulnerabilities. Maintain up-to-date threat intelligence, implement strong network segmentation, and conduct regular security audits.
-    link: https://www.mitre.org/attack-matrix
-    link_label: MITRE ATT&CK Framework
+      - malware
+  - title: Iranian State-Sponsored Actors Scan US Industrial Devices
+    text: Iranian hackers target over 5,200 US industrial devices, posing critical infrastructure risks.
+    detail: Iranian government-backed attackers are actively scanning and potentially compromising thousands of internet-connected industrial devices in the US. This campaign highlights the persistent threat to critical infrastructure. Organizations in this sector should prioritize network segmentation and robust monitoring for anomalous activity.
+    link: https://www.cisa.gov/news-events/directives/directive-01-01-industrial-control-systems-ics-and-supervisory-control-and-data-acquisition-scada-security
+    link_label: ICS/SCADA Security Guidance
     badge: signal
     tags:
-      - apt
       - threat-intel
-      - industrial-control-systems
+      - ics
+      - critical-infrastructure
+      - apt
+  - title: Zero-Day Exploits Continue to Plague Major Software
+    text: Zero-days in Windows and Adobe Reader are actively exploited in the wild.
+    detail: The emergence of zero-day vulnerabilities in widely used software like Windows (BlueHammer) and Adobe Reader underscores the ongoing challenge of timely patching and secure development. Proactive threat hunting and rapid response are crucial when unpatched, high-severity flaws are discovered.
+    link: https://nvd.nist.gov/vuln/search
+    link_label: NVD Vulnerability Database
+    badge: signal
+    tags:
+      - vulnerability
+      - zero-day
+      - patch-management
+      - threat-intel
+  - title: Phishing-as-a-Service Platforms Target Executive Credentials
+    text: New 'VENOM' platform targets C-suite Microsoft logins via sophisticated phishing.
+    detail: The 'VENOM' phishing-as-a-service platform demonstrates a trend of highly targeted, professionalized phishing operations aimed at high-value executive credentials. Organizations should reinforce multi-factor authentication and conduct regular security awareness training, especially for leadership.
+    link: https://www.owasp.org/www-project-top-10-2021/
+    link_label: OWASP Top 10
+    badge: signal
+    tags:
+      - phishing
+      - credential-theft
+      - microsoft
+      - threat-intel
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
