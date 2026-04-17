@@ -25,46 +25,47 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Sophisticated Phishing Targets C-Suite & NGOs Globally
-    text: New 'VENOM' platform and 'LucidRook' malware exploit spear-phishing for high-value credentials.
-    detail: Threat actors are increasingly using sophisticated phishing-as-a-service platforms and targeted malware like LucidRook to compromise senior executives and critical organizations. Focus on advanced threat detection and user education for C-suite and NGO staff to mitigate these evolving attacks.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-133a
-    link_label: CISA Phishing Advisory
+  - title: Phishing-as-a-Service Platforms Evolve to Target C-Suite
+    text: New 'VENOM' platform targets Microsoft credentials of senior executives via PhaaS.
+    detail: The rise of sophisticated Phishing-as-a-Service (PhaaS) platforms like VENOM indicates a strategic shift towards high-value targets. C-suite executives are increasingly in the crosshairs, making multi-factor authentication and robust endpoint protection critical. Vigilance against targeted spear-phishing campaigns is paramount.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-dont-bite-hook-line-and-sinker
+    link_label: Phishing Awareness
     badge: signal
     tags:
       - phishing
-      - malware
       - threat-intel
-  - title: Zero-Day Exploits Target Widely Used Software
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows highlights disclosure process issues.
-    detail: The emergence of zero-day exploits like 'BlueHammer' for Windows and undisclosed Adobe Reader flaws underscore the critical need for rapid patching and proactive vulnerability management. Organizations should prioritize intelligence feeds for emerging threats and implement robust endpoint detection and response (EDR) solutions.
-    link: https://nvd.nist.gov/vuln/ZeroDay
-    link_label: NVD Zero-Day Information
+      - microsoft
+  - title: Zero-Day Exploits Continue to Threaten Software Integrity
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows OS reported.
+    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows highlights persistent supply chain risks and the challenges of timely patching. Organizations must prioritize rapid patch deployment and leverage threat intelligence to stay ahead of emerging exploits.
+    link: https://www.cisa.gov/news-events/cybersecurity-guidance/advisories/aa23-144a
+    link_label: Vulnerability Advisories
     badge: signal
     tags:
       - vulnerability
       - zero-day
       - threat-intel
-  - title: Supply Chain Attacks Escalate with Plugin Hijacking
-    text: Smart Slider plugin updates hijacked, distributing backdoored WordPress and Joomla versions.
-    detail: Supply chain attacks are evolving, with threat actors compromising legitimate software update mechanisms, as seen with Smart Slider plugins. Implement strict validation of software updates, conduct regular audits of third-party dependencies, and maintain robust incident response plans for compromised software.
-    link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: OWASP Supply Chain Security
-    badge: signal
-    tags:
-      - supply-chain
-      - malware
-      - threat-intel
-  - title: IoT and Mobile SDKs Present Growing Attack Vectors
-    text: Masjesu botnet targets IoT devices stealthily; Android SDK flaws expose millions of wallets.
-    detail: The proliferation of IoT devices and the reliance on third-party SDKs in mobile applications create significant attack surfaces. Secure IoT deployments with network segmentation and strong authentication. For mobile apps, conduct thorough security assessments of all SDKs and dependencies to prevent data leakage.
-    link: https://www.mitre.org/capabilities/cybersecurity/threat-modeling
-    link_label: MITRE ATT&CK for IoT
+  - title: IoT and Legacy Devices Remain Prime Targets for Botnets
+    text: New botnets like Masjesu are stealthily targeting IoT devices, evading detection.
+    detail: The emergence of botnets like Masjesu, specifically targeting IoT devices and employing evasion techniques, underscores the persistent risk posed by unpatched and legacy connected devices. Implementing network segmentation and robust IoT security policies is crucial to mitigate these threats.
+    link: https://www.nist.gov/cyberframework/framework-5212-nist-cybersecurity-framework-version-20
+    link_label: Cybersecurity Framework
     badge: signal
     tags:
       - iot
-      - mobile-security
-      - vulnerability
+      - botnet
+      - malware
+      - threat-intel
+  - title: AI Security Guardrails Are Vulnerable to Prompt Injection
+    text: Researchers demonstrate successful bypass of AI guardrails in Apple Intelligence.
+    detail: The successful bypass of AI guardrails via prompt injection in systems like Apple Intelligence highlights the nascent but critical security challenges of AI. Organizations integrating AI must prioritize robust input validation and continuous monitoring of AI model behavior for unintended outputs.
+    link: https://owasp.org/www-project-top-10-ai-security-risks/
+    link_label: AI Security Risks
+    badge: signal
+    tags:
+      - ai-security
+      - prompt-injection
+      - threat-intel
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
