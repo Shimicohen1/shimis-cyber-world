@@ -348,6 +348,22 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
         <pre><code>{{ rule.query | strip | xml_escape }}</code></pre>
       </div>
 
+      <!-- SIEM format chips: current format free, others locked -->
+      <div class="sigma-siem-locked sigma-siem-locked--static">
+        {% assign plat_slug = rule.platform | downcase %}
+        {% if plat_slug contains "sigma" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sigma</span>{% endif %}
+        {% if plat_slug contains "splunk" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Splunk SPL</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>{% endif %}
+        {% if plat_slug contains "sentinel" or plat_slug contains "kql" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ {{ rule.platform }}</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>{% endif %}
+        {% if plat_slug contains "elastic" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Elastic</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>{% endif %}
+        {% if plat_slug contains "qradar" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ QRadar AQL</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>{% endif %}
+        {% if plat_slug contains "wazuh" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Wazuh</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>{% endif %}
+      </div>
+      <div class="dl-rule__export-cta">
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">
+          <span class="dl-export-icon">⚡</span> Export to all 6 SIEM formats instantly — try <code>/detect</code>
+        </a>
+      </div>
+
       {% if rule.notes %}
       <p class="dl-rule__notes"><strong><span class="scw-icon" data-icon="zap"></span> Note:</strong> {{ rule.notes }}</p>
       {% endif %}
@@ -450,6 +466,18 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
 .showcase-panel pre{margin:0;padding:1rem 1.25rem;background:rgba(0,0,0,.3);overflow-x:auto;font-size:.8rem;line-height:1.5}
 .showcase-panel .dl-copy-btn{position:absolute;top:.5rem;right:.5rem}
 .sigma-gated__chip--free{background:rgba(0,200,100,.12);color:#00c864;border-color:rgba(0,200,100,.3)}
+
+/* SIEM lock chips on static rules */
+.sigma-siem-locked--static{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem;padding:0 .25rem}
+.sigma-siem-locked--static .sigma-gated__chip{font-size:.7rem;padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border)}
+.sigma-siem-locked--static .sigma-gated__chip--locked{opacity:.55}
+
+/* Export CTA per rule */
+.dl-rule__export-cta{margin-top:.6rem;padding:.5rem .75rem;background:linear-gradient(135deg,rgba(0,200,255,.04) 0%,rgba(0,200,255,.08) 100%);border-radius:6px;border:1px solid rgba(0,200,255,.12)}
+.dl-rule__export-cta a{color:var(--accent);text-decoration:none;font-size:.8rem;display:flex;align-items:center;gap:.4rem;transition:color .2s}
+.dl-rule__export-cta a:hover{color:#fff}
+.dl-rule__export-cta code{font-size:.75rem;background:rgba(0,200,255,.1);padding:.1rem .35rem;border-radius:3px}
+.dl-export-icon{font-size:.9rem}
 </style>
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
 <script src="{{ '/assets/js/detections.js' | relative_url }}" defer></script>
