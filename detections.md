@@ -152,6 +152,42 @@ permalink: /detections/
           <span class="dl-export-icon">⚡</span> Get this for every breach — <code>/detect</code> in the Intel Bot
         </a>
       </div>
+      <!-- Rule Tester: simulate detection -->
+      {% if rule.sample_log %}
+      <div class="dl-rule-tester">
+        <button class="dl-rule-tester__btn" onclick="this.parentElement.classList.toggle('open')">
+          🧪 Test This Rule — See What It Detects
+        </button>
+        <div class="dl-rule-tester__panel">
+          <div class="dl-rule-tester__step">
+            <span class="dl-rule-tester__num">1</span>
+            <span>Sample log entry (would trigger this rule):</span>
+          </div>
+          <div class="dl-rule-tester__log">
+            <pre><code>{{ rule.sample_log | strip | xml_escape }}</code></pre>
+          </div>
+          <div class="dl-rule-tester__step">
+            <span class="dl-rule-tester__num">2</span>
+            <span>Detection fields matched:</span>
+          </div>
+          <div class="dl-rule-tester__matches">
+            {% for match in rule.sample_matches %}
+            <div class="dl-rule-tester__match">
+              <span class="dl-rule-tester__field">{{ match.field }}</span>
+              <span class="dl-rule-tester__op">{{ match.op }}</span>
+              <span class="dl-rule-tester__value">"{{ match.value }}"</span>
+              <span class="dl-rule-tester__status">✅ HIT</span>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="dl-rule-tester__result">
+            <span class="dl-rule-tester__result-icon">🚨</span>
+            <span><strong>ALERT FIRED</strong> — {{ rule.name }} — Severity: {{ rule.severity | upcase }}</span>
+          </div>
+          <p class="dl-rule-tester__note">This is a simulated detection. In a real SIEM, this log entry would trigger an alert with the rule above.</p>
+        </div>
+      </div>
+      {% endif %}
       {% else %}
       <!-- Standard rule: only Sigma queries visible, all others locked -->
       {% assign plat_slug = rule.platform | downcase %}
@@ -318,6 +354,26 @@ permalink: /detections/
 .dl-locked-overlay span{font-size:1.5rem}
 .dl-locked-overlay p{color:var(--text-muted);font-size:.8rem;margin:.5rem 0}
 .dl-locked-overlay .btn{font-size:.75rem;padding:.3rem .8rem}
+
+/* Rule Tester widget */
+.dl-rule-tester{margin-top:.75rem;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.dl-rule-tester__btn{width:100%;padding:.65rem 1rem;background:linear-gradient(135deg,rgba(0,200,100,.06),rgba(0,200,255,.06));border:none;color:var(--accent);font-size:.85rem;font-weight:600;cursor:pointer;text-align:left;transition:background .2s}
+.dl-rule-tester__btn:hover{background:linear-gradient(135deg,rgba(0,200,100,.12),rgba(0,200,255,.12))}
+.dl-rule-tester__panel{display:none;padding:1rem 1.25rem;background:rgba(0,0,0,.2)}
+.dl-rule-tester.open .dl-rule-tester__panel{display:block}
+.dl-rule-tester__step{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;color:var(--text-muted);font-size:.8rem}
+.dl-rule-tester__num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#000;font-size:.7rem;font-weight:700;flex-shrink:0}
+.dl-rule-tester__log{margin-bottom:1rem}
+.dl-rule-tester__log pre{margin:0;padding:.75rem 1rem;background:rgba(0,0,0,.3);border-radius:6px;overflow-x:auto;font-size:.75rem;line-height:1.5;border-left:3px solid var(--accent)}
+.dl-rule-tester__matches{display:flex;flex-direction:column;gap:.35rem;margin-bottom:1rem}
+.dl-rule-tester__match{display:flex;align-items:center;gap:.5rem;padding:.35rem .6rem;background:rgba(0,200,100,.05);border-radius:4px;font-size:.78rem;flex-wrap:wrap}
+.dl-rule-tester__field{color:var(--accent);font-family:var(--font-mono);font-weight:600}
+.dl-rule-tester__op{color:var(--text-muted)}
+.dl-rule-tester__value{color:#f0c674;font-family:var(--font-mono)}
+.dl-rule-tester__status{color:#00c864;font-weight:700;margin-left:auto}
+.dl-rule-tester__result{display:flex;align-items:center;gap:.6rem;padding:.65rem 1rem;background:linear-gradient(135deg,rgba(255,60,60,.08),rgba(255,60,60,.15));border:1px solid rgba(255,60,60,.25);border-radius:6px;color:#ff6b6b;font-size:.85rem;margin-bottom:.5rem}
+.dl-rule-tester__result-icon{font-size:1.3rem}
+.dl-rule-tester__note{color:var(--text-muted);font-size:.72rem;margin:0;font-style:italic}
 </style>
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
 <script src="{{ '/assets/js/detections.js' | relative_url }}" defer></script>
