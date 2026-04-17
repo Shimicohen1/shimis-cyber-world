@@ -23,7 +23,7 @@
     var visible = 0;
 
     cards.forEach(function (c) {
-      var matchCat  = activeCat  === 'all' || c.dataset.category === activeCat;
+      var matchCat  = activeCat  === 'all' || (c.dataset.category && (' ' + c.dataset.category + ' ').indexOf(' ' + activeCat + ' ') !== -1);
       var matchPlat = activePlat === 'all' || c.dataset.platform === activePlat;
       var matchText = !q ||
         c.dataset.name.indexOf(q) !== -1 ||

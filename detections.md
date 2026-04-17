@@ -4,21 +4,28 @@ title: Detection Vault
 permalink: /detections/
 ---
 
-{% comment %}── Compute breach intel rule count (posts > 14 days with sigma_rules, deduplicated) ──{% endcomment %}
+{% comment %}── Compute breach intel rule count (deduplicated, INCD immediate + others 14-day aged) ──{% endcomment %}
 {% assign vault_age_secs = 1209600 %}
 {% assign now_epoch = site.time | date: '%s' | plus: 0 %}
 {% assign vault_cutoff = now_epoch | minus: vault_age_secs %}
 {% assign breach_intel_count = 0 %}
+{% assign incd_count = 0 %}
 {% assign counted_titles = "" %}
 {% for post in site.posts %}
-  {% assign pe = post.date | date: '%s' | plus: 0 %}
-  {% if post.sigma_rules and pe < vault_cutoff %}
-    {% assign ctkey = post.sigma_rules.preview_title | downcase | strip %}
-    {% assign ctcheck = "||" | append: ctkey | append: "||" %}
-    {% unless counted_titles contains ctcheck %}
-      {% assign counted_titles = counted_titles | append: ctcheck %}
-      {% assign breach_intel_count = breach_intel_count | plus: 1 %}
-    {% endunless %}
+  {% if post.sigma_rules %}
+    {% assign pe = post.date | date: '%s' | plus: 0 %}
+    {% assign is_incd = false %}
+    {% if post.channel == "INCD" %}{% assign is_incd = true %}{% endif %}
+    {% comment %}INCD = immediate, others = 14-day gate{% endcomment %}
+    {% if is_incd or pe < vault_cutoff %}
+      {% assign ctkey = post.sigma_rules.preview_technique | downcase | strip | append: "~" | append: post.sigma_rules.preview_title | downcase | strip %}
+      {% assign ctcheck = "||" | append: ctkey | append: "||" %}
+      {% unless counted_titles contains ctcheck %}
+        {% assign counted_titles = counted_titles | append: ctcheck %}
+        {% assign breach_intel_count = breach_intel_count | plus: 1 %}
+        {% if is_incd %}{% assign incd_count = incd_count | plus: 1 %}{% endif %}
+      {% endunless %}
+    {% endif %}
   {% endif %}
 {% endfor %}
 {% assign total_rules = site.data.detections.rules | size | plus: breach_intel_count %}
@@ -315,6 +322,7 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
       {% for cat in site.data.detections.categories %}
       <button class="vault-filter" data-filter="{{ cat | slugify }}">{{ cat }}</button>
       {% endfor %}
+      {% if incd_count > 0 %}<button class="vault-filter" data-filter="incd">🇮🇱 INCD</button>{% endif %}
     </div>
     <div class="vault-filters dl-platform-filters" id="dlPlatformFilters">
       <button class="vault-filter active" data-filter="all">All Platforms</button>
@@ -370,20 +378,25 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
     </div>
     {% endfor %}
 
-    {% comment %}── Breach Intel Rules (auto-generated, 14+ days old, deduplicated) ──{% endcomment %}
+    {% comment %}── Breach Intel Rules (auto-generated, deduplicated: INCD immediate + others 14-day aged) ──{% endcomment %}
     {% assign seen_titles = "" %}
     {% assign unique_breach_count = 0 %}
     {% for post in site.posts %}
+      {% if post.sigma_rules %}
       {% assign pe = post.date | date: '%s' | plus: 0 %}
-      {% if post.sigma_rules and pe < vault_cutoff %}
-        {% assign rule_key = post.sigma_rules.preview_title | downcase | strip %}
+      {% assign is_incd = false %}
+      {% if post.channel == "INCD" %}{% assign is_incd = true %}{% endif %}
+      {% if is_incd or pe < vault_cutoff %}
+        {% assign rule_key = post.sigma_rules.preview_technique | downcase | strip | append: "~" | append: post.sigma_rules.preview_title | downcase | strip %}
         {% assign rule_check = "||" | append: rule_key | append: "||" %}
         {% unless seen_titles contains rule_check %}
           {% assign seen_titles = seen_titles | append: rule_check %}
           {% assign unique_breach_count = unique_breach_count | plus: 1 %}
       {% assign sev = post.sigma_rules.preview_level | default: 'medium' %}
+      {% assign extra_cat = "" %}
+      {% if is_incd %}{% assign extra_cat = " incd" %}{% endif %}
       <div class="tool-card dl-rule dl-rule--breach reveal"
-           data-category="{{ post.sigma_rules.preview_tactic | slugify }}"
+           data-category="{{ post.sigma_rules.preview_tactic | slugify }}{{ extra_cat }}"
            data-platform="multi-siem"
            data-name="{{ post.sigma_rules.preview_title | downcase }}"
            data-tags="{{ post.tags | join: ' ' | downcase }}"
@@ -395,13 +408,14 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
            {% endif %}>
         <div class="tool-card__head">
           <h4>{{ post.sigma_rules.preview_title }}</h4>
-          <span class="dl-breach-badge">Breach Intel</span>
+          {% if is_incd %}<span class="dl-breach-badge dl-breach-badge--incd">🇮🇱 INCD Intel</span>{% else %}<span class="dl-breach-badge">Breach Intel</span>{% endif %}
         </div>
         <p class="community-card__tagline">{{ post.sigma_rules.preview_technique }} — {{ post.sigma_rules.preview_tactic }}</p>
         <p>Auto-generated from <a href="{{ post.url | relative_url }}">{{ post.title | truncate: 60 }}</a></p>
         <div class="dl-rule__meta">
           <span class="badge badge--{% if sev == 'critical' %}live{% elsif sev == 'high' %}signal{% elsif sev == 'medium' %}drop{% else %}vault{% endif %}">{{ sev }}</span>
           <span class="tag">Sigma</span>
+          {% if is_incd %}<span class="tag tag--incd">INCD</span>{% endif %}
           <span class="tag">{{ post.date | date: "%b %d, %Y" }}</span>
         </div>
         {% if post.sigma_rules.formats or post.sigma_rules.preview_yaml_b64 %}
@@ -412,11 +426,11 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
         {% endif %}
         <div class="sigma-siem-locked sigma-siem-locked--vault">
           <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">Splunk SPL</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">Sentinel KQL</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">Elastic</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">QRadar AQL</span>
+          <span class="sigma-gated__chip sigma-gated__chip--locked">Wazuh</span>
           <a href="https://t.me/Shimiscyberworldbot?start=detect" class="sigma-gated__unlock" target="_blank" rel="noopener">Unlock SIEM Formats →</a>
         </div>
         {% if post.sigma_rules.paid_count and post.sigma_rules.paid_count > 0 %}
@@ -425,10 +439,11 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
       </div>
         {% endunless %}
       {% endif %}
+      {% endif %}
     {% endfor %}
     {% if unique_breach_count > 0 %}
     <div class="dl-section-divider" style="order: -1;">
-      <span class="dl-section-divider__label">🔥 Breach Intelligence — {{ unique_breach_count }} unique rules auto-generated from real incidents</span>
+      <span class="dl-section-divider__label">🔥 Breach Intelligence — {{ unique_breach_count }} unique rules auto-generated from real incidents{% if incd_count > 0 %} ({{ incd_count }} 🇮🇱 INCD){% endif %}</span>
     </div>
     {% endif %}
   </div>
@@ -478,6 +493,10 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
 .dl-rule__export-cta a:hover{color:#fff}
 .dl-rule__export-cta code{font-size:.75rem;background:rgba(0,200,255,.1);padding:.1rem .35rem;border-radius:3px}
 .dl-export-icon{font-size:.9rem}
+
+/* INCD badge */
+.dl-breach-badge--incd{background:rgba(0,100,200,.15);color:#4da6ff;border-color:rgba(0,100,200,.3)}
+.tag--incd{background:rgba(0,100,200,.12);color:#4da6ff;border-color:rgba(0,100,200,.2)}
 </style>
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
 <script src="{{ '/assets/js/detections.js' | relative_url }}" defer></script>
