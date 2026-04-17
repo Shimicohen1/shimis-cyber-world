@@ -81,19 +81,21 @@
   {% endfor %}
 
 {% elsif include.type == "feed-native" %}
-  {% comment %} Native ad card that blends with feed post cards {% endcomment %}
+  {% comment %} Native ad card — single attractive recommendation {% endcomment %}
   <div class="feed-entry feed-entry--ad" data-title="" data-tags="" data-excerpt="">
     <div class="feed-item feed-item--ad" data-track="affiliate">
-      <div class="feed-item__body">
-        <span class="badge badge--partner">{{ include.badge | default: "Our Pick" }}</span>
+      <div class="feed-ad__icon">🛡️</div>
+      <div class="feed-ad__content">
+        <div class="feed-ad__top">
+          <span class="badge badge--partner">{{ include.badge | default: "Our Pick" }}</span>
+        </div>
         <h3>{{ include.title }}</h3>
         <p>{{ include.desc }}</p>
         {% if include.url %}
         <a href="{% if include.url contains '://' %}{{ include.url }}{% else %}{{ include.url | relative_url }}{% endif %}" 
            {% if include.url contains '://' %}target="_blank" rel="noopener noreferrer"{% endif %}
-           class="btn btn--ghost btn--sm">{{ include.button | default: "Learn More →" }}</a>
+           class="btn btn--accent btn--sm feed-ad__btn">{{ include.button | default: "Get Protected →" }}</a>
         {% endif %}
-        {% if include.sponsor %}<div class="ad-slot__sponsor">by {{ include.sponsor }}</div>{% endif %}
       </div>
     </div>
   </div>

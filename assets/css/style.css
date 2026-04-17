@@ -2874,57 +2874,96 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .ad-slot--toolkit-banner .ad-slot__content { flex-wrap: wrap; }
 
 /* Feed native ad */
+/* Feed native ad — attractive recommendation card */
 .feed-item--ad {
-  border: 1px solid rgba(0, 255, 135, 0.15);
-  background: linear-gradient(135deg, rgba(0, 255, 135, 0.03) 0%, rgba(0, 255, 135, 0.08) 100%);
+  border: 1px solid rgba(0, 255, 135, 0.18);
+  background: linear-gradient(135deg, rgba(0, 255, 135, 0.04) 0%, rgba(0, 180, 255, 0.06) 100%);
   border-radius: var(--r);
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.feed-item--ad:hover {
+  border-color: var(--electric);
+  box-shadow: 0 0 20px rgba(0, 255, 135, 0.12);
 }
 .feed-item--ad::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--electric), var(--acid));
+  height: 3px;
+  background: linear-gradient(90deg, var(--electric), #00b4ff, var(--acid));
 }
-.feed-item--ad .feed-item__body {
-  padding: 1.25rem 1.5rem;
+.feed-ad__icon {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.feed-item--ad .badge--partner {
-  font-size: 0.65rem;
-  letter-spacing: 0.04em;
-  opacity: 0.8;
+  justify-content: center;
+  font-size: 2rem;
+  padding: 1rem 0.75rem 1rem 1.25rem;
   flex-shrink: 0;
 }
-.feed-item--ad h3 {
-  font-size: 0.95rem;
-  margin: 0;
+.feed-ad__content {
+  padding: 1rem 1.25rem 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
   flex: 1;
-  min-width: 120px;
+  min-width: 0;
+}
+.feed-ad__top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.feed-item--ad .badge--partner {
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.feed-item--ad h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text);
+  line-height: 1.3;
 }
 .feed-item--ad p {
   font-size: 0.82rem;
   color: var(--text-muted);
   margin: 0;
-  flex-basis: 100%;
+  line-height: 1.4;
 }
-.feed-item--ad .btn--ghost {
-  margin-left: auto;
-  flex-shrink: 0;
+.feed-ad__btn {
+  align-self: flex-start;
+  margin-top: 0.3rem;
   font-size: 0.78rem;
-  border-color: rgba(0, 255, 135, 0.3);
-}
-.feed-item--ad .btn--ghost:hover {
-  border-color: var(--electric);
-  background: rgba(0, 255, 135, 0.1);
+  font-weight: 600;
+  padding: 0.4em 1em;
+  border-radius: 4px;
 }
 .feed-entry--ad {
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
+}
+@media (max-width: 600px) {
+  .feed-item--ad {
+    flex-direction: row;
+  }
+  .feed-ad__icon {
+    font-size: 1.5rem;
+    padding: 0.75rem 0.5rem 0.75rem 0.75rem;
+  }
+  .feed-ad__content {
+    padding: 0.75rem 0.75rem 0.75rem 0.25rem;
+  }
+  .feed-item--ad h3 {
+    font-size: 0.9rem;
+  }
+  .feed-item--ad p {
+    font-size: 0.78rem;
+  }
 }
 
 @media (max-width: 600px) {
