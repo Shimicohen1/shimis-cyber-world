@@ -53,14 +53,15 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
     {% if posts.size > 0 %}
     <div class="feed__list reveal" id="home-drops-list">
       {% for post in posts %}
+      {% if forloop.index <= 3 %}{% assign img_loading = "eager" %}{% else %}{% assign img_loading = "lazy" %}{% endif %}
       <a href="{{ post.url | relative_url }}" class="feed-item home-drop{% if forloop.index > 6 %} home-drop--hidden{% endif %}" data-tags="{{ post.tags | join: ' ' | downcase }}"{% if post.lang == 'he' %} dir="rtl" lang="he"{% endif %}>
         {% if post.image %}
         <div class="feed-item__img">
-          <img src="{{ post.image | relative_url }}" alt="" loading="lazy">
+          <img src="{{ post.image | relative_url }}" alt="" loading="{{ img_loading }}">
         </div>
         {% elsif post.cover_image %}
         <div class="feed-item__img feed-item__img--cover">
-          <img src="{{ post.cover_image | relative_url }}" alt="" loading="lazy">
+          <img src="{{ post.cover_image | relative_url }}" alt="" loading="{{ img_loading }}">
         </div>
         {% else %}
         <div class="feed-item__img feed-item__img--placeholder">
