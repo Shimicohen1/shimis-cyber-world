@@ -22,45 +22,45 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: "AI Guardrails Under Siege: Prompt Injection Risks Escalate"
-    text: Sophisticated prompt injection attacks are bypassing AI safety features, demanding robust defense strategies.
-    detail: Recent findings indicate that even advanced AI systems like Apple Intelligence are vulnerable to prompt injection, allowing attackers to circumvent guardrails. This trend highlights the need for proactive security measures and continuous monitoring of AI model interactions to prevent misuse and data leakage. Organizations should prioritize AI security best practices.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Application Security
+  - title: AI Guardrails Vulnerable to Prompt Injection
+    text: Sophisticated prompt injection attacks can bypass AI security guardrails.
+    detail: Researchers have demonstrated successful bypassing of AI guardrails in systems like Apple Intelligence. This highlights a critical need for robust defenses against prompt injection, as malicious actors can manipulate AI outputs and potentially compromise sensitive operations. Prioritize AI security testing and continuous monitoring for emergent attack vectors.
+    link: https://owasp.org/www-community/generative-ai-security/Prompt-Injection
+    link_label: OWASP Prompt Injection
     badge: signal
     tags:
       - ai-security
+      - vulnerability
       - prompt-injection
-      - threat-intel
   - title: Zero-Day Exploits Target Widely Used Software
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows necessitates rapid patching.
-    detail: The ongoing exploitation of zero-day flaws in critical software like Adobe Reader and Windows underscores the persistent threat of unknown vulnerabilities. Prompt analysis and immediate patching are crucial to mitigate risks. Stay informed on vendor advisories and prioritize security updates to protect against these fast-evolving threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/vulnerability-management
-    link_label: Vulnerability Management
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows continues.
+    detail: The ongoing wild exploitation of zero-day flaws in Adobe Reader and Windows underscores the persistent threat posed by unknown vulnerabilities. Prompt patching and diligent analysis of suspicious files are crucial. Organizations should maintain robust endpoint detection and response (EDR) capabilities to identify and mitigate novel threats.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-137a
+    link_label: CISA Known Exploited Vulnerabilities
     badge: signal
     tags:
       - zero-day
       - vulnerability
       - patch-management
-  - title: Supply Chain Attacks Target Popular Plugins
-    text: Compromised update mechanisms for WordPress and Joomla plugins deliver backdoored software.
-    detail: A surge in supply chain attacks, exemplified by the hijacking of Smart Slider 3 Pro's update process, poses significant risks. Attackers are injecting backdoors through trusted update channels, compromising user systems. Organizations must implement rigorous vetting of software sources and monitor for unexpected changes in plugin behavior.
-    link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: Supply Chain Security
+  - title: Supply Chain Attacks Target Popular CMS Plugins
+    text: Hijacked updates for Smart Slider plugins inject backdoors into WordPress/Joomla.
+    detail: A recent supply chain attack compromised the update mechanism for Smart Slider 3 Pro, distributing backdoored versions for WordPress and Joomla. This incident emphasizes the critical need for vigilance in software supply chains, including verifying plugin integrity and monitoring update sources. Implement strict change control and software composition analysis.
+    link: https://owasp.org/www-project/supply-chain-security/
     badge: signal
     tags:
       - supply-chain
       - malware
-      - plugin-security
-  - title: APT Groups Diversify Targets and Tactics
-    text: Nation-state actors like Fancy Bear and Iranian-backed groups are expanding their attack surfaces.
-    detail: Advanced Persistent Threats (APTs) continue to evolve, with groups like Fancy Bear and Iranian-backed actors broadening their targets to include industrial control systems and critical infrastructure. Staying ahead requires continuous monitoring of threat actor TTPs and implementing layered defenses against sophisticated, state-sponsored attacks.
-    link: https://attack.mitre.org/groups/
-    link_label: MITRE ATT&CK Groups
+      - wordpress
+      - joomla
+  - title: APT Activity Targets Critical Infrastructure and Organizations
+    text: Iranian and Russian APTs target industrial devices and global entities.
+    detail: Advanced Persistent Threats (APTs) from Iran and Russia are actively targeting critical infrastructure, industrial devices, and various organizations globally. These campaigns often involve sophisticated spear-phishing and exploit known vulnerabilities. Maintain up-to-date threat intelligence, implement strong network segmentation, and conduct regular security audits.
+    link: https://www.mitre.org/attack-matrix
+    link_label: MITRE ATT&CK Framework
     badge: signal
     tags:
       - apt
-      - threat-actor
+      - threat-intel
       - industrial-control-systems
 vault_picks:
   - name: OWASP Top 10
