@@ -2875,10 +2875,57 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 
 /* Feed native ad */
 .feed-item--ad {
-  border: 1px dashed rgba(0, 255, 135, 0.2);
-  background: rgba(0, 255, 135, 0.02);
+  border: 1px solid rgba(0, 255, 135, 0.15);
+  background: linear-gradient(135deg, rgba(0, 255, 135, 0.03) 0%, rgba(0, 255, 135, 0.08) 100%);
+  border-radius: var(--r);
+  position: relative;
+  overflow: hidden;
 }
-.feed-item--ad .feed-item__body { padding: 1rem; }
+.feed-item--ad::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--electric), var(--acid));
+}
+.feed-item--ad .feed-item__body {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.feed-item--ad .badge--partner {
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+.feed-item--ad h3 {
+  font-size: 0.95rem;
+  margin: 0;
+  flex: 1;
+  min-width: 120px;
+}
+.feed-item--ad p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  flex-basis: 100%;
+}
+.feed-item--ad .btn--ghost {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  border-color: rgba(0, 255, 135, 0.3);
+}
+.feed-item--ad .btn--ghost:hover {
+  border-color: var(--electric);
+  background: rgba(0, 255, 135, 0.1);
+}
+.feed-entry--ad {
+  margin: 0.5rem 0;
+}
 
 @media (max-width: 600px) {
   .ad-slot__content { flex-direction: column; align-items: flex-start; }
