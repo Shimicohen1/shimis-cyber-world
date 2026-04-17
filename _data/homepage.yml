@@ -17,12 +17,9 @@ signals:
     color: lime
 identity:
   title: Shimi's Cyber World
-  tagline: A security intelligence hub powered by AI and human expertise. Real-time threat feeds, curated tools, and field-driven insights — built for the community, by the community.
-  cta_primary:
-    text: Latest Posts
-    url: /posts/
-  cta_secondary:
-    text: About SCW
+  tagline: Real-time cyber intel for defenders.
+  cta_link:
+    text: About SCW →
     url: /about/
 quick_signals:
   - title: AI Guardrails Vulnerable to Prompt Injection

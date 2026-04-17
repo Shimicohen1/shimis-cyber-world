@@ -17,10 +17,7 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
       <div class="identity__text">
         <h1 class="identity__title">{{ site.data.homepage.identity.title }}</h1>
         <p class="identity__tagline">{{ site.data.homepage.identity.tagline }}</p>
-        <div class="identity__actions">
-          <a href="{{ site.data.homepage.identity.cta_primary.url | relative_url }}" class="btn btn--primary">{{ site.data.homepage.identity.cta_primary.text }}</a>
-          <a href="{{ site.data.homepage.identity.cta_secondary.url | relative_url }}" class="btn btn--ghost">{{ site.data.homepage.identity.cta_secondary.text }}</a>
-        </div>
+        <a href="{{ site.data.homepage.identity.cta_link.url | relative_url }}" class="identity__link">{{ site.data.homepage.identity.cta_link.text }}</a>
       </div>
     </div>
   </div>
