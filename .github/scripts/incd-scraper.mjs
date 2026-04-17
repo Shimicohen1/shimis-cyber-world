@@ -12,9 +12,95 @@ import { chromium as playwrightChromium } from "playwright-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Apply stealth plugin to bypass Cloudflare
 playwrightChromium.use(StealthPlugin());
+
+// ── Sigma Rule Generation (inline, mirrors sigma-generator.js logic) ──
+const sigmaTemplates = JSON.parse(fs.readFileSync(path.join(__dirname, "sigma-templates.json"), "utf-8"));
+
+function interpolateSigma(str, vars) {
+  if (!str) return str;
+  return str
+    .replace(/\{org_name\}/g, vars.org_name || "Target System")
+    .replace(/\{org_domain\}/g, vars.org_domain || "target.local")
+    .replace(/\{cve_id\}/g, vars.cve_id || "CVE-XXXX-XXXXX")
+    .replace(/\{indicator\}/g, vars.indicator || "")
+    .replace(/\{event_type\}/g, vars.event_type || "incident");
+}
+
+function buildSigmaYaml(rule, vars, postUrl) {
+  const title = interpolateSigma(rule.title, vars);
+  const description = interpolateSigma(rule.description, vars);
+  const detection = interpolateSigma(rule.detection, vars);
+  const ls = rule.logsource || {};
+  const logsourceParts = [];
+  if (ls.category) logsourceParts.push(`    category: ${ls.category}`);
+  if (ls.product) logsourceParts.push(`    product: ${ls.product}`);
+  if (ls.service) logsourceParts.push(`    service: ${ls.service}`);
+  const tags = [];
+  if (vars.tactic) tags.push(`  - attack.${vars.tactic.toLowerCase().replace(/ /g, "_")}`);
+  if (vars.technique_id) tags.push(`  - attack.${vars.technique_id.toLowerCase()}`);
+  return [
+    `title: ${title}`, `id: scw-${vars.rule_id}`, `status: experimental`, `level: ${rule.level}`,
+    `description: |\n  ${description}`, `author: SCW Feed Engine (auto-generated)`,
+    `date: ${vars.post_date || new Date().toISOString().split("T")[0]}`,
+    `references:\n  - ${postUrl || "https://shimiscyberworld.com"}`,
+    tags.length > 0 ? `tags:\n${tags.join("\n")}` : null,
+    `logsource:\n${logsourceParts.join("\n")}`,
+    `detection:\n  ${detection.split("\n").join("\n  ")}`,
+    `falsepositives:\n  - Legitimate activity from ${vars.org_name || "the affected organization"}`,
+  ].filter(Boolean).join("\n");
+}
+
+function generateSigmaForIncd(postData, postUrl) {
+  const mitreList = postData.mitre_attack || [];
+  const primaryIoc = (postData.iocs || [])[0] || {};
+  const postDate = postData.date || new Date().toISOString().split("T")[0];
+  const orgName = postData.title?.replace(/^["🚨⚠️🔴]+\s*/g, "").substring(0, 60) || "INCD Advisory";
+  const baseVars = {
+    org_name: orgName, org_domain: "", cve_id: primaryIoc.id || "",
+    indicator: primaryIoc.indicator || primaryIoc.id || "",
+    event_type: "vulnerability", post_date: postDate,
+  };
+  const rules = [];
+  let counter = 0;
+  for (const mitre of mitreList) {
+    const techId = mitre.id || "";
+    const techTemplates = sigmaTemplates.techniques[techId];
+    if (!techTemplates) continue;
+    for (const rule of techTemplates.rules) {
+      counter++;
+      const vars = { ...baseVars, tactic: mitre.tactic || techTemplates.tactic, technique_id: techId, rule_id: `${postDate}-${counter}` };
+      const yaml = buildSigmaYaml(rule, vars, postUrl);
+      rules.push({ title: interpolateSigma(rule.title, vars), level: rule.level, tier: rule.tier, technique: techId, tactic: mitre.tactic || techTemplates.tactic, yaml });
+    }
+  }
+  return rules;
+}
+
+function sigmaFrontmatter(rules, slug) {
+  if (!rules || rules.length === 0) return "";
+  const freeRule = rules.find(r => r.tier === "free");
+  let yaml = "sigma_rules:\n";
+  yaml += `  count: ${rules.length}\n`;
+  yaml += `  free_count: ${rules.filter(r => r.tier === "free").length}\n`;
+  yaml += `  paid_count: ${rules.filter(r => r.tier === "paid").length}\n`;
+  if (freeRule) {
+    yaml += `  preview_title: "${yamlSafe(freeRule.title)}"\n`;
+    yaml += `  preview_level: "${freeRule.level}"\n`;
+    yaml += `  preview_technique: "${yamlSafe(freeRule.technique)}"\n`;
+    yaml += `  preview_tactic: "${yamlSafe(freeRule.tactic)}"\n`;
+    if (freeRule.yaml) {
+      yaml += `  preview_yaml_b64: "${Buffer.from(freeRule.yaml, "utf-8").toString("base64")}"\n`;
+    }
+  }
+  return yaml;
+}
 
 // ── Constants ────────────────────────────────────────────
 const INCD_PAGE_URL =
@@ -461,6 +547,18 @@ function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
       "\n";
   }
 
+  // Sigma detection rules
+  let sigmaYaml = "";
+  if (mitreAttack && mitreAttack.length > 0 && (iocs.length > 0 || isVuln)) {
+    const postUrl = `https://shimiscyberworld.com/posts/incd-${slug}/`;
+    const sigmaData = { title, iocs, mitre_attack: mitreAttack, date: `${yyyy}-${mm}-${dd}` };
+    const allRules = generateSigmaForIncd(sigmaData, postUrl);
+    if (allRules.length > 0) {
+      sigmaYaml = sigmaFrontmatter(allRules, slug);
+      console.log(`[INCD] 🛡️  Sigma: ${allRules.length} rules for ${slug} (${allRules.filter(r => r.tier === "free").length} free)`);
+    }
+  }
+
   const markdown = [
     "---",
     `title: "${yamlSafe(title)}"`,
@@ -486,6 +584,7 @@ function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
     translated ? `ai_rewritten: true` : "",
     iocsYaml,
     mitreYaml,
+    sigmaYaml,
     `why_it_matters:`,
     `  - "${yamlSafe(whyItMatters)}"`,
     "---",

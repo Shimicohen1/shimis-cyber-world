@@ -1,0 +1,580 @@
+{
+  "_meta": {
+    "description": "MITRE ATT&CK technique \u2192 Sigma rule templates. Variables: {org_name}, {org_domain}, {cve_id}, {indicator}, {event_type}",
+    "version": "1.0",
+    "generated": "2026-04-14"
+  },
+  "techniques": {
+    "T1190": {
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Web Application Exploitation Attempt \u2014 {org_name}",
+          "level": "high",
+          "logsource": {
+            "category": "webserver"
+          },
+          "detection": "selection:\n    cs-uri-query|contains:\n      - '..'\n      - 'SELECT'\n      - 'UNION'\n      - '<script'\n      - 'cmd='\n      - '/etc/passwd'\n    condition: selection",
+          "description": "Detects common exploitation patterns targeting web applications. Review {org_name} advisories for specific indicators."
+        },
+        {
+          "tier": "paid",
+          "title": "Suspicious POST to Vulnerable Endpoint \u2014 {org_name}",
+          "level": "high",
+          "logsource": {
+            "category": "webserver"
+          },
+          "detection": "selection:\n    cs-method: 'POST'\n    sc-status:\n      - 500\n      - 502\n      - 503\n    cs-uri-query|contains:\n      - '{indicator}'\n    condition: selection",
+          "description": "Detects suspicious POST requests resulting in server errors, potentially indicating exploitation of {cve_id}."
+        },
+        {
+          "tier": "paid",
+          "title": "WAF Alert Correlation \u2014 {cve_id}",
+          "level": "medium",
+          "logsource": {
+            "category": "firewall"
+          },
+          "detection": "selection:\n    action: 'blocked'\n    dst_port:\n      - 80\n      - 443\n      - 8080\n      - 8443\n    condition: selection | count(src_ip) by dst_ip > 10",
+          "description": "Correlates WAF blocks that may indicate scanning for {cve_id} across your public-facing infrastructure."
+        }
+      ]
+    },
+    "T1505.003": {
+      "name": "Web Shell",
+      "tactic": "Persistence",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Web Shell Activity Detection \u2014 {org_name}",
+          "level": "high",
+          "logsource": {
+            "category": "webserver"
+          },
+          "detection": "selection:\n    cs-uri|endswith:\n      - '.php'\n      - '.jsp'\n      - '.aspx'\n      - '.ashx'\n    cs-uri-query|contains:\n      - 'cmd='\n      - 'exec='\n      - 'shell'\n      - 'upload'\n    condition: selection",
+          "description": "Detects potential web shell interaction patterns following the {org_name} breach."
+        },
+        {
+          "tier": "paid",
+          "title": "New File Creation in Web Root \u2014 Post-Breach",
+          "level": "high",
+          "logsource": {
+            "category": "file_event",
+            "product": "windows"
+          },
+          "detection": "selection:\n    EventType: 'FileCreate'\n    TargetFilename|contains:\n      - '\\inetpub\\wwwroot\\'\n      - '\\htdocs\\'\n      - '\\www\\'\n    TargetFilename|endswith:\n      - '.php'\n      - '.jsp'\n      - '.aspx'\n    condition: selection",
+          "description": "Detects new executable files created in web server directories, a common indicator of web shell deployment."
+        }
+      ]
+    },
+    "T1059.001": {
+      "name": "PowerShell",
+      "tactic": "Execution",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Suspicious PowerShell Execution",
+          "level": "high",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    CommandLine|contains:\n      - '-enc'\n      - '-EncodedCommand'\n      - 'IEX('\n      - 'Invoke-Expression'\n      - 'DownloadString'\n      - 'Net.WebClient'\n      - '-nop'\n      - '-w hidden'\n    condition: selection",
+          "description": "Detects suspicious PowerShell execution patterns commonly used in post-exploitation following vendor compromises."
+        },
+        {
+          "tier": "paid",
+          "title": "PowerShell Reaching {org_domain}",
+          "level": "high",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    Image|endswith: '\\powershell.exe'\n    CommandLine|contains:\n      - '{org_domain}'\n    condition: selection",
+          "description": "Detects PowerShell scripts communicating with {org_domain}, which may indicate supply chain compromise or C2 callback."
+        }
+      ]
+    },
+    "T1059.004": {
+      "name": "Unix Shell",
+      "tactic": "Execution",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Suspicious Shell Command Execution",
+          "level": "high",
+          "logsource": {
+            "category": "process_creation",
+            "product": "linux"
+          },
+          "detection": "selection:\n    CommandLine|contains:\n      - 'curl|sh'\n      - 'wget|sh'\n      - 'curl|bash'\n      - 'wget|bash'\n      - 'python -c'\n      - 'bash -i >& /dev/tcp'\n    condition: selection",
+          "description": "Detects suspicious shell execution patterns associated with remote code execution and post-exploitation."
+        }
+      ]
+    },
+    "T1078.004": {
+      "name": "Cloud Accounts",
+      "tactic": "Initial Access",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Credential Abuse from Breached Vendor \u2014 {org_name}",
+          "level": "high",
+          "logsource": {
+            "category": "authentication"
+          },
+          "detection": "selection:\n    User|endswith:\n      - '@{org_domain}'\n    condition: selection",
+          "description": "Monitor for authentication attempts using credentials from {org_domain}, potentially exposed in the {org_name} breach."
+        },
+        {
+          "tier": "paid",
+          "title": "Impossible Travel from {org_name} Accounts",
+          "level": "medium",
+          "logsource": {
+            "category": "authentication"
+          },
+          "detection": "selection:\n    User|endswith:\n      - '@{org_domain}'\n    EventType: 'login_success'\n    condition: selection | near(src_ip, 2, 3600s)",
+          "description": "Detects successful logins from {org_domain} accounts originating from multiple geographic locations within a short timeframe."
+        }
+      ]
+    },
+    "T1204.002": {
+      "name": "Malicious File",
+      "tactic": "Execution",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Suspicious File Download via Email",
+          "level": "medium",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    ParentImage|endswith:\n      - '\\outlook.exe'\n      - '\\thunderbird.exe'\n    Image|endswith:\n      - '\\cmd.exe'\n      - '\\powershell.exe'\n      - '\\wscript.exe'\n      - '\\cscript.exe'\n    condition: selection",
+          "description": "Detects execution of suspicious processes spawned from email clients, potentially triggered by a phishing attachment."
+        }
+      ]
+    },
+    "T1071.001": {
+      "name": "Web Protocols",
+      "tactic": "Command and Control",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "C2 Beacon Detection \u2014 HTTP to Suspicious Domain",
+          "level": "medium",
+          "logsource": {
+            "category": "proxy"
+          },
+          "detection": "selection:\n    dst_domain|endswith:\n      - '{org_domain}'\n    cs-method: 'POST'\n    condition: selection | count() by src_ip > 50",
+          "description": "Detects high-frequency HTTP POST beaconing to {org_domain}, which may indicate compromised endpoints calling back after the {org_name} breach."
+        },
+        {
+          "tier": "paid",
+          "title": "Anomalous HTTPS Traffic Volume to {org_name}",
+          "level": "medium",
+          "logsource": {
+            "category": "proxy"
+          },
+          "detection": "selection:\n    dst_domain|endswith:\n      - '{org_domain}'\n    sc-bytes|gt: 1000000\n    condition: selection",
+          "description": "Detects unusually large data transfers to {org_domain}, which could indicate data exfiltration via a compromised channel."
+        }
+      ]
+    },
+    "T1068": {
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Privilege Escalation Attempt Detection",
+          "level": "high",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    IntegrityLevel: 'High'\n    ParentIntegrityLevel: 'Medium'\n    Image|endswith:\n      - '\\cmd.exe'\n      - '\\powershell.exe'\n    condition: selection",
+          "description": "Detects processes spawned with elevated privileges from medium-integrity parents, indicating potential privilege escalation exploitation."
+        }
+      ]
+    },
+    "T1566.002": {
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Click on Phishing Link from {org_name} Domain",
+          "level": "medium",
+          "logsource": {
+            "category": "proxy"
+          },
+          "detection": "selection:\n    referer|contains:\n      - 'mail.'\n      - 'outlook.'\n      - 'gmail.'\n    dst_domain|endswith:\n      - '{org_domain}'\n    condition: selection",
+          "description": "Detects users clicking links to {org_domain} from email clients. Following the {org_name} breach, verify legitimacy of any links claiming to be from this vendor."
+        }
+      ]
+    },
+    "T1189": {
+      "name": "Drive-by Compromise",
+      "tactic": "Initial Access",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Drive-by Download via Browser \u2014 {org_name}",
+          "level": "medium",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    ParentImage|endswith:\n      - '\\chrome.exe'\n      - '\\firefox.exe'\n      - '\\msedge.exe'\n    Image|endswith:\n      - '\\cmd.exe'\n      - '\\powershell.exe'\n      - '\\mshta.exe'\n      - '\\wscript.exe'\n    condition: selection",
+          "description": "Detects browser-spawned process execution typical of drive-by compromise attacks."
+        }
+      ]
+    },
+    "T1200": {
+      "name": "Hardware Additions",
+      "tactic": "Initial Access",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "USB Device Connection Monitoring",
+          "level": "low",
+          "logsource": {
+            "category": "driver_load",
+            "product": "windows"
+          },
+          "detection": "selection:\n    EventID: 6416\n    condition: selection",
+          "description": "Monitors for new hardware device connections. Review in context of physical access threats related to the {org_name} incident."
+        }
+      ]
+    },
+    "T1499": {
+      "name": "Endpoint Denial of Service",
+      "tactic": "Impact",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "DoS Traffic Pattern Detection",
+          "level": "high",
+          "logsource": {
+            "category": "firewall"
+          },
+          "detection": "selection:\n    dst_port:\n      - 80\n      - 443\n    condition: selection | count(src_ip) by dst_ip > 1000",
+          "description": "Detects volumetric traffic patterns consistent with denial of service attacks targeting your infrastructure."
+        }
+      ]
+    },
+    "T1059.007": {
+      "name": "JavaScript",
+      "tactic": "Execution",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Suspicious JavaScript Execution via WSH",
+          "level": "medium",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    Image|endswith:\n      - '\\wscript.exe'\n      - '\\cscript.exe'\n    CommandLine|endswith:\n      - '.js'\n      - '.jse'\n    condition: selection",
+          "description": "Detects JavaScript execution through Windows Script Host, commonly used for malware delivery."
+        }
+      ]
+    },
+    "T1071.004": {
+      "name": "DNS",
+      "tactic": "Command and Control",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "DNS Tunneling Detection \u2014 {org_name}",
+          "level": "medium",
+          "logsource": {
+            "category": "dns"
+          },
+          "detection": "selection:\n    query|endswith:\n      - '{org_domain}'\n    query_length|gt: 50\n    condition: selection",
+          "description": "Detects unusually long DNS queries to {org_domain} subdomains, a potential indicator of DNS-based data exfiltration or C2 tunneling."
+        }
+      ]
+    },
+    "T1539": {
+      "name": "Steal Web Session Cookie",
+      "tactic": "Credential Access",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Browser Cookie/Credential Store Access",
+          "level": "high",
+          "logsource": {
+            "category": "file_access",
+            "product": "windows"
+          },
+          "detection": "selection:\n    TargetFilename|contains:\n      - '\\Google\\Chrome\\User Data\\Default\\Cookies'\n      - '\\Google\\Chrome\\User Data\\Default\\Login Data'\n      - '\\Mozilla\\Firefox\\Profiles\\'\n    Image|endswith|not:\n      - '\\chrome.exe'\n      - '\\firefox.exe'\n    condition: selection",
+          "description": "Detects non-browser processes accessing cookie or credential stores, indicating potential credential theft following the {org_name} breach."
+        }
+      ]
+    },
+    "T1574.002": {
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "DLL Side-Loading Detection",
+          "level": "high",
+          "logsource": {
+            "category": "image_load",
+            "product": "windows"
+          },
+          "detection": "selection:\n    ImageLoaded|endswith:\n      - '.dll'\n    Image|endswith:\n      - '.exe'\n    signed: 'false'\n    condition: selection",
+          "description": "Detects unsigned DLLs loaded by legitimate executables, a common technique for persistence and defense evasion."
+        }
+      ]
+    },
+    "T1537": {
+      "name": "Transfer Data to Cloud Account",
+      "tactic": "Exfiltration",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Data Exfiltration to Cloud Storage",
+          "level": "medium",
+          "logsource": {
+            "category": "proxy"
+          },
+          "detection": "selection:\n    dst_domain|contains:\n      - 'drive.google.com'\n      - 'dropbox.com'\n      - 'mega.nz'\n      - 'onedrive.live.com'\n      - 'anonfiles.com'\n    sc-bytes|gt: 5000000\n    condition: selection",
+          "description": "Detects large file uploads to cloud storage services, which may indicate data exfiltration following the {org_name} incident."
+        }
+      ]
+    },
+    "T1110.004": {
+      "name": "Credential Stuffing",
+      "tactic": "Credential Access",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Credential Stuffing Attack \u2014 {org_name} Breach",
+          "level": "high",
+          "logsource": {
+            "category": "authentication"
+          },
+          "detection": "selection:\n    EventType: 'login_failure'\n    condition: selection | count(User) by src_ip > 20",
+          "description": "Detects credential stuffing attacks using potentially leaked credentials from the {org_name} breach. High-frequency login failures from a single IP across multiple accounts."
+        }
+      ]
+    },
+    "T1547.001": {
+      "name": "Registry Run Keys / Startup Folder",
+      "tactic": "Persistence",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Persistence via Registry Run Key",
+          "level": "high",
+          "logsource": {
+            "category": "registry_set",
+            "product": "windows"
+          },
+          "detection": "selection:\n    TargetObject|contains:\n      - '\\CurrentVersion\\Run\\'\n      - '\\CurrentVersion\\RunOnce\\'\n    condition: selection",
+          "description": "Detects modifications to registry run keys for persistence. Review in context of potential compromise from {org_name} supply chain."
+        }
+      ]
+    },
+    "T1486": {
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Ransomware File Encryption Detection",
+          "level": "critical",
+          "logsource": {
+            "category": "file_event",
+            "product": "windows"
+          },
+          "detection": "selection:\n    EventType: 'FileRename'\n    TargetFilename|endswith:\n      - '.encrypted'\n      - '.locked'\n      - '.crypt'\n      - '.enc'\n      - '.ransom'\n    condition: selection | count() by Image > 50",
+          "description": "Detects mass file renaming to encrypted extensions, a strong indicator of active ransomware encryption following the {org_name} ransomware incident."
+        },
+        {
+          "tier": "paid",
+          "title": "Ransomware Note File Creation",
+          "level": "critical",
+          "logsource": {
+            "category": "file_event",
+            "product": "windows"
+          },
+          "detection": "selection:\n    EventType: 'FileCreate'\n    TargetFilename|contains:\n      - 'README'\n      - 'RECOVER'\n      - 'DECRYPT'\n      - 'RESTORE'\n      - 'HOW_TO'\n    TargetFilename|endswith:\n      - '.txt'\n      - '.html'\n      - '.hta'\n    condition: selection",
+          "description": "Detects creation of ransom note files, indicating active ransomware execution."
+        },
+        {
+          "tier": "paid",
+          "title": "Volume Shadow Copy Deletion",
+          "level": "critical",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    CommandLine|contains:\n      - 'vssadmin delete shadows'\n      - 'wmic shadowcopy delete'\n      - 'bcdedit /set {default} recoveryenabled no'\n    condition: selection",
+          "description": "Detects deletion of shadow copies, a common pre-encryption step in ransomware attacks."
+        }
+      ]
+    },
+    "T1555": {
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Password Store Access Detection",
+          "level": "high",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    CommandLine|contains:\n      - 'vaultcmd'\n      - 'rundll32 keymgr.dll'\n      - 'mimikatz'\n      - 'sekurlsa'\n      - 'lsass'\n    condition: selection",
+          "description": "Detects attempts to access Windows credential stores, potentially using credentials exposed in the {org_name} breach to move laterally."
+        }
+      ]
+    },
+    "T1219": {
+      "name": "Remote Access Software",
+      "tactic": "Command and Control",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Unauthorized Remote Access Tool Detection",
+          "level": "medium",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    Image|endswith:\n      - '\\AnyDesk.exe'\n      - '\\TeamViewer.exe'\n      - '\\ScreenConnect.exe'\n      - '\\RemoteUtilities.exe'\n      - '\\RustDesk.exe'\n    condition: selection",
+          "description": "Detects execution of remote access tools commonly abused by threat actors for persistent access."
+        }
+      ]
+    },
+    "T1059.003": {
+      "name": "Windows Command Shell",
+      "tactic": "Execution",
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Suspicious Command Shell Execution",
+          "level": "medium",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    Image|endswith: '\\cmd.exe'\n    CommandLine|contains:\n      - '/c whoami'\n      - '/c net user'\n      - '/c net localgroup'\n      - '/c systeminfo'\n      - '/c ipconfig /all'\n    condition: selection",
+          "description": "Detects reconnaissance commands via cmd.exe commonly executed during post-exploitation and lateral movement."
+        }
+      ]
+    }
+  },
+  "event_type_rules": {
+    "data-breach": {
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Monitor Authentication from Breached Vendor \u2014 {org_name}",
+          "level": "high",
+          "logsource": {
+            "category": "authentication"
+          },
+          "detection": "selection_domain:\n    User|endswith:\n      - '@{org_domain}'\n  selection_failure:\n    EventType: 'login_failure'\n    condition: selection_domain or selection_failure | count(User) by src_ip > 10",
+          "description": "Following the {org_name} data breach, monitor for login attempts using potentially compromised credentials. Alert on any authentication from {org_domain} accounts and credential stuffing patterns."
+        },
+        {
+          "tier": "paid",
+          "title": "Email from Breached {org_name} Domain \u2014 Phishing Risk",
+          "level": "medium",
+          "logsource": {
+            "category": "email"
+          },
+          "detection": "selection:\n    sender_domain: '{org_domain}'\n    attachments|gt: 0\n    condition: selection",
+          "description": "Flag emails with attachments from {org_domain}. Breached organizations are frequently impersonated in follow-up phishing campaigns."
+        }
+      ]
+    },
+    "ransomware": {
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Ransomware Indicators \u2014 {org_name} Supply Chain",
+          "level": "critical",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    CommandLine|contains:\n      - 'vssadmin delete'\n      - 'wmic shadowcopy'\n      - 'bcdedit.*recoveryenabled.*no'\n      - 'cipher /w'\n    condition: selection",
+          "description": "Following the {org_name} ransomware attack, monitor for ransomware precursor activities: shadow copy deletion, recovery disabling, and secure file wiping."
+        },
+        {
+          "tier": "paid",
+          "title": "Network Share Enumeration \u2014 Lateral Movement Risk",
+          "level": "high",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    CommandLine|contains:\n      - 'net view'\n      - 'net share'\n      - 'Get-SmbShare'\n    condition: selection",
+          "description": "Detects network share enumeration typically performed before ransomware propagation across the network."
+        }
+      ]
+    },
+    "supply-chain": {
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Traffic to Compromised Vendor \u2014 {org_name}",
+          "level": "high",
+          "logsource": {
+            "category": "proxy"
+          },
+          "detection": "selection:\n    dst_domain|endswith:\n      - '{org_domain}'\n    condition: selection",
+          "description": "Monitor all traffic to {org_domain} following the supply chain compromise. Review for unexpected downloads, updates, or beacon patterns."
+        },
+        {
+          "tier": "paid",
+          "title": "Software Update from {org_name} \u2014 Integrity Check",
+          "level": "high",
+          "logsource": {
+            "category": "process_creation"
+          },
+          "detection": "selection:\n    CommandLine|contains:\n      - '{org_domain}'\n      - 'update'\n      - 'install'\n    ParentImage|endswith:\n      - '\\services.exe'\n      - '\\svchost.exe'\n    condition: selection",
+          "description": "Detects software updates originating from {org_name}. Verify update integrity and consider blocking automatic updates until the vendor confirms the supply chain is secured."
+        }
+      ]
+    },
+    "espionage": {
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Data Staging for Exfiltration",
+          "level": "high",
+          "logsource": {
+            "category": "process_creation",
+            "product": "windows"
+          },
+          "detection": "selection:\n    CommandLine|contains:\n      - '7z a'\n      - 'rar a'\n      - 'tar -czf'\n      - 'zip -r'\n    condition: selection",
+          "description": "Detects file compression and archiving that may indicate data staging for exfiltration, a common espionage technique."
+        }
+      ]
+    },
+    "vulnerability": {
+      "rules": [
+        {
+          "tier": "free",
+          "title": "Exploitation Attempt \u2014 {org_name}",
+          "level": "high",
+          "logsource": {
+            "category": "webserver"
+          },
+          "detection": "selection:\n    cs-uri-query|contains:\n      - '{indicator}'\n    sc-status:\n      - 200\n      - 500\n    condition: selection",
+          "description": "Monitor for exploitation attempts targeting {cve_id}. Patch immediately if running affected {org_name} products."
+        }
+      ]
+    }
+  }
+}
