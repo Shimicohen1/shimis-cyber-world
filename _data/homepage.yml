@@ -25,47 +25,46 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Phishing-as-a-Service Platforms Evolve to Target C-Suite
-    text: New 'VENOM' platform targets Microsoft credentials of senior executives via PhaaS.
-    detail: The rise of sophisticated Phishing-as-a-Service (PhaaS) platforms like VENOM indicates a strategic shift towards high-value targets. C-suite executives are increasingly in the crosshairs, making multi-factor authentication and robust endpoint protection critical. Vigilance against targeted spear-phishing campaigns is paramount.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-dont-bite-hook-line-and-sinker
-    link_label: Phishing Awareness
+  - title: AI Guardrails Vulnerable to Prompt Injection
+    text: AI safety measures, like those in Apple Intelligence, can be bypassed by clever prompt engineering.
+    detail: Researchers have demonstrated that sophisticated prompt injection techniques can circumvent AI guardrails. This highlights the need for continuous research into AI security and robust defense mechanisms against adversarial attacks. Professionals should monitor developments in AI security and consider implementing AI-specific threat detection strategies.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: LLM Top 10
     badge: signal
     tags:
-      - phishing
       - threat-intel
-      - microsoft
-  - title: Zero-Day Exploits Continue to Threaten Software Integrity
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows OS reported.
-    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows highlights persistent supply chain risks and the challenges of timely patching. Organizations must prioritize rapid patch deployment and leverage threat intelligence to stay ahead of emerging exploits.
-    link: https://www.cisa.gov/news-events/cybersecurity-guidance/advisories/aa23-144a
-    link_label: Vulnerability Advisories
+      - ai-security
+      - vulnerability
+  - title: Supply Chain Attacks Target CMS Plugins
+    text: Compromised updates for popular CMS plugins like Smart Slider are distributing backdoors.
+    detail: Attackers are hijacking update mechanisms for widely used plugins (e.g., Smart Slider for WordPress/Joomla) to distribute backdoored versions. This underscores the critical importance of supply chain security and vigilant monitoring of software updates. Organizations should implement strict vetting processes for third-party components and consider software composition analysis (SCA) tools.
+    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerabilities
+    link_label: Supply Chain Risks
     badge: signal
     tags:
+      - threat-intel
+      - supply-chain
+      - malware
+  - title: Zero-Day Exploits Targeting Widely Used Software
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows persists.
+    detail: Recent intelligence indicates active exploitation of zero-day flaws in Adobe Reader and Windows (e.g., BlueHammer). This emphasizes the ongoing threat posed by unknown vulnerabilities and the critical need for rapid patching and robust endpoint detection. Stay informed about vendor advisories and prioritize patching high-impact vulnerabilities immediately.
+    link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
+    link_label: Known Exploited Vulnerabilities
+    badge: signal
+    tags:
+      - threat-intel
       - vulnerability
       - zero-day
-      - threat-intel
-  - title: IoT and Legacy Devices Remain Prime Targets for Botnets
-    text: New botnets like Masjesu are stealthily targeting IoT devices, evading detection.
-    detail: The emergence of botnets like Masjesu, specifically targeting IoT devices and employing evasion techniques, underscores the persistent risk posed by unpatched and legacy connected devices. Implementing network segmentation and robust IoT security policies is crucial to mitigate these threats.
-    link: https://www.nist.gov/cyberframework/framework-5212-nist-cybersecurity-framework-version-20
-    link_label: Cybersecurity Framework
+  - title: APT Groups Evolve Tactics, Target Critical Infrastructure
+    text: Advanced Persistent Threats (APTs) like Fancy Bear and Iranian actors continue to target critical infrastructure and industrial devices.
+    detail: Nation-state actors, including Russian (Fancy Bear/APT28) and Iranian groups, are actively targeting industrial control systems and over 5,200 internet-connected devices globally. This necessitates enhanced focus on OT/ICS security, threat intelligence sharing, and robust network segmentation to protect critical infrastructure from sophisticated state-sponsored attacks.
+    link: https://www.mitre.org/attack-matrix
+    link_label: MITRE ATT&CK
     badge: signal
     tags:
-      - iot
-      - botnet
-      - malware
       - threat-intel
-  - title: AI Security Guardrails Are Vulnerable to Prompt Injection
-    text: Researchers demonstrate successful bypass of AI guardrails in Apple Intelligence.
-    detail: The successful bypass of AI guardrails via prompt injection in systems like Apple Intelligence highlights the nascent but critical security challenges of AI. Organizations integrating AI must prioritize robust input validation and continuous monitoring of AI model behavior for unintended outputs.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: AI Security Risks
-    badge: signal
-    tags:
-      - ai-security
-      - prompt-injection
-      - threat-intel
+      - apt
+      - ics-security
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
