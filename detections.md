@@ -37,268 +37,12 @@ permalink: /detections/
 </div>
 
 <section class="cs-intro reveal">
-  <p>Every rule in this library is <strong>battle-tested</strong>. Written by security operators, validated in production environments, and mapped to MITRE ATT&CK techniques. All rules are <strong>free and open</strong> — use them in your SIEM today.</p>
+  <p>Every rule in this library is <strong>battle-tested</strong>. Written by security operators, validated in production environments, and mapped to MITRE ATT&CK techniques. Sigma rules are free — SIEM exports (Splunk, Sentinel, Elastic, QRadar, Wazuh) available via the <a href="https://t.me/Shimiscyberworldbot?start=detect">Intel Bot</a>.</p>
   <div class="cs-intro__actions">
     <a href="#rules" class="btn btn--primary">Browse Rules</a>
     <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--ghost">WarRoom →</a>
   </div>
 </section>
-
-<!-- Breach-specific CTA -->
-<section class="cs-cta reveal" style="margin: 2rem 0;">
-  <div class="cs-cta__box" style="background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0,200,255,0.05) 100%); border-left: 3px solid var(--accent);">
-    <h3 style="margin-top:0;">🛡️ Need rules for a specific breach?</h3>
-    <p>The rules below are generic detection patterns. Our Intel Bot generates <strong>Sigma rules tailored to real breaches</strong> — mapped to the exact ATT&CK techniques observed in each incident. Pick your SIEM and get a ready-to-paste query.</p>
-    <div class="cs-cta__actions">
-      <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Generate Breach Rules →</a>
-      <span style="color: var(--text-muted); font-size: 0.85rem;">Free: 1 rule per breach · Full pack via Bot · Included with Pro/Elite · Elite: weekly SIEM digest matched to your watchlist</span>
-    </div>
-  </div>
-</section>
-
-<!-- SIEM Export Showcase — trust-building samples -->
-<section class="cs-showcase reveal" id="showcase">
-  <div class="feed__header">
-    <h2 class="feed__title"><span class="label label--signal">PREVIEW</span> &nbsp;See What You Get — Full SIEM Export</h2>
-  </div>
-  <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Every breach on this site gets auto-generated detection rules exported to <strong>6 SIEM formats</strong>. Below are two real production-ready rules — <strong>copy any format</strong> directly into your SIEM.</p>
-
-  <div class="showcase-rules">
-    <!-- Sample Rule 1: PowerShell Download Cradle -->
-    <div class="showcase-rule">
-      <div class="showcase-rule__header">
-        <h4 style="margin:0;">Suspicious PowerShell Download Cradle</h4>
-        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-          <span class="badge badge--signal">high</span>
-          <span class="sigma-technique">T1059.001 · T1105</span>
-        </div>
-      </div>
-      <div class="showcase-tabs">
-        <button class="showcase-tab active" data-fmt="sigma">Sigma</button>
-        <button class="showcase-tab" data-fmt="splunk">Splunk SPL</button>
-        <button class="showcase-tab" data-fmt="kql">Sentinel KQL</button>
-        <button class="showcase-tab" data-fmt="elastic">Elastic</button>
-        <button class="showcase-tab" data-fmt="qradar">QRadar AQL</button>
-        <button class="showcase-tab" data-fmt="wazuh">Wazuh XML</button>
-      </div>
-      <div class="showcase-panels">
-        <div class="showcase-panel active" data-fmt="sigma">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>title: Suspicious PowerShell Download Cradle
-id: scw-showcase-exec-001
-status: stable
-level: high
-description: |
-  Detects PowerShell download cradles used in malware delivery — Invoke-WebRequest, Net.WebClient, and BitsTransfer patterns.
-author: SCW Detection Vault
-date: 2025-01-15
-references:
-  - https://shimiscyberworld.com/detections/
-tags:
-  - attack.execution
-  - attack.t1059.001
-  - attack.t1105
-logsource:
-  category: process_creation
-detection:
-  selection:
-    Image|endswith: '\powershell.exe'
-    CommandLine|contains:
-      - 'Invoke-WebRequest'
-      - 'Net.WebClient'
-      - 'DownloadString'
-      - 'DownloadFile'
-      - 'Start-BitsTransfer'
-  condition: selection
-falsepositives:
-  - Legitimate administrative activity</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="splunk">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>index=windows sourcetype=sysmon EventCode=1
-  Image="*\\powershell.exe"
-  (CommandLine="*Invoke-WebRequest*"
-   OR CommandLine="*Net.WebClient*"
-   OR CommandLine="*DownloadString*"
-   OR CommandLine="*DownloadFile*"
-   OR CommandLine="*Start-BitsTransfer*")
-| table _time host user Image CommandLine</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="kql">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>DeviceProcessEvents
-| where FileName =~ "powershell.exe"
-| where ProcessCommandLine has_any (
-    "Invoke-WebRequest", "Net.WebClient",
-    "DownloadString", "DownloadFile",
-    "Start-BitsTransfer")
-| project Timestamp, DeviceName, AccountName,
-    ProcessCommandLine</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="elastic">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>process.executable:*\\powershell.exe AND
-process.command_line:(
-  *Invoke-WebRequest* OR *Net.WebClient* OR
-  *DownloadString* OR *DownloadFile* OR
-  *Start-BitsTransfer*)</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="qradar">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>SELECT DATEFORMAT(starttime,'yyyy-MM-dd HH:mm') AS date,
-  sourceip, "Image", "CommandLine"
-FROM events
-WHERE "Image" ILIKE '%\powershell.exe'
-  AND ("CommandLine" ILIKE '%Invoke-WebRequest%'
-   OR "CommandLine" ILIKE '%Net.WebClient%'
-   OR "CommandLine" ILIKE '%DownloadString%'
-   OR "CommandLine" ILIKE '%DownloadFile%'
-   OR "CommandLine" ILIKE '%Start-BitsTransfer%')</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="wazuh">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>&lt;rule id="100200" level="12"&gt;
-  &lt;if_group&gt;sysmon_event1&lt;/if_group&gt;
-  &lt;field name="win.eventdata.image" type="pcre2"&gt;
-    (?i)\\powershell\.exe$&lt;/field&gt;
-  &lt;field name="win.eventdata.commandLine" type="pcre2"&gt;
-    (?i)(Invoke-WebRequest|Net\.WebClient|DownloadString|DownloadFile|Start-BitsTransfer)&lt;/field&gt;
-  &lt;description&gt;Suspicious PowerShell Download Cradle&lt;/description&gt;
-  &lt;mitre&gt;
-    &lt;id&gt;T1059.001&lt;/id&gt;
-    &lt;id&gt;T1105&lt;/id&gt;
-  &lt;/mitre&gt;
-  &lt;group&gt;sysmon,process_creation,&lt;/group&gt;
-&lt;/rule&gt;</code></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sample Rule 2: LSASS Credential Dumping -->
-    <div class="showcase-rule">
-      <div class="showcase-rule__header">
-        <h4 style="margin:0;">LSASS Memory Access — Credential Dumping</h4>
-        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-          <span class="badge badge--live">critical</span>
-          <span class="sigma-technique">T1003.001</span>
-        </div>
-      </div>
-      <div class="showcase-tabs">
-        <button class="showcase-tab active" data-fmt="sigma">Sigma</button>
-        <button class="showcase-tab" data-fmt="splunk">Splunk SPL</button>
-        <button class="showcase-tab" data-fmt="kql">Sentinel KQL</button>
-        <button class="showcase-tab" data-fmt="elastic">Elastic</button>
-        <button class="showcase-tab" data-fmt="qradar">QRadar AQL</button>
-        <button class="showcase-tab" data-fmt="wazuh">Wazuh XML</button>
-      </div>
-      <div class="showcase-panels">
-        <div class="showcase-panel active" data-fmt="sigma">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>title: LSASS Memory Access — Credential Dumping
-id: scw-showcase-cred-001
-status: stable
-level: critical
-description: |
-  Detects suspicious access to LSASS process memory — primary technique for credential harvesting on Windows endpoints.
-author: SCW Detection Vault
-date: 2025-01-15
-references:
-  - https://shimiscyberworld.com/detections/
-tags:
-  - attack.credential_access
-  - attack.t1003.001
-logsource:
-  category: process_creation
-detection:
-  selection:
-    CommandLine|contains:
-      - 'lsass'
-      - 'procdump'
-      - 'minidump'
-      - 'sekurlsa'
-      - 'comsvcs'
-  filter:
-    Image|endswith:
-      - '\wmiprvse.exe'
-      - '\taskmgr.exe'
-      - '\MsMpEng.exe'
-  condition: selection and not filter
-falsepositives:
-  - Legitimate administrative activity</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="splunk">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>index=windows sourcetype=sysmon EventCode=10
-  TargetImage="*\\lsass.exe"
-  (GrantedAccess="0x1010" OR GrantedAccess="0x1038"
-   OR GrantedAccess="0x1fffff")
-  NOT (SourceImage="*\\wmiprvse.exe"
-   OR SourceImage="*\\taskmgr.exe"
-   OR SourceImage="*\\MsMpEng.exe")
-| table _time host user SourceImage GrantedAccess</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="kql">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>DeviceEvents
-| where ActionType == "OpenProcessApiCall"
-| where FileName =~ "lsass.exe"
-| where InitiatingProcessFileName !in~
-    ("wmiprvse.exe","taskmgr.exe","MsMpEng.exe")
-| project Timestamp, DeviceName,
-    InitiatingProcessFileName,
-    InitiatingProcessCommandLine</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="elastic">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>winlog.event_data.TargetImage:*\\lsass.exe AND
-winlog.event_data.GrantedAccess:(
-  "0x1010" OR "0x1038" OR "0x1fffff")
-AND NOT process.executable:(
-  *\\wmiprvse.exe OR *\\taskmgr.exe
-  OR *\\MsMpEng.exe)</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="qradar">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>SELECT DATEFORMAT(starttime,'yyyy-MM-dd HH:mm') AS date,
-  sourceip, "SourceImage", "TargetImage", "GrantedAccess"
-FROM events
-WHERE "TargetImage" ILIKE '%\lsass.exe'
-  AND "GrantedAccess" IN ('0x1010','0x1038','0x1fffff')
-  AND "SourceImage" NOT ILIKE '%\wmiprvse.exe'
-  AND "SourceImage" NOT ILIKE '%\taskmgr.exe'
-  AND "SourceImage" NOT ILIKE '%\MsMpEng.exe'</code></pre>
-        </div>
-        <div class="showcase-panel" data-fmt="wazuh">
-          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
-          <pre><code>&lt;rule id="100201" level="14"&gt;
-  &lt;if_group&gt;sysmon_event10&lt;/if_group&gt;
-  &lt;field name="win.eventdata.targetImage" type="pcre2"&gt;
-    (?i)\\lsass\.exe$&lt;/field&gt;
-  &lt;field name="win.eventdata.grantedAccess" type="pcre2"&gt;
-    (0x1010|0x1038|0x1fffff)&lt;/field&gt;
-  &lt;description&gt;LSASS Memory Access — Credential Dumping&lt;/description&gt;
-  &lt;mitre&gt;
-    &lt;id&gt;T1003.001&lt;/id&gt;
-  &lt;/mitre&gt;
-  &lt;group&gt;sysmon,credential_access,&lt;/group&gt;
-&lt;/rule&gt;</code></pre>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bot CTA after showcase -->
-  <div class="cs-cta__box" style="background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0,200,255,0.05) 100%); border-left: 3px solid var(--accent); margin-top: 1.5rem; padding: 1.25rem 1.5rem;">
-    <h3 style="margin-top:0;">🔎 Get this for every breach — automatically</h3>
-    <p style="margin-bottom:0.75rem;">The Intel Bot generates detection rules for <strong>every breach we track</strong> and converts them to all 6 SIEM formats instantly. Type <code>/detect</code> to get started.</p>
-    <div class="cs-cta__actions">
-      <a href="https://t.me/Shimiscyberworldbot?start=detect" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Open Intel Bot →</a>
-      <span style="color: var(--text-muted); font-size: 0.85rem;">Free: Sigma YAML · Full SIEM pack via Bot · Included with Pro/Elite</span>
-    </div>
-  </div>
-</section>
-
-<hr class="section-break">
 
 <!-- Stats bar -->
 <section class="dl-stats reveal">
@@ -350,9 +94,10 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
   <!-- Rules Grid -->
   <div class="toolkit__grid" id="dlGrid">
     {% for rule in site.data.detections.rules %}
-    <div class="tool-card dl-rule reveal" data-category="{{ rule.category | slugify }}" data-platform="{{ rule.platform | slugify }}" data-name="{{ rule.name | downcase }}" data-tags="{{ rule.tags | join: ' ' | downcase }}" data-mitre="{{ rule.mitre | downcase }}">
+    <div class="tool-card dl-rule reveal{% if rule.showcase %} dl-rule--showcase{% endif %}" data-category="{{ rule.category | slugify }}" data-platform="{{ rule.platform | slugify }}" data-name="{{ rule.name | downcase }}" data-tags="{{ rule.tags | join: ' ' | downcase }}" data-mitre="{{ rule.mitre | downcase }}">
       <div class="tool-card__head">
         <h4>{{ rule.name }}</h4>
+        {% if rule.showcase %}<span class="dl-breach-badge" style="background:rgba(0,200,255,.12);color:var(--accent);border:1px solid rgba(0,200,255,.25);">SIEM Preview</span>{% endif %}
       </div>
       <p class="community-card__tagline">{{ rule.mitre }} — {{ rule.mitre_name }}</p>
       <p>{{ rule.description }}</p>
@@ -366,12 +111,54 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
       </div>
       {% endif %}
 
+      {% if rule.showcase %}
+      <!-- Showcase: full SIEM tabs -->
+      <div class="showcase-tabs">
+        <button class="showcase-tab active" data-fmt="sigma">Sigma</button>
+        <button class="showcase-tab" data-fmt="splunk">Splunk SPL</button>
+        <button class="showcase-tab" data-fmt="kql">Sentinel KQL</button>
+        <button class="showcase-tab" data-fmt="elastic">Elastic</button>
+        <button class="showcase-tab" data-fmt="qradar">QRadar AQL</button>
+        <button class="showcase-tab" data-fmt="wazuh">Wazuh XML</button>
+      </div>
+      <div class="showcase-panels">
+        <div class="showcase-panel active" data-fmt="sigma">
+          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
+          <pre><code>{{ rule.query | strip | xml_escape }}</code></pre>
+        </div>
+        <div class="showcase-panel" data-fmt="splunk">
+          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
+          <pre><code>{{ rule.siem_splunk | strip | xml_escape }}</code></pre>
+        </div>
+        <div class="showcase-panel" data-fmt="kql">
+          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
+          <pre><code>{{ rule.siem_kql | strip | xml_escape }}</code></pre>
+        </div>
+        <div class="showcase-panel" data-fmt="elastic">
+          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
+          <pre><code>{{ rule.siem_elastic | strip | xml_escape }}</code></pre>
+        </div>
+        <div class="showcase-panel" data-fmt="qradar">
+          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
+          <pre><code>{{ rule.siem_qradar | strip | xml_escape }}</code></pre>
+        </div>
+        <div class="showcase-panel" data-fmt="wazuh">
+          <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
+          <pre><code>{{ rule.siem_wazuh | strip | xml_escape }}</code></pre>
+        </div>
+      </div>
+      <div class="dl-rule__export-cta">
+        <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">
+          <span class="dl-export-icon">⚡</span> Get this for every breach — <code>/detect</code> in the Intel Bot
+        </a>
+      </div>
+      {% else %}
+      <!-- Standard rule: show own format, others locked -->
       <div class="dl-rule__code">
         <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
         <pre><code>{{ rule.query | strip | xml_escape }}</code></pre>
       </div>
 
-      <!-- SIEM format chips: current format free, others locked -->
       <div class="sigma-siem-locked sigma-siem-locked--static">
         {% assign plat_slug = rule.platform | downcase %}
         {% if plat_slug contains "sigma" %}<span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>{% else %}<span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sigma</span>{% endif %}
@@ -386,6 +173,7 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
           <span class="dl-export-icon">⚡</span> Export to all 6 SIEM formats instantly — try <code>/detect</code>
         </a>
       </div>
+      {% endif %}
 
       {% if rule.notes %}
       <p class="dl-rule__notes"><strong><span class="scw-icon" data-icon="zap"></span> Note:</strong> {{ rule.notes }}</p>

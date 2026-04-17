@@ -30,6 +30,185 @@ severity_levels:
 
 rules:
   # ══════════════════════════════════════════════════════════
+  # SHOWCASE — these 2 rules display full SIEM tabs on the site
+  # ══════════════════════════════════════════════════════════
+  - name: "Suspicious PowerShell Download Cradle"
+    description: "Detects PowerShell download cradles used in malware delivery — Invoke-WebRequest, Net.WebClient, and BitsTransfer patterns."
+    category: "Execution"
+    platform: "Sigma"
+    mitre: "T1059.001"
+    mitre_name: "Command and Scripting Interpreter: PowerShell"
+    severity: "high"
+    showcase: true
+    query: |
+      title: Suspicious PowerShell Download Cradle
+      id: scw-showcase-exec-001
+      status: stable
+      level: high
+      description: |
+        Detects PowerShell download cradles used in malware delivery — Invoke-WebRequest, Net.WebClient, and BitsTransfer patterns.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.execution
+        - attack.t1059.001
+        - attack.t1105
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+          Image|endswith: '\powershell.exe'
+          CommandLine|contains:
+            - 'Invoke-WebRequest'
+            - 'Net.WebClient'
+            - 'DownloadString'
+            - 'DownloadFile'
+            - 'Start-BitsTransfer'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    siem_splunk: |
+      index=windows sourcetype=sysmon EventCode=1
+        Image="*\\powershell.exe"
+        (CommandLine="*Invoke-WebRequest*"
+         OR CommandLine="*Net.WebClient*"
+         OR CommandLine="*DownloadString*"
+         OR CommandLine="*DownloadFile*"
+         OR CommandLine="*Start-BitsTransfer*")
+      | table _time host user Image CommandLine
+    siem_kql: |
+      DeviceProcessEvents
+      | where FileName =~ "powershell.exe"
+      | where ProcessCommandLine has_any (
+          "Invoke-WebRequest", "Net.WebClient",
+          "DownloadString", "DownloadFile",
+          "Start-BitsTransfer")
+      | project Timestamp, DeviceName, AccountName,
+          ProcessCommandLine
+    siem_elastic: |
+      process.executable:*\\powershell.exe AND
+      process.command_line:(
+        *Invoke-WebRequest* OR *Net.WebClient* OR
+        *DownloadString* OR *DownloadFile* OR
+        *Start-BitsTransfer*)
+    siem_qradar: |
+      SELECT DATEFORMAT(starttime,'yyyy-MM-dd HH:mm') AS date,
+        sourceip, "Image", "CommandLine"
+      FROM events
+      WHERE "Image" ILIKE '%\powershell.exe'
+        AND ("CommandLine" ILIKE '%Invoke-WebRequest%'
+         OR "CommandLine" ILIKE '%Net.WebClient%'
+         OR "CommandLine" ILIKE '%DownloadString%'
+         OR "CommandLine" ILIKE '%DownloadFile%'
+         OR "CommandLine" ILIKE '%Start-BitsTransfer%')
+    siem_wazuh: |
+      <rule id="100200" level="12">
+        <if_group>sysmon_event1</if_group>
+        <field name="win.eventdata.image" type="pcre2">
+          (?i)\\powershell\.exe$</field>
+        <field name="win.eventdata.commandLine" type="pcre2">
+          (?i)(Invoke-WebRequest|Net\.WebClient|DownloadString|DownloadFile|Start-BitsTransfer)</field>
+        <description>Suspicious PowerShell Download Cradle</description>
+        <mitre>
+          <id>T1059.001</id>
+          <id>T1105</id>
+        </mitre>
+        <group>sysmon,process_creation,</group>
+      </rule>
+    tags: [powershell, download-cradle, malware-delivery, execution]
+
+  - name: "LSASS Memory Access — Credential Dumping"
+    description: "Detects suspicious access to LSASS process memory — primary technique for credential harvesting on Windows endpoints."
+    category: "Credential Access"
+    platform: "Sigma"
+    mitre: "T1003.001"
+    mitre_name: "OS Credential Dumping: LSASS Memory"
+    severity: "critical"
+    showcase: true
+    query: |
+      title: LSASS Memory Access — Credential Dumping
+      id: scw-showcase-cred-001
+      status: stable
+      level: critical
+      description: |
+        Detects suspicious access to LSASS process memory — primary technique for credential harvesting on Windows endpoints.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.credential_access
+        - attack.t1003.001
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+          CommandLine|contains:
+            - 'lsass'
+            - 'procdump'
+            - 'minidump'
+            - 'sekurlsa'
+            - 'comsvcs'
+        filter:
+          Image|endswith:
+            - '\wmiprvse.exe'
+            - '\taskmgr.exe'
+            - '\MsMpEng.exe'
+        condition: selection and not filter
+      falsepositives:
+        - Legitimate administrative activity
+    siem_splunk: |
+      index=windows sourcetype=sysmon EventCode=10
+        TargetImage="*\\lsass.exe"
+        (GrantedAccess="0x1010" OR GrantedAccess="0x1038"
+         OR GrantedAccess="0x1fffff")
+        NOT (SourceImage="*\\wmiprvse.exe"
+         OR SourceImage="*\\taskmgr.exe"
+         OR SourceImage="*\\MsMpEng.exe")
+      | table _time host user SourceImage GrantedAccess
+    siem_kql: |
+      DeviceEvents
+      | where ActionType == "OpenProcessApiCall"
+      | where FileName =~ "lsass.exe"
+      | where InitiatingProcessFileName !in~
+          ("wmiprvse.exe","taskmgr.exe","MsMpEng.exe")
+      | project Timestamp, DeviceName,
+          InitiatingProcessFileName,
+          InitiatingProcessCommandLine
+    siem_elastic: |
+      winlog.event_data.TargetImage:*\\lsass.exe AND
+      winlog.event_data.GrantedAccess:(
+        "0x1010" OR "0x1038" OR "0x1fffff")
+      AND NOT process.executable:(
+        *\\wmiprvse.exe OR *\\taskmgr.exe
+        OR *\\MsMpEng.exe)
+    siem_qradar: |
+      SELECT DATEFORMAT(starttime,'yyyy-MM-dd HH:mm') AS date,
+        sourceip, "SourceImage", "TargetImage", "GrantedAccess"
+      FROM events
+      WHERE "TargetImage" ILIKE '%\lsass.exe'
+        AND "GrantedAccess" IN ('0x1010','0x1038','0x1fffff')
+        AND "SourceImage" NOT ILIKE '%\wmiprvse.exe'
+        AND "SourceImage" NOT ILIKE '%\taskmgr.exe'
+        AND "SourceImage" NOT ILIKE '%\MsMpEng.exe'
+    siem_wazuh: |
+      <rule id="100201" level="14">
+        <if_group>sysmon_event10</if_group>
+        <field name="win.eventdata.targetImage" type="pcre2">
+          (?i)\\lsass\.exe$</field>
+        <field name="win.eventdata.grantedAccess" type="pcre2">
+          (0x1010|0x1038|0x1fffff)</field>
+        <description>LSASS Memory Access — Credential Dumping</description>
+        <mitre>
+          <id>T1003.001</id>
+        </mitre>
+        <group>sysmon,credential_access,</group>
+      </rule>
+    tags: [lsass, credential-dumping, mimikatz, procdump]
+
+  # ══════════════════════════════════════════════════════════
   # BRUTE FORCE
   # ══════════════════════════════════════════════════════════
   - name: "Brute Force – Failed Logons Spike"
