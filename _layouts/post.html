@@ -311,7 +311,7 @@ layout: default
     {% include ad-slot.html type="adsense" slot="post-mid" %}
 
     {% comment %}── Attribution & Disclaimer ──{% endcomment %}
-    {% if page.curated and page.ai_rewritten != true %}
+    {% if page.curated %}
     <details class="post-attribution">
       <summary class="post-attribution__toggle">Source &amp; Attribution</summary>
       <div class="post-attribution__content">
@@ -323,7 +323,11 @@ layout: default
           <tr><td>Published</td><td>{{ page.date | date: "%B %d, %Y at %H:%M UTC" }}</td></tr>
           {% if page.source_url %}<tr><td>Original Link</td><td><a href="{{ page.source_url }}" target="_blank" rel="noopener">{{ page.source_url | truncate: 60 }}</a></td></tr>{% endif %}
         </table>
+        {% if page.ai_rewritten %}
+        <p class="post-attribution__disclaimer">This content was <strong>AI-rewritten and enriched</strong> by Shimi's Cyber World based on the original source. All intellectual property rights remain with the original author.</p>
+        {% else %}
         <p class="post-attribution__disclaimer">This content was <strong>curated and summarized</strong> by Shimi's Cyber World for informational purposes. It is not copied or republished in full. All intellectual property rights remain with the original author and source.</p>
+        {% endif %}
         <p class="post-attribution__disclaimer">Believe this infringes your rights? <a href="{{ '/terms/' | relative_url }}#8-intellectual-property--takedown-requests">Submit a takedown request</a>.</p>
       </div>
     </details>

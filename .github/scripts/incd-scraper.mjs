@@ -583,7 +583,7 @@ function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
   }
 
   const fullBody =
-    body + attachmentSection + `\n\n*Source: [Israel National Cyber Directorate (INCD)](${sourceUrl})*`;
+    body + attachmentSection;
 
   const slug = pub.url.split("/").pop() || `incd-${Date.now()}`;
   const msgId = slug.replace(/[^0-9]/g, "") || String(Date.now());
