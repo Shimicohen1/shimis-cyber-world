@@ -25,49 +25,48 @@ identity:
     text: About SCW
     url: /about/
 quick_signals:
-  - title: Evolving Phishing-as-a-Service Platforms Target Executives
-    text: New 'VENOM' platform targets C-suite Microsoft logins, highlighting sophisticated PhaaS evolution.
-    detail: The emergence of advanced Phishing-as-a-Service (PhaaS) platforms like VENOM signifies a growing trend of highly targeted attacks against senior executives. These platforms offer sophisticated tools for credential harvesting, demanding increased vigilance in executive account security and advanced threat detection.
+  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
+    text: New 'VENOM' platform targets C-suite Microsoft logins, indicating advanced PhaaS operations.
+    detail: The VENOM platform's focus on high-value targets like C-suite executives highlights the increasing sophistication of phishing-as-a-service operations. Professionals should enhance endpoint detection and user training, especially for privileged accounts, to counter these evolving threats.
     link: https://owasp.org/www-community/vulnerabilities/Phishing
     link_label: OWASP Phishing
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - credential-theft
-  - title: Zero-Day Exploits Persist Despite Disclosure Efforts
-    text: New zero-days in Windows and Adobe Reader exploited in the wild, stressing prompt patching.
-    detail: The active exploitation of zero-day vulnerabilities in major software like Windows ('BlueHammer') and Adobe Reader underscores the persistent challenge of timely patching. Organizations must prioritize rapid deployment of security updates and investigate potential compromises when zero-days are publicly disclosed.
-    link: https://www.cisa.gov/news-events/advisories/aa22-321a
-    link_label: CISA Known Exploited Vulnerabilities
+      - microsoft
+  - title: Zero-Day Exploits Target Widely Used Software
+    text: Active exploitation of zero-days in Adobe Reader and Windows OS reported, emphasizing rapid patching needs.
+    detail: The active exploitation of zero-day vulnerabilities in Adobe Reader and Windows OS (BlueHammer) underscores the critical need for prompt patching and robust vulnerability management. Organizations must prioritize timely updates and monitor for indicators of compromise related to these critical flaws.
+    link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
+    link_label: CISA KEV Catalog
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-      - patch-management
-  - title: Supply Chain Attacks Escalate via Compromised Software Updates
-    text: Smart Slider plugin hijacked to distribute backdoored WordPress/Joomla versions.
-    detail: The hijacking of legitimate software update mechanisms, as seen with the Smart Slider plugin, represents a significant supply chain risk. This tactic bypasses many traditional security controls, necessitating robust software integrity verification and diligent monitoring of third-party component updates.
-    link: https://owasp.org/www-project-top-10-2021/R7_2021-Identifying_and_Managing_Software_Supply_Chain_Risks/
-    link_label: OWASP Supply Chain Risks
+  - title: IoT and Mobile SDKs Become Prime Attack Vectors
+    text: New botnets target IoT devices, while Android SDK flaws expose millions of wallets.
+    detail: The emergence of botnets like Masjesu targeting IoT devices and critical vulnerabilities in Android SDKs (intent redirection) signal a growing threat landscape for connected devices and mobile applications. Secure development practices and vigilant monitoring of IoT endpoints are paramount.
+    link: https://www.mitre.org/capabilities/attack-and-tactic-techniques/mitre-attack
+    link_label: MITRE ATT&CK Framework
+    badge: signal
+    tags:
+      - threat-intel
+      - malware
+      - iot
+      - android
+  - title: Supply Chain Attacks Leverage Trusted Update Mechanisms
+    text: Smart Slider plugin updates hijacked to distribute backdoored WordPress/Joomla plugins.
+    detail: The hijacking of Smart Slider's update mechanism for WordPress and Joomla demonstrates a significant supply chain attack vector. Organizations must implement stricter controls over software updates and verify the integrity of plugin sources to mitigate risks from compromised third-party components.
+    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Attacks
+    link_label: OWASP Supply Chain Attacks
     badge: signal
     tags:
       - threat-intel
       - supply-chain
       - malware
-      - web-application-security
-  - title: AI Guardrails Under Fire from Prompt Injection Tactics
-    text: Apple Intelligence guardrails breached, demonstrating AI prompt injection risks.
-    detail: The successful bypass of AI guardrails in systems like Apple Intelligence highlights the vulnerability of AI models to prompt injection attacks. This emergent threat requires continuous refinement of AI security protocols and awareness of adversarial AI techniques to protect sensitive functionalities.
-    link: https://owasp.org/www-project-top-10-ai-security/
-    link_label: OWASP Top 10 AI Security
-    badge: signal
-    tags:
-      - threat-intel
-      - ai-security
-      - prompt-injection
-      - emerging-threats
+      - wordpress
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
