@@ -81,11 +81,6 @@ tools_teaser:
     url: https://www.hackthebox.com/
     status: recommended
     sponsored: true
-  - name: Burp Suite
-    description: Leading web application security testing toolkit.
-    url: https://portswigger.net/burp
-    status: essential
-    sponsored: true
   - name: NordVPN
     description: Fast, secure VPN with threat protection for operators.
     url: https://www.anrdoezrs.net/click-101720928-13756265
@@ -101,10 +96,6 @@ tools_teaser:
     url: https://www.kqzyfj.com/click-101720928-15438560
     status: recommended
     sponsored: true
-  - name: Nmap
-    description: Network discovery and security auditing. The operator's first move.
-    url: https://nmap.org/
-    status: essential
   - name: Proton Pass
     description: Open-source encrypted passwords with built-in 2FA and aliases.
     url: https://www.kqzyfj.com/click-101720928-15831601

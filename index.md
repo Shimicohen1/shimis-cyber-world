@@ -13,12 +13,14 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
 <section class="identity">
   <div class="container">
     <div class="identity__inner reveal">
-      <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="identity__logo" width="80" height="80" fetchpriority="high">
-      <div class="identity__text">
-        <h1 class="identity__title">{{ site.data.homepage.identity.title }}</h1>
-        <p class="identity__tagline">{{ site.data.homepage.identity.tagline }}</p>
-        <a href="{{ site.data.homepage.identity.cta_link.url | relative_url }}" class="identity__link">{{ site.data.homepage.identity.cta_link.text }}</a>
+      <div class="identity__left">
+        <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="identity__logo" width="80" height="80" fetchpriority="high">
+        <div class="identity__text">
+          <h1 class="identity__title">{{ site.data.homepage.identity.title }}</h1>
+          <p class="identity__tagline">{{ site.data.homepage.identity.tagline }}</p>
+        </div>
       </div>
+      <a href="{{ site.data.homepage.identity.cta_link.url | relative_url }}" class="identity__link">{{ site.data.homepage.identity.cta_link.text }}</a>
     </div>
   </div>
 </section>
@@ -163,39 +165,8 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
 
 <hr class="section-break">
 
-<!-- QUICK SIGNALS -->
-<section class="signals">
-  <div class="container">
-    <div class="feed__header">
-      <h2 class="feed__title"><span class="label label--acid">SIGNALS</span> &nbsp;Quick Intel</h2>
-    </div>
-    <div class="signals__grid">
-      {% for signal in site.data.homepage.quick_signals %}
-      <div class="signal-card reveal" tabindex="0">
-        <div class="signal-card__top">
-          <span class="badge badge--{{ signal.badge }}">{{ signal.badge }}</span>
-          <span class="signal-card__toggle">&#9660;</span>
-        </div>
-        <h4>{{ signal.title }}</h4>
-        <p class="signal-card__summary">{{ signal.text }}</p>
-        <div class="signal-card__detail">
-          <p>{{ signal.detail }}</p>
-          {% if signal.link %}
-          <a href="{{ signal.link }}" class="signal-card__link" target="_blank" rel="noopener noreferrer">{{ signal.link_label | default: 'Learn more' }} &rarr;</a>
-          {% endif %}
-        </div>
-        {% if signal.tags %}
-        <div class="signal-card__tags">
-          {% for tag in signal.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
-        </div>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<hr class="section-break">
+<!-- AdSense slot — between CVEs and Vault (activates when approved) -->
+{% include ad-slot.html type="adsense" slot="home-mid" %}
 
 <!-- VAULT — RECENTLY ADDED -->
 <section class="vault">
@@ -233,16 +204,22 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
 
 <hr class="section-break">
 
-<!-- TOOLS TEASER -->
+<!-- TOOLS TEASER — 4 rotating sponsored tools -->
 <section class="toolkit">
   <div class="container">
     <div class="feed__header">
       <h2 class="feed__title"><span class="label label--lime">TOOLKIT</span> &nbsp;Field Tools</h2>
       <a href="{{ '/tools/' | relative_url }}" class="feed__link">Full Toolkit &rarr;</a>
     </div>
+    {% assign sponsored_tools = site.data.homepage.tools_teaser | where: "sponsored", true %}
+    {% assign tool_seed = "now" | date: "%j" | plus: 0 %}
+    {% assign tool_count = sponsored_tools | size %}
+    {% assign tool_offset = tool_seed | modulo: tool_count %}
     <div class="toolkit__grid">
-      {% for tool in site.data.homepage.tools_teaser %}
-      <a href="{{ tool.url }}" target="_blank" rel="noopener noreferrer" class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %} reveal" data-track="{% if tool.sponsored %}affiliate{% else %}tool{% endif %}">
+      {% for i in (0..3) %}
+        {% assign idx = i | plus: tool_offset | modulo: tool_count %}
+        {% assign tool = sponsored_tools[idx] %}
+      <a href="{{ tool.url }}" target="_blank" rel="noopener noreferrer" class="tool-card tool-card--sponsored reveal" data-track="affiliate">
         <div class="tool-card__head">
           <h4>{{ tool.name }}</h4>
           {% if tool.status == "essential" %}
@@ -260,43 +237,11 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
 
 <hr class="section-break">
 
-<!-- MANIFESTO -->
-<section class="scw-manifesto">
+<!-- MANIFESTO — compact -->
+<section class="scw-manifesto scw-manifesto--compact">
   <div class="container">
     <div class="scw-manifesto-inner reveal">
-
-      <div class="manifesto-line">
-        Where machines detect and humans decide.
-      </div>
-
-      <div class="manifesto-line">
-        AI-driven threat intelligence meets real operator experience —
-        creating a security layer that doesn't exist anywhere else.
-      </div>
-
-      <div class="manifesto-grid">
-        <div class="manifesto-item">AI-curated threat feeds</div>
-        <div class="manifesto-item">human-verified intelligence</div>
-        <div class="manifesto-item">operator-grade tools</div>
-        <div class="manifesto-item">real-time CVE tracking</div>
-        <div class="manifesto-item">what no other platform delivers</div>
-      </div>
-
-      <div class="manifesto-final">
-        Intelligence at machine speed. Judgment at human depth.
-      </div>
-
-      <div class="manifesto-tag">
-        Built from the community. Amplified by AI. Growing into much more.
-      </div>
-
-      <a href="{{ '/about/' | relative_url }}" class="manifesto-link">Read the full manifesto &rarr;</a>
-
-      <div class="founder-sig">
-        <img src="{{ '/assets/img/logos/logo.jpg' | relative_url }}" alt="SCW" class="founder-sig__logo">
-        <span class="founder-sig__text">Founded by Shimi &middot; Powered by AI &amp; community intelligence</span>
-      </div>
-
+      <p class="manifesto-oneliner">Where machines detect and humans decide. <a href="{{ '/about/' | relative_url }}" class="manifesto-link">Read the manifesto &rarr;</a></p>
     </div>
   </div>
 </section>
