@@ -17,7 +17,11 @@ layout: default
 
     {% comment %}── Cover image ──{% endcomment %}
     <div class="post-image post-image--cover">
+      {% if page.image %}
+      <img src="{% if page.image contains '://' %}{{ page.image }}{% else %}{{ page.image | relative_url }}{% endif %}" alt="{{ page.title | escape }}" loading="eager" referrerpolicy="no-referrer">
+      {% else %}
       <img src="{{ '/assets/images/covers/threat-intel.svg' | relative_url }}" alt="Daily Security Digest" loading="eager">
+      {% endif %}
     </div>
 
     {% comment %}── Curated Intel (first) ──{% endcomment %}
