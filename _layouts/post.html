@@ -192,25 +192,18 @@ layout: default
           <pre><code class="sigma-yaml-decoded" data-b64="{{ page.sigma_rules.preview_yaml_b64 }}"></code></pre>
         </div>
         {% endif %}
-        <div class="sigma-gated">
-          <div class="sigma-gated__formats">
-            <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">Splunk SPL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">Sentinel KQL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">Elastic</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">QRadar AQL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">Wazuh</span>
-          </div>
+        <div class="sigma-export-strip">
+          <span class="sigma-export-strip__free">✓ Sigma YAML free</span>
+          <span class="sigma-export-strip__sep">·</span>
+          <span class="sigma-export-strip__locked">5 SIEM formats via Bot</span>
+          <a href="{{ detect_link }}" class="sigma-export-strip__btn" target="_blank" rel="noopener">Export →</a>
         </div>
       </div>
       {% endif %}
-      <div class="post-sigma-rules__cta">
-        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Export to All SIEM Formats →</a>
-      </div>
 
       {% else %}
       {% comment %}── AGED POST (14+ days): Sigma YAML visible, SIEM formats locked ──{% endcomment %}
-      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} detection rules mapped to MITRE ATT&CK. Free Sigma YAML below — export to any SIEM format via the Intel Bot.</p>
+      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} detection rules mapped to MITRE ATT&CK. Free Sigma YAML below.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -226,21 +219,14 @@ layout: default
           <pre><code class="sigma-yaml-decoded" data-b64="{{ page.sigma_rules.preview_yaml_b64 }}"></code></pre>
         </div>
         {% endif %}
-        <div class="sigma-gated">
-          <div class="sigma-gated__formats">
-            <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">Splunk SPL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">Sentinel KQL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">Elastic</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">QRadar AQL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">Wazuh</span>
-          </div>
+        <div class="sigma-export-strip">
+          <span class="sigma-export-strip__free">✓ Sigma YAML free</span>
+          <span class="sigma-export-strip__sep">·</span>
+          <span class="sigma-export-strip__locked">5 SIEM formats via Bot</span>
+          <a href="{{ detect_link }}" class="sigma-export-strip__btn" target="_blank" rel="noopener">Export →</a>
         </div>
       </div>
       {% endif %}
-      <div class="post-sigma-rules__cta">
-        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Export to All SIEM Formats →</a>
-      </div>
       {% endif %}
     </div>
     {% endif %}

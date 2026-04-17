@@ -424,14 +424,11 @@ WHERE "TargetImage" ILIKE '%\lsass.exe'
           <pre><code class="dl-siem-code"></code></pre>
         </div>
         {% endif %}
-        <div class="sigma-siem-locked sigma-siem-locked--vault">
-          <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">Splunk SPL</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">Sentinel KQL</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">Elastic</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">QRadar AQL</span>
-          <span class="sigma-gated__chip sigma-gated__chip--locked">Wazuh</span>
-          <a href="https://t.me/Shimiscyberworldbot?start=detect" class="sigma-gated__unlock" target="_blank" rel="noopener">Unlock SIEM Formats →</a>
+        <div class="sigma-export-strip">
+          <span class="sigma-export-strip__free">✓ Sigma YAML free</span>
+          <span class="sigma-export-strip__sep">·</span>
+          <span class="sigma-export-strip__locked">5 SIEM formats via Bot</span>
+          <a href="https://t.me/Shimiscyberworldbot?start=detect" class="sigma-export-strip__btn" target="_blank" rel="noopener">Export →</a>
         </div>
         {% if post.sigma_rules.paid_count and post.sigma_rules.paid_count > 0 %}
         <p class="dl-rule__notes"><strong>🛡️</strong> {{ post.sigma_rules.paid_count }} more rules — type <code>/detect</code> in <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">Intel Bot</a></p>
