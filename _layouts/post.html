@@ -176,7 +176,7 @@ layout: default
 
       {% if post_age < fourteen_days %}
       {% comment %}── FRESH POST: free Sigma YAML visible, SIEM conversions → bot ──{% endcomment %}
-      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} auto-generated detection rules for this incident, mapped to MITRE ATT&CK. Available in Sigma, Splunk SPL, Sentinel KQL, Elastic Lucene, QRadar AQL, and Wazuh.</p>
+      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} detection rules auto-generated for this incident, mapped to MITRE ATT&CK. Sigma YAML is free — export to any SIEM format via the Intel Bot.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -195,24 +195,22 @@ layout: default
         <div class="sigma-gated">
           <div class="sigma-gated__formats">
             <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">Splunk SPL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">Sentinel KQL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">Elastic</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">QRadar AQL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">Wazuh</span>
           </div>
-          <p class="sigma-gated__text">Want this in your SIEM's native format? Get Splunk SPL, Sentinel KQL, Elastic, QRadar AQL, or Wazuh — ready to paste.</p>
         </div>
       </div>
       {% endif %}
       <div class="post-sigma-rules__cta">
-        <p><strong>{{ page.sigma_rules.count }} Sigma rules</strong> mapped to the ATT&CK techniques from this breach — pick your SIEM and get a ready-to-paste query.</p>
-        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get All SIEM Formats →</a>
+        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Export to All SIEM Formats →</a>
       </div>
 
       {% else %}
       {% comment %}── AGED POST (14+ days): Sigma YAML visible, SIEM formats locked ──{% endcomment %}
-      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} auto-generated detection rules mapped to MITRE ATT&CK. Free Sigma YAML below — get the full SIEM pack via the Intel Bot.</p>
+      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} detection rules mapped to MITRE ATT&CK. Free Sigma YAML below — export to any SIEM format via the Intel Bot.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -231,19 +229,17 @@ layout: default
         <div class="sigma-gated">
           <div class="sigma-gated__formats">
             <span class="sigma-gated__chip sigma-gated__chip--free">✓ Sigma</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Splunk SPL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Sentinel KQL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Elastic</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 QRadar AQL</span>
-            <span class="sigma-gated__chip sigma-gated__chip--locked">🔒 Wazuh</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">Splunk SPL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">Sentinel KQL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">Elastic</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">QRadar AQL</span>
+            <span class="sigma-gated__chip sigma-gated__chip--locked">Wazuh</span>
           </div>
-          <p class="sigma-gated__text">All SIEM formats available in the Intel Bot — copy, paste, detect.</p>
         </div>
       </div>
       {% endif %}
       <div class="post-sigma-rules__cta">
-        <p>Get these {{ page.sigma_rules.count }} rules converted to Splunk SPL, Sentinel KQL, Elastic, QRadar AQL, or Wazuh — ready to paste into your SIEM.</p>
-        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Get All SIEM Formats →</a>
+        <a href="{{ detect_link }}" class="btn btn--accent btn--sm" target="_blank" rel="noopener">Export to All SIEM Formats →</a>
       </div>
       {% endif %}
     </div>
