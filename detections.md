@@ -85,12 +85,21 @@ permalink: /detections/
         <div class="showcase-panel active" data-fmt="sigma">
           <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
           <pre><code>title: Suspicious PowerShell Download Cradle
+id: scw-showcase-exec-001
 status: stable
 level: high
-description: Detects PowerShell download cradles used in malware delivery
+description: |
+  Detects PowerShell download cradles used in malware delivery — Invoke-WebRequest, Net.WebClient, and BitsTransfer patterns.
+author: SCW Detection Vault
+date: 2025-01-15
+references:
+  - https://shimiscyberworld.com/detections/
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.t1105
 logsource:
   category: process_creation
-  product: windows
 detection:
   selection:
     Image|endswith: '\powershell.exe'
@@ -101,10 +110,8 @@ detection:
       - 'DownloadFile'
       - 'Start-BitsTransfer'
   condition: selection
-tags:
-  - attack.execution
-  - attack.t1059.001
-  - attack.t1105</code></pre>
+falsepositives:
+  - Legitimate administrative activity</code></pre>
         </div>
         <div class="showcase-panel" data-fmt="splunk">
           <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
@@ -188,28 +195,36 @@ WHERE "Image" ILIKE '%\powershell.exe'
         <div class="showcase-panel active" data-fmt="sigma">
           <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>
           <pre><code>title: LSASS Memory Access — Credential Dumping
+id: scw-showcase-cred-001
 status: stable
 level: critical
-description: Detects suspicious access to LSASS process memory
+description: |
+  Detects suspicious access to LSASS process memory — primary technique for credential harvesting on Windows endpoints.
+author: SCW Detection Vault
+date: 2025-01-15
+references:
+  - https://shimiscyberworld.com/detections/
+tags:
+  - attack.credential_access
+  - attack.t1003.001
 logsource:
-  category: process_access
-  product: windows
+  category: process_creation
 detection:
   selection:
-    TargetImage|endswith: '\lsass.exe'
-    GrantedAccess|contains:
-      - '0x1010'
-      - '0x1038'
-      - '0x1fffff'
+    CommandLine|contains:
+      - 'lsass'
+      - 'procdump'
+      - 'minidump'
+      - 'sekurlsa'
+      - 'comsvcs'
   filter:
-    SourceImage|endswith:
+    Image|endswith:
       - '\wmiprvse.exe'
       - '\taskmgr.exe'
       - '\MsMpEng.exe'
   condition: selection and not filter
-tags:
-  - attack.credential_access
-  - attack.t1003.001</code></pre>
+falsepositives:
+  - Legitimate administrative activity</code></pre>
         </div>
         <div class="showcase-panel" data-fmt="splunk">
           <button class="dl-copy-btn" title="Copy"><span class="scw-icon" data-icon="clipboard"></span></button>

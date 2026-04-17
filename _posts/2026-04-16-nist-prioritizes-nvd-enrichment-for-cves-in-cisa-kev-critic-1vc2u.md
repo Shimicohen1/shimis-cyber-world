@@ -38,6 +38,15 @@ mitre_attack:
     name: "Exploit Public-Facing Application"
     tactic: "Initial Access"
     url: "https://attack.mitre.org/techniques/T1190/"
+sigma_rules:
+  count: 1
+  free_count: 1
+  paid_count: 0
+  preview_title: "CISA KEV Catalog - NIST NVD Prioritization - Advisory"
+  preview_level: "medium"
+  preview_technique: "T1190"
+  preview_tactic: "Initial Access"
+  preview_yaml_b64: "dGl0bGU6IENJU0EgS0VWIENhdGFsb2cgLSBOSVNUIE5WRCBQcmlvcml0aXphdGlvbiAtIEFkdmlzb3J5CmlkOiBzY3ctMjAyNi0wNC0xNi1haS0xCnN0YXR1czogZXhwZXJpbWVudGFsCmxldmVsOiBtZWRpdW0KZGVzY3JpcHRpb246IHwKICBUaGlzIHJ1bGUgZGV0ZWN0cyBhY2Nlc3MgdG8gdGhlIENJU0EgS25vd24gRXhwbG9pdGVkIFZ1bG5lcmFiaWxpdGllcyAoS0VWKSBjYXRhbG9nLCBzcGVjaWZpY2FsbHkgd2hlbiBOSVNUIE5WRCBpcyBwcmlvcml0aXppbmcgdGhlc2UgY3JpdGljYWwgQ1ZFcyBmb3IgZW5yaWNobWVudC4gVGhpcyBpbmRpY2F0ZXMgYW4gaW50ZXJlc3QgaW4gaGlnaC1pbXBhY3QgdnVsbmVyYWJpbGl0aWVzIHRoYXQgYXJlIGFjdGl2ZWx5IGJlaW5nIGV4cGxvaXRlZC4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNC0xNgpyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9wb3N0cy9uaXN0LXByaW9yaXRpemVzLW52ZC1lbnJpY2htZW50LWZvci1jdmVzLWluLWNpc2Eta2V2LWNyaXRpYy0xdmMydS8KdGFnczoKICAtIGF0dGFjay5pbml0aWFsX2FjY2VzcwogIC0gYXR0YWNrLnQxMTkwCmxvZ3NvdXJjZToKICAgIGNhdGVnb3J5OiB3ZWJzZXJ2ZXIKZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgY3MtdXJpLXF1ZXJ5fGNvbnRhaW5zOgogICAgICAgICAgLSAnY2lzYS5nb3Yva25vd24tZXhwbG9pdGVkLXZ1bG5lcmFiaWxpdGllcycKICAgICAgY3MtdXJpfGNvbnRhaW5zOgogICAgICAgICAgLSAnL3Z1bG4vZGV0YWlsLycKICAgICAgY29uZGl0aW9uOiBjcy11cmktcXVlcnkgQU5EIGNzLXVyaQpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
 why_it_matters:
   - "If your organization relies heavily on NVD for vulnerability management, understand that not every new CVE will receive the same level of detail or timely enrichment. Prioritize your scanning and patching efforts to align with CISA KEV and critical software vulnerabilities, as these will have the most comprehensive NVD data. For other CVEs, be prepared to consult vendor advisories and other intelligence sources directly."
 bot_cta_title: "Track Critical Vulnerabilities with SCW Intel Bot"

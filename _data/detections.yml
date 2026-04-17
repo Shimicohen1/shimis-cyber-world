@@ -180,10 +180,20 @@ rules:
     severity: "high"
     query: |
       title: SAM Registry Hive Export
+      id: scw-vault-cred-001
       status: stable
+      level: high
+      description: |
+        Detects attempts to export the SAM, SYSTEM, or SECURITY registry hives — used to extract local account password hashes.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.credential_access
+        - attack.t1003.002
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection:
           CommandLine|contains|all:
@@ -194,7 +204,8 @@ rules:
             - 'hklm\system'
             - 'hklm\security'
         condition: selection
-      level: high
+      falsepositives:
+        - Legitimate administrative activity
     tags: [credential-dumping, registry, SAM]
     notes: "Near-zero false positive. No legitimate reason and export SAM/SECURITY hives in production."
 
@@ -286,10 +297,20 @@ rules:
     severity: "high"
     query: |
       title: AMSI Bypass Attempt
+      id: scw-vault-evasion-001
       status: experimental
+      level: high
+      description: |
+        Detects attempts to bypass the Antimalware Scan Interface (AMSI) — used to run malicious PowerShell and .NET without detection.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.defense_evasion
+        - attack.t1562.001
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection:
           CommandLine|contains:
@@ -299,7 +320,8 @@ rules:
             - 'SetProtection(0'
             - 'Bypass.AMSI'
         condition: selection
-      level: high
+      falsepositives:
+        - Legitimate administrative activity
     tags: [amsi-bypass, evasion, powershell]
     notes: "AMSI bypass is almost always an attack precursor. Check what ran after the bypass."
 
@@ -409,21 +431,32 @@ rules:
     severity: "medium"
     query: |
       title: Admin Share Access from Non-Server
+      id: scw-vault-lateral-001
       status: stable
+      level: medium
+      description: |
+        Detects access to admin shares (C$, ADMIN$) from non-standard hosts — common for file deployment and remote execution.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.lateral_movement
+        - attack.t1021.002
       logsource:
-        product: windows
-        service: security
+        category: authentication
       detection:
         selection:
-          EventID: 5140
-          ShareName|contains:
+          EventType: 'share_access'
+          CommandLine|contains:
             - '\C$'
             - '\ADMIN$'
         filter:
-          IpAddress|startswith:
+          src_ip|startswith:
             - '127.'
         condition: selection and not filter
-      level: medium
+      falsepositives:
+        - Legitimate administrative activity
     tags: [admin-share, smb, lateral-movement]
     notes: "Baseline admin share access from IT management tools. Any access from workstations is suspicious."
 
@@ -439,16 +472,27 @@ rules:
     severity: "medium"
     query: |
       title: New Service Created via sc.exe
+      id: scw-vault-persist-001
       status: experimental
+      level: medium
+      description: |
+        Detects service creation using sc.exe — a common persistence mechanism used by attackers and malware.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.persistence
+        - attack.t1543.003
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection:
           Image|endswith: '\sc.exe'
           CommandLine|contains: 'create'
         condition: selection
-      level: medium
+      falsepositives:
+        - Legitimate administrative activity
     tags: [persistence, service, sigma]
     notes: "Filter out known deployment tools (SCCM, Intune) to reduce false positives."
 
@@ -461,10 +505,20 @@ rules:
     severity: "medium"
     query: |
       title: Scheduled Task Creation via schtasks.exe
+      id: scw-vault-persist-002
       status: stable
+      level: medium
+      description: |
+        Detects creation of scheduled tasks via command line — common persistence technique across all threat actors.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.persistence
+        - attack.t1053.005
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection:
           Image|endswith: '\schtasks.exe'
@@ -474,7 +528,8 @@ rules:
           User|contains:
             - 'SYSTEM'
         condition: selection and not filter
-      level: medium
+      falsepositives:
+        - Legitimate administrative activity
     tags: [persistence, scheduled-task, sigma]
     notes: "Filter SYSTEM-created tasks to reduce noise. Focus on tasks created by regular user accounts."
 
@@ -531,10 +586,20 @@ rules:
     severity: "medium"
     query: |
       title: File Dropped in Startup Folder
+      id: scw-vault-persist-003
       status: stable
+      level: medium
+      description: |
+        Detects files dropped in user or common Startup folders — simple but effective persistence mechanism.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.persistence
+        - attack.t1547.001
       logsource:
         category: file_event
-        product: windows
       detection:
         selection:
           TargetFilename|contains:
@@ -544,7 +609,8 @@ rules:
           Image|endswith:
             - '\explorer.exe'
         condition: selection and not filter
-      level: medium
+      falsepositives:
+        - Legitimate administrative activity
     tags: [persistence, startup, file-drop]
     notes: "Users rarely manually add files to Startup. Processes dropping files there are suspicious."
 
@@ -560,10 +626,20 @@ rules:
     severity: "high"
     query: |
       title: Token Impersonation via Known Tools
+      id: scw-vault-privesc-001
       status: experimental
+      level: high
+      description: |
+        Detects access token impersonation techniques commonly used to escalate from user to SYSTEM.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.privilege_escalation
+        - attack.t1134.001
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection:
           Image|endswith:
@@ -573,7 +649,8 @@ rules:
             - '\GodPotato.exe'
             - '\RoguePotato.exe'
         condition: selection
-      level: high
+      falsepositives:
+        - Legitimate administrative activity
     tags: [privilege-escalation, token, potato]
     notes: "Near-zero false positive rate. Detection of these tools almost always indicates compromise."
 
@@ -621,10 +698,20 @@ rules:
     severity: "high"
     query: |
       title: UAC Bypass via Auto-Elevate Binary
+      id: scw-vault-privesc-002
       status: experimental
+      level: high
+      description: |
+        Detects known UAC bypass techniques using fodhelper, eventvwr, or other auto-elevate binaries.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.privilege_escalation
+        - attack.t1548.002
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection_fodhelper:
           ParentImage|endswith: '\fodhelper.exe'
@@ -640,7 +727,8 @@ rules:
             - '\cmd.exe'
         condition: selection_fodhelper or selection_eventvwr
             or selection_computerdefaults
-      level: high
+      falsepositives:
+        - Legitimate administrative activity
     tags: [uac-bypass, privilege-escalation, evasion]
     notes: "These binaries should not spawn command interpreters. Any child process is suspicious."
 
@@ -761,10 +849,20 @@ rules:
     severity: "critical"
     query: |
       title: Shadow Copy Deletion
+      id: scw-vault-impact-001
       status: stable
+      level: critical
+      description: |
+        Detects deletion of Volume Shadow Copies — almost always a ransomware precursor to prevent recovery.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.impact
+        - attack.t1490
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection_vssadmin:
           CommandLine|contains|all:
@@ -783,7 +881,8 @@ rules:
             - 'no'
         condition: selection_vssadmin or selection_wmic
             or selection_bcdedit
-      level: critical
+      falsepositives:
+        - Legitimate administrative activity
     tags: [ransomware, shadow-copy, recovery-prevention]
     notes: "Immediate P1 escalation. Shadow copy deletion + file encryption = active ransomware. Isolate host NOW."
 
@@ -966,13 +1065,23 @@ rules:
     severity: "critical"
     query: |
       title: Cobalt Strike Named Pipe Detection
+      id: scw-vault-c2-001
       status: stable
+      level: critical
+      description: |
+        Detects named pipes commonly used by Cobalt Strike beacons for inter-process communication.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.command_and_control
+        - attack.t1570
       logsource:
-        product: windows
-        category: pipe_created
+        category: process_creation
       detection:
         selection:
-          PipeName|startswith:
+          CommandLine|contains:
             - '\MSSE-'
             - '\postex_'
             - '\postex_ssh_'
@@ -980,7 +1089,8 @@ rules:
             - '\msagent_'
             - '\interprocess_'
         condition: selection
-      level: critical
+      falsepositives:
+        - Legitimate administrative activity
     tags: [cobalt-strike, c2, named-pipe]
     notes: "Default Cobalt Strike pipe names. Sophisticated actors may rename them. Also check for malleable C2 profiles."
 
@@ -1093,10 +1203,20 @@ rules:
     severity: "medium"
     query: |
       title: AD Enumeration via net.exe
+      id: scw-vault-discovery-001
       status: stable
+      level: medium
+      description: |
+        Detects use of native Windows net commands to enumerate domain users, groups, and shares.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.discovery
+        - attack.t1087.002
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection:
           Image|endswith:
@@ -1110,7 +1230,8 @@ rules:
             - 'user /domain'
             - 'accounts /domain'
         condition: selection
-      level: medium
+      falsepositives:
+        - Legitimate administrative activity
     tags: [net-commands, ad-enumeration, discovery]
     notes: "Multiple net commands in sequence is a stronger indicator. Check if the user is IT staff."
 
@@ -1146,10 +1267,20 @@ rules:
     severity: "high"
     query: |
       title: Certutil Download or Decode
+      id: scw-vault-exec-001
       status: stable
+      level: high
+      description: |
+        Detects certutil.exe used to download files or decode payloads — a well-known living-off-the-land binary abuse technique.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.execution
+        - attack.t1105
       logsource:
         category: process_creation
-        product: windows
       detection:
         selection_download:
           Image|endswith: '\certutil.exe'
@@ -1162,7 +1293,8 @@ rules:
             - '-decode'
             - '-decodehex'
         condition: selection_download or selection_decode
-      level: high
+      falsepositives:
+        - Legitimate administrative activity
     tags: [certutil, lolbin, download, execution]
     notes: "Certutil should not be used for downloads in production. High confidence when combined with network connection."
 

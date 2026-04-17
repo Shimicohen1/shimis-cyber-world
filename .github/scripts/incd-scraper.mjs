@@ -494,6 +494,118 @@ Return ONLY valid JSON array:
 
 // ── Classification ──────────────────────────────────────
 
+// ── AI Sigma Rule Generation ────────────────────────────
+const SIGMA_SUPPORTED_LOGSOURCES = [
+  "webserver", "firewall", "process_creation", "file_event",
+  "registry_set", "image_load", "driver_load", "dns",
+  "proxy", "authentication", "file_access", "email",
+];
+const SIGMA_SUPPORTED_FIELDS = [
+  "CommandLine", "Image", "ParentImage", "TargetFilename",
+  "TargetObject", "ImageLoaded", "User", "cs-uri-query",
+  "cs-uri", "cs-method", "sc-status", "dst_domain",
+  "dst_port", "src_ip", "dst_ip", "action", "query",
+  "referer", "uri", "EventType",
+];
+
+async function generateSigmaWithAI(postData, postUrl) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return generateSigmaForIncd(postData, postUrl);
+
+  const cveId = (postData.iocs || []).find(i => /^CVE-/i.test(i?.id))?.id || "";
+  const mitreList = (postData.mitre_attack || []).map(m => `${m.id} (${m.name} — ${m.tactic})`).join(", ");
+
+  const prompt = `You are an expert Sigma rule author. Generate detection rules for this INCD advisory.
+
+## Advisory Details
+- Title: ${postData.title || ""}
+- CVE: ${cveId}
+- MITRE ATT&CK: ${mitreList}
+- Body: ${(postData.body || "").substring(0, 2000)}
+
+## CONSTRAINTS — Use ONLY these:
+Logsource categories: ${SIGMA_SUPPORTED_LOGSOURCES.join(", ")}
+Detection fields: ${SIGMA_SUPPORTED_FIELDS.join(", ")}
+Modifiers: contains, endswith, startswith, or plain match
+
+## Output (strict JSON array)
+[{"title":"...","level":"high|medium|critical","tier":"free|paid","logsource_category":"...","technique_id":"T1190","tactic":"Initial Access","detection":"selection:\\n    field|modifier:\\n        - 'value'\\n    condition: selection","description":"..."}]
+
+Generate 2-3 rules specific to this advisory. NOT generic patterns.`;
+
+  try {
+    const elapsed = Date.now() - lastGeminiCall;
+    if (elapsed < 1200) await new Promise((r) => setTimeout(r, 1200 - elapsed));
+    lastGeminiCall = Date.now();
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.3, maxOutputTokens: 4096, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
+        }),
+        signal: controller.signal,
+      }
+    );
+    clearTimeout(timer);
+
+    if (!response.ok) {
+      console.warn(`[SIGMA-AI] Gemini ${response.status} — falling back to templates`);
+      return generateSigmaForIncd(postData, postUrl);
+    }
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) return generateSigmaForIncd(postData, postUrl);
+
+    const aiRules = JSON.parse(text);
+    if (!Array.isArray(aiRules) || aiRules.length === 0) return generateSigmaForIncd(postData, postUrl);
+
+    const postDate = postData.date || new Date().toISOString().split("T")[0];
+    const rules = [];
+    let counter = 0;
+
+    for (const aiRule of aiRules) {
+      if (!SIGMA_SUPPORTED_LOGSOURCES.includes(aiRule.logsource_category)) continue;
+      if (!aiRule.detection || aiRule.detection.trim().length < 10) continue;
+
+      counter++;
+      const tags = [];
+      if (aiRule.tactic) tags.push(`  - attack.${aiRule.tactic.toLowerCase().replace(/ /g, "_")}`);
+      if (aiRule.technique_id) tags.push(`  - attack.${aiRule.technique_id.toLowerCase()}`);
+
+      const yaml = [
+        `title: ${aiRule.title}`, `id: scw-${postDate}-ai-${counter}`,
+        `status: experimental`, `level: ${aiRule.level || "high"}`,
+        `description: |\n  ${aiRule.description || postData.title}`,
+        `author: SCW Feed Engine (AI-generated)`, `date: ${postDate}`,
+        `references:\n  - ${postUrl || "https://shimiscyberworld.com"}`,
+        tags.length > 0 ? `tags:\n${tags.join("\n")}` : null,
+        `logsource:\n    category: ${aiRule.logsource_category}`,
+        `detection:\n  ${aiRule.detection.replace(/\\n/g, "\n").split("\n").join("\n  ")}`,
+        `falsepositives:\n  - Legitimate administrative activity`,
+      ].filter(Boolean).join("\n");
+
+      rules.push({
+        title: aiRule.title, level: aiRule.level || "high", tier: aiRule.tier || "free",
+        technique: aiRule.technique_id || "", tactic: aiRule.tactic || "", yaml,
+      });
+    }
+
+    if (rules.length === 0) return generateSigmaForIncd(postData, postUrl);
+    console.log(`[INCD] 🤖 AI Sigma: ${rules.length} rules generated`);
+    return rules;
+  } catch (err) {
+    console.warn(`[SIGMA-AI] Failed: ${err.message} — falling back to templates`);
+    return generateSigmaForIncd(postData, postUrl);
+  }
+}
+
 function classifyPublication(title, description, pubType) {
   const combined = `${title} ${description}`;
   const cves = combined.match(CVE_RE) || [];
@@ -619,24 +731,12 @@ function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack) {
       "\n";
   }
 
-  // Sigma detection rules
+  // Sigma detection rules (AI-powered)
   let sigmaYaml = "";
   if (mitreAttack && mitreAttack.length > 0 && (iocs.length > 0 || isVuln)) {
     const postUrl = `https://shimiscyberworld.com/posts/incd-${slug}/`;
-    const sigmaData = { title, iocs, mitre_attack: mitreAttack, date: `${yyyy}-${mm}-${dd}` };
-    const allRules = generateSigmaForIncd(sigmaData, postUrl);
-    if (allRules.length > 0) {
-      sigmaYaml = sigmaFrontmatter(allRules, slug);
-      console.log(`[INCD] 🛡️  Sigma: ${allRules.length} rules for ${slug} (${allRules.filter(r => r.tier === "free").length} free)`);
-    }
-  }
-
-  // Sigma detection rules
-  let sigmaYaml = "";
-  if (mitreAttack && mitreAttack.length > 0 && (iocs.length > 0 || isVuln)) {
-    const postUrl = `https://shimiscyberworld.com/posts/incd-${slug}/`;
-    const sigmaData = { title, iocs, mitre_attack: mitreAttack, date: `${yyyy}-${mm}-${dd}` };
-    const allRules = generateSigmaForIncd(sigmaData, postUrl);
+    const sigmaData = { title, body: body || "", iocs, mitre_attack: mitreAttack, date: `${yyyy}-${mm}-${dd}` };
+    const allRules = await generateSigmaWithAI(sigmaData, postUrl);
     if (allRules.length > 0) {
       sigmaYaml = sigmaFrontmatter(allRules, slug);
       console.log(`[INCD] 🛡️  Sigma: ${allRules.length} rules for ${slug} (${allRules.filter(r => r.tier === "free").length} free)`);
