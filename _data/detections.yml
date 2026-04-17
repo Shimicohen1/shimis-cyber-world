@@ -737,3 +737,1458 @@ rules:
     tags: [certutil, lolbin, download, execution]
     notes: "Certutil should not be used for downloads in production. High confidence when combined with network connection."
 
+
+  - name: "Brute Force – Failed Logons Spike"
+    description: "Detects more than 10 failed sign-in attempts from a single IP within 5 minutes. Classic brute force indicator."
+    category: "Brute Force"
+    platform: "Sigma"
+    mitre: "T1110.001"
+    mitre_name: "Brute Force: Password Guessing"
+    severity: "high"
+    query: |
+      title: Brute Force – Failed Logons Spike
+      id: scw-t1110-001-ub4q
+      status: stable
+      level: high
+      description: |
+        Detects more than 10 failed sign-in attempts from a single IP within 5 minutes. Classic brute force indicator.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.brute_force
+        - attack.t1110.001
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'failure'
+        condition: selection | count(src_ip) by src_ip > 10
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [brute-force, identity, authentication]
+    notes: "Tune the threshold based on your environment. Consider excluding known VPN IPs."
+
+  - name: "Password Spray – Distributed Failed Logons"
+    description: "Detects a single IP trying different usernames with few attempts each — classic password spray pattern that avoids per-user lockout."
+    category: "Brute Force"
+    platform: "Sigma"
+    mitre: "T1110.003"
+    mitre_name: "Brute Force: Password Spraying"
+    severity: "high"
+    query: |
+      title: Password Spray – Distributed Failed Logons
+      id: scw-t1110-003-ub4v
+      status: stable
+      level: high
+      description: |
+        Detects a single IP trying different usernames with few attempts each — classic password spray pattern that avoids per-user lockout.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.password_spray
+        - attack.t1110.003
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'failure'
+        condition: selection | count(User) by src_ip > 5
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [password-spray, identity, brute-force]
+    notes: "Key indicator: many users, few attempts per user from same IP. Correlate with successful logins after spray."
+
+  - name: "Brute Force – SSH Failed Auth Spike"
+    description: "Detects excessive SSH failed authentication attempts from a single source — common in automated SSH brute force attacks."
+    category: "Brute Force"
+    platform: "Sigma"
+    mitre: "T1110.001"
+    mitre_name: "Brute Force: Password Guessing"
+    severity: "high"
+    query: |
+      title: Brute Force – SSH Failed Auth Spike
+      id: scw-t1110-001-ub4v
+      status: stable
+      level: high
+      description: |
+        Detects excessive SSH failed authentication attempts from a single source — common in automated SSH brute force attacks.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.ssh
+        - attack.t1110.001
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'failure'
+            dst_port: '22'
+        condition: selection | count(src_ip) by src_ip > 15
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [ssh, brute-force, linux]
+    notes: "Threshold of 15 reduces false positives from misconfigured services. Adjust for your environment."
+
+  - name: "Azure AD Impossible Travel"
+    description: "Detects sign-ins from geographically distant locations within a short time window — indicates potential credential theft."
+    category: "Credential Access"
+    platform: "Sigma"
+    mitre: "T1078"
+    mitre_name: "Valid Accounts"
+    severity: "high"
+    query: |
+      title: Azure AD Impossible Travel
+      id: scw-t1078-ub4v
+      status: stable
+      level: high
+      description: |
+        Detects sign-ins from geographically distant locations within a short time window — indicates potential credential theft.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.impossible_travel
+        - attack.t1078
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [impossible-travel, identity, cloud]
+    notes: "Requires geo-IP enrichment. Filter known VPN and corporate egress IPs. Best paired with UEBA."
+
+  - name: "Credential Dumping – LSASS Access"
+    description: "Detects processes accessing LSASS memory — a primary indicator of credential dumping tools like Mimikatz."
+    category: "Credential Access"
+    platform: "Sigma"
+    mitre: "T1003.001"
+    mitre_name: "OS Credential Dumping: LSASS Memory"
+    severity: "critical"
+    query: |
+      title: Credential Dumping – LSASS Access
+      id: scw-t1003-001-ub4w
+      status: stable
+      level: critical
+      description: |
+        Detects processes accessing LSASS memory — a primary indicator of credential dumping tools like Mimikatz.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.lsass
+        - attack.t1003.001
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            Image|endswith:
+              - '\procdump.exe'
+              - '\mimikatz.exe'
+              - '\dumpert.exe'
+            CommandLine|contains:
+              - 'lsass'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [lsass, credential-dumping, mimikatz]
+    notes: "High-fidelity rule. Legitimate LSASS access by AV/EDR should be baselined and excluded."
+
+  - name: "Kerberoasting – Anomalous TGS Requests"
+    description: "Detects high-volume TGS ticket requests targeting service accounts — classic Kerberoasting pattern for offline password cracking."
+    category: "Credential Access"
+    platform: "Sigma"
+    mitre: "T1558.003"
+    mitre_name: "Steal or Forge Kerberos Tickets: Kerberoasting"
+    severity: "high"
+    query: |
+      title: Kerberoasting – Anomalous TGS Requests
+      id: scw-t1558-003-ub4w
+      status: stable
+      level: high
+      description: |
+        Detects high-volume TGS ticket requests targeting service accounts — classic Kerberoasting pattern for offline password cracking.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.kerberoasting
+        - attack.t1558.003
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [kerberoasting, kerberos, active-directory]
+    notes: "Correlate with Event ID 4769 in Windows Security logs. Focus on encryption type 0x17 (RC4) which is commonly targeted."
+
+  - name: "DCSync – Replication Rights Abuse"
+    description: "Detects directory replication requests from non-domain-controller IPs — a strong indicator of DCSync attacks using Mimikatz."
+    category: "Credential Access"
+    platform: "Sigma"
+    mitre: "T1003.006"
+    mitre_name: "OS Credential Dumping: DCSync"
+    severity: "critical"
+    query: |
+      title: DCSync – Replication Rights Abuse
+      id: scw-t1003-006-ub4w
+      status: stable
+      level: critical
+      description: |
+        Detects directory replication requests from non-domain-controller IPs — a strong indicator of DCSync attacks using Mimikatz.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.dcsync
+        - attack.t1003.006
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [dcsync, active-directory, mimikatz]
+    notes: "Whitelist legitimate domain controllers. Any replication request from a workstation is highly suspicious."
+
+  - name: "MFA Fatigue – Repeated Push Notifications"
+    description: "Detects repeated MFA push notification attempts — used in MFA fatigue attacks where attackers spam push approvals until the victim accepts."
+    category: "Credential Access"
+    platform: "Sigma"
+    mitre: "T1621"
+    mitre_name: "Multi-Factor Authentication Request Generation"
+    severity: "high"
+    query: |
+      title: MFA Fatigue – Repeated Push Notifications
+      id: scw-t1621-ub4w
+      status: stable
+      level: high
+      description: |
+        Detects repeated MFA push notification attempts — used in MFA fatigue attacks where attackers spam push approvals until the victim accepts.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.mfa_fatigue
+        - attack.t1621
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'failure'
+        condition: selection | count(User) by User > 5
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [mfa-fatigue, identity, social-engineering]
+    notes: "Critical for organizations using push-based MFA. Consider implementing number matching to mitigate."
+
+  - name: "Suspicious PowerShell Execution"
+    description: "Detects obfuscated or suspicious PowerShell patterns including encoded commands, bypass flags, and hidden execution."
+    category: "Defense Evasion"
+    platform: "Sigma"
+    mitre: "T1059.001"
+    mitre_name: "Command and Scripting Interpreter: PowerShell"
+    severity: "high"
+    query: |
+      title: Suspicious PowerShell Execution
+      id: scw-t1059-001-ub4w
+      status: stable
+      level: high
+      description: |
+        Detects obfuscated or suspicious PowerShell patterns including encoded commands, bypass flags, and hidden execution.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.powershell
+        - attack.t1059.001
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            Image|endswith: '\powershell.exe'
+            CommandLine|contains:
+              - '-EncodedCommand'
+              - '-enc'
+              - '-ExecutionPolicy Bypass'
+              - '-nop'
+              - 'hidden'
+              - 'IEX'
+              - 'Invoke-Expression'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [powershell, obfuscation, encoded-command]
+    notes: "Baseline legitimate admin scripts. Focus on -enc and hidden window combinations."
+
+  - name: "Defense Evasion – Disable Windows Defender"
+    description: "Detects attempts to disable Windows Defender real-time protection or tamper with security settings."
+    category: "Defense Evasion"
+    platform: "Sigma"
+    mitre: "T1562.001"
+    mitre_name: "Impair Defenses: Disable or Modify Tools"
+    severity: "critical"
+    query: |
+      title: Defense Evasion – Disable Windows Defender
+      id: scw-t1562-001-ub4w
+      status: stable
+      level: critical
+      description: |
+        Detects attempts to disable Windows Defender real-time protection or tamper with security settings.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.defender
+        - attack.t1562.001
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            CommandLine|contains:
+              - 'Set-MpPreference -DisableRealtimeMonitoring'
+              - 'DisableAntiSpyware'
+              - 'sc stop WinDefend'
+              - 'sc config WinDefend start= disabled'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [defender, antivirus, tamper-protection]
+    notes: "Critical alert — disabling endpoint protection is a strong precursor to ransomware deployment."
+
+  - name: "Security Log Cleared"
+    description: "Detects Windows Security event log being cleared — a common anti-forensics technique to cover attack traces."
+    category: "Defense Evasion"
+    platform: "Sigma"
+    mitre: "T1070.001"
+    mitre_name: "Indicator Removal: Clear Windows Event Logs"
+    severity: "high"
+    query: |
+      title: Security Log Cleared
+      id: scw-t1070-001-ub4x
+      status: stable
+      level: high
+      description: |
+        Detects Windows Security event log being cleared — a common anti-forensics technique to cover attack traces.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.log_clearing
+        - attack.t1070.001
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            CommandLine|contains:
+              - 'wevtutil cl Security'
+              - 'Clear-EventLog -LogName Security'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [log-clearing, anti-forensics, event-log]
+    notes: "Any log clearing outside scheduled maintenance is suspicious. Correlate with other suspicious activity."
+
+  - name: "Timestomping – File Time Attribute Modification"
+    description: "Detects modification of file timestamps to blend malicious files with legitimate system files — a defense evasion technique."
+    category: "Defense Evasion"
+    platform: "Sigma"
+    mitre: "T1070.006"
+    mitre_name: "Indicator Removal: Timestomp"
+    severity: "medium"
+    query: |
+      title: Timestomping – File Time Attribute Modification
+      id: scw-t1070-006-ub4x
+      status: stable
+      level: medium
+      description: |
+        Detects modification of file timestamps to blend malicious files with legitimate system files — a defense evasion technique.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.timestomping
+        - attack.t1070.006
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            CommandLine|contains:
+              - 'timestomp'
+              - 'Set-ItemProperty'
+              - 'NtSetInformationFile'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [timestomping, anti-forensics, defense-evasion]
+    notes: "Correlate with newly created files in system directories. Low false-positive rate."
+
+  - name: "Lateral Movement – PsExec Remote Execution"
+    description: "Detects PsExec usage for remote command execution — commonly used in lateral movement and ransomware deployment."
+    category: "Lateral Movement"
+    platform: "Sigma"
+    mitre: "T1021.002"
+    mitre_name: "Remote Services: SMB/Windows Admin Shares"
+    severity: "high"
+    query: |
+      title: Lateral Movement – PsExec Remote Execution
+      id: scw-t1021-002-ub4x
+      status: stable
+      level: high
+      description: |
+        Detects PsExec usage for remote command execution — commonly used in lateral movement and ransomware deployment.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.psexec
+        - attack.t1021.002
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            Image|endswith:
+              - '\psexec.exe'
+              - '\psexesvc.exe'
+            CommandLine|contains:
+              - '\\' 
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [psexec, smb, remote-execution]
+    notes: "PsExec is a dual-use tool. Baseline legitimate admin use and alert on anomalous source hosts."
+
+  - name: "Lateral Movement – RDP from Unusual Source"
+    description: "Detects RDP connections from non-standard source IPs — may indicate lateral movement using stolen credentials."
+    category: "Lateral Movement"
+    platform: "Sigma"
+    mitre: "T1021.001"
+    mitre_name: "Remote Services: Remote Desktop Protocol"
+    severity: "medium"
+    query: |
+      title: Lateral Movement – RDP from Unusual Source
+      id: scw-t1021-001-ub4x
+      status: stable
+      level: medium
+      description: |
+        Detects RDP connections from non-standard source IPs — may indicate lateral movement using stolen credentials.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.rdp
+        - attack.t1021.001
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+            dst_port: '3389'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [rdp, lateral-movement, remote-desktop]
+    notes: "Maintain a whitelist of approved RDP source IPs. Alert on any connections from workstations to workstations."
+
+  - name: "Lateral Movement – WMI Remote Execution"
+    description: "Detects WMI-based remote process execution — a fileless lateral movement technique used by advanced adversaries."
+    category: "Lateral Movement"
+    platform: "Sigma"
+    mitre: "T1047"
+    mitre_name: "Windows Management Instrumentation"
+    severity: "high"
+    query: |
+      title: Lateral Movement – WMI Remote Execution
+      id: scw-t1047-ub4x
+      status: stable
+      level: high
+      description: |
+        Detects WMI-based remote process execution — a fileless lateral movement technique used by advanced adversaries.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.wmi
+        - attack.t1047
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            Image|endswith: '\wmic.exe'
+            CommandLine|contains:
+              - '/node:'
+              - 'process call create'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [wmi, lateral-movement, fileless]
+    notes: "WMI remote execution is a strong indicator of hands-on-keyboard adversary activity."
+
+  - name: "Lateral Movement – Pass-the-Hash"
+    description: "Detects NTLM authentication patterns consistent with pass-the-hash attacks — using stolen hash values for lateral movement."
+    category: "Lateral Movement"
+    platform: "Sigma"
+    mitre: "T1550.002"
+    mitre_name: "Use Alternate Authentication Material: Pass the Hash"
+    severity: "critical"
+    query: |
+      title: Lateral Movement – Pass-the-Hash
+      id: scw-t1550-002-ub4x
+      status: stable
+      level: critical
+      description: |
+        Detects NTLM authentication patterns consistent with pass-the-hash attacks — using stolen hash values for lateral movement.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.pass_the_hash
+        - attack.t1550.002
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [pass-the-hash, ntlm, credential-abuse]
+    notes: "Look for NTLM type 3 logons with null domain from unexpected source hosts. Restrict NTLM where possible."
+
+  - name: "Persistence – Registry Run Key Modification"
+    description: "Detects modification of Windows Registry Run keys — a classic persistence mechanism that ensures malware survives reboot."
+    category: "Persistence"
+    platform: "Sigma"
+    mitre: "T1547.001"
+    mitre_name: "Boot or Logon Autostart Execution: Registry Run Keys"
+    severity: "high"
+    query: |
+      title: Persistence – Registry Run Key Modification
+      id: scw-t1547-001-ub4x
+      status: stable
+      level: high
+      description: |
+        Detects modification of Windows Registry Run keys — a classic persistence mechanism that ensures malware survives reboot.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.registry
+        - attack.t1547.001
+      logsource:
+        category: registry_set
+      detection:
+        selection:
+            TargetObject|contains:
+              - '\CurrentVersion\Run\'
+              - '\CurrentVersion\RunOnce\'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [registry, run-key, persistence]
+    notes: "Baseline known good entries. Focus on new entries pointing to temp directories or encoded PowerShell."
+
+  - name: "Persistence – WMI Event Subscription"
+    description: "Detects WMI event subscription creation — a stealthy persistence technique that survives reboots without visible Registry changes."
+    category: "Persistence"
+    platform: "Sigma"
+    mitre: "T1546.003"
+    mitre_name: "Event Triggered Execution: WMI Event Subscription"
+    severity: "high"
+    query: |
+      title: Persistence – WMI Event Subscription
+      id: scw-t1546-003-ub4y
+      status: stable
+      level: high
+      description: |
+        Detects WMI event subscription creation — a stealthy persistence technique that survives reboots without visible Registry changes.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.wmi
+        - attack.t1546.003
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            CommandLine|contains:
+              - 'EventFilter'
+              - 'EventConsumer'
+              - 'FilterToConsumerBinding'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [wmi, event-subscription, persistence]
+    notes: "WMI persistence is stealthy and often overlooked. Check for MOF files and WMI repository changes."
+
+  - name: "Privilege Escalation – Sudo to Root (Linux)"
+    description: "Detects privilege escalation via sudo to root — monitors for users gaining root access through sudo commands."
+    category: "Privilege Escalation"
+    platform: "Sigma"
+    mitre: "T1548.003"
+    mitre_name: "Abuse Elevation Control Mechanism: Sudo and Sudo Caching"
+    severity: "medium"
+    query: |
+      title: Privilege Escalation – Sudo to Root (Linux)
+      id: scw-t1548-003-ub4y
+      status: stable
+      level: medium
+      description: |
+        Detects privilege escalation via sudo to root — monitors for users gaining root access through sudo commands.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.sudo
+        - attack.t1548.003
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            CommandLine|contains:
+              - 'sudo su'
+              - 'sudo -i'
+              - 'sudo bash'
+              - 'sudo /bin/sh'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [sudo, linux, privilege-escalation]
+    notes: "Baseline expected sudo usage. Alert on first-time sudo by service accounts or during off-hours."
+
+  - name: "New Local Admin Created"
+    description: "Detects creation of new local administrator accounts — a common persistence and privilege escalation technique."
+    category: "Privilege Escalation"
+    platform: "Sigma"
+    mitre: "T1136.001"
+    mitre_name: "Create Account: Local Account"
+    severity: "high"
+    query: |
+      title: New Local Admin Created
+      id: scw-t1136-001-ub4y
+      status: stable
+      level: high
+      description: |
+        Detects creation of new local administrator accounts — a common persistence and privilege escalation technique.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.local_admin
+        - attack.t1136.001
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            CommandLine|contains:
+              - 'net localgroup administrators'
+              - 'Add-LocalGroupMember -Group Administrators'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [local-admin, account-creation, persistence]
+    notes: "Any new admin account outside change management windows is suspicious. Correlate with helpdesk tickets."
+
+  - name: "Outbound Data Transfer Spike"
+    description: "Detects anomalous outbound data transfer volume — may indicate data exfiltration to external destinations."
+    category: "Data Exfiltration"
+    platform: "Sigma"
+    mitre: "T1048"
+    mitre_name: "Exfiltration Over Alternative Protocol"
+    severity: "high"
+    query: |
+      title: Outbound Data Transfer Spike
+      id: scw-t1048-ub4y
+      status: stable
+      level: high
+      description: |
+        Detects anomalous outbound data transfer volume — may indicate data exfiltration to external destinations.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.exfiltration
+        - attack.t1048
+      logsource:
+        category: firewall
+      detection:
+        selection:
+            action: 'allowed'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [exfiltration, data-transfer, network]
+    notes: "Requires baseline of normal transfer volumes. Focus on transfers to rare destinations during off-hours."
+
+  - name: "DNS Tunneling – Anomalous Query Volume"
+    description: "Detects excessive DNS queries to a single domain — may indicate DNS tunneling for data exfiltration or C2 communication."
+    category: "Data Exfiltration"
+    platform: "Sigma"
+    mitre: "T1048.003"
+    mitre_name: "Exfiltration Over Alternative Protocol: DNS"
+    severity: "high"
+    query: |
+      title: DNS Tunneling – Anomalous Query Volume
+      id: scw-t1048-003-ub4y
+      status: stable
+      level: high
+      description: |
+        Detects excessive DNS queries to a single domain — may indicate DNS tunneling for data exfiltration or C2 communication.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.dns_tunneling
+        - attack.t1048.003
+      logsource:
+        category: dns
+      detection:
+        selection:
+            query|contains:
+              - '.'
+        condition: selection | count(query) by dst_domain > 50
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [dns-tunneling, exfiltration, dns]
+    notes: "Look for high query volume to newly registered domains with high entropy subdomains."
+
+  - name: "Exfiltration to Cloud Storage"
+    description: "Detects data uploads to public cloud storage services — may indicate exfiltration to attacker-controlled cloud storage."
+    category: "Data Exfiltration"
+    platform: "Sigma"
+    mitre: "T1567.002"
+    mitre_name: "Exfiltration Over Web Service: Cloud Storage"
+    severity: "high"
+    query: |
+      title: Exfiltration to Cloud Storage
+      id: scw-t1567-002-ub4y
+      status: stable
+      level: high
+      description: |
+        Detects data uploads to public cloud storage services — may indicate exfiltration to attacker-controlled cloud storage.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.cloud_storage
+        - attack.t1567.002
+      logsource:
+        category: proxy
+      detection:
+        selection:
+            dst_domain|contains:
+              - 'dropbox.com'
+              - 'drive.google.com'
+              - 'mega.nz'
+              - 'transfer.sh'
+              - 'sendspace.com'
+              - 'anonfiles.com'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [cloud-storage, exfiltration, dlp]
+    notes: "Whitelist sanctioned cloud storage. Focus on uploads during off-hours or by service accounts."
+
+  - name: "Email Exfiltration – Mass Forward Rule"
+    description: "Detects creation of email forwarding rules to external addresses — a stealthy exfiltration technique for ongoing data theft."
+    category: "Data Exfiltration"
+    platform: "Sigma"
+    mitre: "T1114.003"
+    mitre_name: "Email Collection: Email Forwarding Rule"
+    severity: "high"
+    query: |
+      title: Email Exfiltration – Mass Forward Rule
+      id: scw-t1114-003-ub4y
+      status: stable
+      level: high
+      description: |
+        Detects creation of email forwarding rules to external addresses — a stealthy exfiltration technique for ongoing data theft.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.email_forwarding
+        - attack.t1114.003
+      logsource:
+        category: email
+      detection:
+        selection:
+            action|contains:
+              - 'forward'
+              - 'redirect'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [email-forwarding, exfiltration, exchange]
+    notes: "Monitor for rules forwarding to external domains. Particularly suspicious when created by compromised accounts."
+
+  - name: "Ransomware – Mass File Encryption Pattern"
+    description: "Detects mass file rename operations with common ransomware extensions — indicates active encryption in progress."
+    category: "Ransomware"
+    platform: "Sigma"
+    mitre: "T1486"
+    mitre_name: "Data Encrypted for Impact"
+    severity: "critical"
+    query: |
+      title: Ransomware – Mass File Encryption Pattern
+      id: scw-t1486-ub4y
+      status: stable
+      level: critical
+      description: |
+        Detects mass file rename operations with common ransomware extensions — indicates active encryption in progress.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.ransomware
+        - attack.t1486
+      logsource:
+        category: file_event
+      detection:
+        selection:
+            TargetFilename|endswith:
+              - '.encrypted'
+              - '.locked'
+              - '.crypto'
+              - '.crypt'
+              - '.enc'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [ransomware, encryption, file-rename]
+    notes: "CRITICAL — if this fires, initiate incident response immediately. Isolate affected hosts."
+
+  - name: "Phishing – OAuth Consent Grant Attack"
+    description: "Detects suspicious OAuth consent grants — attackers trick users into granting malicious apps access to their cloud data."
+    category: "Phishing"
+    platform: "Sigma"
+    mitre: "T1528"
+    mitre_name: "Steal Application Access Token"
+    severity: "high"
+    query: |
+      title: Phishing – OAuth Consent Grant Attack
+      id: scw-t1528-ub4y
+      status: stable
+      level: high
+      description: |
+        Detects suspicious OAuth consent grants — attackers trick users into granting malicious apps access to their cloud data.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.oauth
+        - attack.t1528
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [oauth, consent-grant, phishing]
+    notes: "Monitor for consent grants to unverified apps. Implement admin consent workflow in Azure AD."
+
+  - name: "Phishing – Suspicious Email Attachment Execution"
+    description: "Detects execution of processes spawned by email clients or Office applications opening attachments — classic phishing payload delivery."
+    category: "Phishing"
+    platform: "Sigma"
+    mitre: "T1566.001"
+    mitre_name: "Phishing: Spearphishing Attachment"
+    severity: "high"
+    query: |
+      title: Phishing – Suspicious Email Attachment Execution
+      id: scw-t1566-001-ub4z
+      status: stable
+      level: high
+      description: |
+        Detects execution of processes spawned by email clients or Office applications opening attachments — classic phishing payload delivery.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.phishing
+        - attack.t1566.001
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            ParentImage|endswith:
+              - '\outlook.exe'
+              - '\WINWORD.EXE'
+              - '\EXCEL.EXE'
+              - '\POWERPNT.EXE'
+            Image|endswith:
+              - '\cmd.exe'
+              - '\powershell.exe'
+              - '\wscript.exe'
+              - '\mshta.exe'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [phishing, email-attachment, office]
+    notes: "High-fidelity rule. Office spawning cmd/powershell is almost always malicious in enterprise environments."
+
+  - name: "Cloud – S3 Bucket Made Public"
+    description: "Detects AWS S3 bucket policy changes that make a bucket publicly accessible — a critical cloud misconfiguration."
+    category: "Cloud Security"
+    platform: "Sigma"
+    mitre: "T1530"
+    mitre_name: "Data from Cloud Storage"
+    severity: "critical"
+    query: |
+      title: Cloud – S3 Bucket Made Public
+      id: scw-t1530-ub4z
+      status: stable
+      level: critical
+      description: |
+        Detects AWS S3 bucket policy changes that make a bucket publicly accessible — a critical cloud misconfiguration.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.aws
+        - attack.t1530
+      logsource:
+        category: webserver
+      detection:
+        selection:
+            cs-method: 'PUT'
+            cs-uri|contains:
+              - 'policy'
+              - 'acl'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [aws, s3, public-bucket, cloud]
+    notes: "Block public S3 access at the organization level. Any public bucket alert requires immediate investigation."
+
+  - name: "Cloud – New IAM User Created with Admin"
+    description: "Detects creation of IAM users with administrative privileges — may indicate an attacker establishing persistent cloud access."
+    category: "Cloud Security"
+    platform: "Sigma"
+    mitre: "T1136.003"
+    mitre_name: "Create Account: Cloud Account"
+    severity: "high"
+    query: |
+      title: Cloud – New IAM User Created with Admin
+      id: scw-t1136-003-ub4z
+      status: stable
+      level: high
+      description: |
+        Detects creation of IAM users with administrative privileges — may indicate an attacker establishing persistent cloud access.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.iam
+        - attack.t1136.003
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [iam, cloud-admin, persistence]
+    notes: "All new admin accounts should go through change management. Alert on any created outside approved processes."
+
+  - name: "Cloud – Azure AD Conditional Access Disabled"
+    description: "Detects disabling of Azure AD Conditional Access policies — weakens security posture and may indicate compromised admin account."
+    category: "Cloud Security"
+    platform: "Sigma"
+    mitre: "T1562.001"
+    mitre_name: "Impair Defenses: Disable or Modify Tools"
+    severity: "critical"
+    query: |
+      title: Cloud – Azure AD Conditional Access Disabled
+      id: scw-t1562-001-ub4z
+      status: stable
+      level: critical
+      description: |
+        Detects disabling of Azure AD Conditional Access policies — weakens security posture and may indicate compromised admin account.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.azure_ad
+        - attack.t1562.001
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [azure-ad, conditional-access, cloud-security]
+    notes: "Conditional Access changes should be strictly controlled. Monitor for policy deletions and modifications."
+
+  - name: "Cloud – GCP Firewall Rule Opened to World"
+    description: "Detects GCP firewall rules being modified to allow traffic from 0.0.0.0/0 — exposing services to the entire internet."
+    category: "Cloud Security"
+    platform: "Sigma"
+    mitre: "T1562.007"
+    mitre_name: "Impair Defenses: Disable or Modify Cloud Firewall"
+    severity: "critical"
+    query: |
+      title: Cloud – GCP Firewall Rule Opened to World
+      id: scw-t1562-007-ub4z
+      status: stable
+      level: critical
+      description: |
+        Detects GCP firewall rules being modified to allow traffic from 0.0.0.0/0 — exposing services to the entire internet.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.gcp
+        - attack.t1562.007
+      logsource:
+        category: firewall
+      detection:
+        selection:
+            action: 'allowed'
+            src_ip: '0.0.0.0'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [gcp, firewall, cloud-exposure]
+    notes: "Block 0.0.0.0/0 ingress rules at the organization policy level. Any such rule is a critical misconfiguration."
+
+  - name: "Cloud – AWS Root Account Used"
+    description: "Detects usage of the AWS root account — root should almost never be used in production. May indicate credential compromise."
+    category: "Cloud Security"
+    platform: "Sigma"
+    mitre: "T1078.004"
+    mitre_name: "Valid Accounts: Cloud Accounts"
+    severity: "critical"
+    query: |
+      title: Cloud – AWS Root Account Used
+      id: scw-t1078-004-ub4z
+      status: stable
+      level: critical
+      description: |
+        Detects usage of the AWS root account — root should almost never be used in production. May indicate credential compromise.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.aws
+        - attack.t1078.004
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            User: 'root'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [aws, root-account, cloud-security]
+    notes: "AWS root account should only be used for initial setup. Enable MFA and alert on any usage."
+
+  - name: "C2 – Network Beaconing Pattern"
+    description: "Detects regular periodic network connections — consistent intervals suggest automated C2 beaconing behavior."
+    category: "Command and Control"
+    platform: "Sigma"
+    mitre: "T1071.001"
+    mitre_name: "Application Layer Protocol: Web Protocols"
+    severity: "high"
+    query: |
+      title: C2 – Network Beaconing Pattern
+      id: scw-t1071-001-ub50
+      status: stable
+      level: high
+      description: |
+        Detects regular periodic network connections — consistent intervals suggest automated C2 beaconing behavior.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.beaconing
+        - attack.t1071.001
+      logsource:
+        category: proxy
+      detection:
+        selection:
+            dst_domain|contains:
+              - '.'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [beaconing, c2, periodic-connection]
+    notes: "Use statistical analysis to detect regular intervals. Focus on connections to low-reputation domains."
+
+  - name: "C2 – Tor Network Connection"
+    description: "Detects connections to known Tor entry/exit nodes — may indicate C2 communication or data exfiltration through the Tor network."
+    category: "Command and Control"
+    platform: "Sigma"
+    mitre: "T1090.003"
+    mitre_name: "Proxy: Multi-hop Proxy"
+    severity: "high"
+    query: |
+      title: C2 – Tor Network Connection
+      id: scw-t1090-003-ub50
+      status: stable
+      level: high
+      description: |
+        Detects connections to known Tor entry/exit nodes — may indicate C2 communication or data exfiltration through the Tor network.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.tor
+        - attack.t1090.003
+      logsource:
+        category: firewall
+      detection:
+        selection:
+            dst_port:
+              - '9001'
+              - '9030'
+              - '9050'
+              - '9051'
+              - '9150'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [tor, anonymization, c2]
+    notes: "Block Tor at the firewall level. Any successful connection is a policy violation in most enterprises."
+
+  - name: "Initial Access – Exposed RDP to Internet"
+    description: "Detects RDP connections from external IP addresses — exposed RDP is a top initial access vector for ransomware gangs."
+    category: "Initial Access"
+    platform: "Sigma"
+    mitre: "T1133"
+    mitre_name: "External Remote Services"
+    severity: "critical"
+    query: |
+      title: Initial Access – Exposed RDP to Internet
+      id: scw-t1133-ub50
+      status: stable
+      level: critical
+      description: |
+        Detects RDP connections from external IP addresses — exposed RDP is a top initial access vector for ransomware gangs.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.rdp
+        - attack.t1133
+      logsource:
+        category: firewall
+      detection:
+        selection:
+            action: 'allowed'
+            dst_port: '3389'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [rdp, exposed-service, initial-access]
+    notes: "NEVER expose RDP directly to the internet. Use VPN or Azure Bastion. This is the #1 ransomware entry point."
+
+  - name: "Initial Access – VPN Login from Unusual Country"
+    description: "Detects VPN authentication from unexpected geographic locations — may indicate stolen VPN credentials being used from abroad."
+    category: "Initial Access"
+    platform: "Sigma"
+    mitre: "T1133"
+    mitre_name: "External Remote Services"
+    severity: "high"
+    query: |
+      title: Initial Access – VPN Login from Unusual Country
+      id: scw-t1133-ub50
+      status: stable
+      level: high
+      description: |
+        Detects VPN authentication from unexpected geographic locations — may indicate stolen VPN credentials being used from abroad.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.vpn
+        - attack.t1133
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'success'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [vpn, geo-anomaly, initial-access]
+    notes: "Requires geo-IP enrichment. Maintain a list of expected countries and alert on deviations."
+
+  - name: "Discovery – BloodHound/SharpHound Execution"
+    description: "Detects execution of BloodHound or SharpHound — Active Directory reconnaissance tools used by attackers to map attack paths."
+    category: "Discovery"
+    platform: "Sigma"
+    mitre: "T1087.002"
+    mitre_name: "Account Discovery: Domain Account"
+    severity: "critical"
+    query: |
+      title: Discovery – BloodHound/SharpHound Execution
+      id: scw-t1087-002-ub50
+      status: stable
+      level: critical
+      description: |
+        Detects execution of BloodHound or SharpHound — Active Directory reconnaissance tools used by attackers to map attack paths.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.bloodhound
+        - attack.t1087.002
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            Image|endswith:
+              - '\SharpHound.exe'
+              - '\BloodHound.exe'
+            CommandLine|contains:
+              - 'SharpHound'
+              - 'BloodHound'
+              - 'Invoke-BloodHound'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [bloodhound, sharphound, ad-recon]
+    notes: "Zero legitimate use in most environments. Immediate incident response trigger."
+
+  - name: "Discovery – Mass Internal Port Scanning"
+    description: "Detects a single host making connections to many internal ports — indicates network reconnaissance or worm propagation."
+    category: "Discovery"
+    platform: "Sigma"
+    mitre: "T1046"
+    mitre_name: "Network Service Discovery"
+    severity: "high"
+    query: |
+      title: Discovery – Mass Internal Port Scanning
+      id: scw-t1046-ub50
+      status: stable
+      level: high
+      description: |
+        Detects a single host making connections to many internal ports — indicates network reconnaissance or worm propagation.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.port_scan
+        - attack.t1046
+      logsource:
+        category: firewall
+      detection:
+        selection:
+            action: 'allowed'
+        condition: selection | count(dst_port) by src_ip > 20
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [port-scan, network-recon, discovery]
+    notes: "Exclude vulnerability scanners and monitoring tools. Focus on workstation-to-workstation scanning."
+
+  - name: "Execution – MSHTA Abuse"
+    description: "Detects mshta.exe executing remote or suspicious HTA content — a common Living-off-the-Land technique for code execution."
+    category: "Execution"
+    platform: "Sigma"
+    mitre: "T1218.005"
+    mitre_name: "System Binary Proxy Execution: Mshta"
+    severity: "high"
+    query: |
+      title: Execution – MSHTA Abuse
+      id: scw-t1218-005-ub50
+      status: stable
+      level: high
+      description: |
+        Detects mshta.exe executing remote or suspicious HTA content — a common Living-off-the-Land technique for code execution.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.mshta
+        - attack.t1218.005
+      logsource:
+        category: process_creation
+      detection:
+        selection:
+            Image|endswith: '\mshta.exe'
+            CommandLine|contains:
+              - 'http'
+              - 'javascript:'
+              - 'vbscript:'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [mshta, lolbin, execution]
+    notes: "mshta.exe with network or script arguments is almost always malicious. Consider blocking mshta.exe via AppLocker."
+
+  - name: "Execution – DLL Side-Loading"
+    description: "Detects suspicious DLL loading from non-standard paths — may indicate DLL side-loading used for code execution and evasion."
+    category: "Execution"
+    platform: "Sigma"
+    mitre: "T1574.002"
+    mitre_name: "Hijack Execution Flow: DLL Side-Loading"
+    severity: "medium"
+    query: |
+      title: Execution – DLL Side-Loading
+      id: scw-t1574-002-ub51
+      status: stable
+      level: medium
+      description: |
+        Detects suspicious DLL loading from non-standard paths — may indicate DLL side-loading used for code execution and evasion.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.dll_sideload
+        - attack.t1574.002
+      logsource:
+        category: image_load
+      detection:
+        selection:
+            ImageLoaded|contains:
+              - '\AppData\Local\Temp\'
+              - '\Users\Public\'
+              - '\ProgramData\'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [dll-sideload, execution, evasion]
+    notes: "Focus on DLLs loaded from temp directories by signed executables. Cross-reference with known vulnerable applications."
+
+  - name: "Impact – Mass Account Lockout"
+    description: "Detects mass account lockouts — may indicate a password spray attack or intentional disruption of user access."
+    category: "Impact"
+    platform: "Sigma"
+    mitre: "T1531"
+    mitre_name: "Account Access Removal"
+    severity: "high"
+    query: |
+      title: Impact – Mass Account Lockout
+      id: scw-t1531-ub51
+      status: stable
+      level: high
+      description: |
+        Detects mass account lockouts — may indicate a password spray attack or intentional disruption of user access.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.account_lockout
+        - attack.t1531
+      logsource:
+        category: authentication
+      detection:
+        selection:
+            EventType: 'Logon'
+            action: 'failure'
+        condition: selection | count(User) by src_ip > 10
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [account-lockout, impact, disruption]
+    notes: "Differentiate between targeted spray (few attempts per account) and lockout attack (many attempts per account)."
+
+  - name: "Impact – Mass File Deletion"
+    description: "Detects mass file deletion operations — may indicate ransomware, destructive malware, or insider threat activity."
+    category: "Impact"
+    platform: "Sigma"
+    mitre: "T1485"
+    mitre_name: "Data Destruction"
+    severity: "critical"
+    query: |
+      title: Impact – Mass File Deletion
+      id: scw-t1485-ub51
+      status: stable
+      level: critical
+      description: |
+        Detects mass file deletion operations — may indicate ransomware, destructive malware, or insider threat activity.
+      author: SCW Detection Vault
+      date: 2025-01-15
+      references:
+        - https://shimiscyberworld.com/detections/
+      tags:
+        - attack.file_deletion
+        - attack.t1485
+      logsource:
+        category: file_event
+      detection:
+        selection:
+            TargetFilename|endswith:
+              - '.bak'
+              - '.sql'
+              - '.mdf'
+              - '.xlsx'
+              - '.docx'
+              - '.pdf'
+        condition: selection
+      falsepositives:
+        - Legitimate administrative activity
+    tags: [file-deletion, destruction, ransomware]
+    notes: "CRITICAL — mass deletion of business files requires immediate response. Check for ransomware indicators."
+
