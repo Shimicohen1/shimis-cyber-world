@@ -23,3 +23,6 @@ session.json
 .linkedin-secret
 INCIDENT-REPORT-*.md
 refresh-linkedin.sh
+DR-ARCHITECTURE.md
+engine-backup.yml
+.DS_Store
