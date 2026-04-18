@@ -10,12 +10,15 @@ permalink: /detections/
 {% assign vault_cutoff = now_epoch | minus: vault_age_secs %}
 {% assign breach_intel_count = 0 %}
 {% assign incd_count = 0 %}
+{% assign nvd_count = 0 %}
 {% assign counted_titles = "" %}
 {% for post in site.posts %}
   {% if post.sigma_rules %}
     {% assign pe = post.date | date: '%s' | plus: 0 %}
     {% assign is_incd = false %}
+    {% assign is_nvd = false %}
     {% if post.channel == "INCD" %}{% assign is_incd = true %}{% endif %}
+    {% if post.channel == "NVD" %}{% assign is_nvd = true %}{% endif %}
     {% comment %}INCD = immediate, others = 14-day gate{% endcomment %}
     {% if is_incd or pe < vault_cutoff %}
       {% assign ctkey = post.sigma_rules.preview_technique | downcase | strip | append: "~" | append: post.sigma_rules.preview_title | downcase | strip %}
@@ -24,6 +27,7 @@ permalink: /detections/
         {% assign counted_titles = counted_titles | append: ctcheck %}
         {% assign breach_intel_count = breach_intel_count | plus: 1 %}
         {% if is_incd %}{% assign incd_count = incd_count | plus: 1 %}{% endif %}
+        {% if is_nvd %}{% assign nvd_count = nvd_count | plus: 1 %}{% endif %}
       {% endunless %}
     {% endif %}
   {% endif %}
@@ -82,6 +86,7 @@ permalink: /detections/
       <button class="vault-filter" data-filter="{{ cat | slugify }}">{{ cat }}</button>
       {% endfor %}
       {% if incd_count > 0 %}<button class="vault-filter" data-filter="incd">🇮🇱 INCD</button>{% endif %}
+      {% if nvd_count > 0 %}<button class="vault-filter" data-filter="nvd">🌐 NVD</button>{% endif %}
     </div>
 
   </div>
@@ -205,7 +210,9 @@ permalink: /detections/
       {% if post.sigma_rules %}
       {% assign pe = post.date | date: '%s' | plus: 0 %}
       {% assign is_incd = false %}
+      {% assign is_nvd = false %}
       {% if post.channel == "INCD" %}{% assign is_incd = true %}{% endif %}
+      {% if post.channel == "NVD" %}{% assign is_nvd = true %}{% endif %}
       {% if is_incd or pe < vault_cutoff %}
         {% assign rule_key = post.sigma_rules.preview_technique | downcase | strip | append: "~" | append: post.sigma_rules.preview_title | downcase | strip %}
         {% assign rule_check = "||" | append: rule_key | append: "||" %}
@@ -215,6 +222,7 @@ permalink: /detections/
       {% assign sev = post.sigma_rules.preview_level | default: 'medium' %}
       {% assign extra_cat = "" %}
       {% if is_incd %}{% assign extra_cat = " incd" %}{% endif %}
+      {% if is_nvd %}{% assign extra_cat = extra_cat | append: " nvd" %}{% endif %}
       {% comment %}Build deeplink query: first CVE ID, or INCD alert number, or post slug{% endcomment %}
       {% assign detect_q = "" %}
       {% for ioc in post.iocs %}
@@ -240,7 +248,7 @@ permalink: /detections/
            {% endif %}>
         <div class="tool-card__head">
           <h4>{{ post.sigma_rules.preview_title }}</h4>
-          {% if is_incd %}<span class="dl-breach-badge dl-breach-badge--incd">🇮🇱 INCD Intel</span>{% else %}<span class="dl-breach-badge">Breach Intel</span>{% endif %}
+          {% if is_incd %}<span class="dl-breach-badge dl-breach-badge--incd">🇮🇱 INCD Intel</span>{% elsif is_nvd %}<span class="dl-breach-badge dl-breach-badge--nvd">🌐 NVD</span>{% else %}<span class="dl-breach-badge">Breach Intel</span>{% endif %}
         </div>
         <p class="community-card__tagline">{{ post.sigma_rules.preview_technique }} — {{ post.sigma_rules.preview_tactic }}</p>
         <p>Auto-generated from <a href="{{ post.url | relative_url }}">{{ post.title | truncate: 60 }}</a></p>
@@ -248,6 +256,7 @@ permalink: /detections/
           <span class="badge badge--{% if sev == 'critical' %}live{% elsif sev == 'high' %}signal{% elsif sev == 'medium' %}drop{% else %}vault{% endif %}">{{ sev }}</span>
           <span class="tag">Sigma</span>
           {% if is_incd %}<span class="tag tag--incd">INCD</span>{% endif %}
+          {% if is_nvd %}<span class="tag tag--nvd">NVD</span>{% endif %}
           <span class="tag">{{ post.date | date: "%b %d, %Y" }}</span>
         </div>
         {% if post.sigma_rules.formats or post.sigma_rules.preview_yaml_b64 %}
@@ -272,7 +281,7 @@ permalink: /detections/
     {% endfor %}
     {% if unique_breach_count > 0 %}
     <div class="dl-section-divider" style="order: -1;">
-      <span class="dl-section-divider__label">🔥 Breach Intelligence — {{ unique_breach_count }} unique rules auto-generated from real incidents{% if incd_count > 0 %} ({{ incd_count }} 🇮🇱 INCD){% endif %}</span>
+      <span class="dl-section-divider__label">🔥 Breach Intelligence — Auto-generated from real-world incidents</span>
     </div>
     {% endif %}
   </div>
@@ -310,6 +319,10 @@ permalink: /detections/
 /* INCD badge */
 .dl-breach-badge--incd{background:rgba(0,100,200,.15);color:#4da6ff;border-color:rgba(0,100,200,.3)}
 .tag--incd{background:rgba(0,100,200,.12);color:#4da6ff;border-color:rgba(0,100,200,.2)}
+
+/* NVD badge */
+.dl-breach-badge--nvd{background:rgba(200,160,0,.15);color:#e0b030;border-color:rgba(200,160,0,.3)}
+.tag--nvd{background:rgba(200,160,0,.12);color:#e0b030;border-color:rgba(200,160,0,.2)}
 
 /* ── Unified SIEM strip (replaces all old CTA / lock / chip blocks) ── */
 .dl-siem-strip{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .7rem;margin-top:.75rem;padding:.55rem .85rem;background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.10);border-radius:6px;font-size:.78rem;line-height:1.4}
