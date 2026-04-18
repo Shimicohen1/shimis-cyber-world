@@ -18,6 +18,8 @@ permalink: /vulnerabilities/
   </div>
   <div class="feed-filters" style="margin-top: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
     <button class="btn btn--sm btn--active" data-cvss-filter="all" onclick="filterVulns('all')">All</button>
+    <button class="btn btn--sm" data-cvss-filter="nvd" onclick="filterVulns('nvd')">NVD</button>
+    <button class="btn btn--sm" data-cvss-filter="incd" onclick="filterVulns('incd')">INCD</button>
     <button class="btn btn--sm btn--cvss-critical" data-cvss-filter="critical" onclick="filterVulns('critical')">Critical (9.0+)</button>
     <button class="btn btn--sm btn--cvss-high" data-cvss-filter="high" onclick="filterVulns('high')">High (7.0–8.9)</button>
     <button class="btn btn--sm btn--cvss-medium" data-cvss-filter="medium" onclick="filterVulns('medium')">Medium (4.0–6.9)</button>
@@ -25,12 +27,6 @@ permalink: /vulnerabilities/
   </div>
 
   <div class="feed-tags" style="margin-top: 0.4rem; display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center;">
-    <span class="feed-tags__label">Source</span>
-    <button class="tag-chip tag-chip--source" onclick="tagSearch('nvd')">NVD</button>
-    <button class="tag-chip tag-chip--source" onclick="tagSearch('incd')">INCD</button>
-    <button class="tag-chip tag-chip--source" onclick="tagSearch('cisa-kev')">CISA KEV</button>
-    <button class="tag-chip tag-chip--source" onclick="tagSearch('cve notify')">CVE Notify</button>
-    <span class="feed-tags__sep">|</span>
     <span class="feed-tags__label">Type</span>
     <button class="tag-chip tag-chip--type" onclick="tagSearch('cwe-79')">XSS</button>
     <button class="tag-chip tag-chip--type" onclick="tagSearch('sql-injection')">SQLi</button>
@@ -91,6 +87,11 @@ function filterVulns(mode) {
   var btns = document.querySelectorAll('[data-cvss-filter]');
   if (mode === 'all') {
     if (list._clearExternalFilter) list._clearExternalFilter();
+  } else if (mode === 'nvd' || mode === 'incd') {
+    if (list._setExternalFilter) list._setExternalFilter(function(el) {
+      var channel = (el.getAttribute('data-channel') || '').toUpperCase();
+      return channel === mode.toUpperCase();
+    });
   } else {
     if (list._setExternalFilter) list._setExternalFilter(function(el) {
       var score = parseFloat(el.getAttribute('data-cvss')) || 0;

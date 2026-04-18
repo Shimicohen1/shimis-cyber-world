@@ -14,6 +14,8 @@
 
   var activeCat  = 'all';
   var activePlat = 'all';
+  var activeCvss = 'all';
+  var cvssFilters = document.getElementById('dlCvssFilters');
   var PAGE_SIZE = 30;
   var visibleLimit = PAGE_SIZE;
 
@@ -31,12 +33,13 @@
     cards.forEach(function (c) {
       var matchCat  = activeCat  === 'all' || (c.dataset.category && (' ' + c.dataset.category + ' ').indexOf(' ' + activeCat + ' ') !== -1);
       var matchPlat = activePlat === 'all' || c.dataset.platform === activePlat;
+      var matchCvss = activeCvss === 'all' || (c.dataset.severity && c.dataset.severity === activeCvss);
       var matchText = !q ||
         c.dataset.name.indexOf(q) !== -1 ||
         (c.dataset.tags && c.dataset.tags.indexOf(q) !== -1) ||
         (c.dataset.mitre && c.dataset.mitre.indexOf(q) !== -1);
 
-      if (matchCat && matchPlat && matchText) {
+      if (matchCat && matchPlat && matchCvss && matchText) {
         matched++;
         if (matched <= visibleLimit) {
           c.style.display = '';
@@ -78,6 +81,19 @@
 
   bindFilterGroup(catFilters, function (v) { activeCat = v; visibleLimit = PAGE_SIZE; });
   bindFilterGroup(platFilters, function (v) { activePlat = v; visibleLimit = PAGE_SIZE; });
+
+  /* CVSS severity filter */
+  if (cvssFilters) {
+    cvssFilters.addEventListener('click', function (e) {
+      var btn = e.target.closest('.vault-filter--cvss');
+      if (!btn) return;
+      cvssFilters.querySelectorAll('.vault-filter--cvss').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeCvss = btn.dataset.cvss;
+      visibleLimit = PAGE_SIZE;
+      applyFilters();
+    });
+  }
 
   if (search) {
     search.addEventListener('input', function () { visibleLimit = PAGE_SIZE; applyFilters(); });

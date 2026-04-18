@@ -89,13 +89,19 @@ permalink: /detections/
       {% if incd_count > 0 %}<button class="vault-filter" data-filter="incd">🇮🇱 INCD</button>{% endif %}
       {% if nvd_count > 0 %}<button class="vault-filter" data-filter="nvd">🌐 NVD</button>{% endif %}
     </div>
+    <div class="vault-filters vault-filters--cvss" id="dlCvssFilters" style="margin-top: 0.4rem;">
+      <button class="vault-filter vault-filter--cvss active" data-cvss="all">All Severity</button>
+      <button class="vault-filter vault-filter--cvss vault-filter--critical" data-cvss="critical">Critical</button>
+      <button class="vault-filter vault-filter--cvss vault-filter--high" data-cvss="high">High</button>
+      <button class="vault-filter vault-filter--cvss vault-filter--medium" data-cvss="medium">Medium</button>
+    </div>
 
   </div>
 
   <!-- Rules Grid -->
   <div class="toolkit__grid" id="dlGrid">
     {% for rule in site.data.detections.rules %}
-    <div class="tool-card dl-rule reveal{% if rule.showcase %} dl-rule--showcase{% endif %}" data-category="{{ rule.category | slugify }}" data-platform="{{ rule.platform | slugify }}" data-name="{{ rule.name | downcase }}" data-tags="{{ rule.tags | join: ' ' | downcase }}" data-mitre="{{ rule.mitre | downcase }}">
+    <div class="tool-card dl-rule reveal{% if rule.showcase %} dl-rule--showcase{% endif %}" data-category="{{ rule.category | slugify }}" data-platform="{{ rule.platform | slugify }}" data-name="{{ rule.name | downcase }}" data-tags="{{ rule.tags | join: ' ' | downcase }}" data-mitre="{{ rule.mitre | downcase }}" data-severity="{{ rule.severity }}">
       <div class="tool-card__head">
         <h4>{{ rule.name }}</h4>
         {% if rule.showcase %}<span class="dl-breach-badge" style="background:rgba(0,200,255,.12);color:var(--accent);border:1px solid rgba(0,200,255,.25);">SIEM Preview</span>{% endif %}
@@ -243,6 +249,8 @@ permalink: /detections/
            data-name="{{ post.sigma_rules.preview_title | downcase }}"
            data-tags="{{ post.tags | join: ' ' | downcase }}"
            data-mitre="{{ post.sigma_rules.preview_technique | downcase }}"
+           data-severity="{{ sev }}"
+           data-cvss-score="{{ post.cvss_score }}"
            {% if post.sigma_rules.formats %}
            data-fmt-sigma="{{ post.sigma_rules.formats.sigma }}"
            {% elsif post.sigma_rules.preview_yaml_b64 %}
@@ -256,6 +264,7 @@ permalink: /detections/
         <p>Auto-generated from <a href="{{ post.url | relative_url }}">{{ post.title | truncate: 60 }}</a></p>
         <div class="dl-rule__meta">
           <span class="badge badge--{% if sev == 'critical' %}live{% elsif sev == 'high' %}signal{% elsif sev == 'medium' %}drop{% else %}vault{% endif %}">{{ sev }}</span>
+          {% if post.cvss_score %}<span class="badge badge--cvss" style="background:{% if post.cvss_score >= 9.0 %}rgba(220,38,38,.15);color:#ef4444;border:1px solid rgba(220,38,38,.3){% elsif post.cvss_score >= 7.0 %}rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3){% else %}rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3){% endif %}">CVSS {{ post.cvss_score }}/10</span>{% endif %}
           <span class="tag">Sigma</span>
           {% if is_incd %}<span class="tag tag--incd">INCD</span>{% endif %}
           {% if is_nvd %}<span class="tag tag--nvd">NVD</span>{% endif %}
@@ -329,6 +338,13 @@ permalink: /detections/
 /* NVD badge */
 .dl-breach-badge--nvd{background:rgba(200,160,0,.15);color:#e0b030;border-color:rgba(200,160,0,.3)}
 .tag--nvd{background:rgba(200,160,0,.12);color:#e0b030;border-color:rgba(200,160,0,.2)}
+
+/* CVSS severity filter buttons */
+.vault-filters--cvss{display:flex;gap:.35rem;flex-wrap:wrap}
+.vault-filter--cvss{font-size:.75rem;padding:.3rem .7rem;border-radius:12px}
+.vault-filter--critical.active{background:rgba(220,38,38,.18);color:#ef4444;border-color:rgba(220,38,38,.4)}
+.vault-filter--high.active{background:rgba(245,158,11,.18);color:#f59e0b;border-color:rgba(245,158,11,.4)}
+.vault-filter--medium.active{background:rgba(59,130,246,.18);color:#60a5fa;border-color:rgba(59,130,246,.4)}
 
 /* ── Unified SIEM strip (replaces all old CTA / lock / chip blocks) ── */
 .dl-siem-strip{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .7rem;margin-top:.75rem;padding:.55rem .85rem;background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.10);border-radius:6px;font-size:.78rem;line-height:1.4}
