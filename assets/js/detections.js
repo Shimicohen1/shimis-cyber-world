@@ -14,13 +14,19 @@
 
   var activeCat  = 'all';
   var activePlat = 'all';
+  var PAGE_SIZE = 30;
+  var visibleLimit = PAGE_SIZE;
 
   /* Update initial count to include breach intel cards */
   if (count) count.textContent = cards.length;
 
+  /* Show-more button */
+  var showMoreBtn = document.getElementById('dlShowMore');
+
   function applyFilters() {
     var q = (search ? search.value : '').toLowerCase().trim();
-    var visible = 0;
+    var matched = 0;
+    var shown = 0;
 
     cards.forEach(function (c) {
       var matchCat  = activeCat  === 'all' || (c.dataset.category && (' ' + c.dataset.category + ' ').indexOf(' ' + activeCat + ' ') !== -1);
@@ -31,15 +37,31 @@
         (c.dataset.mitre && c.dataset.mitre.indexOf(q) !== -1);
 
       if (matchCat && matchPlat && matchText) {
-        c.style.display = '';
-        visible++;
+        matched++;
+        if (matched <= visibleLimit) {
+          c.style.display = '';
+          shown++;
+        } else {
+          c.style.display = 'none';
+        }
       } else {
         c.style.display = 'none';
       }
     });
 
-    if (count) count.textContent = visible;
-    if (empty) empty.style.display = visible === 0 ? '' : 'none';
+    if (count) count.textContent = matched;
+    if (empty) empty.style.display = matched === 0 ? '' : 'none';
+    if (showMoreBtn) {
+      showMoreBtn.style.display = matched > shown ? '' : 'none';
+      showMoreBtn.textContent = 'Show More (' + (matched - shown) + ' remaining)';
+    }
+  }
+
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener('click', function () {
+      visibleLimit += PAGE_SIZE;
+      applyFilters();
+    });
   }
 
   function bindFilterGroup(container, setter) {
@@ -54,11 +76,11 @@
     });
   }
 
-  bindFilterGroup(catFilters, function (v) { activeCat = v; });
-  bindFilterGroup(platFilters, function (v) { activePlat = v; });
+  bindFilterGroup(catFilters, function (v) { activeCat = v; visibleLimit = PAGE_SIZE; });
+  bindFilterGroup(platFilters, function (v) { activePlat = v; visibleLimit = PAGE_SIZE; });
 
   if (search) {
-    search.addEventListener('input', applyFilters);
+    search.addEventListener('input', function () { visibleLimit = PAGE_SIZE; applyFilters(); });
   }
 
   /* Copy-to-clipboard */
@@ -111,4 +133,7 @@
       });
     });
   });
+
+  /* Initial pagination — show first page only */
+  applyFilters();
 })();

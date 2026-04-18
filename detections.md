@@ -288,6 +288,10 @@ permalink: /detections/
     {% endif %}
   </div>
 
+  <div style="text-align:center; margin-top:1.5rem;">
+    <button class="btn btn--ghost" id="dlShowMore" style="display:none;">Show More</button>
+  </div>
+
   <div class="empty-state" id="dlEmpty" style="display:none; margin-top: 2rem;">
     <p>No matching rules found. Try adjusting your filters.</p>
   </div>
