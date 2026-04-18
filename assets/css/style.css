@@ -2784,7 +2784,7 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 /* ── Score badges ────────────────────────── */
 .tag--high { background: rgba(255, 60, 60, 0.15); color: #ff3c3c; border: 1px solid rgba(255, 60, 60, 0.3); }
 .tag--medium { background: rgba(255, 180, 0, 0.15); color: #ffb400; border: 1px solid rgba(255, 180, 0, 0.3); }
-.tag--critical { background: rgba(200, 0, 255, 0.15); color: #d060ff; border: 1px solid rgba(200, 0, 255, 0.3); }
+.tag--critical { background: rgba(167, 139, 250, 0.15); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.3); }
 .tag--low { background: rgba(0, 180, 216, 0.12); color: #00b4d8; border: 1px solid rgba(0, 180, 216, 0.25); }
 
 /* ── CVSS score badge ────────────────────── */
@@ -2825,8 +2825,8 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .tag-chip--source:hover, .tag-chip--source.tag-chip--active { color: #00b4d8; background: rgba(0, 180, 216, 0.12); border-color: rgba(0, 180, 216, 0.4); }
 .tag-chip--type { color: rgba(255, 180, 0, 0.7); border-color: rgba(255, 180, 0, 0.2); }
 .tag-chip--type:hover, .tag-chip--type.tag-chip--active { color: #ffb400; background: rgba(255, 180, 0, 0.1); border-color: rgba(255, 180, 0, 0.4); }
-.tag-chip--topic { color: rgba(200, 0, 255, 0.7); border-color: rgba(200, 0, 255, 0.2); }
-.tag-chip--topic:hover, .tag-chip--topic.tag-chip--active { color: #d060ff; background: rgba(200, 0, 255, 0.1); border-color: rgba(200, 0, 255, 0.4); }
+.tag-chip--topic { color: rgba(167, 139, 250, 0.8); border-color: rgba(167, 139, 250, 0.2); }
+.tag-chip--topic:hover, .tag-chip--topic.tag-chip--active { color: #a78bfa; background: rgba(167, 139, 250, 0.1); border-color: rgba(167, 139, 250, 0.4); }
 
 /* ── Newsletter ──────────────────────────── */
 .newsletter {

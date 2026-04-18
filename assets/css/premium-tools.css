@@ -3482,6 +3482,130 @@
 [data-theme="light"] .dl-siem-tab:hover { color: #333; background: rgba(0,0,0,.03); }
 [data-theme="light"] .dl-siem-tab--active { color: var(--cyan); background: rgba(0,180,200,.05); border-color: rgba(0,180,200,.15); }
 
+/* ── Badge variants ── */
+.dl-breach-badge--incd { background: rgba(59,130,246,.12); color: #60a5fa; border-color: rgba(59,130,246,.25); }
+.dl-breach-badge--nvd { background: rgba(0,180,216,.12); color: #00b4d8; border-color: rgba(0,180,216,.25); }
+[data-theme="light"] .dl-breach-badge--incd { background: rgba(37,99,235,.08); color: #2563eb; border-color: rgba(37,99,235,.2); }
+[data-theme="light"] .dl-breach-badge--nvd { background: rgba(0,130,160,.08); color: #006d85; border-color: rgba(0,130,160,.2); }
+
+/* ── SIEM export strip (inside rule cards) ── */
+.dl-siem-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-top: .6rem;
+  padding: .5rem .7rem;
+  background: var(--faint, rgba(255,255,255,.02));
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: var(--r-sm, 6px);
+  font-size: .7rem;
+}
+.dl-siem-strip__free { color: var(--lime, #00e676); font-weight: 700; }
+.dl-siem-strip__sep { color: var(--dim, rgba(255,255,255,.25)); }
+.dl-siem-strip__fmts { color: var(--dim, rgba(255,255,255,.4)); }
+.dl-siem-strip__cta {
+  margin-left: auto;
+  color: var(--cyan, #00b4d8);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.dl-siem-strip__cta:hover { text-decoration: underline; }
+[data-theme="light"] .dl-siem-strip { background: rgba(0,0,0,.02); border-color: rgba(0,0,0,.06); }
+[data-theme="light"] .dl-siem-strip__fmts { color: rgba(0,0,0,.4); }
+
+/* ── Showcase SIEM format tabs ── */
+.showcase-tabs {
+  display: flex;
+  gap: 2px;
+  margin-top: .6rem;
+  flex-wrap: wrap;
+}
+.showcase-tab {
+  font-size: .7rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border: 1px solid var(--border, rgba(255,255,255,.08));
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  background: transparent;
+  color: var(--dim, rgba(255,255,255,.4));
+  cursor: pointer;
+  transition: all .15s;
+}
+.showcase-tab:hover { color: var(--fg, #fff); background: rgba(255,255,255,.04); }
+.showcase-tab.active {
+  color: var(--cyan, #00b4d8);
+  background: rgba(0,180,216,.06);
+  border-color: rgba(0,180,216,.2);
+}
+.showcase-panels { position: relative; }
+.showcase-panel { display: none; }
+.showcase-panel.active { display: block; }
+[data-theme="light"] .showcase-tab { border-color: rgba(0,0,0,.08); color: #666; }
+[data-theme="light"] .showcase-tab:hover { color: #333; background: rgba(0,0,0,.03); }
+[data-theme="light"] .showcase-tab.active { color: var(--cyan); background: rgba(0,180,200,.05); border-color: rgba(0,180,200,.2); }
+
+/* ── Rule Tester ── */
+.dl-rule-tester { margin-top: .6rem; }
+.dl-rule-tester__btn {
+  display: block;
+  width: 100%;
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .55rem .8rem;
+  background: var(--faint, rgba(255,255,255,.02));
+  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border-radius: var(--r-sm, 6px);
+  color: var(--gray, #888);
+  cursor: pointer;
+  text-align: left;
+  transition: all .15s;
+}
+.dl-rule-tester__btn:hover { border-color: var(--border-hi, rgba(255,255,255,.15)); color: var(--fg, #fff); }
+.dl-rule-tester__panel { display: none; padding: .8rem; margin-top: .4rem; border: 1px solid var(--border); border-radius: var(--r-sm, 6px); background: var(--deep, #0a0a0f); }
+.dl-rule-tester.open .dl-rule-tester__panel { display: block; }
+.dl-rule-tester__step { display: flex; align-items: center; gap: .4rem; font-size: .72rem; color: var(--gray); margin: .5rem 0 .3rem; }
+.dl-rule-tester__step:first-child { margin-top: 0; }
+.dl-rule-tester__num { display: inline-flex; width: 18px; height: 18px; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,180,216,.15); color: var(--cyan); font-size: .6rem; font-weight: 700; flex-shrink: 0; }
+.dl-rule-tester__log { margin-bottom: .5rem; }
+.dl-rule-tester__log pre { margin: 0; padding: .5rem .7rem; background: rgba(0,0,0,.3); border-radius: 4px; overflow-x: auto; }
+.dl-rule-tester__log code { font-size: .65rem; color: var(--gray); white-space: pre; }
+.dl-rule-tester__matches { display: flex; flex-direction: column; gap: .2rem; margin-bottom: .5rem; }
+.dl-rule-tester__match { display: flex; align-items: center; gap: .4rem; font-size: .65rem; font-family: var(--f-mono, monospace); padding: .2rem .5rem; background: rgba(255,255,255,.02); border-radius: 3px; flex-wrap: wrap; }
+.dl-rule-tester__field { color: var(--cyan); font-weight: 600; }
+.dl-rule-tester__op { color: var(--dim); }
+.dl-rule-tester__value { color: var(--lime, #00e676); }
+.dl-rule-tester__status { color: var(--lime, #00e676); font-weight: 700; margin-left: auto; }
+.dl-rule-tester__result { display: flex; align-items: center; gap: .5rem; padding: .5rem .7rem; background: rgba(255,60,60,.08); border: 1px solid rgba(255,60,60,.2); border-radius: 4px; font-size: .75rem; color: #ff6b6b; font-weight: 600; }
+.dl-rule-tester__result-icon { font-size: 1rem; }
+.dl-rule-tester__note { font-size: .62rem; color: var(--dim); margin-top: .4rem; font-style: italic; }
+[data-theme="light"] .dl-rule-tester__btn { background: rgba(0,0,0,.02); border-color: rgba(0,0,0,.08); color: #555; }
+[data-theme="light"] .dl-rule-tester__panel { background: #f8f9fa; border-color: rgba(0,0,0,.08); }
+[data-theme="light"] .dl-rule-tester__log pre { background: rgba(0,0,0,.04); }
+[data-theme="light"] .dl-rule-tester__match { background: rgba(0,0,0,.02); }
+
+/* ── Detection Vault mobile ── */
+@media (max-width: 600px) {
+  .dl-siem-strip { flex-direction: column; align-items: flex-start; gap: .25rem; }
+  .dl-siem-strip__cta { margin-left: 0; }
+  .showcase-tabs { gap: 1px; }
+  .showcase-tab { font-size: .6rem; padding: 4px 7px; }
+  .dl-rule__code pre { padding: .5rem .6rem; }
+  .dl-rule__code code { font-size: .62rem; }
+  .dl-copy-btn { font-size: .65rem; padding: .2rem .4rem; }
+  .dl-rule-tester__match { font-size: .58rem; gap: .25rem; }
+  .dl-rule-tester__log code { font-size: .58rem; }
+  .dl-breach-badge { font-size: .58rem; padding: 1px 6px; }
+  .dl-section-divider__label { font-size: .75rem; }
+  .vault-search__input { font-size: .8rem; }
+  .dl-rule__notes { font-size: .65rem; }
+  .tool-card { padding: .9rem 1rem; }
+  .tool-card h4 { font-size: .85rem; }
+  .community-card__tagline { font-size: .68rem; }
+}
+
 /* ══════════════════════════════════════════════════════════
    TIERED ACCESS — Gated SIEM format chips & Sigma-only view
    ══════════════════════════════════════════════════════════ */
