@@ -23,7 +23,6 @@ permalink: /vulnerabilities/
     <button class="btn btn--sm btn--cvss-critical" data-cvss-filter="critical" onclick="filterVulns('critical')">Critical (9.0+)</button>
     <button class="btn btn--sm btn--cvss-high" data-cvss-filter="high" onclick="filterVulns('high')">High (7.0–8.9)</button>
     <button class="btn btn--sm btn--cvss-medium" data-cvss-filter="medium" onclick="filterVulns('medium')">Medium (4.0–6.9)</button>
-    <button class="btn btn--sm btn--cvss-low" data-cvss-filter="low" onclick="filterVulns('low')">Low (&lt;4.0)</button>
   </div>
 
   <div class="feed-tags" style="margin-top: 0.4rem; display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center;">
@@ -99,7 +98,6 @@ function filterVulns(mode) {
       if (mode === 'critical') return score >= 9.0 || sev === 'CRITICAL';
       if (mode === 'high') return (score >= 7.0 && score < 9.0) || (sev === 'HIGH' && score === 0);
       if (mode === 'medium') return (score >= 4.0 && score < 7.0) || (sev === 'MEDIUM' && score === 0);
-      if (mode === 'low') return score > 0 && score < 4.0;
       return true;
     });
   }
