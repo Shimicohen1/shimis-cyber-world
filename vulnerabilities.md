@@ -16,9 +16,12 @@ permalink: /vulnerabilities/
     <input type="text" class="feed-search__input" placeholder="Search CVEs..." id="vuln-search">
     <span class="feed-search__count" id="vuln-count"></span>
   </div>
-  <div class="feed-filters" style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
-    <button class="btn btn--sm btn--active" id="filter-all" onclick="filterVulns('all')">All</button>
-    <button class="btn btn--sm" id="filter-high" onclick="filterVulns('high')">HIGH+ Only</button>
+  <div class="feed-filters" style="margin-top: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <button class="btn btn--sm btn--active" data-cvss-filter="all" onclick="filterVulns('all')">All</button>
+    <button class="btn btn--sm btn--cvss-critical" data-cvss-filter="critical" onclick="filterVulns('critical')">Critical (9.0+)</button>
+    <button class="btn btn--sm btn--cvss-high" data-cvss-filter="high" onclick="filterVulns('high')">High (7.0–8.9)</button>
+    <button class="btn btn--sm btn--cvss-medium" data-cvss-filter="medium" onclick="filterVulns('medium')">Medium (4.0–6.9)</button>
+    <button class="btn btn--sm btn--cvss-low" data-cvss-filter="low" onclick="filterVulns('low')">Low (&lt;4.0)</button>
   </div>
 </div>
 
@@ -27,7 +30,7 @@ permalink: /vulnerabilities/
     {% for post in site.posts %}
     {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" or post.channel == "NVD" or post.section == "vulnerabilities" %}
     {% if post.score == "HIGH" or post.score == "CRITICAL" or post.score == "MEDIUM" %}
-    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}" data-score="{{ post.score }}">
+    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}" data-score="{{ post.score }}" data-cvss="{{ post.cvss_score }}">
           {% include post-card.html %}
     </div>
     {% endif %}
@@ -57,24 +60,20 @@ permalink: /vulnerabilities/
 <script>
 function filterVulns(mode) {
   var entries = document.querySelectorAll('#vuln-list .feed-entry');
-  var allBtn = document.getElementById('filter-all');
-  var highBtn = document.getElementById('filter-high');
+  var btns = document.querySelectorAll('[data-cvss-filter]');
   entries.forEach(function(el) {
-    if (mode === 'high') {
-      var score = (el.getAttribute('data-score') || '').toUpperCase();
-      el.style.display = (score === 'HIGH' || score === 'CRITICAL') ? '' : 'none';
-    } else {
-      el.style.display = '';
-    }
+    var score = parseFloat(el.getAttribute('data-cvss')) || 0;
+    var sev = (el.getAttribute('data-score') || '').toUpperCase();
+    var show = true;
+    if (mode === 'critical') show = score >= 9.0 || sev === 'CRITICAL';
+    else if (mode === 'high') show = (score >= 7.0 && score < 9.0) || (sev === 'HIGH' && score === 0);
+    else if (mode === 'medium') show = (score >= 4.0 && score < 7.0) || (sev === 'MEDIUM' && score === 0);
+    else if (mode === 'low') show = score > 0 && score < 4.0;
+    el.style.display = show ? '' : 'none';
   });
-  if (mode === 'high') {
-    highBtn.classList.add('btn--active');
-    allBtn.classList.remove('btn--active');
-  } else {
-    allBtn.classList.add('btn--active');
-    highBtn.classList.remove('btn--active');
-  }
-  // Re-trigger pagination count update
+  btns.forEach(function(b) {
+    b.classList.toggle('btn--active', b.getAttribute('data-cvss-filter') === mode);
+  });
   var countEl = document.getElementById('vuln-count');
   var visible = document.querySelectorAll('#vuln-list .feed-entry:not([style*="display: none"])').length;
   if (countEl) countEl.textContent = visible + ' vulnerabilities';

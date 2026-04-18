@@ -2792,6 +2792,16 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .cvss-badge--low { background: rgba(0, 180, 216, 0.12); color: #00b4d8; border: 1px solid rgba(0, 180, 216, 0.25); }
 .feed-item__meta .cvss-badge { font-size: .68rem; padding: .1em .4em; }
 
+/* ── CVSS filter buttons ─────────────────── */
+.btn--cvss-critical { color: #d060ff; border-color: rgba(200, 0, 255, 0.3); }
+.btn--cvss-critical.btn--active { background: rgba(200, 0, 255, 0.2); color: #d060ff; border-color: rgba(200, 0, 255, 0.5); }
+.btn--cvss-high { color: #ff3c3c; border-color: rgba(255, 60, 60, 0.3); }
+.btn--cvss-high.btn--active { background: rgba(255, 60, 60, 0.2); color: #ff3c3c; border-color: rgba(255, 60, 60, 0.5); }
+.btn--cvss-medium { color: #ffb400; border-color: rgba(255, 180, 0, 0.3); }
+.btn--cvss-medium.btn--active { background: rgba(255, 180, 0, 0.15); color: #ffb400; border-color: rgba(255, 180, 0, 0.5); }
+.btn--cvss-low { color: #00b4d8; border-color: rgba(0, 180, 216, 0.3); }
+.btn--cvss-low.btn--active { background: rgba(0, 180, 216, 0.15); color: #00b4d8; border-color: rgba(0, 180, 216, 0.5); }
+
 /* ── Newsletter ──────────────────────────── */
 .newsletter {
   background: linear-gradient(135deg, rgba(0, 180, 216, 0.08) 0%, rgba(0, 180, 216, 0.02) 100%);
