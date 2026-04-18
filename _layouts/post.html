@@ -9,6 +9,7 @@ layout: default
       <div class="post-meta">
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y %H:%M" }}</time>
         {% if page.score %}<span class="meta-sep">/</span><span class="tag tag--{{ page.score | downcase }}">{{ page.score }}</span>{% endif %}
+        {% if page.cvss_score %}<span class="meta-sep">/</span><span class="cvss-badge cvss-badge--{{ page.cvss_severity | downcase }}" title="CVSS {{ page.cvss_vector }}">CVSS {{ page.cvss_score }}/10</span>{% endif %}
       </div>
 
       {% comment %}── Author byline ──{% endcomment %}

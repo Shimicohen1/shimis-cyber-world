@@ -2781,6 +2781,16 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 /* ── Score badges ────────────────────────── */
 .tag--high { background: rgba(255, 60, 60, 0.15); color: #ff3c3c; border: 1px solid rgba(255, 60, 60, 0.3); }
 .tag--medium { background: rgba(255, 180, 0, 0.15); color: #ffb400; border: 1px solid rgba(255, 180, 0, 0.3); }
+.tag--critical { background: rgba(200, 0, 255, 0.15); color: #d060ff; border: 1px solid rgba(200, 0, 255, 0.3); }
+.tag--low { background: rgba(0, 180, 216, 0.12); color: #00b4d8; border: 1px solid rgba(0, 180, 216, 0.25); }
+
+/* ── CVSS score badge ────────────────────── */
+.cvss-badge { display: inline-flex; align-items: center; gap: .3em; font-size: .78rem; font-weight: 700; padding: .15em .55em; border-radius: 6px; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.cvss-badge--critical { background: rgba(200, 0, 255, 0.15); color: #d060ff; border: 1px solid rgba(200, 0, 255, 0.35); }
+.cvss-badge--high { background: rgba(255, 60, 60, 0.15); color: #ff3c3c; border: 1px solid rgba(255, 60, 60, 0.35); }
+.cvss-badge--medium { background: rgba(255, 180, 0, 0.12); color: #ffb400; border: 1px solid rgba(255, 180, 0, 0.3); }
+.cvss-badge--low { background: rgba(0, 180, 216, 0.12); color: #00b4d8; border: 1px solid rgba(0, 180, 216, 0.25); }
+.feed-item__meta .cvss-badge { font-size: .68rem; padding: .1em .4em; }
 
 /* ── Newsletter ──────────────────────────── */
 .newsletter {
