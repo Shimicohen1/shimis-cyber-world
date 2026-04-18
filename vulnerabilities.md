@@ -52,7 +52,7 @@ permalink: /vulnerabilities/
     {% for post in site.posts %}
     {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" or post.channel == "NVD" or post.section == "vulnerabilities" %}
     {% if post.score == "HIGH" or post.score == "CRITICAL" or post.score == "MEDIUM" %}
-    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }} {{ post.channel | downcase }} {{ post.source | downcase }} {{ post.cwe | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}" data-score="{{ post.score }}" data-cvss="{{ post.cvss_score }}" data-channel="{{ post.channel }}">
+    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }} {{ post.channel | downcase }} {{ post.source | downcase }} {{ post.cwe | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}" data-score="{{ post.score }}" data-cvss="{{ post.cvss_score }}" data-channel="{{ post.channel }}">
           {% include post-card.html %}
     </div>
     {% endif %}
