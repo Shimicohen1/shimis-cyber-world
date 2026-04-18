@@ -19,7 +19,8 @@ permalink: /detections/
     {% assign is_nvd = false %}
     {% if post.channel == "INCD" %}{% assign is_incd = true %}{% endif %}
     {% if post.channel == "NVD" %}{% assign is_nvd = true %}{% endif %}
-    {% comment %}INCD & NVD = immediate, others = 14-day gate{% endcomment %}
+    {% comment %}INCD & NVD = immediate, others = 14-day gate. NVD: HIGH+CRITICAL only{% endcomment %}
+    {% if is_nvd and post.score != "HIGH" and post.score != "CRITICAL" %}{% continue %}{% endif %}
     {% if is_incd or is_nvd or pe < vault_cutoff %}
       {% assign ctkey = post.sigma_rules.preview_technique | downcase | strip | append: "~" | append: post.sigma_rules.preview_title | downcase | strip %}
       {% assign ctcheck = "||" | append: ctkey | append: "||" %}
@@ -213,6 +214,7 @@ permalink: /detections/
       {% assign is_nvd = false %}
       {% if post.channel == "INCD" %}{% assign is_incd = true %}{% endif %}
       {% if post.channel == "NVD" %}{% assign is_nvd = true %}{% endif %}
+      {% if is_nvd and post.score != "HIGH" and post.score != "CRITICAL" %}{% continue %}{% endif %}
       {% if is_incd or is_nvd or pe < vault_cutoff %}
         {% assign rule_key = post.sigma_rules.preview_technique | downcase | strip | append: "~" | append: post.sigma_rules.preview_title | downcase | strip %}
         {% assign rule_check = "||" | append: rule_key | append: "||" %}
