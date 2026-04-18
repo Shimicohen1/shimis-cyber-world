@@ -14,10 +14,17 @@
     var currentPage = 1;
     var totalPages = 1;
     var activeFilter = 'all';
+    var externalFilter = null;
+
+    // Allow pages to register an extra filter function (receives element, returns bool)
+    list._setExternalFilter = function (fn) { externalFilter = fn; applyFilters(); };
+    list._clearExternalFilter = function () { externalFilter = null; applyFilters(); };
 
     function applyFilters() {
       var query = searchInput ? searchInput.value.trim().toLowerCase() : '';
       filtered = allItems.filter(function (el) {
+        // External filter (CVSS, source, etc.)
+        if (externalFilter && !externalFilter(el)) return false;
         var tags = el.getAttribute('data-tags') || '';
         // Category filter
         if (activeFilter !== 'all' && tags.indexOf(activeFilter) === -1) return false;

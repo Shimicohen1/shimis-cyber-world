@@ -23,6 +23,28 @@ permalink: /vulnerabilities/
     <button class="btn btn--sm btn--cvss-medium" data-cvss-filter="medium" onclick="filterVulns('medium')">Medium (4.0–6.9)</button>
     <button class="btn btn--sm btn--cvss-low" data-cvss-filter="low" onclick="filterVulns('low')">Low (&lt;4.0)</button>
   </div>
+
+  <div class="feed-tags" style="margin-top: 0.4rem; display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center;">
+    <span class="feed-tags__label">Source</span>
+    <button class="tag-chip tag-chip--source" onclick="tagSearch('nvd')">NVD</button>
+    <button class="tag-chip tag-chip--source" onclick="tagSearch('incd')">INCD</button>
+    <button class="tag-chip tag-chip--source" onclick="tagSearch('cisa-kev')">CISA KEV</button>
+    <span class="feed-tags__sep">|</span>
+    <span class="feed-tags__label">Type</span>
+    <button class="tag-chip tag-chip--type" onclick="tagSearch('cwe-79')">XSS</button>
+    <button class="tag-chip tag-chip--type" onclick="tagSearch('sql-injection')">SQLi</button>
+    <button class="tag-chip tag-chip--type" onclick="tagSearch('remote-code-execution')">RCE</button>
+    <button class="tag-chip tag-chip--type" onclick="tagSearch('buffer-overflow')">Buffer Overflow</button>
+    <button class="tag-chip tag-chip--type" onclick="tagSearch('path-traversal')">Path Traversal</button>
+    <button class="tag-chip tag-chip--type" onclick="tagSearch('command-injection')">Cmd Injection</button>
+    <button class="tag-chip tag-chip--type" onclick="tagSearch('cwe-918')">SSRF</button>
+    <button class="tag-chip tag-chip--type" onclick="tagSearch('privilege-escalation')">Priv Esc</button>
+    <span class="feed-tags__sep">|</span>
+    <span class="feed-tags__label">Topic</span>
+    <button class="tag-chip tag-chip--topic" onclick="tagSearch('ransomware')">Ransomware</button>
+    <button class="tag-chip tag-chip--topic" onclick="tagSearch('data-breach')">Data Breach</button>
+    <button class="tag-chip tag-chip--topic" onclick="tagSearch('actively-exploited')">Actively Exploited</button>
+  </div>
 </div>
 
 <div class="archive">
@@ -30,7 +52,7 @@ permalink: /vulnerabilities/
     {% for post in site.posts %}
     {% if post.channel == "CVE Notify" or post.channel == "CISA KEV" or post.channel == "INCD" or post.channel == "NVD" or post.section == "vulnerabilities" %}
     {% if post.score == "HIGH" or post.score == "CRITICAL" or post.score == "MEDIUM" %}
-    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}" data-score="{{ post.score }}" data-cvss="{{ post.cvss_score }}">
+    <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }} {{ post.channel | downcase }} {{ post.source | downcase }} {{ post.cwe | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}" data-score="{{ post.score }}" data-cvss="{{ post.cvss_score }}" data-channel="{{ post.channel }}">
           {% include post-card.html %}
     </div>
     {% endif %}
@@ -59,24 +81,42 @@ permalink: /vulnerabilities/
 
 <script>
 function filterVulns(mode) {
-  var entries = document.querySelectorAll('#vuln-list .feed-entry');
+  var list = document.getElementById('vuln-list');
   var btns = document.querySelectorAll('[data-cvss-filter]');
-  entries.forEach(function(el) {
-    var score = parseFloat(el.getAttribute('data-cvss')) || 0;
-    var sev = (el.getAttribute('data-score') || '').toUpperCase();
-    var show = true;
-    if (mode === 'critical') show = score >= 9.0 || sev === 'CRITICAL';
-    else if (mode === 'high') show = (score >= 7.0 && score < 9.0) || (sev === 'HIGH' && score === 0);
-    else if (mode === 'medium') show = (score >= 4.0 && score < 7.0) || (sev === 'MEDIUM' && score === 0);
-    else if (mode === 'low') show = score > 0 && score < 4.0;
-    el.style.display = show ? '' : 'none';
-  });
+  if (mode === 'all') {
+    if (list._clearExternalFilter) list._clearExternalFilter();
+  } else {
+    if (list._setExternalFilter) list._setExternalFilter(function(el) {
+      var score = parseFloat(el.getAttribute('data-cvss')) || 0;
+      var sev = (el.getAttribute('data-score') || '').toUpperCase();
+      if (mode === 'critical') return score >= 9.0 || sev === 'CRITICAL';
+      if (mode === 'high') return (score >= 7.0 && score < 9.0) || (sev === 'HIGH' && score === 0);
+      if (mode === 'medium') return (score >= 4.0 && score < 7.0) || (sev === 'MEDIUM' && score === 0);
+      if (mode === 'low') return score > 0 && score < 4.0;
+      return true;
+    });
+  }
   btns.forEach(function(b) {
     b.classList.toggle('btn--active', b.getAttribute('data-cvss-filter') === mode);
   });
-  var countEl = document.getElementById('vuln-count');
-  var visible = document.querySelectorAll('#vuln-list .feed-entry:not([style*="display: none"])').length;
-  if (countEl) countEl.textContent = visible + ' vulnerabilities';
+}
+
+function tagSearch(tag) {
+  var input = document.getElementById('vuln-search');
+  if (!input) return;
+  // Toggle: if same tag is already in the search box, clear it
+  if (input.value.trim().toLowerCase() === tag) {
+    input.value = '';
+  } else {
+    input.value = tag;
+  }
+  // Trigger the search input event so pagination picks it up
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  // Update chip active states
+  document.querySelectorAll('.tag-chip').forEach(function(c) {
+    c.classList.toggle('tag-chip--active', input.value.trim().toLowerCase() === c.textContent.trim().toLowerCase() ||
+      input.value.trim().toLowerCase() === (c.getAttribute('onclick') || '').replace(/tagSearch\('|'\)/g, ''));
+  });
 }
 </script>
 
