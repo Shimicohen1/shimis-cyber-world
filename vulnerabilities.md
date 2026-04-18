@@ -29,6 +29,10 @@ permalink: /vulnerabilities/
     <button class="tag-chip tag-chip--source" onclick="tagSearch('nvd')">NVD</button>
     <button class="tag-chip tag-chip--source" onclick="tagSearch('incd')">INCD</button>
     <button class="tag-chip tag-chip--source" onclick="tagSearch('cisa-kev')">CISA KEV</button>
+    <button class="tag-chip tag-chip--source" onclick="tagSearch('cve notify')">CVE Notify</button>
+    <button class="tag-chip tag-chip--source" onclick="tagSearch('the hacker news')">Hacker News</button>
+    <button class="tag-chip tag-chip--source" onclick="tagSearch('bleepingcomputer')">BleepingComputer</button>
+    <button class="tag-chip tag-chip--source" onclick="tagSearch('securityweek')">SecurityWeek</button>
     <span class="feed-tags__sep">|</span>
     <span class="feed-tags__label">Type</span>
     <button class="tag-chip tag-chip--type" onclick="tagSearch('cwe-79')">XSS</button>
@@ -44,6 +48,11 @@ permalink: /vulnerabilities/
     <button class="tag-chip tag-chip--topic" onclick="tagSearch('ransomware')">Ransomware</button>
     <button class="tag-chip tag-chip--topic" onclick="tagSearch('data-breach')">Data Breach</button>
     <button class="tag-chip tag-chip--topic" onclick="tagSearch('actively-exploited')">Actively Exploited</button>
+    <button class="tag-chip tag-chip--topic" onclick="tagSearch('malware')">Malware</button>
+    <button class="tag-chip tag-chip--topic" onclick="tagSearch('phishing')">Phishing</button>
+    <button class="tag-chip tag-chip--topic" onclick="tagSearch('cloud')">Cloud</button>
+    <button class="tag-chip tag-chip--topic" onclick="tagSearch('ai-security')">AI Security</button>
+    <button class="tag-chip tag-chip--topic" onclick="tagSearch('israel')">Israel</button>
   </div>
 </div>
 
