@@ -22,47 +22,46 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: AI Guardrails Vulnerable to Prompt Injection
-    text: Sophisticated prompt injection attacks can bypass AI safety features.
-    detail: Recent findings demonstrate that advanced prompt injection techniques can successfully circumvent AI guardrails, even in advanced systems like Apple Intelligence. This highlights a critical need for robust input validation and ongoing monitoring of AI model interactions to prevent malicious manipulation and data leakage.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Application Security
-    badge: signal
-    tags:
-      - ai-security
-      - prompt-injection
-      - threat-intel
-  - title: "Exploit Chain: Zero-Days Fueling Sophisticated Attacks"
-    text: Wild exploits of zero-day vulnerabilities in widely used software persist.
-    detail: The active exploitation of zero-day vulnerabilities in Adobe Reader and Windows (BlueHammer) underscores the persistent threat from unknown flaws. Cybersecurity professionals must prioritize rapid patching and threat hunting for indicators of compromise, as these vulnerabilities are actively leveraged by attackers.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/vulnerability-management-importance
-    link_label: Vulnerability Management
+  - title: Zero-Day Exploits Continue to Plague Major Software
+    text: Zero-day vulnerabilities in widely used software like Adobe Reader and Windows remain a critical threat.
+    detail: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows underscores the persistent challenge of software supply chain security. Organizations must prioritize prompt patching and robust endpoint detection to mitigate risks associated with these undisclosed flaws. Stay vigilant for vendor advisories and threat intelligence feeds.
+    link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
+    link_label: CISA KEV Catalog
     badge: signal
     tags:
       - zero-day
       - vulnerability
       - threat-intel
-      - exploit
-  - title: Supply Chain Attacks Target Plugin Updates
-    text: Compromised plugin updates are delivering backdoors to users.
-    detail: The hijacking of update mechanisms for popular WordPress and Joomla plugins (Smart Slider 3 Pro) illustrates a critical supply chain risk. Organizations must implement stringent vetting processes for software updates and consider network segmentation to limit the impact of compromised third-party components.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerabilities
-    link_label: Supply Chain Security
+  - title: AI Guardrails Vulnerable to Prompt Injection Attacks
+    text: AI systems, including those in consumer products, are susceptible to prompt injection, bypassing intended security measures.
+    detail: The successful bypassing of AI guardrails via prompt injection highlights a nascent but growing attack vector. As AI integration expands, expect threat actors to increasingly exploit these weaknesses. Implement strict input validation and continuous monitoring for AI-driven systems to prevent unintended actions and data leakage.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
-      - supply-chain
+      - ai-security
+      - prompt-injection
+      - threat-intel
+  - title: Phishing-as-a-Service Platforms Target High-Value Credentials
+    text: Sophisticated 'Phishing-as-a-Service' platforms are actively targeting C-suite Microsoft logins.
+    detail: Emerging PhaaS platforms like VENOM demonstrate a trend towards targeted, high-value credential theft, specifically focusing on executive Microsoft accounts. This necessitates enhanced multi-factor authentication (MFA) for all users, especially privileged ones, and continuous user awareness training on sophisticated phishing tactics.
+    link: https://www.ncsa.gov/cyber-threat-intelligence/reports/phishing-as-a-service-threat-actors-and-capabilities
+    link_label: NCSC PhaaS Report
+    badge: signal
+    tags:
+      - phishing
+      - credential-theft
+      - threat-intel
+  - title: IoT and Legacy Devices Remain Prime Targets for Botnets
+    text: Botnets like Masjesu continue to exploit vulnerabilities in IoT devices and older systems.
+    detail: The continued targeting of IoT devices by botnets like Masjesu signifies a persistent threat from unpatched and legacy systems. Organizations must implement robust network segmentation, disable unnecessary services, and regularly update firmware for all connected devices to reduce their attack surface.
+    link: https://www.mitre.org/attack-matrix/iot
+    link_label: MITRE ATT&CK for IoT
+    badge: signal
+    tags:
+      - iot-security
+      - botnet
       - malware
-      - threat-intel
-  - title: Geopolitical Factors Don't Halt Cyberattacks
-    text: Cyber ceasefires are historically ineffective in reducing malicious activity.
-    detail: Historical analysis indicates that proposed 'cyber ceasefires,' often linked to geopolitical events, rarely lead to a sustained reduction in malicious online activity. This suggests that organizations should maintain robust defensive postures regardless of perceived international de-escalations.
-    link: https://www.mitre.org/about/news/mitre-cyber-threat-intelligence-blog/cyber-ceasefires-do-they-really-slow-attacks
-    link_label: Cyber Ceasefire Analysis
-    badge: signal
-    tags:
-      - threat-intel
-      - geopolitics
-      - cybercrime
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
