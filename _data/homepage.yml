@@ -23,45 +23,46 @@ identity:
     url: /about/
 quick_signals:
   - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: Emerging PhaaS platforms like VENOM are enabling sophisticated, targeted attacks against high-value credentials.
-    detail: The 'VENOM' platform highlights a concerning trend of accessible, high-sophistication phishing tools targeting C-suite Microsoft credentials. Professionals should reinforce multi-factor authentication and conduct regular phishing awareness training, focusing on advanced social engineering tactics.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-awareness-month-tips
-    link_label: Phishing Awareness Tips
+    text: New PhaaS platforms like VENOM are targeting C-suite Microsoft credentials.
+    detail: The emergence of sophisticated Phishing-as-a-Service (PhaaS) platforms like VENOM indicates a growing trend of commoditized, targeted attacks. These platforms lower the barrier to entry for malicious actors, enabling them to conduct highly selective campaigns against high-value targets. Cybersecurity professionals should bolster defenses against credential harvesting, focusing on multi-factor authentication and user education for executive staff.
+    link: https://owasp.org/www-community/vulnerabilities/Phishing
+    link_label: OWASP Phishing Guidance
     badge: signal
     tags:
       - threat-intel
       - phishing
       - microsoft
-  - title: Zero-Day Exploits Target Widely Used Software
-    text: Actively exploited zero-day vulnerabilities are appearing in critical software like Windows and Adobe Reader.
-    detail: The 'BlueHammer' Windows exploit and a zero-day in Adobe Reader demonstrate a persistent threat from unknown vulnerabilities. Organizations must prioritize rapid patching, implement robust endpoint detection and response (EDR), and maintain rigorous vulnerability management programs.
-    link: https://www.cisa.gov/news-events/directives/spd-05-1-001
-    link_label: Vulnerability Management
+  - title: IoT Device Vulnerabilities Fueling Botnet Growth
+    text: Botnets like Masjesu stealthily target IoT devices, evading detection.
+    detail: The Masjesu botnet exemplifies the increasing threat to Internet of Things (IoT) devices. Attackers are leveraging these often-insecure endpoints to build resilient botnets, actively evading detection mechanisms. Organizations must prioritize securing their IoT deployments through regular patching, network segmentation, and disabling unnecessary services to mitigate risks associated with botnet recruitment.
+    link: https://www.cisa.gov/news-events/advisories/aa23-301a
+    link_label: CISA IoT Security Advisory
+    badge: signal
+    tags:
+      - threat-intel
+      - malware
+      - iot
+      - botnet
+  - title: Zero-Day Exploits Remain a Persistent Threat
+    text: Zero-days in Adobe Reader and Windows (BlueHammer) are actively exploited.
+    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows underscores the critical need for robust vulnerability management and rapid patching. The 'BlueHammer' exploit highlights ongoing challenges with Microsoft's bug disclosure process. Professionals should focus on proactive threat hunting and implementing layered security controls to detect and respond to novel attack vectors.
+    link: https://nvd.nist.gov/vuln/categories
+    link_label: NVD Vulnerability Categories
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-  - title: Supply Chain Attacks Target Popular Plugins
-    text: Compromised updates for widely used plugins like Smart Slider 3 can inject backdoors into user systems.
-    detail: The hijacking of Smart Slider 3 Pro's update mechanism for WordPress and Joomla showcases the ongoing risk of supply chain attacks. Implement strict software vetting, monitor for unauthorized code changes, and practice least privilege access for plugin administrators.
+  - title: Supply Chain Attacks Targeting Software Updates
+    text: Hijacked updates for WordPress/Joomla plugins inject backdoors.
+    detail: The hijacking of legitimate software update mechanisms, as seen with the Smart Slider 3 Pro plugin, represents a significant supply chain risk. Attackers compromise trusted sources to distribute malicious code, bypassing traditional security perimeters. Organizations must scrutinize software updates, verify publisher integrity, and implement strict access controls on development and distribution pipelines.
     link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: Supply Chain Security
+    link_label: OWASP Supply Chain Security
     badge: signal
     tags:
       - threat-intel
       - supply-chain
       - malware
-  - title: AI Guardrails Being Bypassed by Prompt Injection
-    text: Even advanced AI systems, like Apple Intelligence, are vulnerable to prompt injection attacks.
-    detail: Researchers have demonstrated the bypass of AI guardrails through prompt injection, indicating a need for robust input validation and ongoing security research in AI systems. Developers and users should be aware of these evolving attack vectors and advocate for secure AI development practices.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Application Security
-    badge: signal
-    tags:
-      - threat-intel
-      - ai
-      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
