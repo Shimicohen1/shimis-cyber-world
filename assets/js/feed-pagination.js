@@ -44,7 +44,7 @@
       if (countEl) countEl.textContent = n + ' results';
     }
 
-    function showPage(page) {
+    function showPage(page, scrollToTop) {
       currentPage = page;
       totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
       if (currentPage > totalPages) currentPage = totalPages;
@@ -60,8 +60,8 @@
       renderPagination();
       updateCount(filtered.length);
 
-      // Scroll to top of list on page change (not on initial load)
-      if (page > 1 || filtered.length !== allItems.length) {
+      // Only scroll on explicit pagination clicks, not on filter/search
+      if (scrollToTop) {
         var target = list.closest('.archive') || list;
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -103,7 +103,7 @@
       // Bind clicks
       paginationEl.querySelectorAll('.page-btn[data-page]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          showPage(parseInt(btn.getAttribute('data-page'), 10));
+          showPage(parseInt(btn.getAttribute('data-page'), 10), true);
         });
       });
     }
