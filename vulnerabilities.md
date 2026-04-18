@@ -30,9 +30,6 @@ permalink: /vulnerabilities/
     <button class="tag-chip tag-chip--source" onclick="tagSearch('incd')">INCD</button>
     <button class="tag-chip tag-chip--source" onclick="tagSearch('cisa-kev')">CISA KEV</button>
     <button class="tag-chip tag-chip--source" onclick="tagSearch('cve notify')">CVE Notify</button>
-    <button class="tag-chip tag-chip--source" onclick="tagSearch('the hacker news')">Hacker News</button>
-    <button class="tag-chip tag-chip--source" onclick="tagSearch('bleepingcomputer')">BleepingComputer</button>
-    <button class="tag-chip tag-chip--source" onclick="tagSearch('securityweek')">SecurityWeek</button>
     <span class="feed-tags__sep">|</span>
     <span class="feed-tags__label">Type</span>
     <button class="tag-chip tag-chip--type" onclick="tagSearch('cwe-79')">XSS</button>
