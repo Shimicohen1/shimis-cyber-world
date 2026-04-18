@@ -517,104 +517,68 @@ Target 1000-1500 characters. LinkedIn rewards longer, thoughtful posts. Don't pa
  *  GEMINI IMAGE GENERATION — contextual LinkedIn visual
  * ═══════════════════════════════════════════════════════════ */
 
-async function generateImage(title, tags) {
-  if (!GEMINI_API_KEY) return null;
+/* ═══════════════════════════════════════════════════════════
+ *  POOL IMAGE PICKER — pick from scw-post-images repo
+ *  (replaces per-post Gemini image generation to save costs)
+ * ═══════════════════════════════════════════════════════════ */
 
-  const tagStr = (tags || '').replace(/[\[\]]/g, '');
+const TAG_TO_CATEGORY = {
+  ransomware: 'threats', 'data-breach': 'threats', darkweb: 'threats',
+  apt: 'threats', espionage: 'threats', malware: 'threats',
+  vulnerability: 'vulnerability', cve: 'vulnerability', exploit: 'vulnerability',
+  tools: 'tools', 'red-team': 'tools', pentest: 'tools', osint: 'tools',
+  'threat-intel': 'news', 'ai-security': 'news', cloud: 'news',
+  phishing: 'news', 'supply-chain': 'news',
+};
 
-  // Map topic to a specific visual concept
-  const tagList = tagStr.split(',').map(t => t.trim().toLowerCase());
-  let visualConcept = 'digital threat landscape with network connections and data flows';
-  if (tagList.some(t => ['ransomware', 'data-breach', 'darkweb'].includes(t))) {
-    visualConcept = 'a locked vault or encrypted data being breached, shattered digital locks, data fragments scattering into darkness';
-  } else if (tagList.some(t => ['apt', 'espionage', 'threat-intel'].includes(t))) {
-    visualConcept = 'a shadowy digital chess board with strategic pieces, representing state-level cyber warfare and intelligence operations';
-  } else if (tagList.some(t => ['phishing', 'social-engineering', 'fraud'].includes(t))) {
-    visualConcept = 'a deceptive digital landscape with mirrored surfaces and hidden traps, representing social engineering deception';
-  } else if (tagList.some(t => ['vulnerability', 'cve', 'exploit'].includes(t))) {
-    visualConcept = 'a cracked digital shield with code fragments visible through the cracks, representing software vulnerabilities';
-  } else if (tagList.some(t => ['malware', 'trojan', 'botnet'].includes(t))) {
-    visualConcept = 'a corrupted digital organism spreading through a network, with infected nodes glowing in warning colors';
-  } else if (tagList.some(t => ['supply-chain', 'incident-response'].includes(t))) {
-    visualConcept = 'an interconnected chain of digital nodes with one critical link highlighted as compromised, ripple effects spreading outward';
+function resolveCategory(tags) {
+  const tagList = (tags || '').replace(/[\[\]]/g, '').split(',').map(t => t.trim().toLowerCase());
+  for (const t of tagList) {
+    if (TAG_TO_CATEGORY[t]) return TAG_TO_CATEGORY[t];
+  }
+  return 'news';
+}
+
+async function pickPoolImage(tags) {
+  if (!GH_IMAGES_PAT) {
+    console.warn('⚠️  No GH_IMAGES_PAT — cannot fetch pool images');
+    return null;
   }
 
-  const prompt = `Create a striking, editorial-quality cybersecurity illustration for a LinkedIn post by a CISO.
+  const category = resolveCategory(tags);
+  const dirs = [`pool/${category}`, 'pool/news']; // fallback to news
 
-Topic: ${title}
-Visual concept: ${visualConcept}
-
-Style:
-- Deep dark background (near black) with bold accent colors: electric blue, amber warning tones, and sharp white highlights
-- Cinematic lighting — dramatic, moody, like a movie poster for a cyber thriller
-- Clean, modern composition — NOT cluttered stock art. Think editorial illustration, not infographic
-- Abstract and conceptual — represent the IDEA, not literal screenshots or code
-- High contrast, sharp edges, professional quality
-- NO text, NO words, NO letters, NO numbers anywhere in the image
-- NO faces, NO people, NO hands, NO logos
-- 1024x1024 square format`;
-
-  const MAX_RETRIES = 3;
-  const RETRY_DELAYS = [5000, 10000, 20000]; // 5s, 10s, 20s
-
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+  for (const dir of dirs) {
     try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              responseModalities: ['IMAGE', 'TEXT'],
-            }
-          })
-        }
-      );
+      const res = await fetch(`https://api.github.com/repos/${IMAGES_REPO}/contents/${dir}`, {
+        headers: { Authorization: `token ${GH_IMAGES_PAT}`, 'User-Agent': 'SCW-LinkedIn' },
+      });
+      if (!res.ok) continue;
+      const files = await res.json();
+      const images = files.filter(f => f.name.endsWith('.png') || f.name.endsWith('.jpg'));
+      if (images.length === 0) continue;
 
-      if (!res.ok) {
-        // Retry on transient errors (429, 500, 502, 503, 504)
-        if ([429, 500, 502, 503, 504].includes(res.status) && attempt < MAX_RETRIES) {
-          const delay = RETRY_DELAYS[attempt];
-          console.warn(`⚠️  Gemini Image API ${res.status} — retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`);
-          await new Promise(r => setTimeout(r, delay));
-          continue;
-        }
-        console.warn(`⚠️  Gemini Image API ${res.status} — posting without image`);
+      const pick = images[Math.floor(Math.random() * images.length)];
+      const imageUrl = `${IMAGES_BASE_URL}/${dir}/${pick.name}`;
+      console.log(`🖼️  Pool image: ${dir}/${pick.name} (from ${images.length} available)`);
+
+      // Download the image buffer for LinkedIn upload
+      const imgRes = await fetch(imageUrl);
+      if (!imgRes.ok) {
+        console.warn(`⚠️  Failed to download pool image: ${imgRes.status}`);
         return null;
       }
-
-      const data = await res.json();
-      const parts = data?.candidates?.[0]?.content?.parts || [];
-      const imagePart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
-
-      if (!imagePart) {
-        if (attempt < MAX_RETRIES) {
-          const delay = RETRY_DELAYS[attempt];
-          console.warn(`⚠️  Gemini returned no image — retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`);
-          await new Promise(r => setTimeout(r, delay));
-          continue;
-        }
-        console.warn('⚠️  Gemini returned no image after retries — posting without image');
-        return null;
-      }
-
-      const imageBuffer = Buffer.from(imagePart.inlineData.data, 'base64');
-      const mimeType = imagePart.inlineData.mimeType;
-      console.log(`🖼️  Generated image: ${(imageBuffer.length / 1024).toFixed(0)}KB (${mimeType})${attempt > 0 ? ` (after ${attempt} retries)` : ''}`);
-      return { buffer: imageBuffer, mimeType };
+      const arrayBuf = await imgRes.arrayBuffer();
+      return {
+        buffer: Buffer.from(arrayBuf),
+        mimeType: 'image/png',
+        repoUrl: imageUrl,
+      };
     } catch (err) {
-      if (attempt < MAX_RETRIES) {
-        const delay = RETRY_DELAYS[attempt];
-        console.warn(`⚠️  Image generation error: ${err.message} — retrying in ${delay / 1000}s (attempt ${attempt + 1}/${MAX_RETRIES})`);
-        await new Promise(r => setTimeout(r, delay));
-        continue;
-      }
-      console.warn(`⚠️  Image generation error after retries: ${err.message} — posting without image`);
-      return null;
+      console.warn(`⚠️  Pool fetch error for ${dir}: ${err.message}`);
     }
   }
+  return null;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -848,10 +812,10 @@ async function main() {
 
   console.log(`\n--- LinkedIn Post Preview (${text.length} chars) ---\n${text}\n---\n`);
 
-  // Generate image (graceful fallback to text-only if it fails)
+  // Pick image from pool (no Gemini API call — uses pre-generated pool)
   let imageAsset = null;
   let repoImageUrl = null;
-  const imageData = await generateImage(best.meta.title, best.meta.tags);
+  const imageData = await pickPoolImage(best.meta.tags);
   if (imageData) {
     try {
       imageAsset = await uploadImageToLinkedIn(imageData.buffer, imageData.mimeType);
@@ -859,11 +823,10 @@ async function main() {
       console.warn(`⚠️  Image upload failed: ${err.message} — posting text-only`);
     }
 
-    // Also push to scw-post-images repo for website use
-    const slug = best.file.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '');
-    repoImageUrl = await pushImageToRepo(imageData.buffer, slug);
+    // Pool images are already in the repo — use the URL directly
+    repoImageUrl = imageData.repoUrl;
 
-    // Update post front matter to use AI image instead of Unsplash
+    // Update post front matter to use pool image instead of Unsplash
     if (repoImageUrl) {
       updatePostImage(best.file, repoImageUrl);
     }
