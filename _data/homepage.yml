@@ -22,46 +22,46 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Emerging Phishing-as-a-Service Platforms Target Executives
-    text: New PhaaS platforms like VENOM are specifically targeting C-suite Microsoft credentials.
-    detail: The VENOM platform represents a sophisticated evolution in phishing, moving beyond broad campaigns to highly targeted attacks against senior executives. Professionals should reinforce multi-factor authentication and employee training focused on spear-phishing recognition to mitigate risks associated with credential harvesting.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-347a
-    link_label: CISA Phishing Guidance
+  - title: AI Guardrails Vulnerable to Prompt Injection
+    text: AI systems, including those in new platforms like Apple Intelligence, are susceptible to prompt injection attacks.
+    detail: Researchers have demonstrated that sophisticated prompt injection techniques can bypass AI guardrails, leading to unintended outputs or actions. Cybersecurity professionals should monitor developments in AI security and consider how these vulnerabilities might be exploited in enterprise AI deployments. This highlights the ongoing need for robust AI security testing and validation.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: LLM Top 10
+    badge: signal
+    tags:
+      - threat-intel
+      - ai-security
+      - vulnerability
+  - title: Zero-Day Exploits Continue to Target Widely Used Software
+    text: Zero-day vulnerabilities are actively exploited in the wild, impacting critical software like Adobe Reader and Windows.
+    detail: The active exploitation of zero-day flaws in widely used applications such as Adobe Reader and Windows underscores the persistent threat posed by unknown vulnerabilities. Organizations must prioritize rapid patching and robust endpoint detection and response (EDR) solutions to mitigate risks associated with these emerging threats. Staying informed on vendor advisories is crucial.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/tip-patch-your-software
+    link_label: Patch Management Best Practices
+    badge: signal
+    tags:
+      - threat-intel
+      - zero-day
+      - vulnerability
+  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
+    text: New Phishing-as-a-Service (PhaaS) platforms like VENOM are targeting high-value credentials, including C-suite Microsoft logins.
+    detail: The emergence of advanced Phishing-as-a-Service platforms signifies a professionalization of phishing operations, specifically targeting executive credentials. Organizations should enhance security awareness training, implement multi-factor authentication universally, and deploy advanced email filtering solutions to combat these sophisticated social engineering attacks.
+    link: https://owasp.org/www-community/attacks/Phishing
+    link_label: Phishing Attack Vectors
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - microsoft
-  - title: Exploitation of Unpatched Zero-Days Remains High
-    text: Active exploitation of zero-day vulnerabilities in Windows and Adobe Reader continues.
-    detail: Recent reports highlight active exploitation of zero-day vulnerabilities in Windows (BlueHammer) and Adobe Reader, underscoring the critical need for rapid patching. Organizations must prioritize timely vulnerability management and ensure robust endpoint detection and response (EDR) solutions are in place to detect novel threats.
-    link: https://www.nist.gov/cyberframework
-    link_label: NIST Cybersecurity Framework
-    badge: signal
-    tags:
-      - threat-intel
-      - vulnerability
-      - zero-day
-  - title: Supply Chain Attacks Target Widely Used Plugins
-    text: Smart Slider plugin updates were hijacked to distribute backdoored WordPress/Joomla versions.
-    detail: The hijacking of the Smart Slider 3 Pro update mechanism for WordPress and Joomla demonstrates a critical supply chain risk. Enterprises should implement strict vetting processes for third-party software and leverage Software Bill of Materials (SBOM) to track dependencies and identify potential compromises.
-    link: https://owasp.org/www-project-software-supply-chain-security/
-    link_label: OWASP Supply Chain Security
+      - credential-theft
+  - title: Supply Chain Attacks Increasingly Leverage Software Updates
+    text: Attackers are hijacking legitimate software update mechanisms to distribute malware, as seen with Smart Slider plugins.
+    detail: The hijacking of plugin update channels for platforms like WordPress and Joomla demonstrates a growing trend in supply chain attacks. This method allows attackers to distribute backdoored software to a wide user base. Organizations must vet third-party software rigorously, monitor for unusual update behavior, and implement strict change control processes.
+    link: https://www.mitre.org/attack-techniques/software-supply-chain-compromise
+    link_label: Supply Chain Compromise
     badge: signal
     tags:
       - threat-intel
       - supply-chain
       - malware
-  - title: IoT Device Botnets Evolve with Stealth Tactics
-    text: New botnets like Masjesu are stealthily targeting IoT devices, evading detection.
-    detail: The emergence of botnets like Masjesu, specifically designed to target IoT devices with evasion techniques, poses a growing threat to network perimeters. Organizations should segment IoT devices, enforce strong default password policies, and implement network monitoring to detect anomalous traffic patterns.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-348a
-    link_label: CISA IoT Security Guidance
-    badge: signal
-    tags:
-      - threat-intel
-      - malware
-      - iot
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
