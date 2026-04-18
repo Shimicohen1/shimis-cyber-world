@@ -19,8 +19,8 @@ permalink: /detections/
     {% assign is_nvd = false %}
     {% if post.channel == "INCD" %}{% assign is_incd = true %}{% endif %}
     {% if post.channel == "NVD" %}{% assign is_nvd = true %}{% endif %}
-    {% comment %}INCD = immediate, others = 14-day gate{% endcomment %}
-    {% if is_incd or pe < vault_cutoff %}
+    {% comment %}INCD & NVD = immediate, others = 14-day gate{% endcomment %}
+    {% if is_incd or is_nvd or pe < vault_cutoff %}
       {% assign ctkey = post.sigma_rules.preview_technique | downcase | strip | append: "~" | append: post.sigma_rules.preview_title | downcase | strip %}
       {% assign ctcheck = "||" | append: ctkey | append: "||" %}
       {% unless counted_titles contains ctcheck %}
@@ -213,7 +213,7 @@ permalink: /detections/
       {% assign is_nvd = false %}
       {% if post.channel == "INCD" %}{% assign is_incd = true %}{% endif %}
       {% if post.channel == "NVD" %}{% assign is_nvd = true %}{% endif %}
-      {% if is_incd or pe < vault_cutoff %}
+      {% if is_incd or is_nvd or pe < vault_cutoff %}
         {% assign rule_key = post.sigma_rules.preview_technique | downcase | strip | append: "~" | append: post.sigma_rules.preview_title | downcase | strip %}
         {% assign rule_check = "||" | append: rule_key | append: "||" %}
         {% unless seen_titles contains rule_check %}
