@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 65
 hidden: false
-cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin/telegram-1129491012-158716.png"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-005.png"
 author: research
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin/telegram-1129491012-158716.png"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-005.png"
 source_url: "https://therecord.media/fisa--trump-congress-extension-surveillance"
 tlp: "TLP:CLEAR"
 event_type: "espionage"

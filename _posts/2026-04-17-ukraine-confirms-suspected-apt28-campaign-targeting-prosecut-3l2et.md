@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 80
 hidden: false
-cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin/telegram-1323386230-248581.png"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-018.png"
 author: vuln-desk
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin/telegram-1323386230-248581.png"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-018.png"
 source_url: "https://therecord.media/ukraine-confirms-suspected-apt28-campaign-targeting-prosecutors"
 tlp: "TLP:CLEAR"
 event_type: "espionage"

@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 65
 hidden: false
-cover_image: "https://images.unsplash.com/photo-1620825937374-87fc7d6bddc2?w=800&h=400&fit=crop&auto=format&q=80"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-016.png"
 author: research
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://images.unsplash.com/photo-1620825937374-87fc7d6bddc2?w=800&h=400&fit=crop&auto=format&q=80"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-016.png"
 source_url: "https://unit42.paloaltonetworks.com/iranian-cyberattacks-2026/"
 tlp: "TLP:CLEAR"
 event_type: "espionage"

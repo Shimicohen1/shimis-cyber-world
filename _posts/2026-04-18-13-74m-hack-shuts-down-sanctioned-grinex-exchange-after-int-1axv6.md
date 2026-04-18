@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 65
 hidden: false
-cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin/telegram-1323386230-248638.png"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-019.png"
 author: vuln-desk
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin/telegram-1323386230-248638.png"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-019.png"
 source_url: "https://thehackernews.com/2026/04/1374m-hack-shuts-down-sanctioned-grinex.html"
 tlp: "TLP:CLEAR"
 event_type: "espionage"

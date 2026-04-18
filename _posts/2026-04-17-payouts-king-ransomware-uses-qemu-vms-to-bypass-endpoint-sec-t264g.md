@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 70
 hidden: false
-cover_image: "https://images.unsplash.com/photo-1770159116807-9b2a7bb82294?w=800&h=400&fit=crop&auto=format&q=80"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-010.png"
 author: research
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://images.unsplash.com/photo-1770159116807-9b2a7bb82294?w=800&h=400&fit=crop&auto=format&q=80"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-010.png"
 source_url: "https://www.bleepingcomputer.com/news/security/payouts-king-ransomware-uses-qemu-vms-to-bypass-endpoint-security/"
 tlp: "TLP:CLEAR"
 event_type: "ransomware"

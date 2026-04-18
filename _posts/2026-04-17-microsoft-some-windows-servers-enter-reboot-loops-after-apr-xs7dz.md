@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 70
 hidden: false
-cover_image: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=800&h=400&fit=crop&auto=format&q=80"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-007.png"
 author: vuln-desk
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=800&h=400&fit=crop&auto=format&q=80"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-007.png"
 source_url: "https://www.bleepingcomputer.com/news/microsoft/microsoft-warns-of-reboot-loops-affecting-some-domain-controllers/"
 tlp: "TLP:CLEAR"
 event_type: "vulnerability"

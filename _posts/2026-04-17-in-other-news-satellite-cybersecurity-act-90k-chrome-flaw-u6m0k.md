@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 70
 hidden: false
-cover_image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=400&fit=crop&auto=format&q=80"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-006.png"
 author: vuln-desk
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=400&fit=crop&auto=format&q=80"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-006.png"
 source_url: "https://www.securityweek.com/in-other-news-satellite-cybersecurity-act-90k-chrome-flaw-teen-hacker-arrested/"
 tlp: "TLP:CLEAR"
 event_type: "vulnerability"

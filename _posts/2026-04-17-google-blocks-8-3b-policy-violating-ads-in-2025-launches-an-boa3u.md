@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 65
 hidden: false
-cover_image: "https://images.unsplash.com/photo-1653387300291-bfa1eeb90e16?w=800&h=400&fit=crop&auto=format&q=80"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-004.png"
 author: vuln-desk
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://images.unsplash.com/photo-1653387300291-bfa1eeb90e16?w=800&h=400&fit=crop&auto=format&q=80"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-004.png"
 source_url: "https://thehackernews.com/2026/04/google-blocks-83b-policy-violating-ads.html"
 tlp: "TLP:CLEAR"
 event_type: "fraud"

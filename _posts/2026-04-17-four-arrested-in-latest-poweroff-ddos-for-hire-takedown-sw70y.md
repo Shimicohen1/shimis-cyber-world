@@ -14,14 +14,14 @@ curated: false
 featured: false
 priority: 65
 hidden: false
-cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin/telegram-1323386230-248586.png"
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-003.png"
 author: research
 ai_rewritten: true
 ai_attribution: "Shimi's Cyber World Editorial"
 ai_quality_score: 100
 ai_quality_flags: [clean]
 image_pool_used: true
-image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin/telegram-1323386230-248586.png"
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-003.png"
 source_url: "https://therecord.media/ddos-hire-europol-doj-crackdown"
 tlp: "TLP:CLEAR"
 event_type: "advisory"
