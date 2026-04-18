@@ -35,13 +35,13 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
 
     <div class="feed-filters feed-filters--compact" id="home-filters">
       <button class="filter-pill filter-pill--active" data-filter="all">All</button>
-      <button class="filter-pill" data-filter="threat-intel">Threat Intel</button>
       <button class="filter-pill" data-filter="malware">Malware</button>
       <button class="filter-pill" data-filter="ransomware">Ransomware</button>
-      <button class="filter-pill" data-filter="red-team">Red Team</button>
-      <button class="filter-pill" data-filter="osint">OSINT</button>
-      <button class="filter-pill" data-filter="tools">Tools</button>
       <button class="filter-pill" data-filter="data-breach">Data Breach</button>
+      <button class="filter-pill" data-filter="vulnerability">Vulnerability</button>
+      <button class="filter-pill" data-filter="cloud">Cloud</button>
+      <button class="filter-pill" data-filter="tools">Tools</button>
+      <button class="filter-pill" data-filter="ai-security">AI Security</button>
     </div>
 
     {% assign non_cve_posts = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'INCD'" | where_exp: "post", "post.section != 'vulnerabilities'" %}

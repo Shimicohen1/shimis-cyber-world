@@ -18,14 +18,12 @@ permalink: /posts/
   </div>
   <div class="feed-filters" id="feed-filters">
     <button class="filter-pill filter-pill--active" data-filter="all">All</button>
-    <button class="filter-pill" data-filter="threat-intel">Threat Intel</button>
     <button class="filter-pill" data-filter="malware">Malware</button>
     <button class="filter-pill" data-filter="ransomware">Ransomware</button>
-    <button class="filter-pill" data-filter="red-team">Red Team</button>
-    <button class="filter-pill" data-filter="osint">OSINT</button>
-    <button class="filter-pill" data-filter="tools">Tools</button>
     <button class="filter-pill" data-filter="data-breach">Data Breach</button>
-    <button class="filter-pill" data-filter="darkweb">Darkweb</button>
+    <button class="filter-pill" data-filter="vulnerability">Vulnerability</button>
+    <button class="filter-pill" data-filter="red-team">Red Team</button>
+    <button class="filter-pill" data-filter="tools">Tools</button>
     <button class="filter-pill" data-filter="cloud">Cloud</button>
     <button class="filter-pill" data-filter="ai-security">AI Security</button>
     <button class="filter-pill" data-filter="daily-digest">Daily Digest</button>
