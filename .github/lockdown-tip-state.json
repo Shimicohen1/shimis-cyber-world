@@ -1,9 +1,7 @@
 {
-  "tipNumber": 3,
+  "tipNumber": 1,
   "usedIds": [
-    "cps-001",
-    "cps-002",
-    "cps-003"
+    "cps-001"
   ],
   "round": 1,
   "history": [
@@ -15,26 +13,6 @@
       "date": "2026-04-19T16:21:37.587Z",
       "linkedInId": "urn:li:share:7451666323555856384",
       "telegramMsgId": 650
-    },
-    {
-      "tipNumber": 2,
-      "id": "cps-002",
-      "platform": "copilot-studio",
-      "title": "Restrict who can create and publish Copilot Studio agents",
-      "date": "2026-04-19T18:45:00.374Z",
-      "linkedInId": "urn:li:share:7451702406352089088",
-      "telegramMsgId": 653,
-      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-cps-002/"
-    },
-    {
-      "tipNumber": 3,
-      "id": "cps-003",
-      "platform": "copilot-studio",
-      "title": "Configure DLP policies for Copilot Studio connectors and tools",
-      "date": "2026-04-19T19:03:14.790Z",
-      "linkedInId": "urn:li:share:7451706997055426560",
-      "telegramMsgId": 654,
-      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-cps-003/"
     }
   ]
 }
