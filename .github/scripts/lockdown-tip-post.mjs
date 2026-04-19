@@ -574,6 +574,18 @@ async function postToTelegram(text, imageUrl) {
 
   try {
     if (imageUrl) {
+      // Build caption — Telegram sendPhoto limit is 1024 chars.
+      // If text is too long, keep the deep-link and trim the middle.
+      let caption = text;
+      if (caption.length > 1024) {
+        // Extract the footer (deep-link + channel + hashtags)
+        const footerMatch = caption.match(/\n\nFull check[\s\S]*$/);
+        const footer = footerMatch ? footerMatch[0] : '';
+        const body = footer ? caption.slice(0, caption.length - footer.length) : caption;
+        const maxBody = 1024 - footer.length - 4; // 4 for "\n..."
+        caption = body.substring(0, maxBody) + '\n...' + footer;
+      }
+
       // Send photo with caption
       const res = await fetch(`${baseUrl}/sendPhoto`, {
         method: 'POST',
@@ -581,7 +593,7 @@ async function postToTelegram(text, imageUrl) {
         body: JSON.stringify({
           chat_id: TG_CHANNEL_ID,
           photo: imageUrl,
-          caption: text.length > 1024 ? text.substring(0, 1021) + '...' : text,
+          caption,
           parse_mode: 'HTML',
           disable_web_page_preview: false,
         }),
