@@ -630,18 +630,18 @@ async function postToTelegram(text, imageUrl) {
   try {
     if (imageUrl) {
       // Build caption — Telegram sendPhoto limit is 1024 chars.
-      // If text is too long, keep the deep-link and trim the middle.
+      // If text is too long, keep the link block + footer and trim the body middle.
       let caption = text;
       if (caption.length > 1024) {
-        // Extract the footer (deep-link + channel + hashtags)
-        const footerMatch = caption.match(/\n\nFull check[\s\S]*$/);
+        // Footer = link block (━━━…━━━ … ━━━…━━━) + channel + hashtags
+        const footerMatch = caption.match(/\n+━{5,}[\s\S]*$/) || caption.match(/\n+📡 https?:\/\/t\.me\/[\s\S]*$/);
         const footer = footerMatch ? footerMatch[0] : '';
         const body = footer ? caption.slice(0, caption.length - footer.length) : caption;
         const maxBody = 1024 - footer.length - 4; // 4 for "\n..."
         caption = body.substring(0, maxBody) + '\n...' + footer;
       }
 
-      // Send photo with caption
+      // Send photo with caption (plain text — Telegram auto-linkifies URLs/hashtags)
       const res = await fetch(`${baseUrl}/sendPhoto`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -649,7 +649,6 @@ async function postToTelegram(text, imageUrl) {
           chat_id: TG_CHANNEL_ID,
           photo: imageUrl,
           caption,
-          parse_mode: 'HTML',
           disable_web_page_preview: false,
         }),
       });
@@ -841,21 +840,28 @@ async function waitForLive(url, { maxSeconds = 300, intervalSeconds = 15 } = {})
 
 function rewriteTextWithSitePostUrl(text, postUrl) {
   // Replace the existing "Full check + implementation guide: <hardening-deeplink>" line
-  // with a two-line variant: site post (primary) + interactive checklist (secondary).
+  // with a visually distinct two-link block: site post (primary) + interactive checklist
+  // (secondary). Plain text only — Telegram + LinkedIn auto-linkify URLs reliably,
+  // and avoiding HTML keeps us safe from un-escaped chars in the AI-generated body.
   if (!postUrl) return text;
   const fullCheckRegex = /Full check \+ implementation guide:\s*(\S+)/i;
   const match = text.match(fullCheckRegex);
+  const block = (siteUrl, checklistUrl) =>
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `🌐 Full breakdown:\n${siteUrl}\n\n` +
+    `✅ Interactive checklist:\n${checklistUrl}\n` +
+    `━━━━━━━━━━━━━━━━━━━━`;
   if (match) {
     const checklistUrl = match[1];
-    const replacement = `Read the full breakdown: ${postUrl}\nInteractive checklist: ${checklistUrl}`;
-    text = text.replace(fullCheckRegex, replacement);
+    text = text.replace(fullCheckRegex, block(postUrl, checklistUrl));
   } else {
-    // No existing link — append before the channel marker
+    // No existing link — insert before the channel marker (or append)
     const channelIdx = text.indexOf('📡 https://t.me');
+    const fallbackBlock = block(postUrl, `${SITE_URL}/hardening/`);
     if (channelIdx >= 0) {
-      text = text.slice(0, channelIdx) + `Read the full breakdown: ${postUrl}\n\n` + text.slice(channelIdx);
+      text = text.slice(0, channelIdx) + fallbackBlock + '\n\n' + text.slice(channelIdx);
     } else {
-      text += `\n\nRead the full breakdown: ${postUrl}`;
+      text += `\n\n${fallbackBlock}`;
     }
   }
   return text;
