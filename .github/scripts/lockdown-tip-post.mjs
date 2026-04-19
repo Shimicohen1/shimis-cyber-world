@@ -745,7 +745,10 @@ function buildSitePostMarkdown({ tip, tipNumber, platforms, categories, aiText, 
   }
 
   if (tip.reference) {
-    md += `\n**Reference:** ${tip.reference}\n`;
+    // Wrap URLs in `<...>` so kramdown autolinks them as clickable links.
+    const refStr = String(tip.reference).trim();
+    const refRendered = /^https?:\/\//.test(refStr) ? `<${refStr}>` : refStr;
+    md += `\n**Reference:** ${refRendered}\n`;
   }
 
   // Front matter

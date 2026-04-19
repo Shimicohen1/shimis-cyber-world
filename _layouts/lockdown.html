@@ -57,6 +57,30 @@ layout: default
     {% comment %}── Subtle contextual affiliate bar (site-only, never cross-posted to LinkedIn/Telegram) ──{% endcomment %}
     {% include post-affiliate-bar.html tags=page.tags %}
 
+    {% comment %}── Related lockdown tips — same platform first, falling back to series order ──{% endcomment %}
+    {% assign _all_lockdowns = site.posts | where: "section", "lockdown" | where_exp: "p", "p.lockdown_id != page.lockdown_id" %}
+    {% assign _same_plat = _all_lockdowns | where: "platform", page.platform %}
+    {% if _same_plat.size > 0 %}{% assign _related = _same_plat %}{% else %}{% assign _related = _all_lockdowns %}{% endif %}
+    {% if _related.size > 0 %}
+    <section class="lockdown-related" aria-label="More Lockdown Lab tips">
+      <h3 class="lockdown-related__title">More Lockdown Lab tips</h3>
+      <ul class="lockdown-related__list">
+        {% for p in _related limit: 4 %}
+        <li class="lockdown-related__item">
+          <a class="lockdown-related__link" href="{{ p.url | relative_url }}">
+            <span class="lockdown-related__meta">
+              {% if p.severity %}<span class="tag tag--{{ p.severity | downcase }} tag--xs">{{ p.severity | upcase }}</span>{% endif %}
+              {% if p.platform_name %}<span class="lockdown-related__plat">{{ p.platform_name }}</span>{% endif %}
+            </span>
+            <strong class="lockdown-related__heading">{{ p.title }}</strong>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      <a class="lockdown-related__more" href="{{ '/lockdown-lab/' | relative_url }}">Browse all Lockdown Lab tips →</a>
+    </section>
+    {% endif %}
+
     {% comment %}── Series footer ──{% endcomment %}
     <div class="lockdown-footer">
       <p><strong>Lockdown Lab</strong> is a daily hardening series — one practical, vendor-specific check published every day at 10:00 Israel time across the website, LinkedIn, and Telegram.</p>

@@ -24,10 +24,10 @@
 {% endfor %}
 
 {% if _matched and _products.size > 0 %}
-<aside class="post-rec-bar" aria-label="Tools used by SCW members">
+<aside class="post-rec-bar" aria-label="Related tools">
   <div class="post-rec-bar__header">
-    <span class="post-rec-bar__title">Tools used by SCW members</span>
-    <span class="post-rec-bar__disclosure" title="We may earn a small commission at no extra cost to you. It helps keep SCW free.">affiliate · supports SCW</span>
+    <span class="post-rec-bar__title">Related tools</span>
+    <span class="post-rec-bar__disclosure" title="Some links are affiliate links. They never cost you more, and they keep SCW free.">affiliate</span>
   </div>
   <div class="post-rec-bar__items">
     {% for prod in _products limit: 2 %}

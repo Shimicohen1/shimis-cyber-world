@@ -3300,3 +3300,59 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   color: rgba(255,255,255,.55);
   margin-right: .5rem;
 }
+
+/* ── Lockdown Lab — Related Tips (community-first internal linking) ── */
+.lockdown-related {
+  margin: 2.5rem 0 1.5rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  background: var(--surface);
+}
+.lockdown-related__title {
+  margin: 0 0 1rem;
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.lockdown-related__list { list-style: none; padding: 0; margin: 0; display: grid; gap: .65rem; }
+@media (min-width: 720px) {
+  .lockdown-related__list { grid-template-columns: 1fr 1fr; }
+}
+.lockdown-related__item { margin: 0; }
+.lockdown-related__link {
+  display: block; padding: .75rem .9rem; border: 1px solid var(--border);
+  border-radius: .5rem; text-decoration: none; color: inherit;
+  background: var(--bg); transition: border-color .15s, transform .15s;
+}
+.lockdown-related__link:hover { border-color: var(--accent, #06b6d4); transform: translateY(-1px); }
+.lockdown-related__meta {
+  display: flex; align-items: center; gap: .5rem; margin-bottom: .35rem;
+  font-size: .7rem; color: var(--muted);
+}
+.lockdown-related__plat { font-weight: 500; }
+.lockdown-related__heading { display: block; font-size: .9rem; line-height: 1.35; color: var(--text); }
+.tag--xs { font-size: .6rem; padding: .1rem .4rem; }
+.lockdown-related__more {
+  display: inline-block; margin-top: 1rem; font-size: .8rem;
+  color: var(--accent, #06b6d4); text-decoration: none; font-weight: 500;
+}
+.lockdown-related__more:hover { text-decoration: underline; }
+
+/* ── Posts page → Lockdown Lab discoverability banner ── */
+.posts-discover-lockdown {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .85rem 1.1rem; margin: 0 0 1.25rem;
+  border: 1px solid var(--border); border-left: 3px solid var(--accent, #06b6d4);
+  border-radius: .5rem; background: var(--surface);
+  font-size: .9rem;
+}
+.posts-discover-lockdown__text { color: var(--muted); }
+.posts-discover-lockdown__text strong { color: var(--text); margin-right: .25rem; }
+.posts-discover-lockdown__cta {
+  flex-shrink: 0; font-size: .85rem; font-weight: 500; text-decoration: none;
+  color: var(--accent, #06b6d4); white-space: nowrap;
+}
+.posts-discover-lockdown__cta:hover { text-decoration: underline; }

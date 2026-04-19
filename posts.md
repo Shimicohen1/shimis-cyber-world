@@ -10,6 +10,12 @@ permalink: /posts/
   <p class="page-head__desc">Field notes, deep dives, and raw cybersecurity intelligence — delivered as they land.</p>
 </div>
 
+{% comment %}── Lockdown Lab discoverability banner — daily series lives in its own section ──{% endcomment %}
+<div class="posts-discover-lockdown">
+  <span class="posts-discover-lockdown__text"><strong>🛡️ Lockdown Lab</strong> · Daily, vendor-specific hardening tips — separate section with its own filters.</span>
+  <a class="posts-discover-lockdown__cta" href="{{ '/lockdown-lab/' | relative_url }}">Browse Lockdown Lab →</a>
+</div>
+
 <div class="feed-controls">
   <div class="feed-search">
     <span class="feed-search__icon">&#128269;</span>
