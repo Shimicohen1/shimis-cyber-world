@@ -40,6 +40,8 @@ jobs:
           LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GH_IMAGES_PAT: ${{ secrets.GH_IMAGES_PAT }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
         run: |
           ARGS=""
           if [ "${{ inputs.force_id }}" != "" ]; then ARGS="$ARGS --force-id=${{ inputs.force_id }}"; fi

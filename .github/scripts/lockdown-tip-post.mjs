@@ -1,8 +1,8 @@
 /**
- * SCW Lockdown Tip of the Day — LinkedIn Auto-Poster
+ * SCW Lockdown Tip of the Day — LinkedIn + Telegram Auto-Poster
  * 
  * Picks the next hardening tip from _data/hardening.yml and publishes
- * a "Lockdown Tip of the Day #N" post to LinkedIn.
+ * a "Lockdown Tip of the Day #N" post to LinkedIn and Telegram.
  * Sequential order, round-robin through all 912 tips with vendor variety.
  * 
  * Runs daily via GitHub Actions at 10:00 Israel time.
@@ -13,6 +13,8 @@
  * Optional:
  *   GEMINI_API_KEY        — Gemini AI for natural post generation (falls back to template)
  *   GH_IMAGES_PAT         — For lockdown cover image from scw-post-images repo
+ *   TELEGRAM_BOT_TOKEN    — Telegram Bot API token for channel posting
+ *   TELEGRAM_CHANNEL_ID   — Telegram channel ID (e.g. @shimiscyberworld)
  */
 
 import fs from 'fs';
@@ -22,6 +24,8 @@ const TOKEN = process.env.LINKEDIN_ACCESS_TOKEN;
 const PERSON_URN = process.env.LINKEDIN_PERSON_URN;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GH_IMAGES_PAT = process.env.GH_IMAGES_PAT || '';
+const TG_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const TG_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID || '';
 const DRY_RUN = process.argv.includes('--dry-run');
 const FORCE_ID = process.argv.find(a => a.startsWith('--force-id='))?.split('=')[1] || '';
 const PREVIEW = process.argv.includes('--preview');
@@ -461,7 +465,7 @@ async function pickLockdownImage() {
     const imgRes = await fetch(imageUrl);
     if (!imgRes.ok) return null;
     const arrayBuf = await imgRes.arrayBuffer();
-    return { buffer: Buffer.from(arrayBuf), mimeType: 'image/png' };
+    return { buffer: Buffer.from(arrayBuf), mimeType: 'image/png', filename: pick.name, url: imageUrl };
   } catch (err) {
     console.warn(`⚠️  Image fetch error: ${err.message}`);
     return null;
@@ -555,6 +559,63 @@ async function postToLinkedIn(text, imageAsset) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+ *  TELEGRAM — Post to channel
+ * ═══════════════════════════════════════════════════════════ */
+
+async function postToTelegram(text, imageUrl) {
+  if (!TG_BOT_TOKEN || !TG_CHANNEL_ID) {
+    console.log('⏭️  No TELEGRAM_BOT_TOKEN/CHANNEL_ID — skipping Telegram.');
+    return null;
+  }
+
+  const baseUrl = `https://api.telegram.org/bot${TG_BOT_TOKEN}`;
+
+  try {
+    if (imageUrl) {
+      // Send photo with caption
+      const res = await fetch(`${baseUrl}/sendPhoto`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TG_CHANNEL_ID,
+          photo: imageUrl,
+          caption: text.length > 1024 ? text.substring(0, 1021) + '...' : text,
+          parse_mode: 'HTML',
+          disable_web_page_preview: false,
+        }),
+      });
+      const data = await res.json();
+      if (!data.ok) {
+        // Photo caption too long — fall back to text-only with image as link
+        console.warn(`⚠️  Telegram sendPhoto failed: ${data.description} — trying sendMessage`);
+        return await sendTelegramText(baseUrl, text);
+      }
+      return data.result?.message_id;
+    } else {
+      return await sendTelegramText(baseUrl, text);
+    }
+  } catch (err) {
+    console.warn(`⚠️  Telegram error: ${err.message}`);
+    return null;
+  }
+}
+
+async function sendTelegramText(baseUrl, text) {
+  const res = await fetch(`${baseUrl}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: TG_CHANNEL_ID,
+      text,
+      disable_web_page_preview: false,
+    }),
+  });
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.description);
+  return data.result?.message_id;
+}
+
+/* ═══════════════════════════════════════════════════════════
  *  MAIN
  * ═══════════════════════════════════════════════════════════ */
 
@@ -614,6 +675,12 @@ async function main() {
   const postId = await postToLinkedIn(text, imageAsset);
   console.log(`✅ Posted Lockdown Tip #${tipNumber}${imageAsset ? ' (with image)' : ' (text-only)'}: ${postId}`);
 
+  // Post to Telegram
+  const tgMsgId = await postToTelegram(text, imageData?.url || null);
+  if (tgMsgId) {
+    console.log(`✅ Telegram message: ${tgMsgId}`);
+  }
+
   // Update state
   state.tipNumber = tipNumber;
   state.usedIds.push(tip.id);
@@ -624,6 +691,7 @@ async function main() {
     title: tip.title,
     date: new Date().toISOString(),
     linkedInId: postId,
+    telegramMsgId: tgMsgId || null,
   });
   // Keep history manageable
   if (state.history.length > 100) {
