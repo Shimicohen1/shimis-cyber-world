@@ -22,19 +22,9 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Sophisticated Phishing-as-a-Service on the Rise
-    text: Emerging PhaaS platforms like VENOM are increasingly targeting high-value credentials.
-    detail: Cybercriminals are leveraging sophisticated Phishing-as-a-Service (PhaaS) platforms to conduct highly targeted attacks, such as VENOM targeting C-suite Microsoft logins. This trend signifies a move towards more professionalized and evasive phishing operations. Professionals should reinforce multi-factor authentication and conduct regular security awareness training focused on advanced social engineering tactics.
-    link: https://owasp.org/www-community/attacks/Phishing
-    link_label: OWASP Phishing Guide
-    badge: signal
-    tags:
-      - threat-intel
-      - phishing
-      - paas
-  - title: Zero-Day Exploits Continue to Threaten Critical Software
-    text: Active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows persists.
-    detail: The ongoing discovery and exploitation of zero-day vulnerabilities in essential software, including Adobe Reader and Windows (e.g., BlueHammer), highlight persistent supply chain risks and vendor disclosure challenges. Organizations must prioritize rapid patching and implement robust endpoint detection and response (EDR) solutions to mitigate the impact of unknown threats.
+  - title: Exploitation of Zero-Day Vulnerabilities Remains High
+    text: Zero-day exploits in widely used software like Adobe Reader and Windows are being actively exploited.
+    detail: The active exploitation of zero-day vulnerabilities in products like Adobe Reader and Windows, as reported, underscores the persistent threat landscape. Proactive vulnerability management and rapid patching are critical to mitigate risks from unknown flaws. Organizations should prioritize threat intelligence feeds for early warnings and be prepared to deploy emergency patches.
     link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
     link_label: CISA KEV Catalog
     badge: signal
@@ -42,27 +32,39 @@ quick_signals:
       - threat-intel
       - vulnerability
       - zero-day
-  - title: IoT and Mobile SDKs as Attack Vectors
-    text: Malware and vulnerabilities are increasingly targeting IoT devices and flaws within mobile SDKs.
-    detail: New threats like the Masjesu botnet are stealthily targeting IoT devices, while critical vulnerabilities in Android SDKs put millions of financial applications at risk. This indicates a growing attack surface in connected devices and mobile ecosystems. Security teams should scrutinize IoT device configurations and ensure rigorous vetting of third-party SDKs in mobile development.
-    link: https://www.mitre.org/technologies/iot
-    link_label: MITRE IoT Resources
+  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
+    text: New PhaaS platforms like VENOM are specifically targeting C-suite Microsoft credentials.
+    detail: The emergence of advanced Phishing-as-a-Service (PhaaS) platforms, such as VENOM, highlights a growing trend of sophisticated, targeted attacks against high-value organizational assets. These platforms lower the barrier to entry for attackers. Implementing robust email security, multi-factor authentication, and continuous user awareness training are essential defenses.
+    link: https://owasp.org/www-community/vulnerabilities/Phishing
+    link_label: OWASP Phishing
+    badge: signal
+    tags:
+      - threat-intel
+      - phishing
+      - microsoft
+      - credential-theft
+  - title: Supply Chain Attacks Continue to Disrupt Services
+    text: Hijacked updates for popular plugins like Smart Slider 3 are injecting backdoors.
+    detail: Attacks targeting the software supply chain, such as the hijacking of Smart Slider 3 Pro updates, demonstrate a significant risk vector. Compromising legitimate update mechanisms allows attackers to distribute malware widely. Organizations must vet third-party software rigorously, monitor update integrity, and implement strong access controls.
+    link: https://owasp.org/www-community/attacks/Supply_chain_attack
+    link_label: OWASP Supply Chain Attacks
+    badge: signal
+    tags:
+      - threat-intel
+      - supply-chain
+      - malware
+      - botnet
+  - title: IoT Devices Remain Prime Targets for Botnets
+    text: New botnets like Masjesu are stealthily targeting IoT devices for large-scale compromise.
+    detail: The continued targeting of Internet of Things (IoT) devices by evolving botnets, such as Masjesu, presents a persistent threat to network security and infrastructure. These compromised devices can be used for DDoS attacks or as entry points into networks. Implementing strong IoT security practices, network segmentation, and device inventory management is crucial.
+    link: https://www.mitre.org/technologies/cybersecurity/iot-security
+    link_label: MITRE IoT Security
     badge: signal
     tags:
       - threat-intel
       - iot
       - malware
-      - android
-  - title: Geopolitical Alignment in Advanced Persistent Threats
-    text: Nation-state actors, including Iranian and Russian APTs, continue global campaigns targeting critical infrastructure and government entities.
-    detail: Recent intelligence indicates persistent global activities from Russian APTs like Fancy Bear (APT28) and Iranian state-backed attackers, targeting industrial devices and diverse entities. This underscores the ongoing threat from sophisticated nation-state adversaries. Organizations should monitor threat actor TTPs and implement layered defenses, particularly for critical infrastructure and sensitive data.
-    link: https://www.cisa.gov/news-events/advisories/aa23-347a
-    link_label: CISA Advisories on APTs
-    badge: signal
-    tags:
-      - threat-intel
-      - apt
-      - nation-state
+      - botnet
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
