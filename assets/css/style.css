@@ -3274,3 +3274,29 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .lockdown-footer p { margin: .4rem 0; }
 .lockdown-footer a { color: #00b4d8; text-decoration: none; }
 .lockdown-footer a:hover { color: #ccff00; }
+
+/* Lockdown Lab — filter bar layout */
+.lockdown-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  margin: 1rem 0 1.5rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 8px;
+}
+.lockdown-filter-bar__group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.lockdown-filter-bar__label {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: rgba(255,255,255,.55);
+  margin-right: .5rem;
+}

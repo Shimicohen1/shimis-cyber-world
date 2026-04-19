@@ -43,6 +43,9 @@ layout: default
 
     <div class="post-body prose">{{ content }}</div>
 
+    {% comment %}── Contextual affiliate bar (site-only — NEVER cross-posted to LinkedIn/Telegram) ──{% endcomment %}
+    {% include post-affiliate-bar.html tags=page.tags %}
+
     {% comment %}── Primary CTA → interactive hardening checklist ──{% endcomment %}
     {% if page.lockdown_id %}
     <div class="lockdown-cta">
