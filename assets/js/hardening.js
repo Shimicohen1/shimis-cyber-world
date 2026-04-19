@@ -241,7 +241,7 @@
     var html = '';
     items.forEach(function (item) {
       var isChecked = checked[item.id] ? 'checked' : '';
-      html += '<div class="harden-item' + (checked[item.id] ? ' harden-item--done' : '') + (item.hasPremium ? ' harden-item--has-premium' : '') + '" data-id="' + escapeAttr(item.id) + '" data-cat="' + escapeAttr(item.category) + '" data-sev="' + escapeAttr(item.severity) + '">';
+      html += '<div class="harden-item' + (checked[item.id] ? ' harden-item--done' : '') + (item.hasPremium ? ' harden-item--has-premium' : '') + '" id="tip-' + escapeAttr(item.id) + '" data-id="' + escapeAttr(item.id) + '" data-cat="' + escapeAttr(item.category) + '" data-sev="' + escapeAttr(item.severity) + '">';
       html += '  <div class="harden-item__header">';
       html += '    <label class="harden-item__check"><input type="checkbox" ' + isChecked + ' data-id="' + escapeAttr(item.id) + '"><span class="harden-item__title">' + esc(item.title) + '</span></label>';
       html += '    <div class="harden-item__badges">';
@@ -651,6 +651,32 @@
         renderChecklist(activePlatform);
       }
     });
+
+    /* ── Deep-link handler: #tip-<id> ── */
+    function handleTipDeepLink() {
+      var hash = window.location.hash;
+      if (!hash || !hash.startsWith('#tip-')) return;
+      var tipId = hash.slice(1).replace(/^tip-/, '');
+      var item = (window.HARDEN_ITEMS || []).find(function (i) { return i.id === tipId; });
+      if (!item) return;
+
+      /* Auto-select the platform to render the checklist */
+      activePlatform = item.platform;
+      globalCategoryMode = false;
+      renderChecklist(item.platform);
+
+      /* Wait for DOM update, then scroll and highlight */
+      setTimeout(function () {
+        var el = document.getElementById('tip-' + tipId);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('harden-item--highlight');
+        setTimeout(function () { el.classList.remove('harden-item--highlight'); }, 3000);
+      }, 150);
+    }
+
+    handleTipDeepLink();
+    window.addEventListener('hashchange', handleTipDeepLink);
 
   });
 })();

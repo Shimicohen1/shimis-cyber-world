@@ -1,0 +1,57 @@
+name: Lockdown Tip of the Day
+
+on:
+  schedule:
+    - cron: '0 7 * * *'    # Every day at 07:00 UTC (10:00 Israel)
+  workflow_dispatch:        # Manual trigger
+    inputs:
+      force_id:
+        description: 'Force a specific tip ID (e.g. lin-001)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run (no actual posting)'
+        required: false
+        type: boolean
+        default: false
+      preview:
+        description: 'Preview only (show post text, no state change)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  post-tip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Post Lockdown Tip
+        env:
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GH_IMAGES_PAT: ${{ secrets.GH_IMAGES_PAT }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.force_id }}" != "" ]; then ARGS="$ARGS --force-id=${{ inputs.force_id }}"; fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ "${{ inputs.preview }}" = "true" ]; then ARGS="$ARGS --preview"; fi
+          node .github/scripts/lockdown-tip-post.mjs $ARGS
+
+      - name: Commit state
+        if: ${{ inputs.dry_run != 'true' && inputs.preview != 'true' }}
+        run: |
+          git config user.name "SCW Feed Bot"
+          git config user.email "shimicyberworld@gmail.com"
+          git add .github/lockdown-tip-state.json
+          git diff --staged --quiet || git commit -m "chore: update lockdown tip state"
+          git push
