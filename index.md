@@ -35,6 +35,7 @@ description: "Shimi's Cyber World — A security intelligence hub powered by AI 
 
     <div class="feed-filters feed-filters--compact" id="home-filters">
       <button class="filter-pill filter-pill--active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="lockdown-lab">Lockdown Lab</button>
       <button class="filter-pill" data-filter="malware">Malware</button>
       <button class="filter-pill" data-filter="ransomware">Ransomware</button>
       <button class="filter-pill" data-filter="data-breach">Data Breach</button>

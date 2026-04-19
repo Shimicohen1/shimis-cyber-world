@@ -10,12 +10,6 @@ permalink: /posts/
   <p class="page-head__desc">Field notes, deep dives, and raw cybersecurity intelligence — delivered as they land.</p>
 </div>
 
-{% comment %}── Lockdown Lab discoverability banner — daily series lives in its own section ──{% endcomment %}
-<div class="posts-discover-lockdown">
-  <span class="posts-discover-lockdown__text"><strong>🛡️ Lockdown Lab</strong> · Daily, vendor-specific hardening tips — separate section with its own filters.</span>
-  <a class="posts-discover-lockdown__cta" href="{{ '/lockdown-lab/' | relative_url }}">Browse Lockdown Lab →</a>
-</div>
-
 <div class="feed-controls">
   <div class="feed-search">
     <span class="feed-search__icon">&#128269;</span>
@@ -24,6 +18,7 @@ permalink: /posts/
   </div>
   <div class="feed-filters" id="feed-filters">
     <button class="filter-pill filter-pill--active" data-filter="all">All</button>
+    <button class="filter-pill" data-filter="lockdown-lab">Lockdown Lab</button>
     <button class="filter-pill" data-filter="malware">Malware</button>
     <button class="filter-pill" data-filter="ransomware">Ransomware</button>
     <button class="filter-pill" data-filter="data-breach">Data Breach</button>
@@ -38,7 +33,7 @@ permalink: /posts/
 
 <div class="archive">
   <div class="archive__list" id="feed-list">
-    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'CISA KEV'" | where_exp: "post", "post.channel != 'INCD'" | where_exp: "post", "post.section != 'vulnerabilities'" | where_exp: "post", "post.section != 'lockdown'" %}
+    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'CISA KEV'" | where_exp: "post", "post.channel != 'INCD'" | where_exp: "post", "post.section != 'vulnerabilities'" %}
     {% assign ad_freq = site.data.monetization.feed_ads.frequency | default: 6 %}
     {% assign ad_items = site.data.monetization.feed_ads.items %}
     {% assign ad_count = ad_items | size %}

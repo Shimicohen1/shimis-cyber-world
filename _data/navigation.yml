@@ -7,11 +7,7 @@
 - label: Tools
   dropdown: true
   items:
-    - label: Lockdown Lab
-      url: /lockdown-lab/
-      desc: Daily hardening tips
-      icon: 🛡️
-    - label: LockDown Matrix
+    - label: LockDown
       url: /hardening/
       desc: Hardening checklists
       icon: 🔒

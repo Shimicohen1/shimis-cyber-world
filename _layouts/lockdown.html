@@ -54,31 +54,19 @@ layout: default
     </div>
     {% endif %}
 
-    {% comment %}── Subtle contextual affiliate bar (site-only, never cross-posted to LinkedIn/Telegram) ──{% endcomment %}
-    {% include post-affiliate-bar.html tags=page.tags %}
-
-    {% comment %}── Related lockdown tips — same platform first, falling back to series order ──{% endcomment %}
+    {% comment %}── Related Posts — same pattern as regular posts (post-card grid) ──{% endcomment %}
     {% assign _all_lockdowns = site.posts | where: "section", "lockdown" | where_exp: "p", "p.lockdown_id != page.lockdown_id" %}
     {% assign _same_plat = _all_lockdowns | where: "platform", page.platform %}
-    {% if _same_plat.size > 0 %}{% assign _related = _same_plat %}{% else %}{% assign _related = _all_lockdowns %}{% endif %}
-    {% if _related.size > 0 %}
-    <section class="lockdown-related" aria-label="More Lockdown Lab tips">
-      <h3 class="lockdown-related__title">More Lockdown Lab tips</h3>
-      <ul class="lockdown-related__list">
-        {% for p in _related limit: 4 %}
-        <li class="lockdown-related__item">
-          <a class="lockdown-related__link" href="{{ p.url | relative_url }}">
-            <span class="lockdown-related__meta">
-              {% if p.severity %}<span class="tag tag--{{ p.severity | downcase }} tag--xs">{{ p.severity | upcase }}</span>{% endif %}
-              {% if p.platform_name %}<span class="lockdown-related__plat">{{ p.platform_name }}</span>{% endif %}
-            </span>
-            <strong class="lockdown-related__heading">{{ p.title }}</strong>
-          </a>
-        </li>
+    {% if _same_plat.size > 0 %}{% assign related = _same_plat %}{% else %}{% assign related = _all_lockdowns %}{% endif %}
+    {% if related.size > 0 %}
+    <div class="post-related">
+      <h3 class="post-related__title">Related Posts</h3>
+      <div class="post-related__grid">
+        {% for post in related limit: 3 %}
+        {% include post-card.html %}
         {% endfor %}
-      </ul>
-      <a class="lockdown-related__more" href="{{ '/lockdown-lab/' | relative_url }}">Browse all Lockdown Lab tips →</a>
-    </section>
+      </div>
+    </div>
     {% endif %}
 
     {% comment %}── Series footer ──{% endcomment %}
