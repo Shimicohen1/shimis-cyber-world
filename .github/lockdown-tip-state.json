@@ -1,18 +1,6 @@
 {
-  "tipNumber": 1,
-  "usedIds": [
-    "cps-001"
-  ],
+  "tipNumber": 0,
+  "usedIds": [],
   "round": 1,
-  "history": [
-    {
-      "tipNumber": 1,
-      "id": "cps-001",
-      "platform": "copilot-studio",
-      "title": "Enforce Entra ID authentication for all Copilot Studio agents",
-      "date": "2026-04-19T16:16:22.959Z",
-      "linkedInId": "urn:li:share:7451665001477705728",
-      "telegramMsgId": 649
-    }
-  ]
+  "history": []
 }
