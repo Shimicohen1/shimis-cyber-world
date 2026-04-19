@@ -24,14 +24,14 @@
 {% endfor %}
 
 {% if _matched and _products.size > 0 %}
-<div class="post-rec-bar">
+<aside class="post-rec-bar" aria-label="Tools used by SCW members">
   <div class="post-rec-bar__header">
-    <span class="post-rec-bar__icon">🛡️</span>
-    <span class="post-rec-bar__title">Recommended Tools</span>
+    <span class="post-rec-bar__title">Tools used by SCW members</span>
+    <span class="post-rec-bar__disclosure" title="We may earn a small commission at no extra cost to you. It helps keep SCW free.">affiliate · supports SCW</span>
   </div>
   <div class="post-rec-bar__items">
     {% for prod in _products limit: 2 %}
-    <a href="{{ prod.url }}" target="_blank" rel="noopener noreferrer" class="post-rec-bar__item" data-track="affiliate-post">
+    <a href="{{ prod.url }}" target="_blank" rel="noopener noreferrer sponsored" class="post-rec-bar__item" data-track="affiliate-post">
       <div class="post-rec-bar__info">
         <strong>{{ prod.name }}</strong>
         <span>{{ prod.desc }}</span>
@@ -40,5 +40,5 @@
     </a>
     {% endfor %}
   </div>
-</div>
+</aside>
 {% endif %}

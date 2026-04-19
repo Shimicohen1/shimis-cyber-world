@@ -43,10 +43,7 @@ layout: default
 
     <div class="post-body prose">{{ content }}</div>
 
-    {% comment %}── Contextual affiliate bar (site-only — NEVER cross-posted to LinkedIn/Telegram) ──{% endcomment %}
-    {% include post-affiliate-bar.html tags=page.tags %}
-
-    {% comment %}── Primary CTA → interactive hardening checklist ──{% endcomment %}
+    {% comment %}── Primary CTA → interactive hardening checklist (community-first) ──{% endcomment %}
     {% if page.lockdown_id %}
     <div class="lockdown-cta">
       <div class="lockdown-cta__body">
@@ -56,6 +53,9 @@ layout: default
       <a class="lockdown-cta__btn" href="{{ '/hardening/' | relative_url }}#tip-{{ page.lockdown_id }}">Open interactive checklist →</a>
     </div>
     {% endif %}
+
+    {% comment %}── Subtle contextual affiliate bar (site-only, never cross-posted to LinkedIn/Telegram) ──{% endcomment %}
+    {% include post-affiliate-bar.html tags=page.tags %}
 
     {% comment %}── Series footer ──{% endcomment %}
     <div class="lockdown-footer">
