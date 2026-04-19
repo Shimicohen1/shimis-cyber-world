@@ -19,6 +19,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 const TOKEN = process.env.LINKEDIN_ACCESS_TOKEN;
 const PERSON_URN = process.env.LINKEDIN_PERSON_URN;
@@ -26,12 +27,17 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GH_IMAGES_PAT = process.env.GH_IMAGES_PAT || '';
 const TG_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TG_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID || '';
+// Feature flag: set LOCKDOWN_PUBLISH_TO_SITE=false to skip the website publish
+// step (LinkedIn + Telegram still publish using /hardening/#tip-X as primary link).
+const PUBLISH_TO_SITE = (process.env.LOCKDOWN_PUBLISH_TO_SITE || 'true').toLowerCase() !== 'false';
 const DRY_RUN = process.argv.includes('--dry-run');
 const FORCE_ID = process.argv.find(a => a.startsWith('--force-id='))?.split('=')[1] || '';
 const PREVIEW = process.argv.includes('--preview');
+const SKIP_SITE = process.argv.includes('--no-site'); // override flag, useful for manual reruns
 const ROOT = process.cwd();
 const STATE_FILE = path.join(ROOT, '.github', 'lockdown-tip-state.json');
 const HARDENING_YML = path.join(ROOT, '_data', 'hardening.yml');
+const POSTS_DIR = path.join(ROOT, '_posts');
 const SITE_URL = 'https://shimiscyberworld.com';
 const IMAGES_REPO = 'Shimicohen1/scw-post-images';
 const IMAGES_BASE_URL = `https://raw.githubusercontent.com/${IMAGES_REPO}/main`;
@@ -630,6 +636,183 @@ async function sendTelegramText(baseUrl, text) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+ *  SITE PUBLISH — write _posts markdown, smoke-test, commit, push
+ * ═══════════════════════════════════════════════════════════ */
+
+function slugify(s) {
+  return String(s)
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .substring(0, 60)
+    .replace(/-+$/g, '');
+}
+
+function escapeYamlString(s) {
+  // Wrap in double quotes and escape backslashes + double quotes
+  return '"' + String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+}
+
+function buildSitePostMarkdown({ tip, tipNumber, platforms, categories, aiText, imageUrl, isoDate }) {
+  const platformName = platforms[tip.platform]?.name || tip.platform;
+  const categoryName = categories[tip.category] || tip.category || '';
+  const slug = `lockdown-${tip.id}`;
+  const permalink = `/lockdown-lab/${slug}/`;
+  const deepLink = `${SITE_URL}/hardening/#tip-${tip.id}`;
+
+  // Convert the social post text into Markdown body.
+  // Strip the trailing footer (deep-link line, channel link, hashtags) so the
+  // page renders cleanly — those are presented separately by the layout.
+  let body = (aiText || '').trim();
+  body = body
+    .replace(/\n+Full check[^\n]*\n?/i, '\n')
+    .replace(/\n+📡 https?:\/\/t\.me\/[^\s]+\n?/g, '\n')
+    .replace(/\n+#ShimisCyberWorld[^\n]*$/i, '')
+    .trim();
+
+  // Drop the duplicated H1 (first line is "Lockdown Tip of the Day #N — Title")
+  // — the layout already renders the title.
+  const lines = body.split('\n');
+  if (lines[0] && /^Lockdown Tip of the Day/i.test(lines[0])) {
+    lines.shift();
+    while (lines.length && lines[0].trim() === '') lines.shift();
+  }
+  body = lines.join('\n').trim();
+
+  // Build the markdown body with tip metadata and command block
+  let md = body + '\n';
+
+  if (tip.command) {
+    const command = String(tip.command).trim();
+    md += `\n## The fix\n\n\`\`\`\n${command}\n\`\`\`\n`;
+  }
+
+  if (tip.reference) {
+    md += `\n**Reference:** ${tip.reference}\n`;
+  }
+
+  // Front matter
+  const fm = [];
+  fm.push('---');
+  fm.push(`title: ${escapeYamlString(tip.title)}`);
+  fm.push(`date: ${isoDate}`);
+  fm.push(`permalink: ${permalink}`);
+  fm.push(`layout: lockdown`);
+  fm.push(`section: lockdown`);
+  fm.push(`channel: "Lockdown Lab"`);
+  fm.push(`author: shimi-cohen`);
+  fm.push(`lockdown_id: ${tip.id}`);
+  fm.push(`lockdown_number: ${tipNumber}`);
+  fm.push(`platform: ${escapeYamlString(tip.platform || '')}`);
+  fm.push(`platform_name: ${escapeYamlString(platformName)}`);
+  fm.push(`category: ${escapeYamlString(tip.category || '')}`);
+  fm.push(`category_name: ${escapeYamlString(categoryName)}`);
+  fm.push(`severity: ${escapeYamlString(tip.severity || 'medium')}`);
+  fm.push(`tags: [lockdown-lab, hardening, ${tip.platform || 'security'}, ${tip.category || 'security'}]`);
+  if (imageUrl) fm.push(`image: ${escapeYamlString(imageUrl)}`);
+
+  // Build a clean summary from the body (first 200 chars, no markdown)
+  const summarySrc = body.replace(/```[\s\S]*?```/g, '').replace(/[#*_`>]/g, '').replace(/\s+/g, ' ').trim();
+  const summary = summarySrc.length > 220 ? summarySrc.substring(0, 217) + '...' : summarySrc;
+  fm.push(`summary: ${escapeYamlString(summary)}`);
+  fm.push(`hardening_url: ${escapeYamlString(deepLink)}`);
+  fm.push('---');
+  fm.push('');
+
+  return fm.join('\n') + md;
+}
+
+function writeSitePost({ tip, tipNumber, platforms, categories, aiText, imageUrl }) {
+  const now = new Date();
+  const isoDate = now.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' +0000');
+  const dateStr = now.toISOString().substring(0, 10);
+  const filename = `${dateStr}-lockdown-${tip.id}.md`;
+  const filepath = path.join(POSTS_DIR, filename);
+  const content = buildSitePostMarkdown({ tip, tipNumber, platforms, categories, aiText, imageUrl, isoDate });
+  fs.writeFileSync(filepath, content, 'utf8');
+  return { filepath, filename, slug: `lockdown-${tip.id}`, postUrl: `${SITE_URL}/lockdown-lab/lockdown-${tip.id}/` };
+}
+
+function jekyllSmokeTest() {
+  console.log('🧪 Running Jekyll smoke test...');
+  try {
+    execSync('bundle exec jekyll build --quiet', { stdio: 'inherit', cwd: ROOT });
+    console.log('✅ Jekyll build OK');
+    return true;
+  } catch (err) {
+    console.error(`❌ Jekyll build FAILED: ${err.message}`);
+    return false;
+  }
+}
+
+function commitAndPushSitePost(filepath, tip, tipNumber) {
+  console.log('📝 Committing site post...');
+  try {
+    // Configure git identity if missing (CI safety)
+    try { execSync('git config user.name', { stdio: 'pipe', cwd: ROOT }); }
+    catch { execSync('git config user.name "SCW Feed Bot"', { cwd: ROOT }); }
+    try { execSync('git config user.email', { stdio: 'pipe', cwd: ROOT }); }
+    catch { execSync('git config user.email "shimicyberworld@gmail.com"', { cwd: ROOT }); }
+
+    execSync(`git add "${filepath}"`, { stdio: 'inherit', cwd: ROOT });
+    const msg = `feat(lockdown-lab): publish #${tipNumber} ${tip.id} — ${tip.title.replace(/"/g, "'")}`;
+    execSync(`git commit -m "${msg}"`, { stdio: 'inherit', cwd: ROOT });
+    execSync('git pull --rebase --autostash origin main || true', { stdio: 'inherit', cwd: ROOT });
+    execSync('git push origin HEAD:main', { stdio: 'inherit', cwd: ROOT });
+    console.log('✅ Pushed to main');
+    return true;
+  } catch (err) {
+    console.error(`❌ git commit/push failed: ${err.message}`);
+    return false;
+  }
+}
+
+async function waitForLive(url, { maxSeconds = 300, intervalSeconds = 15 } = {}) {
+  console.log(`⏳ Waiting for ${url} to go live...`);
+  const deadline = Date.now() + maxSeconds * 1000;
+  let attempt = 0;
+  while (Date.now() < deadline) {
+    attempt++;
+    try {
+      const res = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+      if (res.ok) {
+        console.log(`✅ Live after ${attempt} check(s) (status ${res.status})`);
+        return true;
+      }
+      console.log(`   [${attempt}] status=${res.status}, retrying in ${intervalSeconds}s`);
+    } catch (err) {
+      console.log(`   [${attempt}] fetch error: ${err.message}`);
+    }
+    await new Promise(r => setTimeout(r, intervalSeconds * 1000));
+  }
+  console.warn(`⚠️  Timeout: ${url} did not return 200 within ${maxSeconds}s — proceeding anyway`);
+  return false;
+}
+
+function rewriteTextWithSitePostUrl(text, postUrl) {
+  // Replace the existing "Full check + implementation guide: <hardening-deeplink>" line
+  // with a two-line variant: site post (primary) + interactive checklist (secondary).
+  if (!postUrl) return text;
+  const fullCheckRegex = /Full check \+ implementation guide:\s*(\S+)/i;
+  const match = text.match(fullCheckRegex);
+  if (match) {
+    const checklistUrl = match[1];
+    const replacement = `Read the full breakdown: ${postUrl}\nInteractive checklist: ${checklistUrl}`;
+    text = text.replace(fullCheckRegex, replacement);
+  } else {
+    // No existing link — append before the channel marker
+    const channelIdx = text.indexOf('📡 https://t.me');
+    if (channelIdx >= 0) {
+      text = text.slice(0, channelIdx) + `Read the full breakdown: ${postUrl}\n\n` + text.slice(channelIdx);
+    } else {
+      text += `\n\nRead the full breakdown: ${postUrl}`;
+    }
+  }
+  return text;
+}
+
+/* ═══════════════════════════════════════════════════════════
  *  MAIN
  * ═══════════════════════════════════════════════════════════ */
 
@@ -674,9 +857,53 @@ async function main() {
     process.exit(0);
   }
 
-  // Pick image
-  let imageAsset = null;
+  // Pick image FIRST — needed for both the site post front matter and LinkedIn upload
   const imageData = await pickLockdownImage();
+
+  // ── SITE PUBLISH (site-first flow) ───────────────────────
+  // Write _posts/ markdown → Jekyll smoke test → commit & push → wait for live.
+  // If anything fails AND PUBLISH_TO_SITE is true, abort before social posts so
+  // we don't end up with broken "Read the full breakdown" links.
+  let siteUrl = null;
+  const wantSite = PUBLISH_TO_SITE && !SKIP_SITE;
+  if (wantSite) {
+    console.log('\n📝 Publishing to website (site-first flow)...');
+    const sitePost = writeSitePost({
+      tip, tipNumber, platforms, categories, aiText: text, imageUrl: imageData?.url || null,
+    });
+    console.log(`   wrote ${sitePost.filename}`);
+
+    if (!jekyllSmokeTest()) {
+      console.error('❌ Jekyll smoke test failed — removing site post and aborting');
+      try { fs.unlinkSync(sitePost.filepath); } catch {}
+      process.exit(1);
+    }
+    console.log('   ✓ Jekyll build OK');
+
+    if (!commitAndPushSitePost(sitePost.filepath, tip, tipNumber)) {
+      console.error('❌ Git commit/push failed — aborting before social posts');
+      process.exit(1);
+    }
+    console.log('   ✓ committed & pushed');
+
+    const live = await waitForLive(sitePost.postUrl);
+    if (!live) {
+      console.error(`❌ Site post never went live: ${sitePost.postUrl} — aborting`);
+      process.exit(1);
+    }
+    siteUrl = sitePost.postUrl;
+    console.log(`   ✓ live at ${siteUrl}`);
+
+    // Rewrite the social text so the primary CTA points at the site post,
+    // with the hardening checklist as the secondary deep-link.
+    text = rewriteTextWithSitePostUrl(text, siteUrl);
+    console.log('   ✓ rewrote social text with site URL as primary CTA');
+  } else {
+    console.log(wantSite === false ? '⏭️  Site publish skipped (PUBLISH_TO_SITE=false or --no-site)' : '⏭️  Site publish skipped');
+  }
+
+  // Upload image to LinkedIn (after site post so the social text is final)
+  let imageAsset = null;
   if (imageData) {
     try {
       imageAsset = await uploadImageToLinkedIn(imageData.buffer, imageData.mimeType);
@@ -706,6 +933,7 @@ async function main() {
     date: new Date().toISOString(),
     linkedInId: postId,
     telegramMsgId: tgMsgId || null,
+    siteUrl: siteUrl || null,
   });
   // Keep history manageable
   if (state.history.length > 100) {

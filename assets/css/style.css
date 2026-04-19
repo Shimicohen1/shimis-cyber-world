@@ -3198,3 +3198,79 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
   .digest-section { padding: 1rem; }
   .digest-table { font-size: .75rem; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Lockdown Lab — daily hardening tip series
+   ───────────────────────────────────────────────────────────── */
+.badge--lockdown {
+  display: inline-block;
+  padding: .28rem .7rem;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, rgba(204, 255, 0, 0.18), rgba(0, 180, 216, 0.12));
+  color: #ccff00;
+  border: 1px solid rgba(204, 255, 0, 0.35);
+  border-radius: 4px;
+}
+.lockdown-meta-strip {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: .9rem;
+}
+.lockdown-platform {
+  font-size: .78rem;
+  color: rgba(255,255,255,.6);
+  font-weight: 500;
+}
+.lockdown-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 2.5rem 0 1.5rem;
+  padding: 1.4rem 1.6rem;
+  background: linear-gradient(135deg, rgba(204, 255, 0, 0.06), rgba(0, 180, 216, 0.04));
+  border: 1px solid rgba(204, 255, 0, 0.22);
+  border-radius: 8px;
+}
+.lockdown-cta__body h3 {
+  margin: 0 0 .3rem;
+  font-size: 1.05rem;
+  color: #fff;
+}
+.lockdown-cta__body p {
+  margin: 0;
+  font-size: .88rem;
+  color: rgba(255,255,255,.7);
+}
+.lockdown-cta__btn {
+  display: inline-block;
+  padding: .7rem 1.2rem;
+  background: #ccff00;
+  color: #0a0a0a;
+  font-weight: 700;
+  font-size: .88rem;
+  text-decoration: none;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.lockdown-cta__btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(204, 255, 0, 0.25);
+}
+.lockdown-footer {
+  margin-top: 2.5rem;
+  padding: 1.2rem 0 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: .85rem;
+  color: rgba(255,255,255,.55);
+}
+.lockdown-footer p { margin: .4rem 0; }
+.lockdown-footer a { color: #00b4d8; text-decoration: none; }
+.lockdown-footer a:hover { color: #ccff00; }

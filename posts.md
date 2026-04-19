@@ -32,7 +32,7 @@ permalink: /posts/
 
 <div class="archive">
   <div class="archive__list" id="feed-list">
-    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'CISA KEV'" | where_exp: "post", "post.channel != 'INCD'" | where_exp: "post", "post.section != 'vulnerabilities'" %}
+    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'CISA KEV'" | where_exp: "post", "post.channel != 'INCD'" | where_exp: "post", "post.section != 'vulnerabilities'" | where_exp: "post", "post.section != 'lockdown'" %}
     {% assign ad_freq = site.data.monetization.feed_ads.frequency | default: 6 %}
     {% assign ad_items = site.data.monetization.feed_ads.items %}
     {% assign ad_count = ad_items | size %}

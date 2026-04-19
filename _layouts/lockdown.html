@@ -1,0 +1,91 @@
+---
+layout: default
+---
+<div class="container">
+  <article class="post post--lockdown">
+    <header class="post-header">
+      <div class="lockdown-meta-strip">
+        <span class="badge badge--lockdown">Lockdown Lab #{{ page.lockdown_number }}</span>
+        {% if page.severity %}<span class="tag tag--{{ page.severity | downcase }}">{{ page.severity | upcase }}</span>{% endif %}
+        {% if page.platform_name %}<span class="lockdown-platform">{{ page.platform_name }}</span>{% endif %}
+      </div>
+
+      <h1 class="post-title">{{ page.title }}</h1>
+
+      <div class="post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y" }}</time>
+        <span class="meta-sep">/</span>
+        <span>Daily hardening tip</span>
+      </div>
+
+      {% comment %}── Author byline (Shimi) ──{% endcomment %}
+      {% for a in site.data.authors %}{% if a.slug == 'shimi-cohen' %}
+      <div class="post-byline">
+        <img src="{{ a.avatar | relative_url }}" alt="" class="post-byline__avatar" width="32" height="32" referrerpolicy="no-referrer">
+        <div class="post-byline__info">
+          <span class="post-byline__name">Written by {{ a.name }}</span>
+          {% if a.role and a.role != '' %}<span class="post-byline__role">{{ a.role }}</span>{% endif %}
+        </div>
+      </div>
+      {% endif %}{% endfor %}
+
+      <div class="post-tags">
+        <span class="tag tag--source">SCW Lockdown Lab</span>
+        {% for tag in page.tags %}{% unless tag == 'lockdown' or tag == 'lockdown-lab' or tag == 'hardening' or tag == 'security' %}<span class="tag">{{ tag }}</span>{% endunless %}{% endfor %}
+      </div>
+    </header>
+
+    {% if page.image %}
+    <div class="post-image">
+      <img src="{{ page.image }}" alt="{{ page.title | escape }}" loading="eager" fetchpriority="high" referrerpolicy="no-referrer">
+    </div>
+    {% endif %}
+
+    <div class="post-body prose">{{ content }}</div>
+
+    {% comment %}── Primary CTA → interactive hardening checklist ──{% endcomment %}
+    {% if page.lockdown_id %}
+    <div class="lockdown-cta">
+      <div class="lockdown-cta__body">
+        <h3>Mark this as done</h3>
+        <p>Open the interactive hardening checklist and tick this off in your environment.</p>
+      </div>
+      <a class="lockdown-cta__btn" href="{{ '/hardening/' | relative_url }}#tip-{{ page.lockdown_id }}">Open interactive checklist →</a>
+    </div>
+    {% endif %}
+
+    {% comment %}── Series footer ──{% endcomment %}
+    <div class="lockdown-footer">
+      <p><strong>Lockdown Lab</strong> is a daily hardening series — one practical, vendor-specific check published every day at 10:00 Israel time across the website, LinkedIn, and Telegram.</p>
+      <p>
+        <a href="{{ '/lockdown-lab/' | relative_url }}">Browse all Lockdown Lab posts →</a>
+        &nbsp;·&nbsp;
+        <a href="{{ '/hardening/' | relative_url }}">Full hardening matrix →</a>
+        &nbsp;·&nbsp;
+        <a href="https://t.me/shimiscyberworld" target="_blank" rel="noopener">Telegram channel →</a>
+      </p>
+    </div>
+  </article>
+</div>
+
+{% comment %}── Schema.org HowTo for Google rich results ──{% endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": {{ page.title | jsonify }},
+  "description": {{ page.summary | default: page.excerpt | strip_html | jsonify }},
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "image": {{ page.image | default: site.url | append: '/assets/og-default.png' | jsonify }},
+  "author": {
+    "@type": "Person",
+    "name": "Shimi Cohen",
+    "url": "{{ site.url }}/about/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ site.title | jsonify }},
+    "url": "{{ site.url }}"
+  }
+}
+</script>

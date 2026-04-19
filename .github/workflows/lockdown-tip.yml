@@ -26,13 +26,25 @@ permissions:
 jobs:
   post-tip:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # full history so the script can rebase/push
 
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true     # auto cache + bundle install
+
+      - name: Configure git identity
+        run: |
+          git config user.name "SCW Feed Bot"
+          git config user.email "shimicyberworld@gmail.com"
 
       - name: Post Lockdown Tip
         env:
@@ -42,6 +54,7 @@ jobs:
           GH_IMAGES_PAT: ${{ secrets.GH_IMAGES_PAT }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          LOCKDOWN_PUBLISH_TO_SITE: ${{ vars.LOCKDOWN_PUBLISH_TO_SITE || 'true' }}
         run: |
           ARGS=""
           if [ "${{ inputs.force_id }}" != "" ]; then ARGS="$ARGS --force-id=${{ inputs.force_id }}"; fi
@@ -52,8 +65,8 @@ jobs:
       - name: Commit state
         if: ${{ inputs.dry_run != 'true' && inputs.preview != 'true' }}
         run: |
-          git config user.name "SCW Feed Bot"
-          git config user.email "shimicyberworld@gmail.com"
+          # Script may have already pushed a site post; rebase before committing state
+          git pull --rebase --autostash origin main || true
           git add .github/lockdown-tip-state.json
           git diff --staged --quiet || git commit -m "chore: update lockdown tip state"
-          git push
+          git push origin HEAD:main || true
