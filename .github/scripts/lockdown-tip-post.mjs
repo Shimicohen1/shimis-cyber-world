@@ -266,7 +266,7 @@ Write exactly like the posts on shimiscyberworld.com — you're a senior CISO sh
 - Tone: confident, sharp, practical. Like a senior security pro briefing peers — not a vendor pitch.
 
 ═══ STRUCTURE ═══
-Lockdown Tip of the Day #${tipNumber} — ${platformName}
+Lockdown Tip of the Day #${tipNumber} — ${tip.title}
 
 [Hook: 1-2 punchy lines about WHY this matters]
 
@@ -280,7 +280,7 @@ Full check + implementation guide: ${deepLink}
 #ShimisCyberWorld #cybersecurity #hardening
 
 ═══ HARD RULES ═══
-1. First line MUST be exactly: Lockdown Tip of the Day #${tipNumber} — ${platformName}
+1. First line MUST be exactly: Lockdown Tip of the Day #${tipNumber} — ${tip.title}
 2. ZERO emojis ANYWHERE except the 📡 footer marker.
 3. EXACTLY 3 hashtags on the last line: #ShimisCyberWorld #cybersecurity #hardening
 4. Include the actual command/config — not just "configure this setting."
@@ -356,7 +356,7 @@ Full check + implementation guide: ${deepLink}
       // Ensure first line is the series title
       const expectedTitle = `Lockdown Tip of the Day #${tipNumber}`;
       if (!text.startsWith(expectedTitle)) {
-        text = `${expectedTitle} — ${platformName}\n\n${text}`;
+        text = `${expectedTitle} — ${tip.title}\n\n${text}`;
       }
 
       // Clean up
@@ -408,9 +408,7 @@ function formatTemplateTip(tip, tipNumber, platforms, categories) {
   const severity = (tip.severity || 'medium').toUpperCase();
   const severityNote = severity === 'CRITICAL' ? 'This is a critical check.' : '';
 
-  let text = `Lockdown Tip of the Day #${tipNumber} — ${platformName}
-
-${tip.title}
+  let text = `Lockdown Tip of the Day #${tipNumber} — ${tip.title}
 
 ${tip.description}${severityNote ? ' ' + severityNote : ''}`;
 
