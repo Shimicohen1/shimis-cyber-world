@@ -62,6 +62,9 @@ platforms:
 - id: ad-ds
   name: Active Directory DS
   icon: 🏢
+- id: azure
+  name: Microsoft Azure
+  icon: ☁️
 categories:
 - id: identity
   name: Identity & Access
@@ -84,6 +87,12 @@ categories:
 - id: ai-security
   name: AI Security
   icon: 🤖
+- id: container
+  name: Containers & Orchestration
+  icon: 📦
+- id: supply-chain
+  name: Supply Chain Security
+  icon: 🔗
 items:
 - id: lin-001
   platform: linux

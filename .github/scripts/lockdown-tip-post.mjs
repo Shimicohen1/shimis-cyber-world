@@ -261,10 +261,18 @@ function pickNextTip(items, state) {
     return forced;
   }
 
-  // Filter out already used tips in this round
-  const available = items.filter(i => !state.usedIds.includes(i.id));
+  // Filter out already used tips in this round, AND tips that are not publishable
+  // (must have a non-empty `command` so "The fix" code block is never empty).
+  const isPublishable = (i) => typeof i.command === 'string' && i.command.trim().length > 0;
+  const available = items.filter(i => !state.usedIds.includes(i.id) && isPublishable(i));
 
   if (available.length === 0) {
+    // Safety: if no publishable tips exist at all, abort instead of looping forever
+    const totalPublishable = items.filter(isPublishable).length;
+    if (totalPublishable === 0) {
+      console.error('❌ No publishable tips found (all items lack a non-empty `command` field). Aborting.');
+      process.exit(1);
+    }
     // New round
     console.log(`🔄 Round ${state.round} complete (${state.usedIds.length} tips). Starting round ${state.round + 1}`);
     state.usedIds = [];
