@@ -1,7 +1,8 @@
 {
-  "tipNumber": 1,
+  "tipNumber": 2,
   "usedIds": [
-    "cps-001"
+    "cps-001",
+    "lin-001"
   ],
   "round": 1,
   "history": [
@@ -13,6 +14,16 @@
       "date": "2026-04-19T16:21:37.587Z",
       "linkedInId": "urn:li:share:7451666323555856384",
       "telegramMsgId": 650
+    },
+    {
+      "tipNumber": 2,
+      "id": "lin-001",
+      "platform": "linux",
+      "title": "Disable root SSH login",
+      "date": "2026-04-19T19:18:53.955Z",
+      "linkedInId": "urn:li:share:7451710935850885120",
+      "telegramMsgId": 655,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-001/"
     }
   ]
 }
