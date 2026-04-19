@@ -96,6 +96,8 @@ function parseHardeningYml() {
   let item = null;
   let currentField = null;
   let multiLineValue = '';
+  let inBlockScalar = false;
+  let blockIndent = 0;
   let inPremium = false;
   let premiumField = null;
   let premiumValue = '';
@@ -109,7 +111,11 @@ function parseHardeningYml() {
     if (line.match(/^-\s+id:/) || line.match(/^\s+-\s+id:/)) {
       // Save previous item
       if (item) {
-        if (currentField && multiLineValue) item[currentField] = multiLineValue.trim();
+        if (currentField && multiLineValue) {
+          item[currentField] = inBlockScalar
+            ? multiLineValue.replace(/\n+$/, '')
+            : multiLineValue.trim();
+        }
         if (inPremium && premiumField && premiumValue) {
           if (!item.premium) item.premium = {};
           item.premium[premiumField] = premiumValue.trim();
@@ -120,6 +126,7 @@ function parseHardeningYml() {
       item = { id: idVal };
       currentField = null;
       multiLineValue = '';
+      inBlockScalar = false;
       inPremium = false;
       premiumField = null;
       premiumValue = '';
@@ -130,7 +137,14 @@ function parseHardeningYml() {
 
     // Premium block
     if (line.match(/^\s+premium:/)) {
-      if (currentField && multiLineValue) { item[currentField] = multiLineValue.trim(); currentField = null; multiLineValue = ''; }
+      if (currentField && multiLineValue) {
+        item[currentField] = inBlockScalar
+          ? multiLineValue.replace(/\n+$/, '')
+          : multiLineValue.trim();
+        currentField = null;
+        multiLineValue = '';
+        inBlockScalar = false;
+      }
       inPremium = true;
       item.premium = {};
       continue;
@@ -149,6 +163,37 @@ function parseHardeningYml() {
         premiumValue += '\n' + line.trim();
         continue;
       }
+    }
+
+    // YAML literal block scalar start: e.g. "  command: |" — content lines
+    // are indented MORE than the key. Handles | |- |+ (we strip trailing newlines).
+    const blockStart = line.match(/^(\s+)(\w+):\s*\|[+-]?\s*$/);
+    if (blockStart && !inPremium) {
+      if (currentField && multiLineValue) item[currentField] = multiLineValue.replace(/\n+$/, '');
+      currentField = blockStart[2];
+      multiLineValue = '';
+      blockIndent = blockStart[1].length + 2; // content is at least 2 more spaces
+      inBlockScalar = true;
+      continue;
+    }
+
+    // Inside a block scalar: collect lines until we hit a less-indented line
+    if (inBlockScalar) {
+      if (line.trim() === '') {
+        multiLineValue += (multiLineValue ? '\n' : '');
+        continue;
+      }
+      const indent = (line.match(/^(\s*)/)[1] || '').length;
+      if (indent >= blockIndent) {
+        multiLineValue += (multiLineValue ? '\n' : '') + line.slice(blockIndent);
+        continue;
+      }
+      // Block scalar ended — flush and fall through to normal processing
+      item[currentField] = multiLineValue.replace(/\n+$/, '');
+      currentField = null;
+      multiLineValue = '';
+      inBlockScalar = false;
+      // do NOT continue — re-process this line below
     }
 
     // Multi-line field start (e.g. command: '...) — check BEFORE simple fields
@@ -189,7 +234,11 @@ function parseHardeningYml() {
 
   // Push last item
   if (item) {
-    if (currentField && multiLineValue) item[currentField] = multiLineValue.trim();
+    if (currentField && multiLineValue) {
+      item[currentField] = inBlockScalar
+        ? multiLineValue.replace(/\n+$/, '')
+        : multiLineValue.trim();
+    }
     if (inPremium && premiumField && premiumValue) {
       if (!item.premium) item.premium = {};
       item.premium[premiumField] = premiumValue.trim();
