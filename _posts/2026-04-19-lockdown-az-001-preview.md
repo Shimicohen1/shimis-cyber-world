@@ -1,6 +1,6 @@
 ---
 title: "Enable MFA for all users (preview)"
-date: 2026-04-20 09:00:00 +0000
+date: 2026-04-19 19:30:00 +0000
 permalink: /lockdown-lab/lockdown-az-001-preview/
 layout: lockdown
 section: lockdown
