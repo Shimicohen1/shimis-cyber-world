@@ -436,16 +436,18 @@ ${tip.description}${severityNote ? ' ' + severityNote : ''}`;
  * ═══════════════════════════════════════════════════════════ */
 
 async function pickLockdownImage() {
-  if (!GH_IMAGES_PAT) {
-    console.warn('⚠️  No GH_IMAGES_PAT — text-only post');
-    return null;
-  }
-
   const dir = 'pool/lockdown';
   try {
-    const res = await fetch(`https://api.github.com/repos/${IMAGES_REPO}/contents/${dir}`, {
-      headers: { Authorization: `token ${GH_IMAGES_PAT}`, 'User-Agent': 'SCW-Lockdown' },
-    });
+    // Try with auth first; fall back to no-auth (repo is public)
+    const headers = { 'User-Agent': 'SCW-Lockdown' };
+    if (GH_IMAGES_PAT) headers.Authorization = `token ${GH_IMAGES_PAT}`;
+
+    let res = await fetch(`https://api.github.com/repos/${IMAGES_REPO}/contents/${dir}`, { headers });
+    if (!res.ok && GH_IMAGES_PAT) {
+      console.warn(`⚠️  Auth token returned ${res.status} — retrying without auth`);
+      delete headers.Authorization;
+      res = await fetch(`https://api.github.com/repos/${IMAGES_REPO}/contents/${dir}`, { headers });
+    }
     if (!res.ok) {
       console.warn(`⚠️  No lockdown image folder (${res.status}) — text-only post`);
       return null;
