@@ -8,7 +8,7 @@ description: "Daily, vendor-specific hardening tips from Shimi Cohen. One practi
 <div class="page-head">
   <div class="label label--acid page-head__label">DAILY SERIES</div>
   <h1 class="page-head__title">Lockdown Lab</h1>
-  <p class="page-head__desc">A daily, vendor-specific hardening tip from the field. One practical lockdown step you can apply today — published every day at 10:00 Israel time across the website, LinkedIn and Telegram.</p>
+  <p class="page-head__desc">A daily, vendor-specific hardening tip from the field. One practical lockdown step you can apply today — published across the website, LinkedIn and Telegram.</p>
 </div>
 
 <div class="feed-controls">
@@ -64,7 +64,7 @@ description: "Daily, vendor-specific hardening tips from Shimi Cohen. One practi
 
   {% if lockdowns.size == 0 %}
   <div class="empty-state" style="margin-top: 2rem;">
-    <p>The first Lockdown Lab tips are landing — check back tomorrow at 10:00 Israel time.</p>
+    <p>The first Lockdown Lab tips are landing — check back soon.</p>
     <p><a href="{{ '/hardening/' | relative_url }}">Or jump straight to the interactive hardening matrix →</a></p>
   </div>
   {% endif %}
