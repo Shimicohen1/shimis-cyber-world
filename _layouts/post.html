@@ -298,8 +298,10 @@ layout: default
     {% comment %}── Contextual Product Recommendations ──{% endcomment %}
     {% include post-affiliate-bar.html tags=page.tags %}
 
-    {% comment %}── SCW Intel Bot CTA — skip if sigma_rules already promoted the bot above ──{% endcomment %}
-    {% unless page.sigma_rules %}
+    {% comment %}── SCW Intel Bot CTA — skip if sigma_rules already promoted the bot above, OR if smart per-post actions will render below ──{% endcomment %}
+    {% assign _will_show_smart_actions = false %}
+    {% if page.organizations and page.organizations.size > 0 %}{% assign _will_show_smart_actions = true %}{% endif %}
+    {% unless page.sigma_rules or _will_show_smart_actions %}
     <div class="post-bot-cta">
       <span class="post-bot-cta__icon">🔎</span>
       <div class="post-bot-cta__text">

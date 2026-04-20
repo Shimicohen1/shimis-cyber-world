@@ -2394,76 +2394,10 @@
 }
 .btn--lg { padding: .75rem 2rem; font-size: 1rem; }
 
-/* Post bot CTA */
-.post-bot-cta {
-  background: linear-gradient(135deg, rgba(6,182,212,.06), rgba(59,130,246,.06));
-  border: 1px solid rgba(6,182,212,.15);
-  border-radius: .75rem;
-  padding: 1.25rem 1.5rem;
-  margin: 2rem 0;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.post-bot-cta__icon { font-size: 1.75rem; flex-shrink: 0; }
-.post-bot-cta__text { flex: 1; min-width: 200px; }
-.post-bot-cta__text strong { display: block; margin-bottom: .25rem; }
-.post-bot-cta__text span { color: var(--muted); font-size: .9rem; }
-.post-bot-cta .btn { white-space: nowrap; }
-
-/* Smart per-post bot actions (only renders when org/domain data present) */
-.post-bot-actions {
-  margin: 1.5rem 0 2rem;
-  padding: 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: .75rem;
-  background: rgba(6,182,212,.03);
-}
-.post-bot-actions__title {
-  font-size: .85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: var(--muted);
-  margin-bottom: .85rem;
-}
-.post-bot-actions__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: .75rem;
-}
-.post-bot-actions__btn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: .25rem;
-  padding: .85rem 1rem;
-  border: 1px solid rgba(6,182,212,.25);
-  border-radius: .5rem;
-  background: var(--card-bg, rgba(255,255,255,.02));
-  color: var(--text);
-  text-decoration: none;
-  transition: border-color .15s, transform .15s, background .15s;
-}
-.post-bot-actions__btn:hover {
-  border-color: rgba(6,182,212,.55);
-  background: rgba(6,182,212,.06);
-  transform: translateY(-1px);
-  text-decoration: none;
-}
-.post-bot-actions__icon { font-size: 1.1rem; }
-.post-bot-actions__label { font-weight: 600; font-size: .95rem; }
-.post-bot-actions__label strong { color: var(--accent, #06b6d4); font-weight: 700; }
-.post-bot-actions__hint { font-size: .8rem; color: var(--muted); }
-
-[data-theme="light"] .post-bot-actions { background: rgba(8,145,178,.03); }
-[data-theme="light"] .post-bot-actions__btn { border-color: rgba(8,145,178,.2); background: #fff; }
-[data-theme="light"] .post-bot-actions__btn:hover { border-color: rgba(8,145,178,.5); background: rgba(8,145,178,.04); }
+/* .post-bot-cta and .post-bot-actions styles moved to style.css (loaded site-wide) */
 
 [data-theme="light"] .elite-bot__card { background: linear-gradient(135deg, rgba(8,145,178,.06), rgba(59,130,246,.06)); border-color: rgba(8,145,178,.15); }
 [data-theme="light"] .elite-bot__product { background: rgba(8,145,178,.04); border-color: rgba(8,145,178,.1); }
-[data-theme="light"] .post-bot-cta { background: linear-gradient(135deg, rgba(8,145,178,.04), rgba(59,130,246,.04)); border-color: rgba(8,145,178,.1); }
 
 /* Post Affiliate Recommendation Bar — subtle, community-first */
 .post-rec-bar {
