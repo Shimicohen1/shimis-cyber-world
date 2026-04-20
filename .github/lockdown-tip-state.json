@@ -1,9 +1,10 @@
 {
-  "tipNumber": 3,
+  "tipNumber": 4,
   "usedIds": [
     "cps-001",
     "cps-002",
-    "lin-001"
+    "lin-001",
+    "win-001"
   ],
   "round": 1,
   "history": [
@@ -35,6 +36,16 @@
       "linkedInId": "urn:li:share:7451899293205979136",
       "telegramMsgId": 663,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-001/"
+    },
+    {
+      "tipNumber": 4,
+      "id": "win-001",
+      "platform": "windows",
+      "title": "Rename and disable built-in Administrator",
+      "date": "2026-04-20T07:56:59.681Z",
+      "linkedInId": "urn:li:share:7451901716536422400",
+      "telegramMsgId": 664,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-001/"
     }
   ]
 }
