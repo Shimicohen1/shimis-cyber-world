@@ -154,11 +154,16 @@ layout: default
     {% endif %}
 
     {% comment %}── Sigma Detection Rules (tiered: metadata → Sigma YAML → SIEM via bot) ──{% endcomment %}
-    {% if page.sigma_rules %}
+    {% comment %}── Only render if bot can actually deliver rules (all_rules_b64) OR at least preview (preview_yaml_b64) ──{% endcomment %}
+    {% assign _has_full_rules = page.sigma_rules.all_rules_b64 %}
+    {% assign _has_preview    = page.sigma_rules.preview_yaml_b64 %}
+    {% if page.sigma_rules and (_has_full_rules or _has_preview) %}
     {% assign post_epoch = page.date | date: '%s' | plus: 0 %}
     {% assign now_epoch = site.time | date: '%s' | plus: 0 %}
     {% assign post_age = now_epoch | minus: post_epoch %}
     {% assign fourteen_days = 1209600 %}
+    {% comment %}── Effective rule count = what bot can actually serve ──{% endcomment %}
+    {% if _has_full_rules %}{% assign _effective_count = page.sigma_rules.count %}{% else %}{% assign _effective_count = 1 %}{% endif %}
     {% comment %}── Build deep link: detect_OrgName if org exists, else CVE ID, else generic ──{% endcomment %}
     {% if page.organizations and page.organizations.size > 0 %}
       {% assign _detect_q = page.organizations[0].name | url_encode %}
@@ -172,12 +177,16 @@ layout: default
     <div class="post-sigma-rules">
       <div class="post-sigma-rules__header">
         <h2>🛡️ Detection Rules</h2>
-        <span class="post-sigma-rules__badge">{{ page.sigma_rules.count }} rules · 6 SIEM formats</span>
+        <span class="post-sigma-rules__badge">{{ _effective_count }} rule{% if _effective_count != 1 %}s{% endif %} · 6 SIEM formats</span>
       </div>
 
       {% if post_age < fourteen_days %}
       {% comment %}── FRESH POST: free Sigma YAML visible, SIEM conversions → bot ──{% endcomment %}
-      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} detection rules auto-generated for this incident, mapped to MITRE ATT&CK. Sigma YAML is free — export to any SIEM format via the Intel Bot.</p>
+      {% if _has_full_rules %}
+      <p class="post-sigma-rules__intro">{{ _effective_count }} detection rule{% if _effective_count != 1 %}s{% endif %} auto-generated for this incident, mapped to MITRE ATT&CK. Sigma YAML is free — export to any SIEM format via the Intel Bot.</p>
+      {% else %}
+      <p class="post-sigma-rules__intro">1 detection rule mapped to MITRE ATT&CK. Sigma YAML is free — copy below.</p>
+      {% endif %}
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -193,6 +202,7 @@ layout: default
           <pre><code class="sigma-yaml-decoded" data-b64="{{ page.sigma_rules.preview_yaml_b64 }}"></code></pre>
         </div>
         {% endif %}
+        {% if _has_full_rules %}
         <div class="sigma-export-strip">
           <span class="sigma-export-strip__free">✓ Sigma</span>
           <span class="sigma-export-strip__sep">·</span>
@@ -203,12 +213,13 @@ layout: default
           <span class="sigma-export-strip__fmt">Wazuh</span>
           <a href="{{ detect_link }}" class="sigma-export-strip__btn" target="_blank" rel="noopener">Export via Bot →</a>
         </div>
+        {% endif %}
       </div>
       {% endif %}
 
       {% else %}
       {% comment %}── AGED POST (14+ days): Sigma YAML visible, SIEM formats locked ──{% endcomment %}
-      <p class="post-sigma-rules__intro">{{ page.sigma_rules.count }} detection rules mapped to MITRE ATT&CK. Free Sigma YAML below.</p>
+      <p class="post-sigma-rules__intro">{{ _effective_count }} detection rule{% if _effective_count != 1 %}s{% endif %} mapped to MITRE ATT&CK. Free Sigma YAML below.</p>
       {% if page.sigma_rules.preview_title %}
       <div class="post-sigma-rules__preview">
         <div class="post-sigma-rules__meta">
@@ -224,6 +235,7 @@ layout: default
           <pre><code class="sigma-yaml-decoded" data-b64="{{ page.sigma_rules.preview_yaml_b64 }}"></code></pre>
         </div>
         {% endif %}
+        {% if _has_full_rules %}
         <div class="sigma-export-strip">
           <span class="sigma-export-strip__free">✓ Sigma</span>
           <span class="sigma-export-strip__sep">·</span>
@@ -234,6 +246,7 @@ layout: default
           <span class="sigma-export-strip__fmt">Wazuh</span>
           <a href="{{ detect_link }}" class="sigma-export-strip__btn" target="_blank" rel="noopener">Export via Bot →</a>
         </div>
+        {% endif %}
       </div>
       {% endif %}
       {% endif %}
