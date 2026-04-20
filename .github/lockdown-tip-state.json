@@ -1,10 +1,11 @@
 {
-  "tipNumber": 4,
+  "tipNumber": 5,
   "usedIds": [
     "cps-001",
     "cps-002",
     "lin-001",
-    "win-001"
+    "win-001",
+    "aws-001"
   ],
   "round": 1,
   "history": [
@@ -46,6 +47,16 @@
       "linkedInId": "urn:li:share:7451901716536422400",
       "telegramMsgId": 664,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-001/"
+    },
+    {
+      "tipNumber": 5,
+      "id": "aws-001",
+      "platform": "aws",
+      "title": "Enable MFA on root account",
+      "date": "2026-04-20T08:54:35.561Z",
+      "linkedInId": "urn:li:share:7451916211837288449",
+      "telegramMsgId": 671,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-001/"
     }
   ]
 }
