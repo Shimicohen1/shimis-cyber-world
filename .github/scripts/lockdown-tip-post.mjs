@@ -635,6 +635,13 @@ async function postToTelegram(text, imageUrl) {
 
   const baseUrl = `https://api.telegram.org/bot${TG_BOT_TOKEN}`;
 
+  // Strip the redundant "📡 https://t.me/shimiscyberworld" channel-self link —
+  // pointless inside a message that IS in that channel (clicking just reopens it).
+  text = text
+    .replace(/\n+📡 https?:\/\/t\.me\/shimiscyberworld\s*/gi, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
   try {
     if (imageUrl) {
       // Build caption — Telegram sendPhoto limit is 1024 chars.
@@ -850,32 +857,80 @@ async function waitForLive(url, { maxSeconds = 300, intervalSeconds = 15 } = {})
 }
 
 function rewriteTextWithSitePostUrl(text, postUrl) {
-  // Replace the existing "Full check + implementation guide: <hardening-deeplink>" line
-  // with a visually distinct two-link block: site post (primary) + interactive checklist
-  // (secondary). Plain text only — Telegram + LinkedIn auto-linkify URLs reliably,
-  // and avoiding HTML keeps us safe from un-escaped chars in the AI-generated body.
+  // Replace the AI-generated "Full check + implementation guide: <hardening-deeplink>"
+  // line with a single, verified site-post URL. Drop the secondary "interactive checklist"
+  // link — the site post page IS the breakdown, and the old `/hardening/#tip-X` anchor
+  // does not exist on the page (causes silent broken links in social posts).
   if (!postUrl) return text;
-  const fullCheckRegex = /Full check \+ implementation guide:\s*(\S+)/i;
-  const match = text.match(fullCheckRegex);
-  const block = (siteUrl, checklistUrl) =>
-    `━━━━━━━━━━━━━━━━━━━━\n` +
-    `🌐 Full breakdown:\n${siteUrl}\n\n` +
-    `✅ Interactive checklist:\n${checklistUrl}\n` +
-    `━━━━━━━━━━━━━━━━━━━━`;
-  if (match) {
-    const checklistUrl = match[1];
-    text = text.replace(fullCheckRegex, block(postUrl, checklistUrl));
+  const fullCheckRegex = /Full check \+ implementation guide:\s*\S+/i;
+  const block = `━━━━━━━━━━━━━━━━━━━━\n🌐 Full breakdown:\n${postUrl}\n━━━━━━━━━━━━━━━━━━━━`;
+  if (fullCheckRegex.test(text)) {
+    text = text.replace(fullCheckRegex, block);
   } else {
-    // No existing link — insert before the channel marker (or append)
     const channelIdx = text.indexOf('📡 https://t.me');
-    const fallbackBlock = block(postUrl, `${SITE_URL}/hardening/`);
     if (channelIdx >= 0) {
-      text = text.slice(0, channelIdx) + fallbackBlock + '\n\n' + text.slice(channelIdx);
+      text = text.slice(0, channelIdx) + block + '\n\n' + text.slice(channelIdx);
     } else {
-      text += `\n\n${fallbackBlock}`;
+      text += `\n\n${block}`;
     }
   }
+  // Defense-in-depth: strip any remaining /hardening/#tip-* deep links that AI may have re-injected
+  text = text.replace(/https?:\/\/[^\s)]*\/hardening\/#tip-[^\s)]+/gi, postUrl);
   return text;
+}
+
+/* ═══════════════════════════════════════════════════════════
+ *  LINK VALIDATOR — abort post if any URL is broken
+ * ═══════════════════════════════════════════════════════════ */
+
+async function validateLinks(text, { context = 'post' } = {}) {
+  const urls = Array.from(new Set(
+    (text.match(/https?:\/\/[^\s)\]<>"']+/g) || [])
+      .map(u => u.replace(/[.,;:!?]+$/, '')) // strip trailing punctuation
+  ));
+  if (urls.length === 0) return { ok: true, broken: [] };
+
+  console.log(`🔗 Validating ${urls.length} link(s) in ${context}...`);
+  const broken = [];
+  for (const url of urls) {
+    try {
+      const u = new URL(url);
+      const fragment = u.hash ? u.hash.slice(1) : '';
+      const baseUrl = u.origin + u.pathname + u.search;
+
+      // HEAD first; if 405/403, fall back to GET
+      let res = await fetch(baseUrl, { method: 'HEAD', redirect: 'follow' });
+      if (!res.ok && [403, 405, 501].includes(res.status)) {
+        res = await fetch(baseUrl, { method: 'GET', redirect: 'follow' });
+      }
+      if (!res.ok) {
+        broken.push({ url, reason: `HTTP ${res.status}` });
+        continue;
+      }
+
+      // Anchor check: if URL has #fragment, fetch HTML and verify id="<fragment>" exists
+      if (fragment) {
+        const htmlRes = await fetch(baseUrl, { redirect: 'follow' });
+        const html = await htmlRes.text();
+        const anchorRegex = new RegExp(`(?:id|name)=["']${fragment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'i');
+        if (!anchorRegex.test(html)) {
+          broken.push({ url, reason: `anchor #${fragment} not found on page` });
+          continue;
+        }
+      }
+      console.log(`   ✓ ${url}`);
+    } catch (err) {
+      broken.push({ url, reason: err.message });
+    }
+  }
+
+  if (broken.length > 0) {
+    console.error(`❌ ${broken.length} broken link(s) detected:`);
+    broken.forEach(b => console.error(`   ✗ ${b.url} — ${b.reason}`));
+    return { ok: false, broken };
+  }
+  console.log(`✅ All ${urls.length} link(s) valid`);
+  return { ok: true, broken: [] };
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -965,7 +1020,18 @@ async function main() {
     text = rewriteTextWithSitePostUrl(text, siteUrl);
     console.log('   ✓ rewrote social text with site URL as primary CTA');
   } else {
-    console.log(wantSite === false ? '⏭️  Site publish skipped (PUBLISH_TO_SITE=false or --no-site)' : '⏭️  Site publish skipped');
+    // No site publish — at minimum strip the broken /hardening/#tip-X deep link
+    text = text.replace(/https?:\/\/[^\s)]*\/hardening\/#tip-[^\s)]+/gi, `${SITE_URL}/lockdown-lab/`);
+  }
+
+  // ── LINK VALIDATION (gate before any social post) ──
+  const linkCheck = await validateLinks(text, { context: 'social post' });
+  if (!linkCheck.ok) {
+    console.error('❌ Aborting social posts — broken links detected. Fix the post template or content.');
+    if (siteUrl) {
+      console.error(`   ℹ️  Site post is already live at ${siteUrl} — only social posting was skipped.`);
+    }
+    process.exit(1);
   }
 
   // Upload image to LinkedIn (after site post so the social text is final)
