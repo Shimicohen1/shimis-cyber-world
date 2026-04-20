@@ -321,6 +321,43 @@ layout: default
     </div>
     {% endunless %}
 
+    {% comment %}══════════════════════════════════════════════════════════════
+       Smart Bot Actions — only renders actions the bot can actually deliver
+       for this specific post (no broken promises).
+       ══════════════════════════════════════════════════════════════ {% endcomment %}
+    {% assign _has_org    = false %}
+    {% assign _has_domain = false %}
+    {% if page.organizations and page.organizations.size > 0 %}
+      {% assign _has_org = true %}
+      {% assign _first_org = page.organizations[0] %}
+      {% if _first_org.domain and _first_org.domain != "" %}
+        {% assign _has_domain = true %}
+      {% endif %}
+    {% endif %}
+    {% if _has_org or _has_domain %}
+    <div class="post-bot-actions">
+      <div class="post-bot-actions__title">Take action on this incident</div>
+      <div class="post-bot-actions__grid">
+        {% if _has_domain %}
+        {% assign _watch_q = _first_org.domain | url_encode %}
+        <a href="https://t.me/Shimiscyberworldbot?start=watch_{{ _watch_q }}" target="_blank" rel="noopener" class="post-bot-actions__btn">
+          <span class="post-bot-actions__icon">📡</span>
+          <span class="post-bot-actions__label">Monitor <strong>{{ _first_org.domain }}</strong></span>
+          <span class="post-bot-actions__hint">Add to watchlist · alerts on new breaches</span>
+        </a>
+        {% endif %}
+        {% if _has_org %}
+        {% assign _org_q = _first_org.name | url_encode %}
+        <a href="https://t.me/Shimiscyberworldbot?start=org_{{ _org_q }}" target="_blank" rel="noopener" class="post-bot-actions__btn">
+          <span class="post-bot-actions__icon">🔍</span>
+          <span class="post-bot-actions__label">Threat intel on <strong>{{ _first_org.name }}</strong></span>
+          <span class="post-bot-actions__hint">All breaches, IOCs &amp; vendor exposure</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
     {% comment %}── Mid-Post AdSense Slot ──{% endcomment %}
     {% include ad-slot.html type="adsense" slot="post-mid" %}
 
