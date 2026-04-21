@@ -1,0 +1,77 @@
+---
+title: "Google Patches Critical RCE in AI Filesystem Tool"
+date: 2026-04-21 15:00:50 +0000
+source: RSS
+source_name: "Dark Reading"
+channel: "Dark Reading"
+tags: [threat-intel, tools, vulnerability, ai-security]
+excerpt: "Dark Reading reports that Google has addressed a critical remote code execution (RCE) vulnerability in an AI-powered tool designed for filesystem operations. The flaw, identified a"
+summary: "Dark Reading reports that Google has addressed a critical remote code execution (RCE) vulnerability in an AI-powered tool designed for filesystem operations. The flaw, identified as a prompt injection issue, allowed attackers to bypass security sandboxing and execute arbitrary code on affected syste"
+layout: post
+section: vulnerabilities
+score: HIGH
+curated: false
+featured: false
+priority: 80
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-028.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-028.png"
+source_url: "https://www.darkreading.com/vulnerabilities-threats/google-fixes-critical-rce-flaw-ai-based-antigravity-tool"
+tlp: "TLP:CLEAR"
+event_type: "vulnerability"
+organizations:
+  - name: "Google"
+    domain: "google.com"
+    role: "vendor"
+malware_families:
+  - "Dark"
+iocs:
+  - id: "Google-Antigravity-RCE"
+    type: "RCE"
+    indicator: "Google AI-Based Antigravity Tool"
+  - id: "Google-Antigravity-RCE"
+    type: "Code Injection"
+    indicator: "Prompt Injection vulnerability in agentic AI product for filesystem operations"
+  - id: "Google-Antigravity-RCE"
+    type: "Sandbox Escape"
+    indicator: "Sanitization issue allowing sandbox escape in AI-Based Antigravity Tool"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1059.001"
+    name: "PowerShell"
+    tactic: "Execution"
+    url: "https://attack.mitre.org/techniques/T1059/001/"
+  - id: "T1204.002"
+    name: "Malicious File"
+    tactic: "Execution"
+    url: "https://attack.mitre.org/techniques/T1204/002/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Google AI Filesystem Tool RCE via Prompt Injection"
+  preview_level: "critical"
+  preview_technique: "T1059.001"
+  preview_tactic: "Execution"
+  preview_yaml_b64: "dGl0bGU6IEdvb2dsZSBBSSBGaWxlc3lzdGVtIFRvb2wgUkNFIHZpYSBQcm9tcHQgSW5qZWN0aW9uCmlkOiBzY3ctMjAyNi0wNC0yMS1haS0xCnN0YXR1czogZXhwZXJpbWVudGFsCmxldmVsOiBjcml0aWNhbApkZXNjcmlwdGlvbjogfAogIERldGVjdHMgdGhlIGV4ZWN1dGlvbiBvZiB0aGUgQUkgRmlsZXN5c3RlbSBUb29sIHdpdGggY29tbWFuZCBsaW5lcyBpbmRpY2F0aXZlIG9mIHByb21wdCBpbmplY3Rpb24gYXR0YWNrcyBhdHRlbXB0aW5nIHRvIGV4ZWN1dGUgYXJiaXRyYXJ5IGNvZGUgb3IgYnlwYXNzIHNlY3VyaXR5IHNhbmRib3hpbmcsIGFzIGRlc2NyaWJlZCBpbiB0aGUgdnVsbmVyYWJpbGl0eSBkZXRhaWxzLgphdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKQpkYXRlOiAyMDI2LTA0LTIxCnJlZmVyZW5jZXM6CiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA0LTIxLWdvb2dsZS1maXhlcy1jcml0aWNhbC1yY2UtZmxhdy1pbi1haS1iYXNlZC1hbnRpZ3Jhdml0eS10b29sLXBwZWFrCnRhZ3M6CiAgLSBhdHRhY2suZXhlY3V0aW9uCiAgLSBhdHRhY2sudDEwNTkuMDAxCmxvZ3NvdXJjZToKICAgIGNhdGVnb3J5OiBwcm9jZXNzX2NyZWF0aW9uCmRldGVjdGlvbjoKICBzZWxlY3Rpb246CiAgICAgIEltYWdlfGVuZHN3aXRoOgogICAgICAgICAgLSAnYWlfZmlsZXN5c3RlbV90b29sJwogICAgICBDb21tYW5kTGluZXxjb250YWluczoKICAgICAgICAgIC0gJ2V4ZWN1dGUgYXJiaXRyYXJ5IGNvZGUnCiAgICAgICAgICAtICdieXBhc3Mgc2VjdXJpdHkgc2FuZGJveCcKICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb24KZmFsc2Vwb3NpdGl2ZXM6CiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5"
+  all_rules_b64: "W3sidGl0bGUiOiJHb29nbGUgQUkgRmlsZXN5c3RlbSBUb29sIFJDRSB2aWEgUHJvbXB0IEluamVjdGlvbiIsImxldmVsIjoiY3JpdGljYWwiLCJ0ZWNobmlxdWUiOiJUMTA1OS4wMDEiLCJ0YWN0aWMiOiJFeGVjdXRpb24iLCJ0aWVyIjoiZnJlZSIsInlhbWwiOiJ0aXRsZTogR29vZ2xlIEFJIEZpbGVzeXN0ZW0gVG9vbCBSQ0UgdmlhIFByb21wdCBJbmplY3Rpb25cbmlkOiBzY3ctMjAyNi0wNC0yMS1haS0xXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGNyaXRpY2FsXG5kZXNjcmlwdGlvbjogfFxuICBEZXRlY3RzIHRoZSBleGVjdXRpb24gb2YgdGhlIEFJIEZpbGVzeXN0ZW0gVG9vbCB3aXRoIGNvbW1hbmQgbGluZXMgaW5kaWNhdGl2ZSBvZiBwcm9tcHQgaW5qZWN0aW9uIGF0dGFja3MgYXR0ZW1wdGluZyB0byBleGVjdXRlIGFyYml0cmFyeSBjb2RlIG9yIGJ5cGFzcyBzZWN1cml0eSBzYW5kYm94aW5nLCBhcyBkZXNjcmliZWQgaW4gdGhlIHZ1bG5lcmFiaWxpdHkgZGV0YWlscy5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA0LTIxXG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjEtZ29vZ2xlLWZpeGVzLWNyaXRpY2FsLXJjZS1mbGF3LWluLWFpLWJhc2VkLWFudGlncmF2aXR5LXRvb2wtcHBlYWtcbnRhZ3M6XG4gIC0gYXR0YWNrLmV4ZWN1dGlvblxuICAtIGF0dGFjay50MTA1OS4wMDFcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvblxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBJbWFnZXxlbmRzd2l0aDpcbiAgICAgICAgICAtICdhaV9maWxlc3lzdGVtX3Rvb2wnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICdleGVjdXRlIGFyYml0cmFyeSBjb2RlJ1xuICAgICAgICAgIC0gJ2J5cGFzcyBzZWN1cml0eSBzYW5kYm94J1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiR29vZ2xlIEFJIEZpbGVzeXN0ZW0gVG9vbCBTdXNwaWNpb3VzIEZpbGUgQWNjZXNzIiwibGV2ZWwiOiJoaWdoIiwidGVjaG5pcXVlIjoiVDEwODMiLCJ0YWN0aWMiOiJEaXNjb3ZlcnkiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogR29vZ2xlIEFJIEZpbGVzeXN0ZW0gVG9vbCBTdXNwaWNpb3VzIEZpbGUgQWNjZXNzXG5pZDogc2N3LTIwMjYtMDQtMjEtYWktMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBoaWdoXG5kZXNjcmlwdGlvbjogfFxuICBNb25pdG9ycyBmb3Igc3VzcGljaW91cyBmaWxlIGFjY2VzcyBwYXR0ZXJucywgc3VjaCBhcyBhdHRlbXB0cyB0byByZWFkIHNlbnNpdGl2ZSBzeXN0ZW0gZmlsZXMgb3IgZGlyZWN0b3JpZXMsIHdoaWNoIGNvdWxkIGJlIHBhcnQgb2YgYW4gYXR0YWNrZXIncyByZWNvbm5haXNzYW5jZSBhZnRlciBleHBsb2l0aW5nIHRoZSBBSSBGaWxlc3lzdGVtIFRvb2wgdnVsbmVyYWJpbGl0eS5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA0LTIxXG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjEtZ29vZ2xlLWZpeGVzLWNyaXRpY2FsLXJjZS1mbGF3LWluLWFpLWJhc2VkLWFudGlncmF2aXR5LXRvb2wtcHBlYWtcbnRhZ3M6XG4gIC0gYXR0YWNrLmRpc2NvdmVyeVxuICAtIGF0dGFjay50MTA4M1xubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBmaWxlX2FjY2Vzc1xuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBUYXJnZXRGaWxlbmFtZXxjb250YWluczpcbiAgICAgICAgICAtICcvZXRjL3Bhc3N3ZCdcbiAgICAgICAgICAtICcvZXRjL3NoYWRvdydcbiAgICAgICAgICAtICcvd2luZG93cy9zeXN0ZW0zMidcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6Ikdvb2dsZSBBSSBGaWxlc3lzdGVtIFRvb2wgTmV0d29yayBDb25uZWN0aW9uIHRvIFN1c3BpY2lvdXMgRG9tYWluIiwibGV2ZWwiOiJoaWdoIiwidGVjaG5pcXVlIjoiVDEwNzEuMDA0IiwidGFjdGljIjoiQ29tbWFuZCBhbmQgQ29udHJvbCIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBHb29nbGUgQUkgRmlsZXN5c3RlbSBUb29sIE5ldHdvcmsgQ29ubmVjdGlvbiB0byBTdXNwaWNpb3VzIERvbWFpblxuaWQ6IHNjdy0yMDI2LTA0LTIxLWFpLTNcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgRGV0ZWN0cyBETlMgcXVlcmllcyB0byBrbm93biBvciBzdXNwZWN0ZWQgbWFsaWNpb3VzIGRvbWFpbnMsIHdoaWNoIGNvdWxkIGluZGljYXRlIGNvbW1hbmQgYW5kIGNvbnRyb2wgY29tbXVuaWNhdGlvbiBlc3RhYmxpc2hlZCBieSBhbiBhdHRhY2tlciB3aG8gaGFzIGdhaW5lZCBSQ0UgdGhyb3VnaCB0aGUgQUkgRmlsZXN5c3RlbSBUb29sIHZ1bG5lcmFiaWxpdHkuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNC0yMVxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA0LTIxLWdvb2dsZS1maXhlcy1jcml0aWNhbC1yY2UtZmxhdy1pbi1haS1iYXNlZC1hbnRpZ3Jhdml0eS10b29sLXBwZWFrXG50YWdzOlxuICAtIGF0dGFjay5jb21tYW5kX2FuZF9jb250cm9sXG4gIC0gYXR0YWNrLnQxMDcxLjAwNFxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBkbnNcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgZHN0X2RvbWFpbnxjb250YWluczpcbiAgICAgICAgICAtICcubWFsaWNpb3VzLWRvbWFpbi5jb20nXG4gICAgICAgICAgLSAnLmMyLXNlcnZlci5uZXQnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9XQ=="
+why_it_matters:
+  - "If your organization uses Google's AI-based filesystem tools, verify that the latest security patches have been applied immediately. Audit system logs for any unusual activity related to AI service interactions."
+bot_cta_title: "Check AI tool vulnerabilities"
+bot_cta_description: "Use /org google.com to check for related threats."
+---
+
+Dark Reading reports that Google has addressed a critical remote code execution (RCE) vulnerability in an AI-powered tool designed for filesystem operations. The flaw, identified as a prompt injection issue, allowed attackers to bypass security sandboxing and execute arbitrary code on affected systems.
+
+This vulnerability highlights the inherent risks in integrating generative AI into core operational tools. The core problem, according to Dark Reading, was a failure in input sanitization, a fundamental security control that should prevent malicious instructions from reaching the underlying system. For defenders, this underscores the need for rigorous testing and validation of AI-driven applications, especially those with direct system access.
+
+Organizations leveraging AI tools for automation or system management should treat such vulnerabilities with extreme caution. The potential for an attacker to gain arbitrary code execution via a seemingly benign AI interface is a significant threat vector. A proactive stance involves ensuring all AI tools, particularly those interacting with sensitive file systems, are thoroughly vetted for security flaws and kept up-to-date with the latest patches.
