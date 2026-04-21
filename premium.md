@@ -48,7 +48,7 @@ permalink: /premium/
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>SCW Intel Bot</h3>
-<p>Breach → SIEM detection rules in seconds. Monitor vendors with watchlist alerts. Search threats, export IOCs — all inside Telegram.</p>
+<p>Stop chasing breach news. Get alerted the moment your vendor is hit. Free watchlist — 1 org tracked on us. Plus breach → SIEM rules and IOC exports.</p>
 <div class="elite-card__meta">
 <span>SIEM Detection Rules</span>
 <span>Watchlist Alerts</span>
@@ -176,8 +176,8 @@ permalink: /premium/
 <span>Search by org name, domain, APT group, or country code. Analyst-ready results with severity scores and event context.</span>
 </div>
 <div class="elite-bot__feature">
-<strong><span class="scw-icon" data-icon="bell"></span> Watchlist Alerts</strong>
-<span>Monitor your vendors or clients by domain. Get notified when they appear in a breach, ransomware event, or vulnerability disclosure — checked automatically.</span>
+<strong><span class="scw-icon" data-icon="bell"></span> Watchlist Alerts — 1 vendor free</strong>
+<span>Track one vendor or domain for free. The moment they appear in a breach, ransomware leak, or vulnerability disclosure — you get the alert in Telegram. Pro unlocks 5 vendors, Elite 25.</span>
 </div>
 <div class="elite-bot__feature">
 <strong><span class="scw-icon" data-icon="bar-chart"></span> On-demand Threat Briefs</strong>
@@ -197,7 +197,7 @@ permalink: /premium/
 </div>
 </div>
 
-<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot — Free Preview Available →</a>
+<a href="https://t.me/Shimiscyberworldbot?start=elite" target="_blank" rel="noopener noreferrer" class="btn btn--accent btn--lg">Open Intel Bot — Free Watchlist Slot Waiting →</a>
 </div>
 </section>
 
