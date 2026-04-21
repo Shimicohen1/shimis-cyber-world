@@ -876,6 +876,18 @@ function rewriteTextWithSitePostUrl(text, postUrl) {
   }
   // Defense-in-depth: strip any remaining /hardening/#tip-* deep links that AI may have re-injected
   text = text.replace(/https?:\/\/[^\s)]*\/hardening\/#tip-[^\s)]+/gi, postUrl);
+
+  // LinkedIn auto-shortens any http(s):// URL via lnkd.in/* — including URLs inside
+  // CLI command examples like `az rest --url "https://graph.microsoft.com/..."`.
+  // The shortened lnkd.in/* link, when clicked, shows an InvalidAuthenticationToken
+  // error from the Graph endpoint — looks broken to readers. Replace URLs inside
+  // `--url "..."`, `--uri "..."`, `-Uri "..."` flags with a placeholder so LinkedIn
+  // doesn't shorten them. The full working command stays on the site post.
+  text = text.replace(
+    /(--url|--uri|-Uri|-uri)(\s+)(["'])https?:\/\/[^\s"']+\3/gi,
+    (_m, flag, ws, q) => `${flag}${ws}${q}<full URL on the site post above>${q}`
+  );
+
   return text;
 }
 
