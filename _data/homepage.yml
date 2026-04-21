@@ -22,45 +22,48 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: "AI Guardrails Under Siege: Prompt Injection Risks"
-    text: AI guardrails, including those in Apple Intelligence, are vulnerable to prompt injection attacks.
-    detail: Sophisticated prompt injection techniques are bypassing AI safety mechanisms, demonstrating a critical need for robust input validation and ongoing research into AI security. Cybersecurity professionals should prioritize understanding these emerging attack vectors and advocate for secure AI development practices. This trend highlights the evolving adversarial landscape for AI systems.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: OWASP AI Security Risks
+  - title: AI Guardrails Vulnerable to Prompt Injection
+    text: Sophisticated prompt injection attacks are bypassing AI safety features.
+    detail: Researchers have demonstrated successful prompt injection attacks against AI systems, including Apple's new 'Apple Intelligence,' bypassing built-in guardrails. This highlights the critical need for robust input validation and adversarial training to secure AI deployments against manipulation and ensure AI safety.
+    link: https://owasp.org/www-community/LLM_Security/
+    link_label: LLM Security Best Practices
     badge: signal
     tags:
       - ai-security
       - prompt-injection
       - threat-intel
-  - title: Zero-Day Exploits Persist Across Platforms
-    text: Zero-day vulnerabilities continue to be actively exploited in widely used software like Adobe Reader and Windows.
-    detail: The active exploitation of zero-days in critical applications underscores the persistent threat of unknown vulnerabilities. Organizations must implement proactive patching strategies, robust endpoint detection, and thorough incident response plans. Continuous monitoring for emerging threats and rapid deployment of vendor-provided patches are essential to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=basic&results_type=overview&query=zero-day
-    link_label: NVD Zero-Day Vulnerabilities
-    badge: signal
-    tags:
-      - zero-day
-      - vulnerability
-      - exploit
-  - title: Supply Chain Attacks Target Software Updates
-    text: Attackers are hijacking update mechanisms for popular plugins like Smart Slider 3 Pro.
-    detail: The compromise of legitimate update channels for WordPress and Joomla plugins, such as Smart Slider 3 Pro, represents a significant supply chain risk. This tactic allows threat actors to distribute malware and backdoors directly to end-users. Organizations should implement strict verification processes for software updates and consider using software bill of materials (SBOM) to track dependencies.
-    link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: OWASP Supply Chain Security
+  - title: Supply Chain Attacks Target Popular CMS Plugins
+    text: Hijacked updates for WordPress/Joomla plugins deliver backdoors.
+    detail: Attackers are compromising legitimate update mechanisms for popular plugins like Smart Slider 3 Pro, distributing backdoored versions. This underscores the risk of supply chain attacks and the importance of verifying plugin integrity, scrutinizing update sources, and implementing strict access controls.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP Top 10 for LLMs
     badge: signal
     tags:
       - supply-chain
       - malware
-      - plugin-security
-  - title: APT Groups Expand Targeting of Critical Infrastructure
-    text: State-sponsored APT groups are increasingly targeting industrial control systems and critical infrastructure globally.
-    detail: Advanced Persistent Threats (APTs), including those linked to nation-states, are demonstrating a growing focus on critical infrastructure, with over 5,200 US industrial devices recently exposed. This trend demands enhanced network segmentation, robust access controls, and continuous threat hunting specifically for ICS/OT environments to protect national security and essential services.
-    link: https://www.cisa.gov/news-events/directives/directive-01-24-identifying-and-mitigating-vulnerabilities-it-ot-and-ics-environments
-    link_label: CISA ICS/OT Directives
+      - wordpress
+      - joomla
+  - title: Zero-Day Exploits Plague Widely Used Software
+    text: Active exploitation of zero-days in Windows and Adobe Reader continues.
+    detail: Recent reports indicate active exploitation of zero-day vulnerabilities in Windows (BlueHammer) and Adobe Reader. This trend emphasizes the persistent threat of novel exploits and the critical need for prompt patching, robust endpoint detection, and proactive threat hunting.
+    link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
+    link_label: CISA KEV Catalog
     badge: signal
     tags:
-      - apt
-      - industrial-control-systems
+      - vulnerability
+      - zero-day
+      - microsoft
+      - adobe
+  - title: Targeted Phishing Escalates Against High-Value Credentials
+    text: Phishing platforms like VENOM focus on C-suite Microsoft logins.
+    detail: Emerging phishing-as-a-service (PhaaS) platforms are specifically targeting high-value credentials, such as Microsoft logins for C-suite executives. Organizations must reinforce multi-factor authentication, conduct regular security awareness training, and monitor for credential compromise attempts.
+    link: https://www.microsoft.com/en-us/security/business/identity-access-management/multi-factor-authentication
+    link_label: Microsoft MFA Guidance
+    badge: signal
+    tags:
+      - phishing
+      - credential-harvesting
+      - microsoft
       - threat-intel
 vault_picks:
   - name: OWASP Top 10
