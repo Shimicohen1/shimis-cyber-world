@@ -884,9 +884,18 @@ function rewriteTextWithSitePostUrl(text, postUrl) {
  * ═══════════════════════════════════════════════════════════ */
 
 async function validateLinks(text, { context = 'post' } = {}) {
+  // Strip URLs that appear inside CLI command examples / code blocks — those are
+  // documentation snippets the user is meant to RUN, not navigable hyperlinks.
+  // Patterns: --url "https://...", --url 'https://...', curl https://..., wget https://...
+  const stripped = text
+    .replace(/```[\s\S]*?```/g, '')                           // fenced code blocks
+    .replace(/`[^`\n]*`/g, '')                                // inline code
+    .replace(/--url\s+["']?https?:\/\/[^\s"']+["']?/gi, '')   // `--url "https://..."`
+    .replace(/\b(?:curl|wget|http|https)\s+https?:\/\/[^\s"']+/gi, ''); // bare CLI invocations
+
   const urls = Array.from(new Set(
-    (text.match(/https?:\/\/[^\s)\]<>"']+/g) || [])
-      .map(u => u.replace(/[.,;:!?]+$/, '')) // strip trailing punctuation
+    (stripped.match(/https?:\/\/[^\s)\]<>"']+/g) || [])
+      .map(u => u.replace(/[.,;:!?]+$/, ''))
   ));
   if (urls.length === 0) return { ok: true, broken: [] };
 
@@ -903,7 +912,9 @@ async function validateLinks(text, { context = 'post' } = {}) {
       if (!res.ok && [403, 405, 501].includes(res.status)) {
         res = await fetch(baseUrl, { method: 'GET', redirect: 'follow' });
       }
-      if (!res.ok) {
+      // 401/403 = auth-required but reachable. The link itself is valid; the
+      // user just needs credentials. Don't block social posting on these.
+      if (!res.ok && ![401, 403].includes(res.status)) {
         broken.push({ url, reason: `HTTP ${res.status}` });
         continue;
       }
