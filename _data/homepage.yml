@@ -22,45 +22,45 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Phishing-as-a-Service Platforms Scale C-Suite Attacks
-    text: Emerging PhaaS platforms like VENOM are specifically targeting Microsoft credentials of senior executives.
-    detail: The VENOM platform represents a sophisticated evolution in phishing-as-a-service, demonstrating a clear trend towards highly targeted attacks on high-value individuals within organizations. Professionals should reinforce multi-factor authentication and conduct executive-specific phishing awareness training to mitigate this growing threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-tips-everyone-can-use
-    link_label: Phishing Prevention Tips
+  - title: Exploit Chains Target Critical Infrastructure & Software
+    text: Zero-day exploits and unpatched vulnerabilities are being chained to compromise critical software and infrastructure.
+    detail: Recent intelligence highlights the active exploitation of zero-day vulnerabilities in Adobe Reader and Windows (BlueHammer), alongside critical flaws in PAN and SonicWall gear. Attackers are also leveraging an Android SDK flaw and hijacking Smart Slider updates. This trend underscores the need for proactive patching and robust exploit mitigation strategies.
+    link: https://www.cisa.gov/news-events/advisories/aa23-309a
+    link_label: CISA Known Exploited Vulnerabilities Catalog
     badge: signal
     tags:
-      - threat-intel
-      - phishing
-      - phaas
-  - title: Exploitation of Software Vulnerabilities Continues Unabated
-    text: Zero-day and unpatched vulnerabilities in widely used software like Windows and Adobe Reader are actively exploited.
-    detail: Recent reports highlight the ongoing exploitation of zero-day vulnerabilities in critical software, including Windows (BlueHammer) and Adobe Reader. This underscores the persistent risk posed by unpatched systems. Prioritize timely patching and vulnerability management for all software, especially those with known active exploits.
-    link: https://www.nist.gov/cyberframework/consumer-resources/patch-your-devices
-    link_label: Patch Management Best Practices
-    badge: signal
-    tags:
-      - threat-intel
       - vulnerability
-      - zero-day
-  - title: AI Guardrails Are Being Proactively Tested and Bypassed
-    text: Researchers are successfully bypassing AI guardrails, indicating potential for misuse and novel attack vectors.
-    detail: The successful bypassing of AI guardrails in systems like Apple Intelligence demonstrates that AI security is a dynamic field. As AI adoption grows, expect attackers to probe and exploit these systems. Focus on robust AI security testing and develop strategies to detect and counter AI-driven manipulation.
+      - exploit-chain
+      - threat-intel
+  - title: AI Systems Face Sophisticated Prompt Injection Attacks
+    text: AI guardrails are being bypassed, posing risks to AI-powered security systems and applications.
+    detail: Researchers have demonstrated successful prompt injection attacks against Apple Intelligence, bypassing AI guardrails. This emerging threat vector can lead to unintended AI behavior and potential data leakage. Organizations must implement robust input validation and context-aware security measures for AI deployments.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Application Security Risks
+    link_label: OWASP LLM Top 10
     badge: signal
     tags:
-      - threat-intel
       - ai-security
       - prompt-injection
-  - title: Supply Chain Attacks Target Popular Plugins and SDKs
-    text: Attackers are compromising trusted update mechanisms for plugins and SDKs to distribute malware.
-    detail: Recent incidents show attackers hijacking update servers for popular WordPress/Joomla plugins and exploiting flaws in Android SDKs. This highlights the critical risk in the software supply chain. Implement strict verification of software updates and vet third-party components rigorously to prevent backdoor introductions.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: Software Component Analysis
+      - threat-intel
+  - title: Phishing-as-a-Service Platforms Escalate Targeted Attacks
+    text: Sophisticated PhaaS platforms like VENOM are increasingly targeting high-value credentials, especially C-suite Microsoft logins.
+    detail: The VENOM platform exemplifies a growing trend of specialized PhaaS services designed for targeted credential harvesting. Attacks are becoming more selective, focusing on executive accounts to gain initial access. Continuous user education and robust multi-factor authentication are crucial defenses.
+    link: https://www.microsoft.com/en-us/security/blog/2024/05/23/tracking-the-threat-actor-storm-2755-payroll-pirates-hijacking-canadian-salaries/
+    link_label: Microsoft Threat Analysis
     badge: signal
     tags:
-      - threat-intel
-      - supply-chain
+      - phishing
+      - phaas
+      - credential-harvesting
+  - title: Botnets Adapt with Hybrid P2P and IoT Focus
+    text: New botnets are emerging with hybrid P2P architectures and a specific focus on compromising IoT devices.
+    detail: The Masjesu botnet and new hybrid P2P botnets demonstrate evolving tactics to evade detection and maximize reach. Masjesu specifically targets IoT devices, while hybrid architectures enhance resilience. Defenders need to monitor network traffic for anomalous P2P communication and secure IoT endpoints.
+    link: https://www.mitre.org/capabilities/cybersecurity/overview/cybersecurity-blog/understanding-botnets
+    link_label: MITRE on Botnets
+    badge: signal
+    tags:
+      - botnet
+      - iot-security
       - malware
 vault_picks:
   - name: OWASP Top 10
