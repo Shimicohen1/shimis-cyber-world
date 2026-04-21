@@ -1,12 +1,11 @@
 {
-  "tipNumber": 6,
+  "tipNumber": 5,
   "usedIds": [
     "cps-001",
     "cps-002",
     "lin-001",
     "win-001",
-    "aws-001",
-    "az-001"
+    "aws-001"
   ],
   "round": 1,
   "history": [
@@ -58,16 +57,6 @@
       "linkedInId": "urn:li:share:7451916211837288449",
       "telegramMsgId": 671,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-001/"
-    },
-    {
-      "tipNumber": 6,
-      "id": "az-001",
-      "platform": "azure",
-      "title": "Enable MFA for all users",
-      "date": "2026-04-21T09:35:51.439Z",
-      "linkedInId": "urn:li:share:7452288984514408448",
-      "telegramMsgId": 698,
-      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-001/"
     }
   ]
 }
