@@ -1,0 +1,82 @@
+---
+title: "Moltbook Breach Exposes AI Agent API Tokens and OpenAI Keys"
+date: 2026-04-22 10:41:36 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability, identity, ai-security]
+excerpt: "On January 31, 2026, The Hacker News reported a significant breach involving Moltbook, a social network designed for AI agents. The platform's database was left exposed, leaking 35"
+summary: "On January 31, 2026, The Hacker News reported a significant breach involving Moltbook, a social network designed for AI agents. The platform's database was left exposed, leaking 35,000 email addresses and 1.5 million API tokens belonging to 770,000 active agents. This alone is a major concern, given"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-039.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-039.png"
+source_url: "https://thehackernews.com/2026/04/toxic-combinations-when-cross-app.html"
+tlp: "TLP:CLEAR"
+event_type: "data-breach"
+organizations:
+  - name: "Moltbook"
+    role: "victim"
+  - name: "OpenAI"
+    domain: "openai.com"
+    role: "vendor"
+malware_families:
+  - "inter"
+iocs:
+  - id: "Moltbook-Data-Exposure-2026"
+    type: "Information Disclosure"
+    indicator: "Moltbook social network database exposed"
+  - id: "Moltbook-Data-Exposure-2026"
+    type: "Information Disclosure"
+    indicator: "Exposure of 35,000 email addresses"
+  - id: "Moltbook-Data-Exposure-2026"
+    type: "Information Disclosure"
+    indicator: "Exposure of 1.5 million agent API tokens"
+  - id: "Moltbook-Data-Exposure-2026"
+    type: "Information Disclosure"
+    indicator: "Exposure of plaintext third-party credentials (e.g., OpenAI API keys) in private messages"
+mitre_attack:
+  - id: "T1539"
+    name: "Steal Application Access Token"
+    tactic: "Credential Access"
+    url: "https://attack.mitre.org/techniques/T1539/"
+  - id: "T1552.004"
+    name: "Credentials In Files"
+    tactic: "Credential Access"
+    url: "https://attack.mitre.org/techniques/T1552/004/"
+  - id: "T1078.004"
+    name: "Cloud Accounts"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1078/004/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Moltbook Breach - Exposed OpenAI API Keys in Private Messages"
+  preview_level: "critical"
+  preview_technique: "T1537"
+  preview_tactic: "Impact"
+  preview_yaml_b64: "dGl0bGU6IE1vbHRib29rIEJyZWFjaCAtIEV4cG9zZWQgT3BlbkFJIEFQSSBLZXlzIGluIFByaXZhdGUgTWVzc2FnZXMKaWQ6IHNjdy0yMDI2LTA0LTIyLWFpLTEKc3RhdHVzOiBleHBlcmltZW50YWwKbGV2ZWw6IGNyaXRpY2FsCmRlc2NyaXB0aW9uOiB8CiAgVGhpcyBydWxlIGRldGVjdHMgcG90ZW50aWFsIGV4ZmlsdHJhdGlvbiBvciBtaXN1c2Ugb2YgT3BlbkFJIEFQSSBrZXlzIHRoYXQgbWF5IGhhdmUgYmVlbiBleHBvc2VkIGluIE1vbHRib29rJ3MgcHJpdmF0ZSBtZXNzYWdlcy4gVGhlIHByZXNlbmNlIG9mICdzay0nIGluIHRoZSBxdWVyeSBzdHJpbmcgY29tYmluZWQgd2l0aCBhIGtub3duIE9wZW5BSSBBUEkgZW5kcG9pbnQgc3VnZ2VzdHMgYW4gYXR0ZW1wdCB0byB1c2UgdGhlc2UgbGVha2VkIGtleXMuIFRoaXMgaXMgYSBkaXJlY3QgZGV0ZWN0aW9uIGZvciB0aGUgY3JpdGljYWwgZmluZGluZyBpbiB0aGUgTW9sdGJvb2sgYnJlYWNoIHdoZXJlIHBsYWludGV4dCBPcGVuQUkgQVBJIGtleXMgd2VyZSBzaGFyZWQuCmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpCmRhdGU6IDIwMjYtMDQtMjIKcmVmZXJlbmNlczoKICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjItdG94aWMtY29tYmluYXRpb25zLXdoZW4tY3Jvc3MtYXBwLXBlcm1pc3Npb25zLXN0YWNrLWludG8tcmktZjR2bnoKdGFnczoKICAtIGF0dGFjay5pbXBhY3QKICAtIGF0dGFjay50MTUzNwpsb2dzb3VyY2U6CiAgICBjYXRlZ29yeTogcHJveHkKZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgY3MtdXJpfGNvbnRhaW5zOgogICAgICAgICAgLSAnL3YxL2NoYXQvY29tcGxldGlvbnMnCiAgICAgIGNzLXVyaS1xdWVyeXxjb250YWluczoKICAgICAgICAgIC0gJ3NrLScKICAgICAgY29uZGl0aW9uOiBjcy11cmkgQU5EIGNzLXVyaS1xdWVyeQpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJNb2x0Ym9vayBCcmVhY2ggLSBFeHBvc2VkIE9wZW5BSSBBUEkgS2V5cyBpbiBQcml2YXRlIE1lc3NhZ2VzIiwibGV2ZWwiOiJjcml0aWNhbCIsInRlY2huaXF1ZSI6IlQxNTM3IiwidGFjdGljIjoiSW1wYWN0IiwidGllciI6ImZyZWUiLCJ5YW1sIjoidGl0bGU6IE1vbHRib29rIEJyZWFjaCAtIEV4cG9zZWQgT3BlbkFJIEFQSSBLZXlzIGluIFByaXZhdGUgTWVzc2FnZXNcbmlkOiBzY3ctMjAyNi0wNC0yMi1haS0xXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGNyaXRpY2FsXG5kZXNjcmlwdGlvbjogfFxuICBUaGlzIHJ1bGUgZGV0ZWN0cyBwb3RlbnRpYWwgZXhmaWx0cmF0aW9uIG9yIG1pc3VzZSBvZiBPcGVuQUkgQVBJIGtleXMgdGhhdCBtYXkgaGF2ZSBiZWVuIGV4cG9zZWQgaW4gTW9sdGJvb2sncyBwcml2YXRlIG1lc3NhZ2VzLiBUaGUgcHJlc2VuY2Ugb2YgJ3NrLScgaW4gdGhlIHF1ZXJ5IHN0cmluZyBjb21iaW5lZCB3aXRoIGEga25vd24gT3BlbkFJIEFQSSBlbmRwb2ludCBzdWdnZXN0cyBhbiBhdHRlbXB0IHRvIHVzZSB0aGVzZSBsZWFrZWQga2V5cy4gVGhpcyBpcyBhIGRpcmVjdCBkZXRlY3Rpb24gZm9yIHRoZSBjcml0aWNhbCBmaW5kaW5nIGluIHRoZSBNb2x0Ym9vayBicmVhY2ggd2hlcmUgcGxhaW50ZXh0IE9wZW5BSSBBUEkga2V5cyB3ZXJlIHNoYXJlZC5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA0LTIyXG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjItdG94aWMtY29tYmluYXRpb25zLXdoZW4tY3Jvc3MtYXBwLXBlcm1pc3Npb25zLXN0YWNrLWludG8tcmktZjR2bnpcbnRhZ3M6XG4gIC0gYXR0YWNrLmltcGFjdFxuICAtIGF0dGFjay50MTUzN1xubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBwcm94eVxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBjcy11cml8Y29udGFpbnM6XG4gICAgICAgICAgLSAnL3YxL2NoYXQvY29tcGxldGlvbnMnXG4gICAgICBjcy11cmktcXVlcnl8Y29udGFpbnM6XG4gICAgICAgICAgLSAnc2stJ1xuICAgICAgY29uZGl0aW9uOiBjcy11cmkgQU5EIGNzLXVyaS1xdWVyeVxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJNb2x0Ym9vayBCcmVhY2ggLSBTdXNwaWNpb3VzIEFQSSBUb2tlbiBVc2FnZSIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMDcxLjAwMSIsInRhY3RpYyI6IkNvbW1hbmQgYW5kIENvbnRyb2wiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogTW9sdGJvb2sgQnJlYWNoIC0gU3VzcGljaW91cyBBUEkgVG9rZW4gVXNhZ2VcbmlkOiBzY3ctMjAyNi0wNC0yMi1haS0yXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGhpZ2hcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIHN1c3BpY2lvdXMgQVBJIGNhbGxzIG9yaWdpbmF0aW5nIGZyb20gcG90ZW50aWFsbHkgY29tcHJvbWlzZWQgTW9sdGJvb2sgYWdlbnQgdG9rZW5zLiBUaGUgcGF0dGVybiBsb29rcyBmb3IgcmVxdWVzdHMgdG8gJy92MS8nIGVuZHBvaW50cyAoY29tbW9uIGZvciBBSSBBUElzKSB0aGF0IGluY2x1ZGUgYSBxdWVyeSBwYXJhbWV0ZXIgaW5kaWNhdGl2ZSBvZiBhIE1vbHRib29rIGFnZW50IHRva2VuLiBUaGlzIGNvdWxkIHNpZ25pZnkgYW4gYXR0YWNrZXIgYXR0ZW1wdGluZyB0byBsZXZlcmFnZSB0aGUgMS41IG1pbGxpb24gbGVha2VkIEFQSSB0b2tlbnMgZnJvbSB0aGUgTW9sdGJvb2sgYnJlYWNoIGZvciB1bmF1dGhvcml6ZWQgYWN0aW9ucyBvciBjb21tYW5kIGFuZCBjb250cm9sLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDQtMjJcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNC0yMi10b3hpYy1jb21iaW5hdGlvbnMtd2hlbi1jcm9zcy1hcHAtcGVybWlzc2lvbnMtc3RhY2staW50by1yaS1mNHZuelxudGFnczpcbiAgLSBhdHRhY2suY29tbWFuZF9hbmRfY29udHJvbFxuICAtIGF0dGFjay50MTA3MS4wMDFcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJveHlcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgY3MtdXJpfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy92MS8nXG4gICAgICBjcy11cmktcXVlcnl8Y29udGFpbnM6XG4gICAgICAgICAgLSAnbW9sdGJvb2tfYWdlbnRfdG9rZW5fJ1xuICAgICAgY29uZGl0aW9uOiBjcy11cmkgQU5EIGNzLXVyaS1xdWVyeVxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJNb2x0Ym9vayBCcmVhY2ggLSBVbmF1dGhvcml6ZWQgQWNjZXNzIHZpYSBMZWFrZWQgQWdlbnQgQ3JlZGVudGlhbHMiLCJsZXZlbCI6Im1lZGl1bSIsInRlY2huaXF1ZSI6IlQxMTM2LjAwMyIsInRhY3RpYyI6IkNyZWRlbnRpYWwgQWNjZXNzIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IE1vbHRib29rIEJyZWFjaCAtIFVuYXV0aG9yaXplZCBBY2Nlc3MgdmlhIExlYWtlZCBBZ2VudCBDcmVkZW50aWFsc1xuaWQ6IHNjdy0yMDI2LTA0LTIyLWFpLTNcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogbWVkaXVtXG5kZXNjcmlwdGlvbjogfFxuICBUaGlzIHJ1bGUgZGV0ZWN0cyBhdXRoZW50aWNhdGlvbiBldmVudHMgd2hlcmUgdGhlIHVzZXJuYW1lIG9yIGlkZW50aWZpZXIgc3RhcnRzIHdpdGggJ21vbHRib29rX2FnZW50XycuIEdpdmVuIHRoZSBNb2x0Ym9vayBicmVhY2ggZXhwb3NlZCA3NzAsMDAwIGFjdGl2ZSBhZ2VudHMgYW5kIHRoZWlyIGFzc29jaWF0ZWQgY3JlZGVudGlhbHMvdG9rZW5zLCB0aGlzIHJ1bGUgYWltcyB0byBpZGVudGlmeSBwb3RlbnRpYWwgdW5hdXRob3JpemVkIGxvZ2lucyBvciBBUEkgYXV0aGVudGljYXRpb25zIHVzaW5nIHRoZXNlIGxlYWtlZCBhZ2VudCBpZGVudGl0aWVzLiBUaGlzIGNvdWxkIGluZGljYXRlIGFuIGF0dGFja2VyIGF0dGVtcHRpbmcgdG8gaW1wZXJzb25hdGUgbGVnaXRpbWF0ZSBBSSBhZ2VudHMuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNC0yMlxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA0LTIyLXRveGljLWNvbWJpbmF0aW9ucy13aGVuLWNyb3NzLWFwcC1wZXJtaXNzaW9ucy1zdGFjay1pbnRvLXJpLWY0dm56XG50YWdzOlxuICAtIGF0dGFjay5jcmVkZW50aWFsX2FjY2Vzc1xuICAtIGF0dGFjay50MTEzNi4wMDNcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogYXV0aGVudGljYXRpb25cbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgVXNlcnxjb250YWluczpcbiAgICAgICAgICAtICdtb2x0Ym9va19hZ2VudF8nXG4gICAgICBhY3Rpb258Y29udGFpbnM6XG4gICAgICAgICAgLSAnbG9naW4nXG4gICAgICAgICAgLSAnYXV0aGVudGljYXRlJ1xuICAgICAgY29uZGl0aW9uOiBVc2VyIEFORCBhY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifV0="
+why_it_matters:
+  - "If your organization develops or uses AI agents that interact across platforms, you need to immediately audit their communication practices. Check if agents are exchanging API keys or other credentials in plaintext within any messaging or storage services. Revoke any OpenAI API keys or similar third-party credentials that may have been exposed through inter-agent communication. Assume compromise and rotate all affected keys."
+bot_cta_title: "AI Agent Security Insights"
+bot_cta_description: "Use /brief to get an analyst-ready summary of the latest threats, including those impacting AI security."
+---
+
+On January 31, 2026, The Hacker News reported a significant breach involving Moltbook, a social network designed for AI agents. The platform's database was left exposed, leaking 35,000 email addresses and 1.5 million API tokens belonging to 770,000 active agents. This alone is a major concern, given the potential for token misuse and identity spoofing within the AI ecosystem.
+
+However, the more critical revelation, according to The Hacker News, was the presence of plaintext third-party credentials within Moltbook's private messages. These included highly sensitive OpenAI API keys, openly shared between agents. This isn't just a data leak; it's a critical security failure highlighting the profound risks of inter-agent communication and data handling, especially when dealing with powerful API access.
+
+This incident underscores a dangerous reality: the growing attack surface introduced by AI agents and their interconnectedness. When agents exchange credentials in an insecure manner, a single breach on one platform can cascade into unauthorized access to numerous other services. Defenders must recognize that agent-to-agent communication channels are now prime targets for credential harvesting.
