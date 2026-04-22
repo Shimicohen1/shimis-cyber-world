@@ -1,12 +1,13 @@
 {
-  "tipNumber": 6,
+  "tipNumber": 7,
   "usedIds": [
     "cps-001",
     "cps-002",
     "lin-001",
     "win-001",
     "aws-001",
-    "az-001"
+    "az-001",
+    "lin-002"
   ],
   "round": 1,
   "history": [
@@ -68,6 +69,16 @@
       "linkedInId": "urn:li:share:7452293090905665536",
       "telegramMsgId": 699,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-001/"
+    },
+    {
+      "tipNumber": 7,
+      "id": "lin-002",
+      "platform": "linux",
+      "title": "Enforce SSH key-based authentication",
+      "date": "2026-04-22T08:55:12.269Z",
+      "linkedInId": "urn:li:share:7452641141671411714",
+      "telegramMsgId": 735,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-002/"
     }
   ]
 }
