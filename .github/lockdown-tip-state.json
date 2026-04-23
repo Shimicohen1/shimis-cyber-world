@@ -1,5 +1,5 @@
 {
-  "tipNumber": 7,
+  "tipNumber": 8,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -7,7 +7,8 @@
     "win-001",
     "aws-001",
     "az-001",
-    "lin-002"
+    "lin-002",
+    "win-002"
   ],
   "round": 1,
   "history": [
@@ -79,6 +80,16 @@
       "linkedInId": "urn:li:share:7452641141671411714",
       "telegramMsgId": 735,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-002/"
+    },
+    {
+      "tipNumber": 8,
+      "id": "win-002",
+      "platform": "windows",
+      "title": "Enforce account lockout policy",
+      "date": "2026-04-23T09:00:36.743Z",
+      "linkedInId": "urn:li:share:7453004890311651329",
+      "telegramMsgId": 772,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-002/"
     }
   ]
 }
