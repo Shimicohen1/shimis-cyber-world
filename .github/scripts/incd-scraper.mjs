@@ -99,6 +99,13 @@ function sigmaFrontmatter(rules, slug) {
       yaml += `  preview_yaml_b64: "${Buffer.from(freeRule.yaml, "utf-8").toString("base64")}"\n`;
     }
   }
+  // Embed ALL rules so the bot can serve them and the layout renders the
+  // detection block even when no rule is tier=free (mirrors nvd-poller.js).
+  const allRulesPayload = rules.map(r => ({
+    title: r.title, level: r.level, technique: r.technique,
+    tactic: r.tactic, tier: r.tier, yaml: r.yaml,
+  }));
+  yaml += `  all_rules_b64: "${Buffer.from(JSON.stringify(allRulesPayload), "utf-8").toString("base64")}"\n`;
   return yaml;
 }
 
