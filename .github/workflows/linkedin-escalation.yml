@@ -1,0 +1,25 @@
+name: LinkedIn API Escalation Reminder (Day 14)
+
+on:
+  schedule:
+    - cron: '0 8 5 5 *'   # May 5, 08:00 UTC (11:00 Israel) — day 14 of LinkedIn SLA
+  workflow_dispatch:
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send escalation reminder email
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+        run: |
+          curl -s -X POST 'https://api.brevo.com/v3/smtp/email' \
+            -H "api-key: $BREVO_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "sender": {"name": "SCW Automation", "email": "shimicyberworld@gmail.com"},
+              "to": [{"email": "shimicyberworld@gmail.com"}],
+              "subject": "⏰ Day 14: LinkedIn Community Management API — time to escalate",
+              "htmlContent": "<h2>LinkedIn API Approval — Day 14 SLA Reached</h2><p>Submitted: <b>April 11, 2026</b> on app <b>SCW Company Publisher</b> (Client ID <code>77t7mpncdwssoj</code>).</p><p>If still in <i>Access Form Review</i>, send the escalation message in <code>~/Documents/shimis-cyber-world/.github/workflows/linkedin-escalation-message.md</code> via:</p><ol><li>LinkedIn Developer Support: <a href=\"https://www.linkedin.com/help/linkedin/ask/API-DEV\">Help form</a></li><li>Reply to the original confirmation email from <code>developer-support@linkedin.com</code></li></ol><p>If approved: refresh token with <code>w_organization_social</code> scope, set <code>LINKEDIN_ORG_URN</code> secret, delete both reminder workflows.</p>"
+            }'
+          echo "✅ Escalation reminder sent"
