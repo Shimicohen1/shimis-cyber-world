@@ -197,15 +197,18 @@ const CVE_RE = /CVE-\d{4}-\d{4,}/gi;
 
 // ── Image Pool — AI-generated (from scw-post-images repo) + Unsplash fallback ──
 
-const IMAGES_REPO_API = "https://api.github.com/repos/Shimicohen1/scw-post-images/contents/linkedin";
-const IMAGES_BASE_URL = "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/linkedin";
-const AI_IMAGE_THRESHOLD = 50; // Use only AI images once we have this many
+// Pool lives in `pool/<category>/` subfolders of the scw-post-images repo.
+// Categories available: news, threats, vulnerability, tools, lockdown.
+const IMAGES_REPO_BASE_API = "https://api.github.com/repos/Shimicohen1/scw-post-images/contents/pool";
+const IMAGES_REPO_BASE_RAW = "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool";
+const AI_POOL_CATEGORIES = ["news", "threats", "vulnerability"];
+const AI_IMAGE_THRESHOLD = 10; // Use AI pool exclusively once any single category has this many
 
 const UNSPLASH_BASE = "https://images.unsplash.com";
 const UNSPLASH_PARAMS = "w=800&h=400&fit=crop&auto=format&q=80";
 
-// AI image list — populated at startup by loadAiImagePool()
-let aiImagePool = [];
+// AI image pool — populated at startup by loadAiImagePool(); keyed by category.
+const aiImagePool = { news: [], threats: [], vulnerability: [] };
 
 const imagePools = {
   threats: [
@@ -242,31 +245,46 @@ const imagePools = {
 };
 
 async function loadAiImagePool() {
-  try {
-    const res = await fetch(IMAGES_REPO_API);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const files = await res.json();
-    aiImagePool = files
-      .filter(f => f.name.endsWith('.png'))
-      .map(f => `${IMAGES_BASE_URL}/${f.name}`);
-    console.log(`🖼️  AI image pool: ${aiImagePool.length} images (threshold: ${AI_IMAGE_THRESHOLD})`);
-  } catch (err) {
-    console.warn(`⚠️  Could not load AI image pool: ${err.message} — using Unsplash`);
-    aiImagePool = [];
+  let totalLoaded = 0;
+  for (const cat of AI_POOL_CATEGORIES) {
+    try {
+      const res = await fetch(`${IMAGES_REPO_BASE_API}/${cat}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const files = await res.json();
+      aiImagePool[cat] = files
+        .filter(f => /\.(png|jpg|jpeg|webp)$/i.test(f.name))
+        .map(f => `${IMAGES_REPO_BASE_RAW}/${cat}/${f.name}`);
+      totalLoaded += aiImagePool[cat].length;
+      console.log(`🖼️  AI image pool [${cat}]: ${aiImagePool[cat].length} images`);
+    } catch (err) {
+      console.warn(`⚠️  Could not load AI image pool [${cat}]: ${err.message}`);
+      aiImagePool[cat] = [];
+    }
   }
+  console.log(`🖼️  Total AI images loaded: ${totalLoaded} (threshold per category: ${AI_IMAGE_THRESHOLD})`);
 }
 
 function pickCoverImage(tags) {
-  // If we have enough AI images, use them exclusively
-  if (aiImagePool.length >= AI_IMAGE_THRESHOLD) {
-    return aiImagePool[Math.floor(Math.random() * aiImagePool.length)];
+  const tagStr = tags.join(" ").toLowerCase();
+  // Map tags → category
+  let category;
+  if (/vulnerability|cve|exploit|zero.?day/.test(tagStr)) category = "vulnerability";
+  else if (/threat-intel|advisory|alert|israel|incd/.test(tagStr)) category = "threats";
+  else category = "news";
+
+  // Prefer AI pool when available; fall back across categories before Unsplash
+  const candidates = [category, ...AI_POOL_CATEGORIES.filter(c => c !== category)];
+  for (const c of candidates) {
+    if (aiImagePool[c] && aiImagePool[c].length >= AI_IMAGE_THRESHOLD) {
+      const pool = aiImagePool[c];
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
   }
 
-  // Fallback to Unsplash pools by tag category
-  const tagStr = tags.join(" ");
+  // Final fallback: Unsplash legacy pools
   let pool;
   if (/vulnerability|cve|exploit|zero.?day/.test(tagStr)) pool = imagePools.threats;
-  else if (/threat-intel|advisory|alert|israel/.test(tagStr)) pool = imagePools.intelligence;
+  else if (/threat-intel|advisory|alert|israel|incd/.test(tagStr)) pool = imagePools.intelligence;
   else pool = imagePools.news;
   const pick = pool[Math.floor(Math.random() * pool.length)];
   return `${UNSPLASH_BASE}/${pick}?${UNSPLASH_PARAMS}`;
