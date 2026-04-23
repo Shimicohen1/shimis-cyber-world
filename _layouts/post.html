@@ -5,6 +5,15 @@ layout: default
   <article class="post{% if page.lang == 'he' %} post--rtl{% endif %}">
     <header class="post-header">
       {% if page.featured %}<span class="badge badge--featured">Featured</span>{% endif %}
+      {%- comment -%} BREAKING badge: CRITICAL CVEs published in the last 90 minutes {%- endcomment -%}
+      {%- if page.score == "CRITICAL" and page.event_type == "vulnerability" -%}
+        {%- assign _now_s = site.time | date: "%s" | plus: 0 -%}
+        {%- assign _post_s = page.date | date: "%s" | plus: 0 -%}
+        {%- assign _age_min = _now_s | minus: _post_s | divided_by: 60 -%}
+        {%- if _age_min >= 0 and _age_min <= 90 -%}
+          <span class="badge badge--breaking" title="Published {{ _age_min }} minutes ago">🚨 BREAKING</span>
+        {%- endif -%}
+      {%- endif -%}
       <h1 class="post-title"{% if page.lang == 'he' %} dir="rtl" lang="he"{% endif %}>{{ page.title }}</h1>
       <div class="post-meta">
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y %H:%M" }}</time>

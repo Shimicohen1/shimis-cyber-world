@@ -1,0 +1,97 @@
+name: HN Sunday Picker
+
+# Picks the best post from last 7 days and emails Shimi a one-click HN submit link.
+# Posting to HN must be done manually (HN has no posting API; auto-submission triggers ban).
+# User clicks the link in the email → HN submit form pre-filled → one click to submit.
+
+on:
+  schedule:
+    # Sunday 13:00 UTC = 16:00 Israel
+    - cron: '0 13 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pick-and-email:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick best post
+        id: pick
+        run: |
+          set -euo pipefail
+          OUTPUT=$(node .github/scripts/hn-picker.mjs)
+          echo "$OUTPUT" | tee /tmp/pick.json
+          OK=$(echo "$OUTPUT" | jq -r '.ok')
+          echo "ok=$OK" >> "$GITHUB_OUTPUT"
+          if [ "$OK" = "true" ]; then
+            jq -r '.pick.title' /tmp/pick.json > /tmp/title.txt
+            jq -r '.pick.url' /tmp/pick.json > /tmp/url.txt
+            jq -r '.hnSubmitUrl' /tmp/pick.json > /tmp/hn.txt
+            jq -r '.pick.score' /tmp/pick.json > /tmp/score.txt
+          fi
+
+      - name: Send email via Brevo
+        if: steps.pick.outputs.ok == 'true'
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${BREVO_API_KEY:-}" ]; then
+            echo "::error::BREVO_API_KEY secret not set"
+            exit 1
+          fi
+
+          TITLE=$(cat /tmp/title.txt)
+          URL=$(cat /tmp/url.txt)
+          HN=$(cat /tmp/hn.txt)
+          SCORE=$(cat /tmp/score.txt)
+          RUNNERS=$(jq -c '.runners_up' /tmp/pick.json)
+          BREAKDOWN=$(jq -c '.pick.breakdown' /tmp/pick.json)
+
+          # Build runner-up rows
+          RUNNER_HTML=""
+          while IFS= read -r row; do
+            R_TITLE=$(echo "$row" | jq -r '.title')
+            R_URL=$(echo "$row" | jq -r '.url')
+            R_SCORE=$(echo "$row" | jq -r '.score')
+            RUNNER_HTML="${RUNNER_HTML}<tr><td style=\"padding:6px;border:1px solid #333\"><a href=\"${R_URL}\" style=\"color:#3b82f6\">${R_TITLE}</a></td><td style=\"padding:6px;border:1px solid #333;text-align:center\">${R_SCORE}</td></tr>"
+          done < <(echo "$RUNNERS" | jq -c '.[]')
+
+          PAYLOAD=$(jq -n \
+            --arg title "$TITLE" \
+            --arg url "$URL" \
+            --arg hn "$HN" \
+            --arg score "$SCORE" \
+            --arg breakdown "$BREAKDOWN" \
+            --arg runners "$RUNNER_HTML" \
+            '{
+              sender: {name: "SCW HN Picker", email: "shimicyberworld@gmail.com"},
+              to: [{email: "shimicyberworld@gmail.com", name: "Shimi"}],
+              subject: ("📰 HN pick — " + $title),
+              htmlContent: ("<div style=\"font-family:Inter,system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#0d0d14;color:#f0f0f5\"><h1 style=\"color:#ff6600;font-size:22px;margin:0 0 16px\">🟧 Hacker News pick of the week</h1><p style=\"color:#cccccc;line-height:1.6\">Best post from the last 7 days for HN submission. Click the orange button below — HN submit form opens pre-filled. One click to publish.</p><div style=\"background:#16161f;border:1px solid #ff6600;border-radius:8px;padding:20px;margin:20px 0\"><h2 style=\"color:#fff;font-size:18px;margin:0 0 8px\">" + $title + "</h2><p style=\"color:#888;font-size:13px;margin:4px 0\">Score: <strong style=\"color:#ff6600\">" + $score + "</strong> · <a href=\"" + $url + "\" style=\"color:#3b82f6\">Open post →</a></p><p style=\"color:#666;font-size:11px;font-family:monospace;margin:8px 0\">" + $breakdown + "</p><a href=\"" + $hn + "\" style=\"display:inline-block;background:#ff6600;color:#fff;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;margin-top:12px\">Submit to Hacker News →</a></div><h3 style=\"color:#a855f7;font-size:14px;margin:24px 0 8px\">Runners-up</h3><table style=\"width:100%;border-collapse:collapse;font-size:13px\"><tr style=\"background:#16161f\"><th style=\"padding:6px;border:1px solid #333;text-align:left\">Title</th><th style=\"padding:6px;border:1px solid #333\">Score</th></tr>" + $runners + "</table><h3 style=\"color:#a855f7;font-size:14px;margin:24px 0 8px\">💡 HN posting tips</h3><ul style=\"color:#cccccc;line-height:1.7;font-size:13px\"><li>Best time to submit: <strong>Tue–Thu 8–10am Pacific</strong> (18–20 Israel)</li><li>Sundays usually have lower competition — also viable</li><li>Don\u0027t edit the pre-filled title unless it sounds clickbaity</li><li>If &gt;10 upvotes in first 30min, it has a real shot at front page</li><li>Engage in comments politely — boosts ranking</li></ul><p style=\"color:#666;font-size:11px;margin-top:32px;border-top:1px solid #333;padding-top:16px\">Workflow: <code>.github/workflows/hn-picker.yml</code> · runs Sundays 16:00 Israel</p></div>")
+            }')
+
+          echo "Sending HN pick email..."
+          HTTP_CODE=$(curl -sS -o /tmp/brevo.json -w "%{http_code}" \
+            -X POST 'https://api.brevo.com/v3/smtp/email' \
+            -H "api-key: $BREVO_API_KEY" \
+            -H 'Content-Type: application/json' \
+            -H 'accept: application/json' \
+            -d "$PAYLOAD")
+          echo "Brevo HTTP: $HTTP_CODE"
+          cat /tmp/brevo.json
+          if [ "$HTTP_CODE" != "201" ]; then
+            echo "::error::Brevo API returned $HTTP_CODE"
+            exit 1
+          fi
+          echo "✅ HN pick email sent."
+
+      - name: No strong picks
+        if: steps.pick.outputs.ok != 'true'
+        run: |
+          echo "No strong picks this week — skipping email."
+          cat /tmp/pick.json || true
