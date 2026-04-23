@@ -1,0 +1,29 @@
+---
+layout: null
+permalink: /sitemap-news.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+{%- assign now = site.time -%}
+{%- assign cutoff = now | date: '%s' | minus: 172800 -%}{%- comment -%}48h window{%- endcomment -%}
+{%- assign posts = site.posts | where_exp: "p", "p.hidden != true" | where_exp: "p", "p.section != 'lockdown'" -%}
+{%- for post in posts -%}
+  {%- assign pdate = post.date | date: '%s' | plus: 0 -%}
+  {%- assign cutoff_n = cutoff | plus: 0 -%}
+  {%- if pdate >= cutoff_n -%}
+  <url>
+    <loc>{{ post.url | absolute_url }}</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Shimi's Cyber World</news:name>
+        <news:language>{{ post.lang | default: 'en' }}</news:language>
+      </news:publication>
+      <news:publication_date>{{ post.date | date_to_xmlschema }}</news:publication_date>
+      <news:title>{{ post.title | xml_escape }}</news:title>
+      {%- if post.tags %}<news:keywords>{{ post.tags | join: ', ' | xml_escape }}</news:keywords>{%- endif %}
+    </news:news>
+  </url>
+  {%- endif -%}
+{%- endfor -%}
+</urlset>

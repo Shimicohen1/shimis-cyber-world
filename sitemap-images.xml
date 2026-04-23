@@ -1,0 +1,18 @@
+---
+layout: null
+permalink: /sitemap-images.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+{%- assign posts = site.posts | where_exp: "p", "p.hidden != true" | where_exp: "p", "p.image" -%}
+{%- for post in posts -%}
+  <url>
+    <loc>{{ post.url | absolute_url }}</loc>
+    <image:image>
+      <image:loc>{% if post.image contains '://' %}{{ post.image | xml_escape }}{% else %}{{ post.image | absolute_url | xml_escape }}{% endif %}</image:loc>
+      <image:title>{{ post.title | xml_escape }}</image:title>
+    </image:image>
+  </url>
+{%- endfor -%}
+</urlset>

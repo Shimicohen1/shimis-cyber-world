@@ -1,0 +1,66 @@
+name: IndexNow Submit New Posts
+
+# Notifies Bing, Yandex, Seznam, Naver, Yep instantly when new posts are
+# committed. Reads URLs from the latest commit and submits to api.indexnow.org.
+# Safe: only POSTs URLs; no site changes. Free, no API limits worth worrying about.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '_posts/**'
+      - 'feed.xml'
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Collect new/changed post URLs
+        id: urls
+        run: |
+          set -euo pipefail
+          BASE_URL="https://shimiscyberworld.com"
+          # Get added/modified posts in the latest commit
+          CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- '_posts/*.md' || true)
+          URLS=()
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            # _posts/2025-02-08-telegram-1316681366-1939.md  →  /posts/<slug>/
+            base=$(basename "$f" .md)
+            slug=$(echo "$base" | sed -E 's/^[0-9]{4}-[0-9]{2}-[0-9]{2}-//')
+            URLS+=("$BASE_URL/posts/$slug/")
+          done <<< "$CHANGED"
+          if [ ${#URLS[@]} -eq 0 ]; then
+            echo "no_urls=true" >> "$GITHUB_OUTPUT"
+            echo "No new post URLs to submit."
+            exit 0
+          fi
+          # JSON array
+          printf '%s\n' "${URLS[@]}" | jq -R . | jq -s . > urls.json
+          echo "no_urls=false" >> "$GITHUB_OUTPUT"
+          echo "URLs to submit:"; cat urls.json
+
+      - name: Submit to IndexNow
+        if: steps.urls.outputs.no_urls != 'true'
+        run: |
+          set -euo pipefail
+          KEY="3c9216107f8607d27dc0fdf5568d5221"
+          HOST="shimiscyberworld.com"
+          KEY_LOCATION="https://$HOST/$KEY.txt"
+          PAYLOAD=$(jq -n \
+            --arg host "$HOST" \
+            --arg key "$KEY" \
+            --arg keyLocation "$KEY_LOCATION" \
+            --slurpfile urls urls.json \
+            '{host:$host, key:$key, keyLocation:$keyLocation, urlList:$urls[0]}')
+          echo "Payload: $PAYLOAD"
+          curl -sS -X POST "https://api.indexnow.org/IndexNow" \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d "$PAYLOAD" -w "\nHTTP %{http_code}\n"

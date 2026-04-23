@@ -1,0 +1,31 @@
+{%- comment -%}
+  Additive Breadcrumb JSON-LD. Safe: only renders on post pages, does not
+  replace or modify existing Article schema in head.html.
+{%- endcomment -%}
+{%- if page.layout == 'post' -%}
+{%- assign _bc_section = page.section | default: 'Posts' -%}
+{%- capture _bc_section_url -%}
+  {%- case _bc_section -%}
+    {%- when 'breach' -%}{{ site.url }}/breach-radar
+    {%- when 'vulnerability' -%}{{ site.url }}/vulnerabilities
+    {%- when 'detection' -%}{{ site.url }}/detections
+    {%- when 'playbook' -%}{{ site.url }}/playbooks
+    {%- when 'hardening' -%}{{ site.url }}/hardening
+    {%- when 'lockdown' -%}{{ site.url }}/lockdown-lab
+    {%- else -%}{{ site.url }}/posts
+  {%- endcase -%}
+{%- endcapture -%}
+{%- assign _bc_section_url = _bc_section_url | strip -%}
+{%- assign _bc_section_name = _bc_section | capitalize -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site.url }}/"},
+    {"@type": "ListItem", "position": 2, "name": {{ _bc_section_name | jsonify }}, "item": {{ _bc_section_url | jsonify }}},
+    {"@type": "ListItem", "position": 3, "name": {{ page.title | jsonify | replace: "</", "<\\/" }}, "item": "{{ page.url | absolute_url }}"}
+  ]
+}
+</script>
+{%- endif -%}
