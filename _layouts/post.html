@@ -137,6 +137,34 @@ layout: default
     </div>
     {% endif %}
 
+    {% comment %}── "Am I Exposed?" CTA — contextual deep-link to bot ──{% endcomment %}
+    {% comment %}Build the smartest deep-link we can from post metadata{% endcomment %}
+    {% assign _exposed_link = "https://t.me/Shimiscyberworldbot?start=detect" %}
+    {% assign _exposed_hint = "Search any vendor or CVE — get detection rules for your SIEM in seconds" %}
+    {% if page.organizations and page.organizations.size > 0 %}
+      {% assign _exp_org = page.organizations[0].name %}
+      {% assign _exp_org_enc = _exp_org | url_encode %}
+      {% assign _exposed_link = "https://t.me/Shimiscyberworldbot?start=detect_" | append: _exp_org_enc %}
+      {% assign _exposed_hint = "Check if " | append: _exp_org | append: " impacts your environment — get SIEM detection rules instantly" %}
+    {% elsif page.iocs and page.iocs.size > 0 and page.iocs[0].id contains 'CVE' %}
+      {% assign _exp_cve = page.iocs[0].id %}
+      {% assign _exp_cve_enc = _exp_cve | url_encode %}
+      {% assign _exposed_link = "https://t.me/Shimiscyberworldbot?start=detect_" | append: _exp_cve_enc %}
+      {% assign _exposed_hint = "Get detection rules for " | append: _exp_cve | append: " — Splunk, Sentinel, Elastic, QRadar & more" %}
+    {% elsif page.tags contains 'ransomware' or page.tags contains 'data-breach' %}
+      {% assign _exposed_hint = "Check if your vendors are affected — search by name or domain" %}
+    {% endif %}
+    <div class="post-exposed-cta">
+      <a href="{{ _exposed_link }}" target="_blank" rel="noopener" class="post-exposed-cta__btn">
+        <span class="post-exposed-cta__shield">🛡️</span>
+        <span class="post-exposed-cta__content">
+          <strong>Am I exposed to this?</strong>
+          <span>{{ _exposed_hint }}</span>
+        </span>
+        <span class="post-exposed-cta__arrow">→</span>
+      </a>
+    </div>
+
     {% comment %}── MITRE ATT&CK Techniques ──{% endcomment %}
     {% if page.mitre_attack.size > 0 %}
     <div class="post-mitre-attack">
@@ -211,7 +239,7 @@ layout: default
           <span class="sigma-export-strip__fmt">Elastic</span>
           <span class="sigma-export-strip__fmt">QRadar AQL</span>
           <span class="sigma-export-strip__fmt">Wazuh</span>
-          <a href="{{ detect_link }}" class="sigma-export-strip__btn" target="_blank" rel="noopener">Export via Bot →</a>
+          <a href="{{ detect_link }}" class="sigma-export-strip__btn" target="_blank" rel="noopener">Get rules for your SIEM →</a>
         </div>
         {% endif %}
       </div>
@@ -244,7 +272,7 @@ layout: default
           <span class="sigma-export-strip__fmt">Elastic</span>
           <span class="sigma-export-strip__fmt">QRadar AQL</span>
           <span class="sigma-export-strip__fmt">Wazuh</span>
-          <a href="{{ detect_link }}" class="sigma-export-strip__btn" target="_blank" rel="noopener">Export via Bot →</a>
+          <a href="{{ detect_link }}" class="sigma-export-strip__btn" target="_blank" rel="noopener">Get rules for your SIEM →</a>
         </div>
         {% endif %}
       </div>
