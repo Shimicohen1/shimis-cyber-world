@@ -1,0 +1,81 @@
+---
+title: "Bitwarden CLI Compromised in Checkmarx Supply Chain Attack"
+date: 2026-04-23 13:42:00 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability]
+excerpt: "The Hacker News reports that the Bitwarden command-line interface (CLI) has been compromised. This incident is part of an ongoing supply chain campaign initially identified by Chec"
+summary: "The Hacker News reports that the Bitwarden command-line interface (CLI) has been compromised. This incident is part of an ongoing supply chain campaign initially identified by Checkmarx. The specific affected package version is `@bitwarden/cli@2026.4.0`. According to findings from Socket, the malici"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-047.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-047.png"
+source_url: "https://thehackernews.com/2026/04/bitwarden-cli-compromised-in-ongoing.html"
+tlp: "TLP:CLEAR"
+event_type: "supply-chain"
+organizations:
+  - name: "Bitwarden"
+    domain: "bitwarden.com"
+    role: "vendor"
+  - name: "Checkmarx"
+    domain: "checkmarx.com"
+    role: "vendor"
+  - name: "Socket"
+    domain: "socket.dev"
+    role: "vendor"
+iocs:
+  - id: "Bitwarden-CLI-Compromise"
+    type: "Supply Chain Attack"
+    indicator: "Affected package: @bitwarden/cli"
+  - id: "Bitwarden-CLI-Compromise"
+    type: "Supply Chain Attack"
+    indicator: "Affected version: @bitwarden/cli@2026.4.0"
+  - id: "Bitwarden-CLI-Compromise"
+    type: "Malicious Code Injection"
+    indicator: "Malicious file: bw1.js within package contents"
+mitre_attack:
+  - id: "T1195.002"
+    name: "Compromise Software Supply Chain"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1195/002/"
+  - id: "T1070.004"
+    name: "File Deletion"
+    tactic: "Defense Evasion"
+    url: "https://attack.mitre.org/techniques/T1070/004/"
+  - id: "T1574.002"
+    name: "DLL Side-Loading"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1574/002/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Supply Chain Compromise - Bitwarden CLI Malicious Script Execution"
+  preview_level: "critical"
+  preview_technique: "T1059.003"
+  preview_tactic: "Execution"
+  preview_yaml_b64: "dGl0bGU6IFN1cHBseSBDaGFpbiBDb21wcm9taXNlIC0gQml0d2FyZGVuIENMSSBNYWxpY2lvdXMgU2NyaXB0IEV4ZWN1dGlvbgppZDogc2N3LTIwMjYtMDQtMjMtYWktMQpzdGF0dXM6IGV4cGVyaW1lbnRhbApsZXZlbDogY3JpdGljYWwKZGVzY3JpcHRpb246IHwKICBEZXRlY3RzIHRoZSBleGVjdXRpb24gb2YgYSBOb2RlLmpzIHByb2Nlc3MgdGhhdCBhdHRlbXB0cyB0byBydW4gYSBzY3JpcHQgbmFtZWQgJ2J3MS5qcycuIFRoaXMgc3BlY2lmaWMgZmlsZW5hbWUgd2FzIGlkZW50aWZpZWQgYXMgdGhlIG1hbGljaW91cyBwYXlsb2FkIHdpdGhpbiB0aGUgY29tcHJvbWlzZWQgJ0BiaXR3YXJkZW4vY2xpQDIwMjYuNC4wJyBwYWNrYWdlLCBpbmRpY2F0aW5nIGEgcG90ZW50aWFsIHN1cHBseSBjaGFpbiBjb21wcm9taXNlIG9yaWdpbmF0aW5nIGZyb20gdGhlIEJpdHdhcmRlbiBDTEkuCmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpCmRhdGU6IDIwMjYtMDQtMjMKcmVmZXJlbmNlczoKICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjMtYml0d2FyZGVuLWNsaS1jb21wcm9taXNlZC1pbi1vbmdvaW5nLWNoZWNrbWFyeC1zdXBwbHktY2hhaW4tOWhyYzUKdGFnczoKICAtIGF0dGFjay5leGVjdXRpb24KICAtIGF0dGFjay50MTA1OS4wMDMKbG9nc291cmNlOgogICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb24KZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgSW1hZ2V8ZW5kc3dpdGg6CiAgICAgICAgICAtICdub2RlLmV4ZScKICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6CiAgICAgICAgICAtICdidzEuanMnCiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uCmZhbHNlcG9zaXRpdmVzOgogIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eQ=="
+  all_rules_b64: "W3sidGl0bGUiOiJTdXBwbHkgQ2hhaW4gQ29tcHJvbWlzZSAtIEJpdHdhcmRlbiBDTEkgTWFsaWNpb3VzIFNjcmlwdCBFeGVjdXRpb24iLCJsZXZlbCI6ImNyaXRpY2FsIiwidGVjaG5pcXVlIjoiVDEwNTkuMDAzIiwidGFjdGljIjoiRXhlY3V0aW9uIiwidGllciI6ImZyZWUiLCJ5YW1sIjoidGl0bGU6IFN1cHBseSBDaGFpbiBDb21wcm9taXNlIC0gQml0d2FyZGVuIENMSSBNYWxpY2lvdXMgU2NyaXB0IEV4ZWN1dGlvblxuaWQ6IHNjdy0yMDI2LTA0LTIzLWFpLTFcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIERldGVjdHMgdGhlIGV4ZWN1dGlvbiBvZiBhIE5vZGUuanMgcHJvY2VzcyB0aGF0IGF0dGVtcHRzIHRvIHJ1biBhIHNjcmlwdCBuYW1lZCAnYncxLmpzJy4gVGhpcyBzcGVjaWZpYyBmaWxlbmFtZSB3YXMgaWRlbnRpZmllZCBhcyB0aGUgbWFsaWNpb3VzIHBheWxvYWQgd2l0aGluIHRoZSBjb21wcm9taXNlZCAnQGJpdHdhcmRlbi9jbGlAMjAyNi40LjAnIHBhY2thZ2UsIGluZGljYXRpbmcgYSBwb3RlbnRpYWwgc3VwcGx5IGNoYWluIGNvbXByb21pc2Ugb3JpZ2luYXRpbmcgZnJvbSB0aGUgQml0d2FyZGVuIENMSS5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA0LTIzXG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjMtYml0d2FyZGVuLWNsaS1jb21wcm9taXNlZC1pbi1vbmdvaW5nLWNoZWNrbWFyeC1zdXBwbHktY2hhaW4tOWhyYzVcbnRhZ3M6XG4gIC0gYXR0YWNrLmV4ZWN1dGlvblxuICAtIGF0dGFjay50MTA1OS4wMDNcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvblxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBJbWFnZXxlbmRzd2l0aDpcbiAgICAgICAgICAtICdub2RlLmV4ZSdcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2J3MS5qcydcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6IlN1cHBseSBDaGFpbiBDb21wcm9taXNlIC0gQml0d2FyZGVuIENMSSBNYWxpY2lvdXMgRmlsZSBDcmVhdGlvbiIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMTkwIiwidGFjdGljIjoiSW5pdGlhbCBBY2Nlc3MiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogU3VwcGx5IENoYWluIENvbXByb21pc2UgLSBCaXR3YXJkZW4gQ0xJIE1hbGljaW91cyBGaWxlIENyZWF0aW9uXG5pZDogc2N3LTIwMjYtMDQtMjMtYWktMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBoaWdoXG5kZXNjcmlwdGlvbjogfFxuICBNb25pdG9ycyBmb3IgdGhlIGNyZWF0aW9uIG9yIG1vZGlmaWNhdGlvbiBvZiBhIGZpbGUgbmFtZWQgJ2J3MS5qcycgd2l0aGluIHRoZSBjb250ZXh0IG9mIHRoZSBCaXR3YXJkZW4gQ0xJIHBhY2thZ2UgaW5zdGFsbGF0aW9uIGRpcmVjdG9yeS4gVGhpcyBzcGVjaWZpYyBmaWxlIHdhcyBpZGVudGlmaWVkIGFzIHRoZSBtYWxpY2lvdXMgY29tcG9uZW50IGluIHRoZSBzdXBwbHkgY2hhaW4gYXR0YWNrIHRhcmdldGluZyBCaXR3YXJkZW4gQ0xJIHZlcnNpb24gMjAyNi40LjAuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNC0yM1xucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA0LTIzLWJpdHdhcmRlbi1jbGktY29tcHJvbWlzZWQtaW4tb25nb2luZy1jaGVja21hcngtc3VwcGx5LWNoYWluLTlocmM1XG50YWdzOlxuICAtIGF0dGFjay5pbml0aWFsX2FjY2Vzc1xuICAtIGF0dGFjay50MTE5MFxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBmaWxlX2V2ZW50XG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIFRhcmdldEZpbGVuYW1lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy9AYml0d2FyZGVuL2NsaS9idzEuanMnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJTdXBwbHkgQ2hhaW4gQ29tcHJvbWlzZSAtIEJpdHdhcmRlbiBDTEkgTmV0d29yayBDb25uZWN0aW9uIGZyb20gTWFsaWNpb3VzIFNjcmlwdCIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMDcxLjAwMSIsInRhY3RpYyI6IkNvbW1hbmQgYW5kIENvbnRyb2wiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogU3VwcGx5IENoYWluIENvbXByb21pc2UgLSBCaXR3YXJkZW4gQ0xJIE5ldHdvcmsgQ29ubmVjdGlvbiBmcm9tIE1hbGljaW91cyBTY3JpcHRcbmlkOiBzY3ctMjAyNi0wNC0yMy1haS0zXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGhpZ2hcbmRlc2NyaXB0aW9uOiB8XG4gIERldGVjdHMgRE5TIHF1ZXJpZXMgdG8gc3VzcGljaW91cyBkb21haW5zIHRoYXQgbWlnaHQgYmUgdXNlZCBmb3IgY29tbWFuZCBhbmQgY29udHJvbCBieSB0aGUgbWFsaWNpb3VzIGNvZGUgZW1iZWRkZWQgaW4gdGhlIGNvbXByb21pc2VkIEJpdHdhcmRlbiBDTEkgcGFja2FnZS4gVGhlIGRvbWFpbnMgJy5iaXR3YXJkZW4tY2xpLmNvbScgYW5kICcuYml0d2FyZGVuLWNsaS5uZXQnIGFyZSBleGFtcGxlcyBvZiBwb3RlbnRpYWwgQzIgaW5mcmFzdHJ1Y3R1cmUgcmVsYXRlZCB0byB0aGlzIHNwZWNpZmljIHN1cHBseSBjaGFpbiBhdHRhY2suXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNC0yM1xucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA0LTIzLWJpdHdhcmRlbi1jbGktY29tcHJvbWlzZWQtaW4tb25nb2luZy1jaGVja21hcngtc3VwcGx5LWNoYWluLTlocmM1XG50YWdzOlxuICAtIGF0dGFjay5jb21tYW5kX2FuZF9jb250cm9sXG4gIC0gYXR0YWNrLnQxMDcxLjAwMVxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBkbnNcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgcXVlcnl8Y29udGFpbnM6XG4gICAgICAgICAgLSAnLmJpdHdhcmRlbi1jbGkuY29tJ1xuICAgICAgICAgIC0gJy5iaXR3YXJkZW4tY2xpLm5ldCdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In1d"
+why_it_matters:
+  - "If your organization uses Bitwarden CLI, you need to immediately check which version you have deployed. Specifically, audit for `@bitwarden/cli@2026.4.0` and remove it. Force a version rollback or upgrade to a verified clean version. Also, assume any secrets accessed or managed by this compromised CLI version are now compromised and initiate a full rotation of those credentials. This isn't theoretical; this is a direct compromise of a security tool."
+bot_cta_title: "Supply Chain Threat Intelligence"
+bot_cta_description: "Use /brief to get an analyst-ready weekly threat summary that includes supply chain vulnerabilities."
+---
+
+The Hacker News reports that the Bitwarden command-line interface (CLI) has been compromised. This incident is part of an ongoing supply chain campaign initially identified by Checkmarx. The specific affected package version is `@bitwarden/cli@2026.4.0`.
+
+According to findings from Socket, the malicious code was embedded within a file named `bw1.js`, which was included in the compromised package. The attack vector appears to have leveraged a broader supply chain compromise, indicating a sophisticated and multi-stage operation. This isn't just a random defacement; it's a targeted injection into a critical development tool.
+
+This incident highlights the pervasive risk of software supply chain attacks. When a widely used tool like Bitwarden CLI is compromised, the downstream impact on developers and organizations using it is substantial. Attackers are clearly targeting the development lifecycle, recognizing the high leverage point that developer tools and libraries represent.
