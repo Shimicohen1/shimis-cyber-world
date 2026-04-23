@@ -26,3 +26,4 @@ refresh-linkedin.sh
 DR-ARCHITECTURE.md
 engine-backup.yml
 .DS_Store
+*.bak
