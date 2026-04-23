@@ -148,7 +148,8 @@ async function publishToTelegram(post) {
   msg += `<b>${escTg(post.title?.substring(0, 200))}</b>\n\n`;
 
   if (post.summary) {
-    const short = post.summary.length > 250 ? post.summary.substring(0, 247) + "…" : post.summary;
+    // Telegram caption max is 1024 chars; we reserve ~300 for header/footer/tags.
+    const short = post.summary.length > 700 ? post.summary.substring(0, 697) + "…" : post.summary;
     msg += `${escTg(short)}\n\n`;
   }
 
@@ -318,7 +319,7 @@ async function translateAndRewrite(hebrewTitle, hebrewDescription, sourceUrl, pu
     return null;
   }
 
-  const model = "gemini-2.5-flash-lite";
+  const model = "gemini-2.5-flash";
 
   const prompt = `You are the editorial voice of Shimi's Cyber World — a sharp cybersecurity publication.
 
@@ -344,6 +345,7 @@ Return ONLY valid JSON:
 {
   "title": "Short punchy English title (max 12 words)",
   "body": "The rewritten article body (2-4 paragraphs, markdown allowed)",
+  "telegram_summary": "A standalone 3-5 sentence summary (600-800 characters) for Telegram readers — covers what happened, who is affected, and the key recommendation. Must read well on its own without the full article.",
   "why_it_matters": "One specific, actionable recommendation for security professionals"
 }`;
 
@@ -805,7 +807,7 @@ async function buildPostMarkdown(pub, translated, attachments, iocs, mitreAttack
 
   const filename = `${yyyy}-${mm}-${dd}-incd-${slug}.md`;
   const sigmaCount = (sigmaYaml.match(/count: (\d+)/) || [])[1] || 0;
-  return { markdown, filename, title, slug, classification, summary: translated.summary, imageUrl: coverImage, sigmaCount: Number(sigmaCount) };
+  return { markdown, filename, title, slug, classification, summary: translated.telegram_summary || translated.body || translated.summary || title, imageUrl: coverImage, sigmaCount: Number(sigmaCount) };
 }
 
 // ── Main ────────────────────────────────────────────────
