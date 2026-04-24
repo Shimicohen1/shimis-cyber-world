@@ -4,18 +4,22 @@ title: LockDown
 permalink: /hardening/
 ---
 
+{% assign harden_total = site.data.hardening.items | size %}
+{% assign harden_platforms = site.data.hardening.items | map: "platform" | uniq | size %}
+{% assign harden_categories = site.data.hardening.items | map: "category" | uniq | size %}
+
 <div class="page-head">
   <div class="label label--elite page-head__label">SCW ELITE</div>
   <h1 class="page-head__title">LockDown</h1>
-  <p class="page-head__desc">884 hardening checks across 21 platforms. Pick your stack, get real commands, check them off, export the report.</p>
+  <p class="page-head__desc">{{ harden_total }} hardening checks across {{ harden_platforms }} platforms. Pick your stack, get real commands, check them off, export the report.</p>
 </div>
 
 <section class="cs-intro reveal">
   <p>CIS Benchmarks, AWS Well-Architected, and real production hardening — distilled into copy-paste commands. Select a platform, work through the list, track your progress.</p>
   <div class="harden-hero-stats">
-    <div class="harden-hero-stat"><span class="harden-hero-stat__num">884</span><span class="harden-hero-stat__label">Checks</span></div>
-    <div class="harden-hero-stat"><span class="harden-hero-stat__num">21</span><span class="harden-hero-stat__label">Platforms</span></div>
-    <div class="harden-hero-stat"><span class="harden-hero-stat__num">7</span><span class="harden-hero-stat__label">Categories</span></div>
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">{{ harden_total }}</span><span class="harden-hero-stat__label">Checks</span></div>
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">{{ harden_platforms }}</span><span class="harden-hero-stat__label">Platforms</span></div>
+    <div class="harden-hero-stat"><span class="harden-hero-stat__num">{{ harden_categories }}</span><span class="harden-hero-stat__label">Categories</span></div>
   </div>
   <div class="cs-intro__actions">
     <a href="#generator" class="btn btn--primary">Generate Checklist</a>
@@ -29,7 +33,7 @@ permalink: /hardening/
 <section class="harden-search reveal">
   <div class="harden-search__box">
     <svg class="harden-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="hardenSearch" class="harden-search__input" placeholder="Search all 884 checks across 21 platforms…" autocomplete="off" spellcheck="false">
+    <input type="text" id="hardenSearch" class="harden-search__input" placeholder="Search all {{ harden_total }} checks across {{ harden_platforms }} platforms…" autocomplete="off" spellcheck="false">
     <button id="hardenSearchClear" class="harden-search__clear" style="display:none;" title="Clear search">&times;</button>
   </div>
   <div id="hardenSearchInfo" class="harden-search__info" style="display:none;"></div>
