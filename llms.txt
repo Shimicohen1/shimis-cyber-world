@@ -8,13 +8,18 @@ permalink: /llms.txt
 
 The site publishes vendor-neutral, source-cited threat intelligence aimed at blue-team analysts, SOC engineers, CISOs, and security-aware readers. Every post links back to original sources and, where applicable, provides Sigma rules, IOC lists, and a Telegram intel bot (@Shimiscyberworldbot) for interactive lookups.
 
+## Flagship products
+
+- [Lockdown Lab]({{ site.url }}/lockdown-lab/) — **Free cybersecurity hardening tool**. CISO-authored, daily, vendor-specific lockdown guides for Windows, Azure, M365, AWS, Active Directory, Linux, network gear, and AI/LLM stacks. Severity-tagged. Each tip ships with the exact command, registry key, GPO setting or console toggle.
+- [Detection Vault]({{ site.url }}/detections/) — **Free Sigma detection rules library** for SOC analysts and threat hunters. Hundreds of production-ready rules covering CVEs, MITRE ATT&CK techniques, and active threats. Free Sigma format; SIEM-native exports (Splunk SPL, Microsoft Sentinel KQL, Elastic ES|QL, IBM QRadar AQL, Wazuh) auto-converted on demand via the SCW Intel Bot.
+
 ## Primary sections
 
 - [Breach Radar]({{ site.url }}/breach-radar): Curated data breach disclosures with victim organization, records affected, attack vector, and mitigation guidance.
 - [Vulnerabilities]({{ site.url }}/vulnerabilities): CVE-indexed vulnerability tracking with CVSS scoring, affected products, exploitation status, and patch guidance.
-- [Detections]({{ site.url }}/detections): Sigma detection rules mapped to MITRE ATT&CK techniques, covering the published threat landscape.
+- [Detections]({{ site.url }}/detections/): See **Detection Vault** above — free Sigma rules + SIEM exports.
 - [Playbooks]({{ site.url }}/playbooks): Incident-response playbooks for ransomware, BEC, phishing, credential theft, and supply-chain incidents.
-- [Hardening]({{ site.url }}/hardening): Platform hardening guides for Windows, macOS, Linux, Azure, AWS, GCP, M365, and Google Workspace.
+- [Hardening]({{ site.url }}/hardening/): Interactive 884-check hardening matrix across 22 platforms (Windows, macOS, Linux, Azure, AWS, GCP, M365, Google Workspace, Active Directory, K8s, CI/CD and more) — pick a platform, get copy-paste commands, track progress. Powered by [Lockdown Lab]({{ site.url }}/lockdown-lab/).
 - [IOC Scanner]({{ site.url }}/ioc-scanner): Free IOC (hash/IP/domain/URL) reputation scanner with cross-source enrichment.
 - [Tools]({{ site.url }}/tools): Curated catalog of free and commercial defensive security tools.
 - [Library]({{ site.url }}/library): Long-form reference material, frameworks, and standards.
