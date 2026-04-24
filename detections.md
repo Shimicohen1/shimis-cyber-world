@@ -1,7 +1,8 @@
 ---
 layout: page
-title: Detection Vault
+title: "Detection Vault — Free Sigma Rules & SIEM Detections for SOC Teams"
 permalink: /detections/
+description: "Free Sigma detection rules library for SOC analysts and threat hunters. 1,200+ production-ready rules covering CVEs, MITRE ATT&CK techniques and active threats. Splunk SPL, Sentinel KQL, Elastic, QRadar and Wazuh exports via the SCW Intel Bot."
 ---
 
 {% comment %}── Compute breach intel rule count (deduplicated, INCD immediate + others 14-day aged) ──{% endcomment %}
@@ -37,12 +38,12 @@ permalink: /detections/
 
 <div class="page-head">
   <div class="label label--cyan page-head__label">SCW TOOLS</div>
-  <h1 class="page-head__title">Detection Vault</h1>
-  <p class="page-head__desc">Production-ready detection rules for real SOC environments. KQL, Sigma, Splunk, and Wazuh — mapped to MITRE ATT&CK. Copy, paste, detect.</p>
+  <h1 class="page-head__title">Detection Vault — Free Sigma Detection Rules</h1>
+  <p class="page-head__desc">Production-ready detection rules for real SOC environments. Sigma, KQL, SPL and Wazuh — mapped to MITRE ATT&CK. Free Sigma; SIEM-native exports (Splunk, Sentinel, Elastic, QRadar, Wazuh) via the SCW Intel Bot.</p>
 </div>
 
 <section class="cs-intro reveal">
-  <p>Every rule in this library is <strong>battle-tested</strong>. Written by security operators, validated in production environments, and mapped to MITRE ATT&CK techniques. Sigma rules are free — SIEM exports (Splunk, Sentinel, Elastic, QRadar, Wazuh) available via the <a href="https://t.me/Shimiscyberworldbot?start=detect">Intel Bot</a>.</p>
+  <p>The SCW Detection Vault is a free, continuously updated library of <strong>Sigma detection rules</strong> for SOC analysts, threat hunters and detection engineers. Every rule is battle-tested, validated in production, and mapped to <a href="https://attack.mitre.org/" target="_blank" rel="noopener">MITRE ATT&CK</a>. Rules are auto-generated from breaking CVEs (NVD), Israeli National Cyber Directorate (INCD) advisories, and curated SOC use-cases. Sigma format is free for everyone; if you need a SIEM-native version (Splunk SPL, Microsoft Sentinel KQL, Elastic ES|QL, IBM QRadar AQL, Wazuh) the <a href="https://t.me/Shimiscyberworldbot?start=detect">SCW Intel Bot</a> auto-converts on demand.</p>
   <div class="cs-intro__actions">
     <a href="#rules" class="btn btn--primary">Browse Rules</a>
     <a href="{{ '/playbooks/' | relative_url }}" class="btn btn--ghost">WarRoom →</a>
@@ -378,3 +379,59 @@ permalink: /detections/
 </style>
 <link rel="stylesheet" href="/assets/css/premium-tools.css?v=4">
 <script src="{{ '/assets/js/detections.js' | relative_url }}" defer></script>
+
+<section class="cs-intro reveal" style="margin-top:2.5rem;">
+  <h2>Detection Vault FAQ</h2>
+  <details><summary><strong>What is Sigma and why use it?</strong></summary>
+  <p>Sigma is a generic, vendor-neutral signature format for SIEM systems \u2014 the YAML equivalent of Snort/YARA for log-based detections. Write a detection once in Sigma, then convert to your platform (Splunk SPL, Sentinel KQL, Elastic, QRadar AQL, Wazuh). Every rule in the SCW Detection Vault ships in Sigma format for free.</p></details>
+
+  <details><summary><strong>Are these detection rules really free?</strong></summary>
+  <p>Yes. All Sigma rules in the Detection Vault are free to copy, paste and use \u2014 commercial or non-commercial. SIEM-native exports (Splunk SPL, Sentinel KQL, Elastic ES|QL, QRadar AQL, Wazuh) are gated behind the SCW Intel Bot's Elite tier (75 Telegram Stars/month) only because converting and validating across five SIEM dialects has a real GPU and validation cost.</p></details>
+
+  <details><summary><strong>How often is the vault updated?</strong></summary>
+  <p>New detection rules are auto-generated within minutes of new CVE publications on the National Vulnerability Database (NVD), Israeli INCD advisories, and major breach disclosures. Curated rules from real-world SOC engagements are added on a rolling basis.</p></details>
+
+  <details><summary><strong>Can I convert these rules to KQL, SPL or my SIEM?</strong></summary>
+  <p>Yes \u2014 message the <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">SCW Intel Bot</a> on Telegram with the rule title or CVE ID. The bot returns the rule in your chosen SIEM dialect (Splunk SPL, Microsoft Sentinel KQL, Elastic ES|QL, IBM QRadar AQL, Wazuh) on the Elite tier.</p></details>
+
+  <details><summary><strong>Are rules mapped to MITRE ATT&CK?</strong></summary>
+  <p>Every rule includes the relevant MITRE ATT&CK technique IDs (e.g. T1190, T1059) so you can align coverage gaps to your existing detection engineering roadmap and the ATT&CK Navigator.</p></details>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "SCW Detection Vault",
+  "headline": "Free Sigma Detection Rules for SOC Teams",
+  "description": "Free Sigma detection rules library for SOC analysts and threat hunters. 1,200+ production-ready rules covering CVEs, MITRE ATT&CK techniques and active threats.",
+  "url": "{{ site.url }}/detections/",
+  "isAccessibleForFree": true,
+  "keywords": "sigma rules, sigma detection, siem rules, soc detection, threat hunting, mitre att&ck, kql rules, splunk detection",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shimi's Cyber World",
+    "url": "{{ site.url }}"
+  },
+  "about": [
+    {"@type":"Thing","name":"Sigma Detection Rules"},
+    {"@type":"Thing","name":"SIEM Detection"},
+    {"@type":"Thing","name":"MITRE ATT&CK"},
+    {"@type":"Thing","name":"Threat Hunting"}
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"What is Sigma and why use it?","acceptedAnswer":{"@type":"Answer","text":"Sigma is a generic, vendor-neutral signature format for SIEM systems. Write a detection once in Sigma, then convert to your platform (Splunk SPL, Sentinel KQL, Elastic, QRadar, Wazuh)."}},
+    {"@type":"Question","name":"Are these detection rules really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. All Sigma rules in the Detection Vault are free to copy, paste and use - commercial or non-commercial."}},
+    {"@type":"Question","name":"How often is the vault updated?","acceptedAnswer":{"@type":"Answer","text":"New detection rules are auto-generated within minutes of new CVE publications on the NVD, Israeli INCD advisories, and major breach disclosures."}},
+    {"@type":"Question","name":"Can I convert these rules to KQL, SPL or my SIEM?","acceptedAnswer":{"@type":"Answer","text":"Yes - message the SCW Intel Bot on Telegram with the rule title or CVE ID. The bot returns the rule in your chosen SIEM dialect on the Elite tier."}},
+    {"@type":"Question","name":"Are rules mapped to MITRE ATT&CK?","acceptedAnswer":{"@type":"Answer","text":"Every rule includes the relevant MITRE ATT&CK technique IDs so you can align coverage gaps to your existing detection engineering roadmap."}}
+  ]
+}
+</script>

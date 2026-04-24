@@ -12,12 +12,12 @@
       desc: Free CVE & breach search on Telegram
       icon: 🤖
     - label: LockDown
-      url: /hardening/
-      desc: Hardening checklists
+      url: /lockdown-lab/
+      desc: Free hardening tool & daily tips
       icon: 🔒
     - label: Detection Vault
       url: /detections/
-      desc: Sigma & KQL rules
+      desc: Free Sigma & SIEM detection rules
       icon: 🛡️
     - label: ThreatLens
       url: /ioc-scanner/
