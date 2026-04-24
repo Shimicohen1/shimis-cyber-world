@@ -141,7 +141,7 @@ description: "Free cybersecurity hardening tool from a working CISO. Daily, vend
   <p>Microsoft Windows / Server, Azure, Microsoft 365, Active Directory, Entra ID, AWS, Google Cloud, Linux distributions, common firewalls and EDR/XDR platforms, and emerging AI/LLM security topics. Coverage expands continuously based on real-world incident trends.</p></details>
 
   <details><summary><strong>Can I request a vendor or topic?</strong></summary>
-  <p>Yes \u2014 message the bot at <a href="https://t.me/Shimiscyberworldbot" target="_blank" rel="noopener">@Shimiscyberworldbot</a> or open an issue. Field requests from CISOs, SOC analysts and sysadmins drive the publishing roadmap.</p></details>
+  <p>Yes — message the bot at <a href="https://t.me/Shimiscyberworldbot" target="_blank" rel="noopener">@Shimiscyberworldbot</a> or open an issue. Field requests from CISOs, SOC analysts and sysadmins drive the publishing roadmap.</p></details>
 </section>
 
 <script type="application/ld+json">
