@@ -452,24 +452,7 @@ layout: default
       {% endfor %}
     {% endif %}
     {% if _rel.size > 0 %}
-    <aside class="post-related" aria-label="Related posts">
-      <div class="post-related__header">
-        <h2>Related coverage{% if page.organizations and page.organizations.size > 0 %} on <span class="post-related__entity">{{ page.organizations[0].name }}</span>{% endif %}</h2>
-      </div>
-      <ul class="post-related__list">
-        {% for r in _rel limit: 4 %}
-        <li class="post-related__item">
-          <a href="{{ r.url | relative_url }}" class="post-related__link">
-            <span class="post-related__title">{{ r.title | escape }}</span>
-            <span class="post-related__meta">
-              {% if r.cvss_severity %}<span class="post-related__sev post-related__sev--{{ r.cvss_severity | downcase }}">{{ r.cvss_severity }}</span>{% endif %}
-              <time datetime="{{ r.date | date_to_xmlschema }}">{{ r.date | date: "%b %-d, %Y" }}</time>
-            </span>
-          </a>
-        </li>
-        {% endfor %}
-      </ul>
-    </aside>
+    {% assign _related_posts = _rel %}
     {% endif %}
 
     {% comment %}── Mid-Post AdSense Slot ──{% endcomment %}
@@ -518,20 +501,16 @@ layout: default
       </div>
     </div>
 
-    {% comment %}── Related Posts by Tag ──{% endcomment %}
-    {% assign first_tag = page.tags | first %}
-    {% if first_tag %}
-    {% assign related = site.posts | where_exp: "p", "p.url != page.url" | where_exp: "p", "p.tags contains first_tag" %}
-    {% if related.size > 0 %}
+    {% comment %}── Related coverage rendered above (entity → shared-tag matching, card grid) ──{% endcomment %}
+    {% if _related_posts and _related_posts.size > 0 %}
     <div class="post-related">
-      <h3 class="post-related__title">Related Posts</h3>
+      <h3 class="post-related__title">Related coverage{% if page.organizations and page.organizations.size > 0 %} on <span class="post-related__entity">{{ page.organizations[0].name }}</span>{% endif %}</h3>
       <div class="post-related__grid">
-        {% for post in related limit: 3 %}
-        {% include post-card.html %}
+        {% for post in _related_posts limit: 3 %}
+          {% include post-card.html %}
         {% endfor %}
       </div>
     </div>
-    {% endif %}
     {% endif %}
 
     <nav class="post-nav">
