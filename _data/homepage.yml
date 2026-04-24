@@ -22,48 +22,46 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: Emerging PhaaS platforms like VENOM are targeting high-value Microsoft credentials, demanding advanced detection.
-    detail: The VENOM platform signifies a concerning trend in sophisticated phishing operations, specifically targeting C-suite Microsoft logins. This evolution requires organizations to enhance their email security and user training to recognize highly targeted spear-phishing attempts. Prioritize multi-factor authentication and implement advanced threat detection solutions.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
-    link_label: Phishing Awareness & Protection
+  - title: AI Guardrails Vulnerable to Prompt Injection
+    text: Sophisticated prompt injection attacks are bypassing AI system defenses.
+    detail: Researchers have successfully demonstrated prompt injection attacks against AI guardrails, including those in Apple's new 'Apple Intelligence' system. This highlights a critical vulnerability in AI security, enabling malicious actors to circumvent intended safety mechanisms and potentially manipulate AI outputs. Cybersecurity professionals should prioritize understanding and mitigating prompt injection risks in AI deployments.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: LLM Top 10 Risks
+    badge: signal
+    tags:
+      - threat-intel
+      - ai-security
+      - vulnerability
+  - title: Zero-Day Exploits Target Widely Used Software
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows continues.
+    detail: Recent intelligence indicates active exploitation of zero-day vulnerabilities in critical software like Adobe Reader and Windows. This trend underscores the persistent threat posed by unknown flaws and the importance of rapid patching and robust endpoint detection and response (EDR) solutions. Organizations must stay vigilant for vendor advisories and prioritize immediate updates.
+    link: https://www.cisa.gov/news-events/advisories/known-exploited-vulnerabilities-catalog
+    link_label: CISA KEV Catalog
+    badge: signal
+    tags:
+      - threat-intel
+      - vulnerability
+      - zero-day
+  - title: Phishing-as-a-Service Platforms Escalate Targeted Attacks
+    text: New PhaaS platforms like VENOM are specifically targeting C-suite credentials.
+    detail: The emergence of sophisticated Phishing-as-a-Service (PhaaS) platforms, such as VENOM, indicates a growing trend of highly targeted campaigns aimed at acquiring high-value credentials, including those of C-suite executives. This necessitates enhanced user awareness training, advanced email filtering, and multi-factor authentication (MFA) to protect against credential harvesting.
+    link: https://www.owasp.org/www-community/attacks/Phishing
+    link_label: OWASP Phishing
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - microsoft
-  - title: Zero-Day Exploits Target Widely Used Software
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows underscores urgent patching needs.
-    detail: The active exploitation of zero-day flaws in widely adopted software like Adobe Reader and Windows highlights the persistent threat of unknown vulnerabilities. Organizations must prioritize rapid patching and vulnerability management, focusing on timely application of vendor security updates to mitigate risks from disclosed but unpatched flaws.
-    link: https://www.cisa.gov/news-events/advisories/aa23-285a
-    link_label: Known Exploited Vulnerabilities Catalog
+      - credential-theft
+  - title: Supply Chain Attacks Exploit Software Update Mechanisms
+    text: Compromised updates for popular plugins are distributing malware and backdoors.
+    detail: Supply chain attacks are increasingly leveraging compromised software update mechanisms, as seen with Smart Slider 3 Pro for WordPress and Joomla. Attackers inject backdoors through seemingly legitimate updates, posing a significant risk to end-users. Organizations should implement strict vetting of software sources and monitor for unexpected changes in application behavior.
+    link: https://owasp.org/www-project-top-10-2021/I01_2021-Broken_Access_Control
+    link_label: OWASP Top 10
     badge: signal
     tags:
       - threat-intel
-      - vulnerability
-      - patch-management
-  - title: IoT and SDKs Present New Attack Surfaces
-    text: Malware like Masjesu targets IoT devices, while Android SDK flaws expose millions of financial apps.
-    detail: The increasing sophistication of botnets targeting IoT devices, such as Masjesu, and critical vulnerabilities in common Android SDKs present significant new attack vectors. Developers and security teams must conduct thorough code reviews and implement robust security testing for both IoT deployments and mobile applications to protect sensitive data.
-    link: https://owasp.org/www-project-mobile-security-testing-guide/
-    link_label: Mobile Security Testing Guide
-    badge: signal
-    tags:
-      - threat-intel
+      - supply-chain
       - malware
-      - iot
-      - android
-      - vulnerability
-  - title: APT Groups Evolve Tactics, Target Critical Infrastructure
-    text: Nation-state actors like Fancy Bear and Iranian-backed groups continue to target industrial devices globally.
-    detail: Advanced Persistent Groups (APTs), including Fancy Bear and Iranian state-sponsored actors, are increasingly targeting critical infrastructure and industrial control systems. Organizations in these sectors must implement strong network segmentation, anomaly detection, and robust access controls to defend against these sophisticated, persistent threats.
-    link: https://www.mitre.org/capabilities/cybersecurity/overview/threat-actor-attribution
-    link_label: Threat Actor Attribution
-    badge: signal
-    tags:
-      - threat-intel
-      - apt
-      - industrial-control-systems
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
