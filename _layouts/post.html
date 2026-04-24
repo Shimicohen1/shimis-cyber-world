@@ -409,6 +409,69 @@ layout: default
     </div>
     {% endif %}
 
+    {% comment %}══════════════════════════════════════════════════════════════
+       Related Posts — auto from shared organizations OR shared tags.
+       Boosts internal linking density (SEO) + reader engagement.
+       Strictly hidden if no real matches found.
+       ══════════════════════════════════════════════════════════════ {% endcomment %}
+    {% assign _rel = "" | split: "" %}
+    {% assign _rel_seen = "" %}
+    {% comment %}1) match by primary organization name first (highest signal){% endcomment %}
+    {% if page.organizations and page.organizations.size > 0 %}
+      {% assign _rel_org = page.organizations[0].name | downcase %}
+      {% for p in site.posts %}
+        {% if p.url == page.url %}{% continue %}{% endif %}
+        {% if p.hidden == true %}{% continue %}{% endif %}
+        {% if p.organizations and p.organizations.size > 0 %}
+          {% for o in p.organizations %}
+            {% assign _on = o.name | downcase %}
+            {% if _on == _rel_org and _rel_seen contains p.url == false %}
+              {% assign _rel = _rel | push: p %}
+              {% assign _rel_seen = _rel_seen | append: p.url | append: "|" %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if _rel.size >= 4 %}{% break %}{% endif %}
+      {% endfor %}
+    {% endif %}
+    {% comment %}2) fill remainder by shared tags (limit to 4 total){% endcomment %}
+    {% if _rel.size < 4 and page.tags and page.tags.size > 0 %}
+      {% for p in site.posts %}
+        {% if _rel.size >= 4 %}{% break %}{% endif %}
+        {% if p.url == page.url %}{% continue %}{% endif %}
+        {% if p.hidden == true %}{% continue %}{% endif %}
+        {% if _rel_seen contains p.url %}{% continue %}{% endif %}
+        {% assign _shared = 0 %}
+        {% for t in p.tags %}
+          {% if page.tags contains t %}{% assign _shared = _shared | plus: 1 %}{% endif %}
+        {% endfor %}
+        {% if _shared >= 2 %}
+          {% assign _rel = _rel | push: p %}
+          {% assign _rel_seen = _rel_seen | append: p.url | append: "|" %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% if _rel.size > 0 %}
+    <aside class="post-related" aria-label="Related posts">
+      <div class="post-related__header">
+        <h2>Related coverage{% if page.organizations and page.organizations.size > 0 %} on <span class="post-related__entity">{{ page.organizations[0].name }}</span>{% endif %}</h2>
+      </div>
+      <ul class="post-related__list">
+        {% for r in _rel limit: 4 %}
+        <li class="post-related__item">
+          <a href="{{ r.url | relative_url }}" class="post-related__link">
+            <span class="post-related__title">{{ r.title | escape }}</span>
+            <span class="post-related__meta">
+              {% if r.cvss_severity %}<span class="post-related__sev post-related__sev--{{ r.cvss_severity | downcase }}">{{ r.cvss_severity }}</span>{% endif %}
+              <time datetime="{{ r.date | date_to_xmlschema }}">{{ r.date | date: "%b %-d, %Y" }}</time>
+            </span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </aside>
+    {% endif %}
+
     {% comment %}── Mid-Post AdSense Slot ──{% endcomment %}
     {% include ad-slot.html type="adsense" slot="post-mid" %}
 

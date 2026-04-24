@@ -7,6 +7,10 @@
 - label: Tools
   dropdown: true
   items:
+    - label: Intel Bot
+      url: /bot/
+      desc: Free CVE & breach search on Telegram
+      icon: 🤖
     - label: LockDown
       url: /hardening/
       desc: Hardening checklists
@@ -37,3 +41,4 @@
 # - Vault (/library/)
 # - Community Stage (/community/)
 # - Get Featured (/submit-startup/)
+# - Sponsor SCW (/sponsor/)

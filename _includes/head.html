@@ -34,10 +34,13 @@
 
 {% comment %}── Structured Data for Google ──{% endcomment %}
 {% if page.layout == 'post' %}
+{% comment %}── Use NewsArticle for fresh news/vuln posts (better Google News surfacing); fallback Article for evergreen ──{% endcomment %}
+{% assign _is_news = false %}
+{% if page.section == 'vulnerabilities' or page.event_type == 'vulnerability' or page.event_type == 'data-breach' or page.event_type == 'ransomware' or page.event_type == 'supply-chain' or page.event_type == 'advisory' or page.channel == 'NVD' or page.channel == 'CVE Notify' or page.channel == 'CISA KEV' %}{% assign _is_news = true %}{% endif %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Article",
+  "@type": "{% if _is_news %}NewsArticle{% else %}Article{% endif %}",
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "{{ page.url | absolute_url }}"
@@ -46,9 +49,11 @@
   "description": {{ page.summary | default: page.excerpt | default: site.description | strip_html | strip_newlines | truncatewords: 50 | jsonify | replace: "</", "<\\/" }},
   "datePublished": "{{ page.date | date_to_xmlschema }}",
   "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
+  "isAccessibleForFree": true,
   "image": "{% if page.image %}{% if page.image contains '://' %}{{ page.image }}{% else %}{{ page.image | absolute_url }}{% endif %}{% elsif page.cover_image %}{% if page.cover_image contains '://' %}{{ page.cover_image }}{% else %}{{ page.cover_image | absolute_url }}{% endif %}{% else %}{{ '/assets/img/logos/logo-full.png' | absolute_url }}{% endif %}",
   {% if page.tags %}"keywords": {{ page.tags | jsonify }},
   {% endif %}{% if page.section %}"articleSection": {{ page.section | jsonify }},
+  {% endif %}{% if page.organizations and page.organizations.size > 0 %}"about": [{% for o in page.organizations %}{"@type":"Organization","name":{{ o.name | jsonify }}{% if o.domain and o.domain != "" %},"url":"https://{{ o.domain }}"{% endif %}}{% unless forloop.last %},{% endunless %}{% endfor %}],
   {% endif %}{% if page.content %}"wordCount": {{ page.content | number_of_words }},
   {% endif %}{% if page.lang %}"inLanguage": "{{ page.lang }}",
   {% else %}"inLanguage": "en",

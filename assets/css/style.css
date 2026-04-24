@@ -3427,3 +3427,43 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 [data-theme="light"] .post-bot-actions__btn { border-color: rgba(8,145,178,.2); background: #fff; }
 [data-theme="light"] .post-bot-actions__btn:hover { border-color: rgba(8,145,178,.5); background: rgba(8,145,178,.04); }
 [data-theme="light"] .post-bot-actions__label strong { color: #0891b2; }
+
+/* ── Related Posts (extended for org/tag matches) ── */
+.post-related__header { margin: 0 0 .8rem; }
+.post-related__header h2 { font-size: .95rem; margin: 0; color: var(--white); font-weight: 600; }
+.post-related__entity { color: var(--electric); font-weight: 700; }
+.post-related__list { list-style: none; padding: 0; margin: 0; display: grid; gap: .55rem; }
+.post-related__item { margin: 0; }
+.post-related__link { display: flex; flex-direction: column; gap: .25rem; padding: .7rem .85rem; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--card); text-decoration: none; transition: border-color .15s, transform .15s; }
+.post-related__link:hover { border-color: var(--electric); transform: translateY(-1px); }
+.post-related__title { font-size: .9rem; color: var(--white); line-height: 1.4; font-weight: 500; }
+.post-related__meta { display: flex; gap: .5rem; align-items: center; font-size: .72rem; color: var(--dim); }
+.post-related__sev { font-family: var(--f-mono); font-weight: 700; padding: .1rem .4rem; border-radius: 3px; text-transform: uppercase; letter-spacing: .04em; font-size: .65rem; }
+.post-related__sev--critical { background: rgba(239,68,68,.15); color: var(--red); }
+.post-related__sev--high { background: rgba(249,115,22,.15); color: var(--orange); }
+.post-related__sev--medium { background: rgba(245,158,11,.12); color: var(--amber); }
+.post-related__sev--low { background: rgba(34,197,94,.12); color: var(--green); }
+
+/* ── Per-tool landing page ── */
+.tool-page { max-width: var(--w-content); margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+.breadcrumbs { font-size: .78rem; color: var(--dim); margin-bottom: 1.25rem; }
+.breadcrumbs a { color: var(--gray); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--electric); }
+.breadcrumbs__sep { margin: 0 .35rem; color: var(--border); }
+.tool-page__header { padding: 1.25rem 0 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+.tool-page__category { font-family: var(--f-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--electric); margin-bottom: .5rem; }
+.tool-page__title { font-family: var(--f-display); font-size: 2rem; line-height: 1.1; margin: 0 0 .75rem; color: var(--white); }
+.tool-page__lede { font-size: 1.05rem; color: var(--gray); line-height: 1.55; margin: 0 0 1rem; }
+.tool-page__meta { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+.tool-page__cta { margin-top: .5rem; }
+.tool-page__body { margin-bottom: 2rem; }
+.tool-page__body h2 { font-size: 1.1rem; margin: 1.5rem 0 .6rem; color: var(--white); font-weight: 600; }
+.tool-page__related { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.tool-page__related h3 { font-family: var(--f-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 .8rem; }
+.tool-page__related ul { list-style: none; padding: 0; margin: 0; }
+.tool-page__related li { padding: .35rem 0; font-size: .9rem; }
+.tool-page__related a { color: var(--electric); text-decoration: none; font-weight: 500; }
+.tool-page__related a:hover { text-decoration: underline; }
+.tool-page__related .muted { color: var(--dim); font-size: .82rem; }
+
+.post-cta-row { margin: 1rem 0 0; }

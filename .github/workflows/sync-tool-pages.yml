@@ -1,0 +1,38 @@
+name: Sync Tool Pages
+
+on:
+  push:
+    paths:
+      - "_data/tools.yml"
+      - ".github/scripts/sync-tool-pages.mjs"
+      - ".github/workflows/sync-tool-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install js-yaml
+        run: npm install --no-save js-yaml
+      - name: Sync tool pages
+        run: node .github/scripts/sync-tool-pages.mjs
+      - name: Commit changes
+        run: |
+          git config user.name  "scw-bot"
+          git config user.email "bot@shimiscyberworld.com"
+          if [ -n "$(git status --porcelain _tools/)" ]; then
+            git add _tools/
+            git commit -m "chore(tools): auto-sync per-tool pages from tools.yml"
+            git push
+          else
+            echo "No changes to sync."
+          fi

@@ -10,6 +10,9 @@ permalink: /posts/:title/
 collections:
   pages:
     output: true
+  tools:
+    output: true
+    permalink: /tools/:name/
 
 defaults:
   - scope:
@@ -17,6 +20,11 @@ defaults:
       type: "posts"
     values:
       layout: "post"
+  - scope:
+      path: ""
+      type: "tools"
+    values:
+      layout: "tool"
   - scope:
       path: ""
     values:

@@ -15,11 +15,9 @@ permalink: /tools/
   <h2 class="page-section__title">{{ category.name }}</h2>
   <div class="toolkit__grid">
     {% for tool in category.items %}
-    {% if tool.url %}
-    <a href="{{ tool.url }}" target="_blank" rel="noopener noreferrer" class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %}" data-track="{% if tool.sponsored %}affiliate{% else %}tool{% endif %}">
-    {% else %}
-    <div class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %}">
-    {% endif %}
+    {% assign _slug = tool.title | slugify %}
+    {% assign _internal = "/tools/" | append: _slug | append: "/" %}
+    <a href="{{ _internal | relative_url }}" class="tool-card{% if tool.sponsored %} tool-card--sponsored{% endif %}" data-track="tool-page">
       <div class="tool-card__head">
         <h4>{{ tool.title }}</h4>
         {% if tool.sponsored %}
@@ -44,16 +42,10 @@ permalink: /tools/
         {% for tag in tool.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
       </div>
       {% endif %}
-      {% if tool.url %}
       <div class="tool-card__action">
-        <span class="btn btn--ghost btn--sm">{{ tool.button | default: "Open Tool" }} &rarr;</span>
+        <span class="btn btn--ghost btn--sm">Read more &rarr;</span>
       </div>
-      {% endif %}
-    {% if tool.url %}
     </a>
-    {% else %}
-    </div>
-    {% endif %}
     {% endfor %}
   </div>
 </section>

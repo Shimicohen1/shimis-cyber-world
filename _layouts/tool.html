@@ -1,0 +1,83 @@
+---
+layout: default
+---
+<article class="tool-page">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ '/' | relative_url }}">Home</a>
+    <span class="breadcrumbs__sep">›</span>
+    <a href="{{ '/tools/' | relative_url }}">Toolkit</a>
+    <span class="breadcrumbs__sep">›</span>
+    <span aria-current="page">{{ page.tool_title | default: page.title }}</span>
+  </nav>
+
+  <header class="tool-page__header">
+    <div class="tool-page__category">{{ page.category }}</div>
+    <h1 class="tool-page__title">{{ page.tool_title | default: page.title }}</h1>
+    <p class="tool-page__lede">{{ page.description }}</p>
+    <div class="tool-page__meta">
+      {% if page.status %}<span class="badge badge--signal">{{ page.status }}</span>{% endif %}
+      {% if page.tags %}{% for t in page.tags %}<span class="tag">{{ t }}</span>{% endfor %}{% endif %}
+    </div>
+    {% if page.url_external %}
+    <div class="tool-page__cta">
+      <a href="{{ page.url_external }}" target="_blank" rel="noopener noreferrer" class="btn btn--accent" data-track="{% if page.sponsored %}affiliate{% else %}tool{% endif %}">{{ page.button | default: "Open Tool" }} →</a>
+    </div>
+    {% endif %}
+  </header>
+
+  <section class="tool-page__body prose">
+    <h2>What is {{ page.tool_title | default: page.title }}?</h2>
+    <p>{{ page.description }}</p>
+    {% if page.long_description %}{{ page.long_description | markdownify }}{% endif %}
+
+    <h2>Who is this for?</h2>
+    <p>{{ page.audience | default: "Security professionals, SOC analysts, red teamers, and IT defenders who need a battle-tested tool in this category." }}</p>
+
+    <h2>Why we recommend it</h2>
+    <ul>
+      <li>Curated by Shimi's Cyber World — a working CISO and security community leader.</li>
+      <li>Validated against real-world cybersecurity workflows.</li>
+      <li>Category: <strong>{{ page.category }}</strong>.</li>
+    </ul>
+
+    {% if page.url_external %}
+    <h2>Get {{ page.tool_title | default: page.title }}</h2>
+    <p><a href="{{ page.url_external }}" target="_blank" rel="noopener noreferrer">{{ page.button | default: "Open the official site" }} →</a></p>
+    {% endif %}
+  </section>
+
+  <aside class="tool-page__related">
+    <h3>Other tools in {{ page.category }}</h3>
+    <ul>
+      {% assign _cat_tools = site.tools | where: "category", page.category %}
+      {% for t in _cat_tools limit: 6 %}
+        {% if t.url == page.url %}{% continue %}{% endif %}
+        <li><a href="{{ t.url | relative_url }}">{{ t.tool_title | default: t.title }}</a> — <span class="muted">{{ t.description | truncate: 90 }}</span></li>
+      {% endfor %}
+    </ul>
+    <p><a href="{{ '/tools/' | relative_url }}">← Back to the full Toolkit</a></p>
+  </aside>
+</article>
+
+{% comment %}── SoftwareApplication JSON-LD ──{% endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": {{ page.tool_title | default: page.title | jsonify }},
+  "applicationCategory": "SecurityApplication",
+  "description": {{ page.description | jsonify }},
+  "operatingSystem": "Cross-platform",
+  {% if page.url_external %}"url": {{ page.url_external | jsonify }},{% endif %}
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shimi's Cyber World",
+    "url": "{{ site.url }}"
+  }
+}
+</script>
