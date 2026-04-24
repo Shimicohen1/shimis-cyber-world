@@ -1,0 +1,86 @@
+---
+title: "Tropic Trooper Exploits SumatraPDF and VS Code Tunnels for Espionage"
+date: 2026-04-24 09:29:00 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability, malware, microsoft, tools]
+excerpt: "A sophisticated campaign by the threat group Tropic Trooper is targeting Chinese-speaking individuals. The attackers are leveraging a trojanized version of the SumatraPDF reader to"
+summary: "A sophisticated campaign by the threat group Tropic Trooper is targeting Chinese-speaking individuals. The attackers are leveraging a trojanized version of the SumatraPDF reader to deploy the AdaptixC2 post-exploitation agent. This allows them to gain a foothold and further abuse Microsoft Visual St"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 70
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-001.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-001.png"
+source_url: "https://thehackernews.com/2026/04/tropic-trooper-uses-trojanized.html"
+tlp: "TLP:CLEAR"
+event_type: "espionage"
+organizations:
+  - name: "Microsoft"
+    domain: "microsoft.com"
+    role: "vendor"
+  - name: "Zscaler"
+    domain: "zscaler.com"
+    role: "vendor"
+threat_actors:
+  - "Tropic Trooper"
+  - "APT23"
+countries: [CN]
+malware_families:
+  - "AdaptixC2"
+  - "Cobalt Strike"
+iocs:
+  - id: "Tropic-Trooper-2026-04"
+    type: "Trojan"
+    indicator: "Trojanized SumatraPDF reader"
+  - id: "Tropic-Trooper-2026-04"
+    type: "Malware Deployment"
+    indicator: "AdaptixC2 Beacon post-exploitation agent"
+  - id: "Tropic-Trooper-2026-04"
+    type: "Remote Access"
+    indicator: "Abuse of Microsoft Visual Studio Code (VS Code) tunnels"
+  - id: "Tropic-Trooper-2026-04"
+    type: "Threat Actor"
+    indicator: "Tropic Trooper (aka Earth Tiger, KeyBoy, or Pirate Panda)"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1071.001"
+    name: "Web Protocols"
+    tactic: "Command and Control"
+    url: "https://attack.mitre.org/techniques/T1071/001/"
+  - id: "T1547.001"
+    name: "Registry Run Keys / Startup Folder"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1547/001/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Tropic Trooper SumatraPDF Execution with Suspicious Child Process"
+  preview_level: "critical"
+  preview_technique: "T1204.002"
+  preview_tactic: "Execution"
+  preview_yaml_b64: "dGl0bGU6IFRyb3BpYyBUcm9vcGVyIFN1bWF0cmFQREYgRXhlY3V0aW9uIHdpdGggU3VzcGljaW91cyBDaGlsZCBQcm9jZXNzCmlkOiBzY3ctMjAyNi0wNC0yNC1haS0xCnN0YXR1czogZXhwZXJpbWVudGFsCmxldmVsOiBjcml0aWNhbApkZXNjcmlwdGlvbjogfAogIERldGVjdHMgdGhlIGV4ZWN1dGlvbiBvZiBTdW1hdHJhUERGLmV4ZSB3aGljaCB0aGVuIHNwYXducyBhIHN1c3BpY2lvdXMgY2hpbGQgcHJvY2VzcyByZWxhdGVkIHRvIFZTIENvZGUgdHVubmVscy4gVGhpcyBzcGVjaWZpYyBiZWhhdmlvciBpcyBpbmRpY2F0aXZlIG9mIHRoZSBUcm9waWMgVHJvb3BlciBjYW1wYWlnbiB1c2luZyBhIHRyb2phbml6ZWQgU3VtYXRyYVBERiB0byBkZXBsb3kgdGhlIEFkYXB0aXhDMiBhZ2VudCBhbmQgbGV2ZXJhZ2UgVlMgQ29kZSB0dW5uZWxzIGZvciBDMiBjb21tdW5pY2F0aW9uLgphdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKQpkYXRlOiAyMDI2LTA0LTI0CnJlZmVyZW5jZXM6CiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA0LTI0LXRyb3BpYy10cm9vcGVyLXVzZXMtdHJvamFuaXplZC1zdW1hdHJhcGRmLWFuZC1naXRodWItdG8tZGVwbC14ZnQ4Ygp0YWdzOgogIC0gYXR0YWNrLmV4ZWN1dGlvbgogIC0gYXR0YWNrLnQxMjA0LjAwMgpsb2dzb3VyY2U6CiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvbgpkZXRlY3Rpb246CiAgc2VsZWN0aW9uOgogICAgICBJbWFnZXxlbmRzd2l0aDoKICAgICAgICAgIC0gJ1N1bWF0cmFQREYuZXhlJwogICAgICBQYXJlbnRJbWFnZXxlbmRzd2l0aDoKICAgICAgICAgIC0gJ2V4cGxvcmVyLmV4ZScKICBzZWxlY3Rpb25fY2hpbGQ6CiAgICAgIEltYWdlfHN0YXJ0c3dpdGg6CiAgICAgICAgICAtICdDOlxQcm9ncmFtIEZpbGVzXE1pY3Jvc29mdCBWUyBDb2RlXCcKICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6CiAgICAgICAgICAtICdjb2RlLXR1bm5lbCcKICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb24gQU5EIHNlbGVjdGlvbl9jaGlsZApmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJUcm9waWMgVHJvb3BlciBTdW1hdHJhUERGIEV4ZWN1dGlvbiB3aXRoIFN1c3BpY2lvdXMgQ2hpbGQgUHJvY2VzcyIsImxldmVsIjoiY3JpdGljYWwiLCJ0ZWNobmlxdWUiOiJUMTIwNC4wMDIiLCJ0YWN0aWMiOiJFeGVjdXRpb24iLCJ0aWVyIjoiZnJlZSIsInlhbWwiOiJ0aXRsZTogVHJvcGljIFRyb29wZXIgU3VtYXRyYVBERiBFeGVjdXRpb24gd2l0aCBTdXNwaWNpb3VzIENoaWxkIFByb2Nlc3NcbmlkOiBzY3ctMjAyNi0wNC0yNC1haS0xXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGNyaXRpY2FsXG5kZXNjcmlwdGlvbjogfFxuICBEZXRlY3RzIHRoZSBleGVjdXRpb24gb2YgU3VtYXRyYVBERi5leGUgd2hpY2ggdGhlbiBzcGF3bnMgYSBzdXNwaWNpb3VzIGNoaWxkIHByb2Nlc3MgcmVsYXRlZCB0byBWUyBDb2RlIHR1bm5lbHMuIFRoaXMgc3BlY2lmaWMgYmVoYXZpb3IgaXMgaW5kaWNhdGl2ZSBvZiB0aGUgVHJvcGljIFRyb29wZXIgY2FtcGFpZ24gdXNpbmcgYSB0cm9qYW5pemVkIFN1bWF0cmFQREYgdG8gZGVwbG95IHRoZSBBZGFwdGl4QzIgYWdlbnQgYW5kIGxldmVyYWdlIFZTIENvZGUgdHVubmVscyBmb3IgQzIgY29tbXVuaWNhdGlvbi5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA0LTI0XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjQtdHJvcGljLXRyb29wZXItdXNlcy10cm9qYW5pemVkLXN1bWF0cmFwZGYtYW5kLWdpdGh1Yi10by1kZXBsLXhmdDhiXG50YWdzOlxuICAtIGF0dGFjay5leGVjdXRpb25cbiAgLSBhdHRhY2sudDEyMDQuMDAyXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb25cbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgSW1hZ2V8ZW5kc3dpdGg6XG4gICAgICAgICAgLSAnU3VtYXRyYVBERi5leGUnXG4gICAgICBQYXJlbnRJbWFnZXxlbmRzd2l0aDpcbiAgICAgICAgICAtICdleHBsb3Jlci5leGUnXG4gIHNlbGVjdGlvbl9jaGlsZDpcbiAgICAgIEltYWdlfHN0YXJ0c3dpdGg6XG4gICAgICAgICAgLSAnQzpcXFByb2dyYW0gRmlsZXNcXE1pY3Jvc29mdCBWUyBDb2RlXFwnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICdjb2RlLXR1bm5lbCdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uIEFORCBzZWxlY3Rpb25fY2hpbGRcbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiVHJvcGljIFRyb29wZXIgVlMgQ29kZSBUdW5uZWxpbmcgZm9yIEMyIiwibGV2ZWwiOiJoaWdoIiwidGVjaG5pcXVlIjoiVDEwOTUiLCJ0YWN0aWMiOiJDb21tYW5kIGFuZCBDb250cm9sIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IFRyb3BpYyBUcm9vcGVyIFZTIENvZGUgVHVubmVsaW5nIGZvciBDMlxuaWQ6IHNjdy0yMDI2LTA0LTI0LWFpLTJcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgTW9uaXRvcnMgZm9yIHRoZSBleGVjdXRpb24gb2YgVlMgQ29kZSdzICdjb2RlLXR1bm5lbCcgY29tbWFuZCwgd2hpY2ggaXMgYmVpbmcgYWJ1c2VkIGJ5IFRyb3BpYyBUcm9vcGVyIGFzIGEgQzIgY2hhbm5lbC4gVGhpcyBydWxlIHNwZWNpZmljYWxseSB0YXJnZXRzIHRoZSB1c2Ugb2YgdGhpcyBsZWdpdGltYXRlIGZlYXR1cmUgZm9yIG1hbGljaW91cyBwdXJwb3Nlcy5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA0LTI0XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjQtdHJvcGljLXRyb29wZXItdXNlcy10cm9qYW5pemVkLXN1bWF0cmFwZGYtYW5kLWdpdGh1Yi10by1kZXBsLXhmdDhiXG50YWdzOlxuICAtIGF0dGFjay5jb21tYW5kX2FuZF9jb250cm9sXG4gIC0gYXR0YWNrLnQxMDk1XG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb25cbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgSW1hZ2V8c3RhcnRzd2l0aDpcbiAgICAgICAgICAtICdDOlxcUHJvZ3JhbSBGaWxlc1xcTWljcm9zb2Z0IFZTIENvZGVcXCdcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2NvZGUtdHVubmVsJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiVHJvcGljIFRyb29wZXIgQWRhcHRpeEMyIEFnZW50IEV4ZWN1dGlvbiIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMDU5LjAwMyIsInRhY3RpYyI6IkV4ZWN1dGlvbiIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBUcm9waWMgVHJvb3BlciBBZGFwdGl4QzIgQWdlbnQgRXhlY3V0aW9uXG5pZDogc2N3LTIwMjYtMDQtMjQtYWktM1xuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBoaWdoXG5kZXNjcmlwdGlvbjogfFxuICBEZXRlY3RzIHRoZSBleGVjdXRpb24gb2YgYSBwcm9jZXNzIG5hbWVkICdBZGFwdGl4QzInLCB3aGljaCBpcyB0aGUgcG9zdC1leHBsb2l0YXRpb24gYWdlbnQgZGVwbG95ZWQgYnkgVHJvcGljIFRyb29wZXIgdmlhIHRoZSB0cm9qYW5pemVkIFN1bWF0cmFQREYuIFRoaXMgcnVsZSBhaW1zIHRvIGlkZW50aWZ5IHRoZSBwcmVzZW5jZSBvZiB0aGUgY29yZSBtYWx3YXJlIGNvbXBvbmVudC5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA0LTI0XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjQtdHJvcGljLXRyb29wZXItdXNlcy10cm9qYW5pemVkLXN1bWF0cmFwZGYtYW5kLWdpdGh1Yi10by1kZXBsLXhmdDhiXG50YWdzOlxuICAtIGF0dGFjay5leGVjdXRpb25cbiAgLSBhdHRhY2sudDEwNTkuMDAzXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb25cbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgSW1hZ2V8Y29udGFpbnM6XG4gICAgICAgICAgLSAnQWRhcHRpeEMyJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifV0="
+why_it_matters:
+  - "If your organization utilizes SumatraPDF reader or Microsoft VS Code with remote tunneling enabled, you need to take immediate action. Audit your systems for any unauthorized instances or suspicious activity related to these applications. Ensure SumatraPDF is updated from official sources only and consider disabling or strictly monitoring VS Code remote tunnels if not essential for your development workflow. Assume any system with these components could be a potential entry point for Tropic Trooper."
+bot_cta_title: "Tropic Trooper campaign targeting Chinese speakers"
+bot_cta_description: "Use /actor Tropic Trooper to see related threats."
+---
+
+A sophisticated campaign by the threat group Tropic Trooper is targeting Chinese-speaking individuals. The attackers are leveraging a trojanized version of the SumatraPDF reader to deploy the AdaptixC2 post-exploitation agent. This allows them to gain a foothold and further abuse Microsoft Visual Studio Code (VS Code) tunnels for persistent remote access, as detailed by Zscaler ThreatLabz.
+
+The exploit chain demonstrates a clear focus on covert operations. By compromising a legitimate, widely used PDF reader, Tropic Trooper aims to bypass initial detection. The subsequent use of VS Code's remote development features as a C2 channel is a novel approach, blending legitimate developer tools with malicious intent to maintain command and control with reduced suspicion.
