@@ -1,5 +1,5 @@
 {
-  "tipNumber": 8,
+  "tipNumber": 9,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -8,7 +8,8 @@
     "aws-001",
     "az-001",
     "lin-002",
-    "win-002"
+    "win-002",
+    "aws-002"
   ],
   "round": 1,
   "history": [
@@ -90,6 +91,16 @@
       "linkedInId": "urn:li:share:7453004890311651329",
       "telegramMsgId": 772,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-002/"
+    },
+    {
+      "tipNumber": 9,
+      "id": "aws-002",
+      "platform": "aws",
+      "title": "Eliminate root access keys",
+      "date": "2026-04-24T09:08:30.479Z",
+      "linkedInId": "urn:li:share:7453369264461213696",
+      "telegramMsgId": 821,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-002/"
     }
   ]
 }
