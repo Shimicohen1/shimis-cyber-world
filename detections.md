@@ -2,7 +2,7 @@
 layout: page
 title: "Detection Vault — Free Sigma Rules & SIEM Detections for SOC Teams"
 permalink: /detections/
-description: "Free Sigma detection rules library for SOC analysts and threat hunters. 1,200+ production-ready rules covering CVEs, MITRE ATT&CK techniques and active threats. Splunk SPL, Sentinel KQL, Elastic, QRadar and Wazuh exports via the SCW Intel Bot."
+description: "Free Sigma detection rules library for SOC analysts and threat hunters. Hundreds of production-ready rules covering CVEs, MITRE ATT&CK techniques and active threats. Splunk SPL, Sentinel KQL, Elastic, QRadar and Wazuh exports via the SCW Intel Bot."
 ---
 
 {% comment %}── Compute breach intel rule count (deduplicated, INCD immediate + others 14-day aged) ──{% endcomment %}
@@ -404,7 +404,7 @@ description: "Free Sigma detection rules library for SOC analysts and threat hun
   "@type": "CollectionPage",
   "name": "SCW Detection Vault",
   "headline": "Free Sigma Detection Rules for SOC Teams",
-  "description": "Free Sigma detection rules library for SOC analysts and threat hunters. 1,200+ production-ready rules covering CVEs, MITRE ATT&CK techniques and active threats.",
+  "description": "Free Sigma detection rules library for SOC analysts and threat hunters. {{ total_rules }} production-ready rules covering CVEs, MITRE ATT&CK techniques and active threats.",
   "url": "{{ site.url }}/detections/",
   "isAccessibleForFree": true,
   "keywords": "sigma rules, sigma detection, siem rules, soc detection, threat hunting, mitre att&ck, kql rules, splunk detection",
