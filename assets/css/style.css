@@ -1893,6 +1893,9 @@ a.tool-card { text-decoration: none; color: inherit; display: block; }
 .sigma-yaml-toggle summary { font-size: .78rem; color: rgba(0,200,130,.7); cursor: pointer; padding: .3rem 0; }
 .sigma-yaml-toggle summary:hover { color: rgba(0,220,140,.9); }
 .sigma-yaml { background: rgba(0,0,0,.3); border: 1px solid rgba(0,200,130,.15); border-radius: 4px; padding: .75rem; font-family: var(--f-mono); font-size: .72rem; line-height: 1.6; color: rgba(255,255,255,.85); overflow-x: auto; white-space: pre; margin: .5rem 0 0; }
+.post-sigma-rules__attribution { font-size: .68rem; color: rgba(255,255,255,.4); margin: .4rem 0 0; line-height: 1.4; }
+.post-sigma-rules__attribution a { color: rgba(0,200,130,.7); text-decoration: none; }
+.post-sigma-rules__attribution a:hover { text-decoration: underline; }
 .post-sigma-rules__cta { margin-top: .75rem; padding: .75rem 1rem; background: rgba(0,200,130,.06); border-radius: 6px; text-align: center; }
 .post-sigma-rules__cta p { font-size: .82rem; color: rgba(255,255,255,.7); margin: 0 0 .6rem; }
 .post-sigma-rules__cta .btn--accent { background: rgba(0,200,130,.15); border: 1px solid rgba(0,200,130,.35); color: rgba(0,220,140,.95); font-weight: 600; padding: .45rem 1.2rem; border-radius: 6px; text-decoration: none; display: inline-block; transition: all .15s; }

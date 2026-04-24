@@ -232,11 +232,17 @@ layout: default
           <span class="sigma-tactic">{{ page.sigma_rules.preview_tactic }}</span>
         </div>
         <h3>{{ page.sigma_rules.preview_title }}</h3>
-        {% if page.sigma_rules.preview_yaml_b64 %}
+        {% if page.sigma_rules.preview_yaml or page.sigma_rules.preview_yaml_b64 %}
+        <!-- Source: shimiscyberworld.com{{ page.url }} — © Shimi's Cyber World. Sigma rule is open standard (MIT). Reuse requires attribution per /terms/. -->
         <div class="post-sigma-rules__code">
           <span class="post-sigma-rules__code-label">Sigma YAML — free preview</span>
           <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
+          {% if page.sigma_rules.preview_yaml %}
+          <pre><code class="language-yaml sigma-yaml">{{ page.sigma_rules.preview_yaml | escape }}</code></pre>
+          {% else %}
           <pre><code class="sigma-yaml-decoded" data-b64="{{ page.sigma_rules.preview_yaml_b64 }}"></code></pre>
+          {% endif %}
+          <p class="post-sigma-rules__attribution">Source: <a href="{{ page.url | absolute_url }}">Shimi's Cyber World</a> · <a rel="license" href="/terms/">License &amp; reuse</a></p>
         </div>
         {% endif %}
         {% if _has_full_rules %}
@@ -265,11 +271,17 @@ layout: default
           <span class="sigma-tactic">{{ page.sigma_rules.preview_tactic }}</span>
         </div>
         <h3>{{ page.sigma_rules.preview_title }}</h3>
-        {% if page.sigma_rules.preview_yaml_b64 %}
+        {% if page.sigma_rules.preview_yaml or page.sigma_rules.preview_yaml_b64 %}
+        <!-- Source: shimiscyberworld.com{{ page.url }} — © Shimi's Cyber World. Sigma rule is open standard (MIT). Reuse requires attribution per /terms/. -->
         <div class="post-sigma-rules__code">
           <span class="post-sigma-rules__code-label">Sigma YAML — free preview</span>
           <button class="dl-copy-btn" title="Copy to clipboard"><span class="scw-icon" data-icon="clipboard"></span></button>
+          {% if page.sigma_rules.preview_yaml %}
+          <pre><code class="language-yaml sigma-yaml">{{ page.sigma_rules.preview_yaml | escape }}</code></pre>
+          {% else %}
           <pre><code class="sigma-yaml-decoded" data-b64="{{ page.sigma_rules.preview_yaml_b64 }}"></code></pre>
+          {% endif %}
+          <p class="post-sigma-rules__attribution">Source: <a href="{{ page.url | absolute_url }}">Shimi's Cyber World</a> · <a rel="license" href="/terms/">License &amp; reuse</a></p>
         </div>
         {% endif %}
         {% if _has_full_rules %}
