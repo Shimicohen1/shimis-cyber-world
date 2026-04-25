@@ -1,5 +1,5 @@
 {
-  "tipNumber": 9,
+  "tipNumber": 10,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -9,7 +9,8 @@
     "az-001",
     "lin-002",
     "win-002",
-    "aws-002"
+    "aws-002",
+    "az-002"
   ],
   "round": 1,
   "history": [
@@ -101,6 +102,16 @@
       "linkedInId": "urn:li:share:7453369264461213696",
       "telegramMsgId": 821,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-002/"
+    },
+    {
+      "tipNumber": 10,
+      "id": "az-002",
+      "platform": "azure",
+      "title": "Disable legacy authentication protocols",
+      "date": "2026-04-25T08:15:21.289Z",
+      "linkedInId": "urn:li:share:7453718275881943040",
+      "telegramMsgId": 850,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-002/"
     }
   ]
 }
