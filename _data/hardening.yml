@@ -20532,7 +20532,6 @@ items:
         output: "Repo file modified (user=%user.name proc=%proc.cmdline file=%fd.name)"
         priority: WARNING
 
-```yaml
 - id: aws-052
   platform: aws
   category: network

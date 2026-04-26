@@ -1564,7 +1564,6 @@ playbooks:
   # ══════════════════════════════════════════════════════════
   # AUTO-GENERATED — OT/ICS CYBER INCIDENT RESPONSE
   # ══════════════════════════════════════════════════════════
-```yaml
   - name: "OT/ICS Cyber Incident Response"
     description: "This playbook outlines the comprehensive steps and procedures for responding to a cyber incident affecting Operational Technology (OT) and Industrial Control Systems (ICS) environments. It prioritizes safety, operational continuity, and data integrity, recognizing the unique challenges and critical nature of these systems. This playbook is designed for incidents ranging from unauthorized access and data exfiltration to malware infection (e.g., ransomware) and direct process manipulation or disruption."
     category: "Operational Technology"

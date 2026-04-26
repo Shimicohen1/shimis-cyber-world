@@ -2192,7 +2192,7 @@ rules:
     tags: [file-deletion, destruction, ransomware]
     notes: "CRITICAL — mass deletion of business files requires immediate response. Check for ransomware indicators."
 
-- name: "LSASS Process Memory Dump Attempt"
+  - name: "LSASS Process Memory Dump Attempt"
     description: "Detects attempts to dump the memory of the Local Security Authority Subsystem Service (LSASS) process, which stores sensitive credentials. Attackers often do this to steal hashes or plaintext passwords for lateral movement."
     category: "Credential Access"
     platform: "Splunk SPL"
