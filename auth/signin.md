@@ -2,7 +2,11 @@
 layout: page
 title: SCW Elite
 permalink: /auth/signin/
+sitemap: false
+noindex: true
 ---
+
+<meta name="robots" content="noindex, nofollow">
 
 <div class="auth-page" style="text-align:center; padding: 3rem 0;">
   <h2>This page has moved</h2>
