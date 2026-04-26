@@ -66,6 +66,6 @@ description: "Reach an engaged audience of cybersecurity professionals — CISOs
 <section class="page-section reveal" style="text-align:center;">
   <h2 class="page-section__title">Get in touch</h2>
   <p>Send a brief intro about your product and target audience to:</p>
-  <p><a href="mailto:hello@shimiscyberworld.com?subject=Sponsorship%20Inquiry%20-%20%5BCompany%5D" class="btn btn--accent btn--lg">hello@shimiscyberworld.com</a></p>
+  <p><a href="mailto:admin@shimiscyberworld.com?subject=Sponsorship%20Inquiry%20-%20%5BCompany%5D" class="btn btn--accent btn--lg">admin@shimiscyberworld.com</a></p>
   <p class="muted" style="font-size:.85rem;margin-top:.75rem;">We typically respond within 3 business days. For media kit + verified analytics, mention "media kit" in your subject line.</p>
 </section>

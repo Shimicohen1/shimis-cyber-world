@@ -22,11 +22,11 @@ description: "Free Telegram bot for security teams: search CVEs, check vendor ex
     <li><strong>/watch &lt;domain&gt;</strong> — Free watchlist slot — get notified instantly when a vendor is breached.</li>
     <li><strong>/actor &lt;APT name&gt;</strong> — Pull the latest activity for known threat actors (LockBit, Scattered Spider, APT28…).</li>
     <li><strong>/brief</strong> — Daily security brief with curated CVEs and incidents.</li>
-    <li><strong>Premium SIEM packs</strong> — Convert detection rules to Splunk SPL, Sentinel KQL, Elastic, QRadar, and Wazuh formats.</li>
+    <li><strong>SIEM rule conversion</strong> — Convert detection rules to Splunk SPL, Sentinel KQL, Elastic, QRadar, and Wazuh formats.</li>
   </ul>
 
   <h2>Who is it for?</h2>
-  <p>Built for SOC analysts, threat hunters, blue teamers, CISOs, and security engineers who need fast, accurate intel without leaving Telegram. Free for individual use; premium SIEM exports use Telegram Stars.</p>
+  <p>Built for SOC analysts, threat hunters, blue teamers, CISOs, and security engineers who need fast, accurate intel without leaving Telegram.</p>
 
   <h2>Why Telegram?</h2>
   <p>Most security pros already live there. No new app, no signup, no cookies. Open the chat — get answers in seconds.</p>
@@ -39,7 +39,7 @@ description: "Free Telegram bot for security teams: search CVEs, check vendor ex
   <h2 class="page-section__title">Frequently Asked Questions</h2>
   <div class="prose">
     <h3>Is the bot free?</h3>
-    <p>Yes. Search, watchlists, threat actor lookups, organization enrichment, and Sigma detection rules are 100% free. Premium SIEM format conversions (Splunk, Sentinel, Elastic, QRadar, Wazuh) cost a small amount of Telegram Stars per pack.</p>
+    <p>Yes. Search, watchlists, threat actor lookups, organization enrichment, and Sigma detection rules are free. Open the bot in Telegram to see the full list of available commands.</p>
 
     <h3>Do I need a Telegram account?</h3>
     <p>Yes — Telegram is free on iOS, Android, web, and desktop. Once installed, click <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">this link</a> to open the bot.</p>
@@ -51,10 +51,10 @@ description: "Free Telegram bot for security teams: search CVEs, check vendor ex
     <p>No. SCW is independent. We support Splunk, Microsoft Sentinel, Elastic, IBM QRadar, and Wazuh equally.</p>
 
     <h3>Can my company use it?</h3>
-    <p>Yes — individual use is free. For team deployments, monitoring multiple organizations, or licensed integrations, contact us at <a href="mailto:hello@shimiscyberworld.com">hello@shimiscyberworld.com</a>.</p>
+    <p>Yes — individual use is free. For team deployments or monitoring multiple organizations, contact us at <a href="mailto:admin@shimiscyberworld.com">admin@shimiscyberworld.com</a>.</p>
 
     <h3>Where can I report a bug or request a feature?</h3>
-    <p>Reply directly inside the bot or email <a href="mailto:hello@shimiscyberworld.com">hello@shimiscyberworld.com</a>.</p>
+    <p>Reply directly inside the bot or email <a href="mailto:admin@shimiscyberworld.com">admin@shimiscyberworld.com</a>.</p>
   </div>
 </section>
 
@@ -94,7 +94,7 @@ description: "Free Telegram bot for security teams: search CVEs, check vendor ex
     {
       "@type": "Question",
       "name": "Is the SCW Intel Bot free?",
-      "acceptedAnswer": {"@type": "Answer", "text": "Yes. Search, watchlists, threat actor lookups, organization enrichment, and Sigma detection rules are 100% free. Premium SIEM format conversions cost a small amount of Telegram Stars per pack."}
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes. Search, watchlists, threat actor lookups, organization enrichment, and Sigma detection rules are free. Open the bot in Telegram to see all available commands."}
     },
     {
       "@type": "Question",
@@ -114,7 +114,7 @@ description: "Free Telegram bot for security teams: search CVEs, check vendor ex
     {
       "@type": "Question",
       "name": "Can my company use the SCW Intel Bot?",
-      "acceptedAnswer": {"@type": "Answer", "text": "Yes — individual use is free. For team deployments or licensed integrations, contact hello@shimiscyberworld.com."}
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — individual use is free. For team deployments or monitoring multiple organizations, contact admin@shimiscyberworld.com."}
     }
   ]
 }

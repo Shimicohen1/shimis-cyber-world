@@ -129,7 +129,7 @@ description: "Free cybersecurity hardening tool from a working CISO. Daily, vend
 <section class="cs-intro reveal" style="margin-top:2.5rem;">
   <h2>Frequently Asked Questions</h2>
   <details><summary><strong>Is Lockdown Lab really free?</strong></summary>
-  <p>Yes. Every hardening tip is free to read on this site, on Telegram and on LinkedIn. No email gate, no paywall. Sigma rules and the SCW Intel Bot's free tier are also free; only the SIEM-export Elite tier is paid (Telegram Stars).</p></details>
+  <p>Yes. Every hardening tip is free to read on this site, on Telegram and on LinkedIn. No email gate, no paywall.</p></details>
 
   <details><summary><strong>How often is it updated?</strong></summary>
   <p>New hardening tips are published on a daily cadence across cloud (Azure, AWS, GCP), identity (Microsoft Entra, Okta), endpoint (Windows, macOS, Linux), network and emerging AI security stacks. Subscribe on Telegram or LinkedIn for instant delivery.</p></details>

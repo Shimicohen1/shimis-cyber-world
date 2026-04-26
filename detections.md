@@ -386,13 +386,13 @@ description: "Free Sigma detection rules library for SOC analysts and threat hun
   <p>Sigma is a generic, vendor-neutral signature format for SIEM systems — the YAML equivalent of Snort/YARA for log-based detections. Write a detection once in Sigma, then convert to your platform (Splunk SPL, Sentinel KQL, Elastic, QRadar AQL, Wazuh). Every rule in the SCW Detection Vault ships in Sigma format for free.</p></details>
 
   <details><summary><strong>Are these detection rules really free?</strong></summary>
-  <p>Yes. All Sigma rules in the Detection Vault are free to copy, paste and use — commercial or non-commercial. SIEM-native exports (Splunk SPL, Sentinel KQL, Elastic ES|QL, QRadar AQL, Wazuh) are gated behind the SCW Intel Bot's Elite tier (75 Telegram Stars/month) only because converting and validating across five SIEM dialects has a real GPU and validation cost.</p></details>
+  <p>Yes. All Sigma rules in the Detection Vault are free to copy, paste and use — commercial or non-commercial. SIEM-native exports (Splunk SPL, Sentinel KQL, Elastic ES|QL, QRadar AQL, Wazuh) are available through the SCW Intel Bot on Telegram.</p></details>
 
   <details><summary><strong>How often is the vault updated?</strong></summary>
   <p>New detection rules are auto-generated within minutes of new CVE publications on the National Vulnerability Database (NVD), Israeli INCD advisories, and major breach disclosures. Curated rules from real-world SOC engagements are added on a rolling basis.</p></details>
 
   <details><summary><strong>Can I convert these rules to KQL, SPL or my SIEM?</strong></summary>
-  <p>Yes — message the <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">SCW Intel Bot</a> on Telegram with the rule title or CVE ID. The bot returns the rule in your chosen SIEM dialect (Splunk SPL, Microsoft Sentinel KQL, Elastic ES|QL, IBM QRadar AQL, Wazuh) on the Elite tier.</p></details>
+  <p>Yes — message the <a href="https://t.me/Shimiscyberworldbot?start=detect" target="_blank" rel="noopener">SCW Intel Bot</a> on Telegram with the rule title or CVE ID. The bot returns the rule in your chosen SIEM dialect (Splunk SPL, Microsoft Sentinel KQL, Elastic ES|QL, IBM QRadar AQL, Wazuh).</p></details>
 
   <details><summary><strong>Are rules mapped to MITRE ATT&CK?</strong></summary>
   <p>Every rule includes the relevant MITRE ATT&CK technique IDs (e.g. T1190, T1059) so you can align coverage gaps to your existing detection engineering roadmap and the ATT&CK Navigator.</p></details>
@@ -430,7 +430,7 @@ description: "Free Sigma detection rules library for SOC analysts and threat hun
     {"@type":"Question","name":"What is Sigma and why use it?","acceptedAnswer":{"@type":"Answer","text":"Sigma is a generic, vendor-neutral signature format for SIEM systems. Write a detection once in Sigma, then convert to your platform (Splunk SPL, Sentinel KQL, Elastic, QRadar, Wazuh)."}},
     {"@type":"Question","name":"Are these detection rules really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. All Sigma rules in the Detection Vault are free to copy, paste and use - commercial or non-commercial."}},
     {"@type":"Question","name":"How often is the vault updated?","acceptedAnswer":{"@type":"Answer","text":"New detection rules are auto-generated within minutes of new CVE publications on the NVD, Israeli INCD advisories, and major breach disclosures."}},
-    {"@type":"Question","name":"Can I convert these rules to KQL, SPL or my SIEM?","acceptedAnswer":{"@type":"Answer","text":"Yes - message the SCW Intel Bot on Telegram with the rule title or CVE ID. The bot returns the rule in your chosen SIEM dialect on the Elite tier."}},
+    {"@type":"Question","name":"Can I convert these rules to KQL, SPL or my SIEM?","acceptedAnswer":{"@type":"Answer","text":"Yes - message the SCW Intel Bot on Telegram with the rule title or CVE ID. The bot returns the rule in your chosen SIEM dialect."}},
     {"@type":"Question","name":"Are rules mapped to MITRE ATT&CK?","acceptedAnswer":{"@type":"Answer","text":"Every rule includes the relevant MITRE ATT&CK technique IDs so you can align coverage gaps to your existing detection engineering roadmap."}}
   ]
 }
