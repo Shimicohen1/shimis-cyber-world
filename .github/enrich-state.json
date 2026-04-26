@@ -1,7 +1,21 @@
 {
-  "generatedHardeningIds": [],
-  "generatedRuleNames": [],
-  "generatedPlaybooks": [],
-  "lastRun": "2026-04-12T07:26:04.841Z",
-  "weekCount": 1
+  "generatedHardeningIds": [
+    "aws-052",
+    "aws-053",
+    "aws-054",
+    "aws-055",
+    "az-009"
+  ],
+  "generatedRuleNames": [
+    "LSASS Process Memory Dump Attempt",
+    "Security Service Disable Attempt",
+    "Outbound Connection to Public Text Sharing Service",
+    "Suspicious Scheduled Task Creation",
+    "System Information Discovery via WMIC"
+  ],
+  "generatedPlaybooks": [
+    "OT/ICS Cyber Incident Response"
+  ],
+  "lastRun": "2026-04-26T07:49:58.144Z",
+  "weekCount": 2
 }

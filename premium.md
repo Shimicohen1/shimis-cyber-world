@@ -19,15 +19,15 @@ permalink: /premium/
 <!-- ── Stats bar: proof ── -->
 <div class="elite-stats reveal">
 <div class="elite-stat">
-<span class="elite-stat__num">872</span>
+<span class="elite-stat__num">935</span>
 <span class="elite-stat__label">Hardening Checks</span>
 </div>
 <div class="elite-stat">
-<span class="elite-stat__num">19</span>
+<span class="elite-stat__num">23</span>
 <span class="elite-stat__label">Platforms</span>
 </div>
 <div class="elite-stat">
-<span class="elite-stat__num">54</span>
+<span class="elite-stat__num">61</span>
 <span class="elite-stat__label">Detection Rules</span>
 </div>
 <div class="elite-stat">
@@ -67,10 +67,10 @@ permalink: /premium/
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>LockDown</h3>
-<p>872 security hardening checks. 19 platforms — including CrowdStrike, Palo Alto, Cisco, Fortinet, Okta, Kubernetes, and GitHub CI/CD. Real commands you copy-paste, not theory you read.</p>
+<p>935 security hardening checks. 23 platforms — including CrowdStrike, Palo Alto, Cisco, Fortinet, Okta, Kubernetes, and GitHub CI/CD. Real commands you copy-paste, not theory you read.</p>
 <div class="elite-card__meta">
-<span>19 platforms</span>
-<span>872 items</span>
+<span>23 platforms</span>
+<span>935 items</span>
 <span>Copy & export</span>
 </div>
 </div>

@@ -2192,3 +2192,127 @@ rules:
     tags: [file-deletion, destruction, ransomware]
     notes: "CRITICAL — mass deletion of business files requires immediate response. Check for ransomware indicators."
 
+- name: "LSASS Process Memory Dump Attempt"
+    description: "Detects attempts to dump the memory of the Local Security Authority Subsystem Service (LSASS) process, which stores sensitive credentials. Attackers often do this to steal hashes or plaintext passwords for lateral movement."
+    category: "Credential Access"
+    platform: "Splunk SPL"
+    mitre: "T1003.001"
+    mitre_name: "OS Credential Dumping: LSASS Memory"
+    severity: "critical"
+    query: |
+      index=windows sourcetype=WinEventLog:Security OR sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational
+      (EventCode=4688 OR EventID=1)
+      (
+          CommandLine IN ("*procdump.exe -accepteula*", "*comsvcs.dll MiniDump*", "*taskmgr.exe /dmp*", "*dbghelp.dll*") AND
+          (CommandLine="*lsass.exe*" OR ParentCommandLine="*lsass.exe*")
+      ) OR (
+          CommandLine="*mimikatz.exe*" AND CommandLine="*sekurlsa::logonpasswords*"
+      )
+      | stats count by _time, Host, User, CommandLine, ParentCommandLine, Image, ParentImage
+      | sort -_time
+    tags: ["credential-access", "windows", "lsass", "dump", "mimikatz"]
+    notes: "Procdump often requires the `-accepteula` flag on first run. `taskmgr.exe /dmp` is a legitimate way to dump processes but is rare for LSASS by normal users. `rundll32.exe comsvcs.dll` is another common method. False positives may occur if legitimate administrators are performing incident response activities. Exclude known administrative accounts or specific hosts where this activity is sanctioned. Ensure Sysmon Event ID 1 (Process Create) is enabled and collected for comprehensive detection."
+
+  - name: "Security Service Disable Attempt"
+    description: "Identifies attempts to stop or disable critical security services like antivirus, EDR, or Windows Defender. This is a common defense evasion technique used by attackers to hinder detection and remediation."
+    category: "Defense Evasion"
+    platform: "Splunk SPL"
+    mitre: "T1562.002"
+    mitre_name: "Impair Defenses: Disable or Modify Tools"
+    severity: "high"
+    query: |
+      index=windows sourcetype=WinEventLog:Security OR sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational
+      (EventCode=4688 OR EventID=1)
+      (
+          CommandLine="*sc.exe* stop*" OR CommandLine="*sc.exe* disable*" OR CommandLine="*sc.exe* delete*" OR
+          CommandLine="*Set-Service* -Name* -Status Stopped*" OR CommandLine="*Set-Service* -Name* -StartupType Disabled*" OR
+          CommandLine="*Stop-Service* -Name*" OR
+          CommandLine="*net stop*" OR
+          CommandLine="*taskkill* /im*" OR
+          CommandLine="*reg add* *Start* /v 4*" OR CommandLine="*reg add* *DisableAntiSpyware* /v 1*"
+      )
+      (
+          CommandLine IN ("*WinDefend*", "*MsMpEng*", "*SenseNdr*", "*wscsvc*", "*Sophos*", "*CrowdStrike*", "*CarbonBlack*", "*Defender*", "*AVService*", "*EDRService*", "*Kaspersky*", "*McAfee*", "*Symantec*") OR
+          ParentCommandLine IN ("*WinDefend*", "*MsMpEng*", "*SenseNdr*", "*wscsvc*", "*Sophos*", "*CrowdStrike*", "*CarbonBlack*", "*Defender*", "*AVService*", "*EDRService*", "*Kaspersky*", "*McAfee*", "*Symantec*")
+      )
+      | stats count by _time, Host, User, CommandLine, ParentCommandLine, Image, ParentImage
+      | sort -_time
+    tags: ["defense-evasion", "windows", "security-product", "service"]
+    notes: "This rule detects common command-line patterns used to stop or disable services, including Windows Defender and common EDR/AV products. False positives can occur if legitimate administrators manage services via command line. Baseline normal administrative activity and exclude known privileged accounts or specific scripts. Ensure Sysmon Event ID 1 (Process Create) is enabled and collected. The list of service names is illustrative and should be customized to your environment's deployed security software."
+
+  - name: "Outbound Connection to Public Text Sharing Service"
+    description: "Monitors for outbound network connections to well-known public text sharing or paste services. Attackers often leverage these services for command and control (C2) communication, data staging, or exfiltration, as they are commonly allowed by firewalls."
+    category: "Command and Control"
+    platform: "Splunk SPL"
+    mitre: "T1102.002"
+    mitre_name: "Web Service: Bidirectional Communication"
+    severity: "medium"
+    query: |
+      index=<your_network_index> sourcetype=<your_proxy_or_firewall_sourcetype>
+      (dest_ip=* OR url=*)
+      (
+          dest="*pastebin.com*" OR url="*pastebin.com*" OR
+          dest="*pastie.org*" OR url="*pastie.org*" OR
+          dest="*github.com/gist*" OR url="*github.com/gist*" OR
+          dest="*controlc.com*" OR url="*controlc.com*" OR
+          dest="*privnote.com*" OR url="*privnote.com*" OR
+          dest="*anonfiles.com*" OR url="*anonfiles.com*"
+      )
+      | stats count by _time, src_ip, dest_ip, url, user
+      | sort -_time
+    tags: ["c2", "data-exfiltration", "network", "web-service", "proxy"]
+    notes: "This rule requires network proxy or firewall logs that capture destination domains/URLs and source IPs. Customize `index` and `sourcetype` fields to match your environment. False positives can occur if legitimate users access these sites for benign purposes. Consider whitelisting specific users or source IPs that have a business need to access these services. A high volume of connections or connections from non-browser processes should increase suspicion."
+
+  - name: "Suspicious Scheduled Task Creation"
+    description: "Detects the creation of new scheduled tasks that include suspicious keywords or are created by unusual processes. Scheduled tasks are a common persistence mechanism for attackers to maintain access to a compromised system."
+    category: "Persistence"
+    platform: "KQL (Sentinel)"
+    mitre: "T1053.005"
+    mitre_name: "Scheduled Task/Job: Scheduled Task"
+    severity: "high"
+    query: |
+      DeviceProcessEvents
+      | where ActionType == "ProcessCreated"
+      | where InitiatingProcessCommandLine contains "schtasks.exe"
+      | where InitiatingProcessCommandLine contains " /create"
+      | where InitiatingProcessCommandLine contains " /tn " // Task Name
+      | where InitiatingProcessCommandLine contains " /tr " // Task Run
+      | where InitiatingProcessCommandLine has_any ("powershell.exe", "cmd.exe", "mshta.exe", "regsvr32.exe", "rundll32.exe", "bitsadmin.exe", "certutil.exe", "invoke-expression", "iex", "system32\\config\\systemprofile\\desktop", "c:\\users\\public\\", "c:\\programdata\\", "$env:temp\\", "net user", "net localgroup")
+      | extend TaskName = extract(@"/tn\s+""?([^""]+)""?", 1, InitiatingProcessCommandLine)
+      | extend TaskAction = extract(@"/tr\s+""?([^""]+)""?", 1, InitiatingProcessCommandLine)
+      | project-reorder TimeGenerated, DeviceName, InitiatingProcessAccountName, InitiatingProcessParentFileName, InitiatingProcessFileName, InitiatingProcessCommandLine, TaskName, TaskAction, FolderPath
+      | sort by TimeGenerated desc
+    tags: ["persistence", "windows", "scheduled-task", "endpoint", "living-off-the-land"]
+    notes: "This rule leverages `DeviceProcessEvents` to look for `schtasks.exe /create` commands that contain suspicious keywords often associated with malicious activity or common attacker tools. False positives can occur from legitimate system administration or software installations. Exclude known administrative scripts, specific users, or parent processes that routinely create scheduled tasks. Focus on tasks created in unusual directories or by non-service accounts. Ensure endpoint detection and response (EDR) data (like Microsoft Defender for Endpoint, which feeds DeviceProcessEvents) is collected."
+
+  - name: "System Information Discovery via WMIC"
+    description: "Detects the use of `wmic.exe` to query system information. Attackers frequently use WMIC to gather details about the compromised system, including hardware, software, user accounts, and network configurations, as part of their reconnaissance phase."
+    category: "Discovery"
+    platform: "Sigma"
+    mitre: "T1082"
+    mitre_name: "System Information Discovery"
+    severity: "medium"
+    query: |
+      logsource:
+        product: windows
+        service: sysmon
+        category: process_creation
+      detection:
+        selection:
+          Image|endswith: '\wmic.exe'
+          CommandLine|contains:
+            - 'computersystem get'
+            - 'os get'
+            - 'qfe get'
+            - 'product get'
+            - 'process get'
+            - 'useraccount get'
+            - 'group get'
+            - 'nicconfig get'
+            - 'logicaldisk get'
+            - 'service get'
+            - 'shadowcopy get'
+            - 'path get'
+        condition: selection
+    tags: ["discovery", "windows", "wmic", "reconnaissance", "living-off-the-land"]
+    notes: "This rule monitors for common `wmic.exe` commands used for system reconnaissance. WMIC is a legitimate tool, so false positives are possible from system administrators, monitoring tools, or legitimate scripts. Baseline common WMIC usage in your environment. Consider whitelisting specific scripts or users that frequently execute these commands. Focus on executions from unusual user accounts, processes, or in rapid succession. Ensure Sysmon Event ID 1 (Process Create) is enabled and collected."

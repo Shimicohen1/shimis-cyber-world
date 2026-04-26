@@ -1560,3 +1560,198 @@ playbooks:
       - "List of all endpoints and data accessed with the key"
       - "IP addresses involved in abuse"
       - "Git history showing when the key was committed"
+
+  # ══════════════════════════════════════════════════════════
+  # AUTO-GENERATED — OT/ICS CYBER INCIDENT RESPONSE
+  # ══════════════════════════════════════════════════════════
+```yaml
+  - name: "OT/ICS Cyber Incident Response"
+    description: "This playbook outlines the comprehensive steps and procedures for responding to a cyber incident affecting Operational Technology (OT) and Industrial Control Systems (ICS) environments. It prioritizes safety, operational continuity, and data integrity, recognizing the unique challenges and critical nature of these systems. This playbook is designed for incidents ranging from unauthorized access and data exfiltration to malware infection (e.g., ransomware) and direct process manipulation or disruption."
+    category: "Operational Technology"
+    mitre: "T826 — Impair Process Control"
+    severity: "critical"
+    premium: false
+    estimated_time: "24-72 hours"
+    roles:
+      - "Incident Commander"
+      - "SOC Analyst L2/L3"
+      - "OT Engineer / Subject Matter Expert (SME)"
+      - "IT Network Engineer"
+      - "Security Engineer (Endpoint/Network/Cloud)"
+      - "Legal Counsel"
+      - "Communications Lead"
+      - "Executive Leadership"
+      - "Vendor Representative (OEM, Integrator)"
+    tags:
+      - "OT"
+      - "ICS"
+      - "SCADA"
+      - "Critical Infrastructure"
+      - "Ransomware"
+      - "Malware"
+      - "Disruption"
+      - "Process Control"
+      - "Safety"
+    escalation:
+      p1_sla: "15 minutes"
+      p1_notify:
+        - "Incident Commander (On-Call)"
+        - "Head of OT Operations"
+        - "CISO"
+        - "CIO"
+        - "Legal Counsel"
+        - "Communications Lead"
+      war_room: "Dedicated Microsoft Teams Channel: #OT-Incident-WarRoom-[Date] OR Physical Command Center (if required for severe incidents)."
+      external:
+        - "CISA (Cybersecurity and Infrastructure Security Agency)"
+        - "FBI (Federal Bureau of Investigation)"
+        - "Sector-specific ISAOs/ISACs"
+        - "Relevant Regulatory Bodies (e.g., FERC, EPA, NERC-CIP)"
+        - "Third-party Incident Response Firm (if retained)"
+    metrics:
+      mttd: "1 hour"
+      mttc: "4 hours"
+      mttr: "48 hours"
+      benchmark: "Industry averages (e.g., IBM X-Force 2023 average breach lifecycle: 277 days; 204 days to identify, 73 days to contain) are significantly longer. Our targets for critical OT incidents are aggressively shorter due to the high impact on safety and operations."
+    phases:
+      - name: "Detect"
+        steps:
+          - "1.1. Validate alert source: Confirm the integrity and authenticity of the detection system (e.g., SIEM, IDS/IPS, OT-specific anomaly detection)."
+          - "1.2. Initial impact assessment: Determine if the anomaly is affecting physical processes, safety, or production. Engage OT Engineer immediately."
+          - "1.3. Review SIEM/SCADA logs for anomalous activity (e.g., unauthorized access, unusual commands, failed authentications, changes to PLC programs, unexpected process values)."
+          - "1.4. Analyze network traffic for indicators of compromise (IOCs) such as C2 communication, lateral movement attempts, or unusual protocol usage (e.g., IT protocols in OT segments)."
+          - "1.5. Check endpoint detection and response (EDR) logs on connected IT/OT devices (HMIs, engineering workstations) for malicious processes or file changes."
+          - "1.6. Correlate findings with threat intelligence feeds for known OT threats."
+        decision_tree:
+          - condition: "Anomaly detected in process control system (e.g., unexpected valve closure, motor speed change, abnormal temperature/pressure)."
+            action: "Immediately alert OT Engineer/SME. Validate with HMI and local controls. Initiate emergency shutdown procedures if safety is compromised or process integrity is at risk, following established safety protocols."
+          - condition: "Suspicious network traffic (e.g., C2 beaconing, SMB enumeration) observed originating from an OT segment device."
+            action: "Isolate the suspected device's network port at the switch level. Notify IT Network Engineer and Security Engineer for further analysis. DO NOT disrupt critical process communication without OT Engineer's approval."
+          - condition: "EDR alert on an HMI/Engineering Workstation indicates malware execution or unauthorized access."
+            action: "Contain the workstation immediately (network isolation via EDR or physical disconnection). Initiate forensic acquisition. Alert OT Engineer to assess potential impact on connected PLCs/RTUs."
+        tool_commands:
+          - "Splunk: `index=ot_logs (sourcetype=scada_hmi OR sourcetype=plc_logs OR sourcetype=historian) | search 'alarm_level=critical' OR 'unexpected_value' OR 'unauthorized_access' OR 'program_change'`"
+          - "Sentinel KQL: `SecurityEvent | where EventID == 4688 and NewProcessName contains 'powershell.exe' and CommandLine contains '-encodedCommand' and Computer contains 'HMI' | project TimeGenerated, Computer, NewProcessName, CommandLine, ParentProcessName`"
+          - "CrowdStrike: `falcon event search -q \"event_simpleName=ProcessRollup2 AND (CommandLine=*powershell* -encodedcommand* OR CommandLine=*cmd.exe* /c * OR ProcessName IN ('evil.exe', 'malware.dll')) AND SensorId IN ('<HMI_Sensor_ID>', '<Workstation_Sensor_ID>')\" -f \"ProcessStartTime>='now-1h'\"`"
+          - "PAN-OS: `(eventid 12345 or eventid 67890) and (severity high or severity critical) and (zone.src eq \"OT_Network\" or zone.dst eq \"OT_Network\")`"
+          - "PowerShell: `Get-WinEvent -LogName 'Microsoft-Windows-Sysmon/Operational' | Where-Object {$_.Message -like '*Process Create*' -and ($_.Message -like '*powershell*' -or $_.Message -like '*cmd.exe*')} | Format-List` (on HMI/Windows-based OT assets)"
+      - name: "Contain"
+        steps:
+          - "2.1. Prioritize safety: Ensure all actions taken preserve human safety and environmental protection. Consult with OT Engineer before any network or system modification."
+          - "2.2. Isolate affected OT network segments: Use firewalls, managed switches (VLANs, port shutdown), or physical disconnection (air-gapping) as a last resort. Prioritize control plane isolation over data plane if possible."
+          - "2.3. Disable compromised accounts: Immediately revoke credentials for any accounts identified as compromised within IT and OT domains."
+          - "2.4. Block malicious IPs/domains: Update perimeter firewalls and IDS/IPS with known IOCs to prevent further ingress/egress."
+          - "2.5. Prevent lateral movement: Implement host-based firewalls, disable unnecessary services, and segment networks further where possible."
+          - "2.6. Secure remaining critical assets: Patch known vulnerabilities, apply temporary mitigations, and enforce strong authentication."
+        decision_tree:
+          - condition: "Malware/ransomware identified spreading laterally within multiple OT network segments, affecting critical assets."
+            action: "Execute pre-approved segment isolation procedures. Physically disconnect network cables to air-gap affected segments if logical controls (firewalls, VLANs) are insufficient or compromised. Consult OT Engineer for process implications."
+          - condition: "Unauthorized remote access detected to an HMI or engineering workstation from an external IP address."
+            action: "Immediately block the source IP at the perimeter firewall. Disconnect the affected HMI/workstation from the network. Force password reset for all associated accounts."
+          - condition: "PLC/RTU configuration has been modified without authorization, potentially causing unsafe conditions."
+            action: "Disconnect the affected PLC/RTU from the network immediately. If safe to do so, switch the PLC to 'Program' mode (if applicable) to prevent further unauthorized changes. Do NOT attempt to revert configuration without a verified golden image."
+        tool_commands:
+          - "PAN-OS: `set rulebase security rules <rule_name> action deny` (to block malicious traffic to/from OT zones). `set device-group <dg_name> interface ethernet1/X admin-state down` (to disable a port)."
+          - "CrowdStrike: `falcon host -a \"isolate\" -i <host_id>` (for IT assets in OT environments). `falcon rtr -H <hostname> -C \"netsh advfirewall firewall add rule name='Block Malicious Traffic' dir=out action=block remoteip=<malicious_IP>\"`"
+          - "PowerShell: `Disable-NetAdapter -Name \"Ethernet0\"` (to physically disconnect a Windows-based OT asset). `Set-NetFirewallRule -DisplayName 'Allow RDP' -Enabled False`"
+          - "Cisco IOS (Switch): `interface GigabitEthernet0/1; shutdown` (to disable a switch port)."
+          - "AWS CLI: `aws ec2 revoke-security-group-ingress --group-id sg-xxxxxxxxxxxxxxxxx --protocol all --port all --cidr 0.0.0.0/0` (if OT assets are in AWS VPCs or connected to them for remote access/data)."
+      - name: "Eradicate"
+        steps:
+          - "3.1. Remove malware: Scan and clean infected systems using trusted antivirus/EDR solutions. For deeply embedded malware or firmware compromise, re-imaging or re-flashing may be required."
+          - "3.2. Patch vulnerabilities: Apply critical security patches to operating systems, applications, and firmware of affected and similar systems."
+          - "3.3. Rebuild systems from trusted sources: Restore compromised HMIs, engineering workstations, and servers from known good, clean backups or golden images."
+          - "3.4. Reconfigure and harden PLCs/RTUs: Re-flash PLCs/RTUs with verified, uncompromised firmware. Restore configurations from known good backups. Implement secure configurations (e.g., strong passwords, disabled unnecessary services)."
+          - "3.5. Change all compromised credentials: Force password resets for all accounts potentially exposed, including service accounts and administrative credentials."
+          - "3.6. Perform thorough integrity checks: Verify the integrity of all restored and reconfigured systems and devices using checksums, hashes, and functional testing."
+        tool_commands:
+          - "CrowdStrike: `falcon rtr -H <hostname> -C \"delete file C:\\malware\\evil.exe\"`. `falcon rtr -H <hostname> -C \"sc stop <malicious_service>\"`. `falcon rtr -H <hostname> -C \"reg delete HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v <malware_entry> /f\"`"
+          - "PowerShell: `Remove-Item -Path \"C:\\ProgramData\\malware.exe\" -Force`. `Stop-Service -Name \"MaliciousService\"`. `Remove-ItemProperty -Path \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\" -Name \"MalwareStartup\"`"
+          - "Linux CLI: `sudo rm /usr/local/bin/malicious_script.sh`. `sudo systemctl stop malicious_service`. `sudo chkconfig malicious_service off`"
+          - "PLC/RTU (Conceptual, vendor-specific): Use vendor software (e.g., Siemens TIA Portal, Rockwell Studio 5000) to 'Download verified program to PLC', 'Update firmware from trusted source', 'Restore device configuration from golden backup'."
+      - name: "Recover"
+        steps:
+          - "4.1. Validate system functionality and safety: Conduct thorough functional testing of all restored OT systems and processes in a controlled environment before reintroducing them to production."
+          - "4.2. Monitor for re-infection: Implement enhanced monitoring on recovered systems for any signs of residual compromise or new attack attempts."
+          - "4.3. Restore network connectivity systematically: Reconnect isolated segments and devices in a phased approach, starting with the most critical and least affected."
+          - "4.4. Verify data integrity: Ensure historian data, logs, and process values are accurate and complete post-recovery."
+          - "4.5. Document lessons learned for recovery: Note any challenges, successes, and areas for improvement during the recovery phase."
+        decision_tree:
+          - condition: "Restored OT system or process exhibits intermittent errors, unexpected behavior, or performance degradation during testing."
+            action: "Immediately halt reconnection. Re-evaluate restoration source (backup integrity, golden image verification). Conduct root cause analysis on new symptoms. Do NOT reconnect to production until stability and expected behavior are fully confirmed. Escalate to OT Engineer and OEM."
+          - condition: "Post-recovery monitoring detects new IOCs or suspicious activity on a 'clean' system."
+            action: "Immediately re-isolate the affected system. Re-initiate eradication steps, focusing on persistent threats. Review and strengthen containment measures. Consider a full forensic re-evaluation."
+          - condition: "Process parameters are within operational limits but inconsistent with pre-incident historical data."
+            action: "Engage OT Engineer and process control specialists to validate data integrity and calibrate sensors/actuators. Verify no lingering manipulation or data corruption. Do not resume full operations until data integrity is assured."
+        tool_commands:
+          - "PowerShell: `Start-Service -DisplayName \"OT_Application_Service\"`. `Test-NetConnection -ComputerName <PLC_IP> -Port 502`"
+          - "AWS CLI: `aws rds restore-db-instance-from-db-snapshot --db-instance-identifier my-restored-db --db-snapshot-identifier my-snapshot` (if OT data historian is in RDS)."
+          - "Network: `set device-group <dg_name> interface ethernet1/X admin-state up` (to enable a port on PAN-OS)."
+          - "Splunk: `index=ot_logs sourcetype=historian | timechart avg(ProcessValue) by TagName` (to verify historical data trends)."
+      - name: "Post-Incident"
+        steps:
+          - "5.1. Conduct a 'Lessons Learned' session: Involve all stakeholders to review the incident, identify root causes, evaluate the effectiveness of the response, and pinpoint areas for improvement."
+          - "5.2. Update playbooks and procedures: Incorporate findings from the lessons learned to enhance existing incident response plans, especially for OT/ICS environments."
+          - "5.3. Enhance security controls: Implement new or improved security measures to prevent recurrence, focusing on identified vulnerabilities and gaps (e.g., network segmentation, endpoint hardening, threat intelligence integration)."
+          - "5.4. Review and update asset inventory: Ensure all OT/ICS assets are accurately documented with their configurations, software versions, and network topology."
+          - "5.5. Communicate findings: Share relevant non-confidential insights with industry peers and regulatory bodies to contribute to collective defense (e.g., ISACs, CISA)."
+          - "5.6. Legal and regulatory review: Ensure all reporting and compliance obligations are met."
+    evidence_checklist:
+      - "Network Packet Captures (PCAPs) from network taps/SPAN ports in OT segments."
+      - "Full disk images (forensic copies) of compromised HMIs, engineering workstations, and servers."
+      - "Memory dumps (RAM captures) from affected Windows-based OT systems."
+      - "PLC/RTU configuration files (current and golden backups), firmware versions, ladder logic."
+      - "SCADA historian data, alarm logs, and operator logs."
+      - "SIEM logs (including IDS/IPS, firewall, authentication logs, VPN logs, DNS logs) related to the OT environment."
+      - "Endpoint Detection and Response (EDR) logs from all monitored IT/OT endpoints."
+      - "System logs (Windows Event Logs, Linux auth/syslogs) from compromised and related systems."
+      - "Application logs from SCADA applications, historians, and other OT software."
+      - "Physical access control logs for control rooms and critical infrastructure facilities."
+      - "Backup integrity verification reports."
+      - "Screenshots, photos, and video recordings of HMI displays or physical anomalies."
+      - "Interviews/statements from operators, engineers, and witnesses."
+    comms_templates:
+      internal: |
+        Subject: URGENT: OT/ICS Incident - [Brief Description] - [Date/Time]
+
+        Team,
+
+        This is an urgent notification regarding a detected cyber incident impacting our Operational Technology (OT) / Industrial Control Systems (ICS) environment.
+
+        **Incident Status:** [e.g., 'Initial Detection', 'Containment in Progress', 'Recovery Phase']
+        **Affected Systems/Areas:** [e.g., 'PLC X in Plant Y', 'HMI Z in Control Room A', 'Segment B of Production Line C']
+        **Initial Impact Assessment:** [e.g., 'Minor disruption to production in Line C', 'Potential compromise of process data', 'Safety systems remain operational', 'Production halted in Plant Y']
+        **Current Actions:** The Incident Response Team, in collaboration with OT Engineering, is actively working to contain the threat and ensure safety. Specific actions include: [e.g., 'Network segmentation of affected area', 'Forensic analysis on HMI Z', 'Verification of PLC X integrity'].
+
+        All personnel are reminded to adhere strictly to incident response protocols. Please do not attempt to access affected systems or make any changes without explicit direction from the Incident Commander.
+
+        Further updates will be provided via [War Room Channel/Email] every [X hours/minutes] or as significant developments occur.
+
+        **Incident Commander:** [Name] ([Contact Info])
+        **OT Lead:** [Name] ([Contact Info])
+
+        Your cooperation and vigilance are critical.
+
+        [Company Leadership/CISO]
+      external: |
+        Subject: [Company Name] - Critical Operational Technology Incident Notification
+
+        [Date]
+
+        FOR IMMEDIATE RELEASE / CONFIDENTIAL - FOR REGULATORY BODIES AND LAW ENFORCEMENT
+
+        [Company Name] is providing this notification regarding a detected cybersecurity incident impacting a portion of our Operational Technology (OT) environment.
+
+        Upon detection, our robust incident response protocols were immediately activated. Our internal teams, including cybersecurity experts and OT engineers, are actively engaged in managing the situation. We have also engaged [e.g., external cybersecurity specialists, law enforcement (FBI/CISA)] to assist in our efforts.
+
+        **Current Status:** Our primary focus remains on ensuring the safety of personnel, protecting the environment, and maintaining the integrity of our critical operations. We are diligently working to contain the incident and restore full operational capabilities securely and efficiently.
+
+        **Impact Assessment:** We are currently conducting a thorough investigation to determine the full scope and impact of this incident. At this time, [Company Name] is [e.g., 'experiencing limited operational disruption in X area', 'working to mitigate potential impacts on Y process']. We are taking all necessary measures to prevent further unauthorized activity.
+
+        **Our Commitment:** The security and reliability of our operations are paramount. We are committed to a comprehensive and transparent response. We will provide further updates as our investigation progresses and as appropriate.
+
+        For further inquiries, please contact:
+        [Media Contact Name/Email]
+        [Legal Counsel Name/Email]
+
+        [Company Name]

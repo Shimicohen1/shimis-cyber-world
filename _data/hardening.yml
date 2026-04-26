@@ -20531,3 +20531,342 @@ items:
         condition: open_write and (fd.name startswith /etc/apt/sources.list or fd.name startswith /etc/yum.repos.d)
         output: "Repo file modified (user=%user.name proc=%proc.cmdline file=%fd.name)"
         priority: WARNING
+
+```yaml
+- id: aws-052
+  platform: aws
+  category: network
+  severity: critical
+  title: Restrict public access to S3 buckets at the account level
+  description: Ensure that S3 Block Public Access settings are enabled at the account level to prevent accidental public exposure of data, overriding individual bucket or object permissions.
+  reference: CIS AWS Foundations Benchmark v1.5.0, 2.1.1
+  command: 'aws s3control put-public-access-block --account-id <AWS_ACCOUNT_ID> --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"'
+  premium:
+    attackPerspective: Misconfigured S3 buckets are a common attack vector for data breaches, exploited by threat actors like those involved in the Capital One breach. Attackers actively scan for publicly exposed S3 buckets to exfiltrate sensitive data, credentials, or configuration files, potentially leading to further compromise of the cloud environment. Enforcing this at the account level closes a critical loophole.
+    implementationNotes: |-
+      1. Retrieve your AWS Account ID.
+      2. Check the current S3 Block Public Access configuration at the account level:
+         `aws s3control get-public-access-block --account-id <AWS_ACCOUNT_ID>`
+      3. If any of `BlockPublicAcls`, `IgnorePublicAcls`, `BlockPublicPolicy`, or `RestrictPublicBuckets` are `false`, proceed to step 4.
+      4. Apply the configuration to block all public access:
+         `aws s3control put-public-access-block --account-id <AWS_ACCOUNT_ID> --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"`
+      5. Verify the changes using the `get-public-access-block` command.
+    validationNotes: |-
+      Run the following command to verify the settings:
+      `aws s3control get-public-access-block --account-id <AWS_ACCOUNT_ID>`
+
+      Expected output should show all `BlockPublicAcls`, `IgnorePublicAcls`, `BlockPublicPolicy`, and `RestrictPublicBuckets` as `true`.
+    tuningNotes: Enabling this at the account level is a strong security posture. Carefully review existing applications that might legitimately rely on public S3 access (e.g., static website hosting) and migrate them to CloudFront with OAI/OAC or alternative secure methods before enforcing this.
+    advancedDetection: |-
+      index=aws sourcetype=aws:cloudtrail eventName=PutPublicAccessBlock
+      | spath PublicAccessBlockConfiguration.BlockPublicAcls
+      | spath PublicAccessBlockConfiguration.IgnorePublicAcls
+      | spath PublicAccessBlockConfiguration.BlockPublicPolicy
+      | spath PublicAccessBlockConfiguration.RestrictPublicBuckets
+      | where BlockPublicAcls="false" OR IgnorePublicAcls="false" OR BlockPublicPolicy="false" OR RestrictPublicBuckets="false"
+      | table _time, userIdentity.arn, eventName, PublicAccessBlockConfiguration.*
+    relatedIds:
+    - aws-003
+    - aws-004
+  tags:
+  - s3
+  - data-protection
+  - network-security
+  commandLanguage: bash
+  commandFull: |-
+    # Step 1: Replace <AWS_ACCOUNT_ID> with your actual AWS account ID.
+    AWS_ACCOUNT_ID="123456789012" # Example account ID
+
+    # Step 2: Check the current S3 Block Public Access configuration at the account level.
+    echo "Checking current S3 Block Public Access configuration..."
+    aws s3control get-public-access-block --account-id "$AWS_ACCOUNT_ID"
+
+    # Step 3: Apply the configuration to block all public access.
+    # This command sets all four public access block settings to true.
+    echo "Applying S3 Block Public Access configuration to block all public access..."
+    aws s3control put-public-access-block \
+      --account-id "$AWS_ACCOUNT_ID" \
+      --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
+
+    # Step 4: Verify the changes.
+    echo "Verifying new S3 Block Public Access configuration..."
+    aws s3control get-public-access-block --account-id "$AWS_ACCOUNT_ID"
+
+    echo "S3 Block Public Access configuration update complete. Ensure all settings are 'true'."
+
+- id: aws-053
+  platform: aws
+  category: services
+  severity: high
+  title: Enforce IMDSv2 for EC2 instances
+  description: Configure EC2 instances to require IMDSv2 (Instance Metadata Service Version 2) to protect against Server-Side Request Forgery (SSRF) vulnerabilities and credential theft.
+  reference: AWS Security Best Practices, EC2 Security, "Configure the instance metadata service"
+  command: 'aws ec2 modify-instance-metadata-options --instance-id <INSTANCE_ID> --http-tokens required --http-endpoint enabled'
+  premium:
+    attackPerspective: Threat actors frequently exploit Server-Side Request Forgery (SSRF) vulnerabilities in web applications to query the EC2 Instance Metadata Service (IMDS). If IMDSv1 is enabled, an attacker can directly retrieve temporary AWS credentials, leading to privilege escalation and compromise of the underlying EC2 instance and potentially other AWS resources, as seen in the Capital One breach.
+    implementationNotes: |-
+      1. Identify the EC2 instance(s) for which IMDSv2 should be enforced.
+      2. For a running instance, use the AWS CLI to modify its metadata options:
+         `aws ec2 modify-instance-metadata-options --instance-id <INSTANCE_ID> --http-tokens required --http-endpoint enabled`
+      3. For new instances, ensure your launch templates or run instance commands include the following metadata options:
+         `--metadata-options "HttpTokens=required,HttpEndpoint=enabled"`
+      4. Verify the configuration change. Note: requiring IMDSv2 may break applications that rely on IMDSv1 calls. Test thoroughly.
+      5. Update existing scripts or applications on instances to use IMDSv2 if they directly interact with the metadata service.
+    validationNotes: |-
+      Run the following command to describe the instance metadata options:
+      `aws ec2 describe-instances --instance-ids <INSTANCE_ID> --query "Reservations[].Instances[].MetadataOptions"`
+
+      Expected output should show:
+      `"HttpTokens": "required"`
+      `"HttpEndpoint": "enabled"`
+      `"State": "applied"`
+    tuningNotes: Ensure all applications running on EC2 instances are compatible with IMDSv2. Some older SDKs or custom scripts might need updates to explicitly include the `X-aws-ec2-metadata-token` header. Review application logs for errors related to metadata access after enforcement.
+    advancedDetection: |-
+      AWSCloudTrail
+      | where EventName == "ModifyInstanceMetadataOptions"
+      | extend RequestParameters = parse_json(RequestParameters)
+      | where RequestParameters.InstanceMetadataOptions.HttpTokens != "required"
+      | project TimeGenerated, UserIdentity_UserName, EventName, RequestParameters.InstanceId, RequestParameters.InstanceMetadataOptions
+    relatedIds:
+    - aws-001
+    - aws-002
+  tags:
+  - ec2
+  - imds
+  - ssm
+  - identity
+  commandLanguage: bash
+  commandFull: |-
+    # Step 1: Replace <INSTANCE_ID> with the actual ID of your EC2 instance.
+    INSTANCE_ID="i-0abcdef1234567890" # Example instance ID
+
+    # Step 2: Modify the instance metadata options to require IMDSv2.
+    # This command sets HttpTokens to 'required' and ensures the metadata endpoint is enabled.
+    echo "Modifying instance '$INSTANCE_ID' to enforce IMDSv2..."
+    aws ec2 modify-instance-metadata-options \
+      --instance-id "$INSTANCE_ID" \
+      --http-tokens required \
+      --http-endpoint enabled
+
+    # Step 3: Verify the instance metadata options.
+    echo "Verifying IMDSv2 enforcement for instance '$INSTANCE_ID'..."
+    aws ec2 describe-instances \
+      --instance-ids "$INSTANCE_ID" \
+      --query "Reservations[].Instances[].MetadataOptions"
+
+    echo "IMDSv2 enforcement command complete. Verify 'HttpTokens' is 'required' and 'HttpEndpoint' is 'enabled'."
+
+- id: aws-054
+  platform: aws
+  category: logging
+  severity: high
+  title: Ensure CloudTrail logs are encrypted with KMS CMKs
+  description: Encrypt CloudTrail logs at rest using AWS Key Management Service (KMS) Customer Master Keys (CMKs) to enhance data confidentiality and meet compliance requirements.
+  reference: CIS AWS Foundations Benchmark v1.5.0, 2.3
+  command: 'aws cloudtrail update-trail --name <TRAIL_NAME> --kms-key-id <KMS_KEY_ARN>'
+  premium:
+    attackPerspective: An attacker gaining access to the S3 bucket storing CloudTrail logs could potentially read sensitive audit information, understand the environment, and bypass detection if the logs are not encrypted. While S3 provides default encryption, using a customer-managed KMS key (CMK) adds an additional layer of control, as the attacker would also need access to the KMS key to decrypt the logs, making exfiltration more difficult and auditable by threat actors like the Chinese APT group, APT41.
+    implementationNotes: |-
+      1. Create a new KMS Customer Managed Key (CMK) in the same region as your CloudTrail trail, or identify an existing suitable CMK.
+         `aws kms create-key --description "KMS key for CloudTrail encryption"`
+         Note the `KeyId` and `Arn` from the output.
+      2. Update the KMS key policy to allow CloudTrail to encrypt and decrypt logs. Grant `kms:Decrypt`, `kms:GenerateDataKey`, and `kms:Encrypt` permissions to the CloudTrail service principal (`cloudtrail.amazonaws.com`).
+      3. Identify the name of your CloudTrail trail.
+      4. Update the CloudTrail trail to use the KMS key:
+         `aws cloudtrail update-trail --name <TRAIL_NAME> --kms-key-id <KMS_KEY_ARN>`
+      5. Verify that the CloudTrail trail is now configured with the specified KMS key.
+    validationNotes: |-
+      Run the following command to verify the CloudTrail's KMS key ID:
+      `aws cloudtrail get-trail-status --name <TRAIL_NAME> --query "KmsKeyId"`
+
+      Expected output should show the ARN of your specified KMS key.
+    tuningNotes: Ensure the KMS key policy grants `kms:Encrypt`, `kms:Decrypt`, and `kms:GenerateDataKey` permissions to the CloudTrail service principal. Rotating the KMS key periodically is also a good practice.
+    advancedDetection: |-
+      title: CloudTrail KMS Key Disabled or Changed
+      id: 5a4b3c2d-1e0f-11ed-bdc3-0242ac120002
+      status: experimental
+      description: Detects when a CloudTrail trail's KMS key for encryption is disabled or changed, potentially weakening log security.
+      author: Your Name/Company
+      logsource:
+        product: aws
+        service: cloudtrail
+      detection:
+        selection:
+          eventName: UpdateTrail
+          requestParameters.KmsKeyId:
+            - null
+            - '*' # Detects any change if you want to monitor all changes
+        condition: selection
+        falsepositives:
+          - Legitimate administrative changes to KMS key for CloudTrail encryption
+      level: high
+    relatedIds:
+    - aws-003
+    - aws-004
+  tags:
+  - cloudtrail
+  - kms
+  - encryption
+  - logging
+  commandLanguage: bash
+  commandFull: |-
+    # Step 1: Replace <TRAIL_NAME> with your CloudTrail trail's name.
+    # Replace <KMS_KEY_ARN> with the ARN of your desired KMS Customer Master Key (CMK).
+    # If you don't have a CMK, create one first:
+    # aws kms create-key --description "KMS key for CloudTrail encryption"
+    # Make sure its key policy grants CloudTrail service principal (cloudtrail.amazonaws.com) permissions for kms:Decrypt, kms:GenerateDataKey, kms:Encrypt.
+    TRAIL_NAME="my-cloudtrail-trail" # Example trail name
+    KMS_KEY_ARN="arn:aws:kms:us-east-1:123456789012:key/abcdef12-3456-7890-abcd-ef1234567890" # Example KMS Key ARN
+
+    # Step 2: Update the CloudTrail trail to use the specified KMS CMK for encryption.
+    echo "Updating CloudTrail trail '$TRAIL_NAME' to use KMS key '$KMS_KEY_ARN'..."
+    aws cloudtrail update-trail \
+      --name "$TRAIL_NAME" \
+      --kms-key-id "$KMS_KEY_ARN"
+
+    # Step 3: Verify that the CloudTrail trail is now configured with the specified KMS key.
+    echo "Verifying KMS key configuration for CloudTrail trail '$TRAIL_NAME'..."
+    aws cloudtrail get-trail-status \
+      --name "$TRAIL_NAME" \
+      --query "KmsKeyId"
+
+    echo "CloudTrail KMS encryption update complete. Verify the output matches your KMS Key ARN."
+
+- id: aws-055
+  platform: aws
+  category: services
+  severity: medium
+  title: Configure Lambda functions within a VPC
+  description: Place Lambda functions within a Virtual Private Cloud (VPC) to control network access, enable private resource access, and isolate them from the public internet.
+  reference: AWS Lambda Security Best Practices, "Secure your Lambda functions"
+  command: 'aws lambda update-function-configuration --function-name <FUNCTION_NAME> --vpc-config SubnetIds=<SUBNET_ID_1>,<SUBNET_ID_2>,SecurityGroupIds=<SECURITY_GROUP_ID_1>'
+  premium:
+    attackPerspective: Lambda functions not configured within a VPC have direct access to the public internet, which can expose them to external threats if egress is not properly controlled. Malicious code injection or compromised dependencies could allow attackers to exfiltrate data or launch further attacks without network segmentation. Placing functions in a VPC allows for granular control using security groups and network ACLs, similar to EC2 instances, reducing the attack surface against serverless applications.
+    implementationNotes: |-
+      1. Identify the Lambda function(s) to be placed in a VPC.
+      2. Create or identify existing private subnets (at least two for high availability) and security groups within your VPC. The security groups should allow necessary egress (e.g., to S3 VPC Endpoint, DynamoDB, other internal services) and restrict ingress.
+      3. Ensure the Lambda execution role has the `AWSLambdaVPCAccessExecutionRole` managed policy or equivalent permissions to create and manage Elastic Network Interfaces (ENIs) in the VPC.
+      4. Update the Lambda function's configuration to associate it with the VPC:
+         `aws lambda update-function-configuration --function-name <FUNCTION_NAME> --vpc-config SubnetIds=<SUBNET_ID_1>,<SUBNET_ID_2>,SecurityGroupIds=<SECURITY_GROUP_ID_1>`
+      5. Test the function thoroughly after the change, especially its ability to reach necessary resources (databases, APIs).
+    validationNotes: |-
+      Run the following command to retrieve the function's VPC configuration:
+      `aws lambda get-function-configuration --function-name <FUNCTION_NAME> --query "VpcConfig"`
+
+      Expected output should show `SubnetIds`, `SecurityGroupIds`, and `VpcId` populated with your VPC details.
+    tuningNotes: Ensure the associated security groups and network ACLs are configured with the principle of least privilege. Remember that functions in a private VPC require VPC endpoints or NAT gateways to access public AWS services or the internet. Carefully plan your networking to avoid connectivity issues.
+    advancedDetection: |-
+      index=aws sourcetype=aws:cloudtrail eventName=UpdateFunctionConfiguration
+      | spath requestParameters.functionName
+      | spath requestParameters.vpcConfig.subnetIds{} as subnetIds
+      | spath requestParameters.vpcConfig.securityGroupIds{} as securityGroupIds
+      | where NOT isnotnull(subnetIds) OR NOT isnotnull(securityGroupIds)
+      | table _time, userIdentity.arn, functionName, subnetIds, securityGroupIds
+    relatedIds:
+    - aws-008
+    - aws-010
+  tags:
+  - lambda
+  - vpc
+  - network-security
+  - serverless
+  commandLanguage: bash
+  commandFull: |-
+    # Step 1: Replace <FUNCTION_NAME> with your Lambda function's name.
+    # Replace <SUBNET_ID_1>, <SUBNET_ID_2> with your private subnet IDs (at least two for resilience).
+    # Replace <SECURITY_GROUP_ID_1> with your security group ID that allows necessary egress.
+    FUNCTION_NAME="my-secure-lambda" # Example function name
+    SUBNET_ID_1="subnet-0abcdef1234567890" # Example subnet ID 1
+    SUBNET_ID_2="subnet-0fedcba9876543210" # Example subnet ID 2
+    SECURITY_GROUP_ID_1="sg-0123456789abcdef" # Example security group ID
+
+    # Step 2: Ensure your Lambda execution role has the 'AWSLambdaVPCAccessExecutionRole' managed policy attached.
+    # You can attach it via the IAM console or CLI:
+    # aws iam attach-role-policy --role-name <YOUR_LAMBDA_ROLE_NAME> --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+
+    # Step 3: Update the Lambda function's configuration to place it within the VPC.
+    echo "Updating Lambda function '$FUNCTION_NAME' to run within VPC..."
+    aws lambda update-function-configuration \
+      --function-name "$FUNCTION_NAME" \
+      --vpc-config "SubnetIds=$SUBNET_ID_1,$SUBNET_ID_2,SecurityGroupIds=$SECURITY_GROUP_ID_1"
+
+    # Step 4: Verify the function's VPC configuration.
+    echo "Verifying VPC configuration for Lambda function '$FUNCTION_NAME'..."
+    aws lambda get-function-configuration \
+      --function-name "$FUNCTION_NAME" \
+      --query "VpcConfig"
+
+    echo "Lambda VPC configuration update complete. Verify SubnetIds, SecurityGroupIds, and VpcId are correctly set."
+
+- id: az-009
+  platform: az
+  category: identity
+  severity: critical
+  title: Require MFA for all administrative users
+  description: Enforce multi-factor authentication for all users with administrative roles in Azure AD to prevent unauthorized access from compromised credentials.
+  reference: CIS Microsoft Azure Foundations Benchmark v1.4.0, 1.1.2
+  command: 'Azure AD Conditional Access Policy (Console Steps)'
+  premium:
+    attackPerspective: Credential theft is a primary vector for initial access by threat actors like APT29 (Cozy Bear) and FIN7. Without MFA, a compromised username and password for an administrative account in Azure AD can grant an attacker full control over the tenant, leading to widespread data breaches, resource destruction, or persistent access. Enforcing MFA significantly raises the bar for attackers by requiring an additional verification factor.
+    implementationNotes: |-
+      1. Navigate to the Azure portal and go to Azure Active Directory > Security > Conditional Access.
+      2. Click "New policy" to create a new Conditional Access policy.
+      3. Under "Users and groups":
+         a. Select "Include" > "Directory roles".
+         b. Choose roles like "Global Administrator", "User Administrator", "Privileged Role Administrator", "Security Administrator", and any other administrative roles.
+         c. Under "Exclude", add your emergency access / break-glass accounts.
+      4. Under "Cloud apps or actions": Select "Include" > "All cloud apps".
+      5. Under "Grant":
+         a. Select "Grant access".
+         b. Choose "Require multi-factor authentication".
+         c. Click "Select".
+      6. Under "Enable policy": Set to "On". (Consider "Report-only" first to evaluate impact).
+      7. Click "Create".
+    validationNotes: |-
+      1. Sign in with an administrative user account that should be covered by the policy. Verify that an MFA prompt appears during the sign-in process.
+      2. In Azure AD, navigate to "Monitoring" > "Sign-in logs".
+      3. Filter by the admin user account and review the "Authentication details" tab. Look for "MFA required" and "MFA satisfied".
+      4. In the Conditional Access blade, review the policy status to confirm it's "On".
+    tuningNotes: Exclude emergency access accounts (break-glass accounts) from this policy, ensuring they are highly secured and monitored. Be aware of potential conflicts with other Conditional Access policies. Test with a small group of admin users before broad deployment.
+    advancedDetection: |-
+      SigninLogs
+      | where ConditionalAccessPolicies has "Require multi-factor authentication"
+      | extend ResultDetails = tostring(parse_json(AuthenticationDetails)[0].authenticationResult)
+      | where ResultDetails == "MFA failed" or ResultDetails == "MFA interrupted"
+      | where tolower(UserPrincipalName) has ".onmicrosoft.com" or tolower(UserPrincipalName) has "@yourtenant.com" // Adjust to match your admin user naming conventions
+      | project TimeGenerated, UserPrincipalName, IPAddress, ConditionalAccessPolicies, ResultDetails, Status.failureReason
+    relatedIds:
+    - az-001
+    - az-002
+  tags:
+  - aad
+  - mfa
+  - identity
+  - access-management
+  commandLanguage: cli
+  commandFull: |-
+    # Azure AD Conditional Access Policy Configuration (Azure Portal Steps)
+
+    # Step 1: Navigate to Conditional Access
+    # Go to the Azure portal (portal.azure.com).
+    # Search for and select "Azure Active Directory".
+    # In the left-hand menu, under "Security", select "Conditional Access".
+
+    # Step 2: Create a New Policy
+    # Click "+ New policy" at the top.
+
+    # Step 3: Name Your Policy
+    # Give the policy a meaningful name, e.g., "Require MFA for Admin Users".
+
+    # Step 4: Configure Users and Groups
+    # Under "Assignments" -> "Users and groups":
+    #   a. Select "Include" tab.
+    #   b. Choose "Directory roles".
+    #   c. Select the administrative roles you want to target (e.g., Global Administrator, User Administrator, Privileged Role Administrator, Security Administrator).
+    #   d. Go to the "Exclude" tab.
+    #   e. Select "Users and groups" and add your designated emergency access / break-glass accounts (if any) to prevent lockout.
+
+    # Step 5: Configure Cloud Apps or Actions
+    # Under "Assignments" -> "Cloud apps or actions":
+    #   a. Select "Include" tab.
+    #   b. Choose "All cloud apps".
