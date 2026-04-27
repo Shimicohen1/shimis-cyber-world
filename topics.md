@@ -24,7 +24,7 @@ description: "Browse every cybersecurity topic covered on Shimi's Cyber World â€
   <h2>All topics ({{ tag_freq | size }})</h2>
   <div class="topic-cloud">
     {% for grp in tag_freq %}
-      <a href="/posts/?tag={{ grp.name | url_encode }}" rel="nofollow">{{ grp.name }} <span class="count">{{ grp.size }}</span></a>
+      <a href="/posts/?tag={{ grp.name | url_encode }}">{{ grp.name }} <span class="count">{{ grp.size }}</span></a>
     {% endfor %}
   </div>
 </div>

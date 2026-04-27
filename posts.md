@@ -33,11 +33,11 @@ permalink: /posts/
 
 <div class="archive">
   <div class="archive__list" id="feed-list">
-    {% assign non_cve = site.posts | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'CISA KEV'" | where_exp: "post", "post.channel != 'INCD'" | where_exp: "post", "post.section != 'vulnerabilities'" %}
+    {% assign visible_posts = site.posts | where_exp: "post", "post.hidden != true" %}
     {% assign ad_freq = site.data.monetization.feed_ads.frequency | default: 6 %}
     {% assign ad_items = site.data.monetization.feed_ads.items %}
     {% assign ad_count = ad_items | size %}
-    {% for post in non_cve %}
+    {% for post in visible_posts %}
     <div class="feed-entry" data-title="{{ post.title | downcase | escape }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-excerpt="{{ post.excerpt | strip_html | truncatewords: 20 | downcase | escape }}">
       {% include post-card.html %}
     </div>
@@ -50,7 +50,7 @@ permalink: /posts/
     {% endfor %}
   </div>
 
-  {% if non_cve.size == 0 %}
+  {% if visible_posts.size == 0 %}
   <div class="empty-state" style="margin-top: 2rem;">
     <p>Posts are incoming. The feed is warming up.</p>
   </div>
