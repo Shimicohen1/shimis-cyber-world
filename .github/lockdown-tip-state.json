@@ -1,5 +1,5 @@
 {
-  "tipNumber": 10,
+  "tipNumber": 11,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -10,7 +10,8 @@
     "lin-002",
     "win-002",
     "aws-002",
-    "az-002"
+    "az-002",
+    "lin-003"
   ],
   "round": 1,
   "history": [
@@ -112,6 +113,16 @@
       "linkedInId": "urn:li:share:7453718275881943040",
       "telegramMsgId": 850,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-002/"
+    },
+    {
+      "tipNumber": 11,
+      "id": "lin-003",
+      "platform": "linux",
+      "title": "Set password complexity and aging",
+      "date": "2026-04-27T09:25:10.416Z",
+      "linkedInId": "urn:li:share:7454460621661585409",
+      "telegramMsgId": 879,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-003/"
     }
   ]
 }
