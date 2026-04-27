@@ -22,46 +22,49 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: AI Guardrails Under Siege by Prompt Injection
-    text: Advanced AI systems, including Apple Intelligence, are vulnerable to prompt injection attacks.
-    detail: Researchers have demonstrated the ability to bypass AI guardrails through clever prompt engineering, posing a significant risk to the integrity and security of AI-powered features. Professionals should monitor evolving attack vectors and implement robust input validation and output filtering for AI integrations.
-    link: https://owasp.org/www-community/LLM_Security_Top_10
-    link_label: OWASP LLM Top 10
+  - title: AI Guardrails Vulnerable to Prompt Injection Attacks
+    text: Advanced AI systems, including Apple's 'Intelligence', are susceptible to prompt injection, bypassing security measures.
+    detail: Researchers have demonstrated that even sophisticated AI guardrails can be circumvented through clever prompt engineering. This highlights a critical emerging threat vector for AI-powered systems, requiring developers to implement more robust input validation and adversarial training. Stay vigilant for new bypass techniques and update AI models accordingly.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: LLM Top 10 Risks
     badge: signal
     tags:
       - ai-security
       - prompt-injection
       - threat-intel
-  - title: "Exploiting Legacy Software: Old Flaws Remain Critical"
-    text: New hybrid botnets are leveraging old Apache flaws, highlighting persistent software vulnerabilities.
-    detail: The emergence of sophisticated botnets exploiting long-known vulnerabilities in software like Apache underscores the ongoing risk of unpatched systems. Prioritize regular auditing and patching of all network-facing services, especially those with known, unmitigated vulnerabilities, to prevent compromise.
-    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=listing&query=apache
-    link_label: NVD Apache Vulnerabilities
+  - title: Exploit Kits Target Widely Used Software & Infrastructure
+    text: Zero-day exploits are actively being used in the wild against Adobe Reader and Windows OS.
+    detail: The active exploitation of zero-day vulnerabilities in Adobe Reader and Windows underscores the constant need for rapid patching and proactive threat hunting. Organizations must prioritize timely updates for critical software and monitor for indicators of compromise related to these or similar zero-days.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-001a
+    link_label: CISA Known Exploited Vulnerabilities
     badge: signal
     tags:
+      - zero-day
       - vulnerability
-      - botnet
-      - patch-management
-  - title: Supply Chain Attacks Target Popular Plugins
-    text: Compromised updates for WordPress and Joomla plugins are distributing backdoors.
-    detail: The hijacking of update mechanisms for popular plugins like Smart Slider 3 Pro demonstrates a critical supply chain risk. Organizations must implement strict controls on software updates, utilize integrity checks, and consider sandboxing or staged rollouts for third-party components.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
+      - exploit-kits
+      - threat-intel
+  - title: Supply Chain Attacks Targeting CMS Plugins Persist
+    text: Compromised WordPress and Joomla plugins are distributing backdoored updates via hijacked update mechanisms.
+    detail: The hijacking of legitimate plugin update channels, as seen with Smart Slider 3 Pro, represents a significant supply chain risk. Organizations should verify plugin integrity post-update and consider implementing strict application whitelisting or more granular update approval processes.
+    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Attacks
+    link_label: OWASP Supply Chain Risks
     badge: signal
     tags:
       - supply-chain
       - malware
-      - plugin-security
-  - title: "Phishing Evolves: C-Suite and Global Targets"
-    text: New 'VENOM' platform targets C-suite Microsoft logins, and nation-state actors target critical infrastructure.
-    detail: Sophisticated phishing-as-a-service platforms and state-sponsored campaigns are increasingly targeting high-value credentials and critical infrastructure. Enhance multi-factor authentication, conduct regular phishing awareness training, and monitor for targeted credential harvesting attempts against executive personnel.
-    link: https://www.cisa.gov/news-events/advisories/aa23-317a
-    link_label: CISA Phishing Advisory
+      - cms-security
+      - threat-intel
+  - title: Phishing-as-a-Service Platforms Evolve to Target Executives
+    text: New 'VENOM' PhaaS targets C-suite Microsoft credentials with sophisticated, selective campaigns.
+    detail: The emergence of advanced Phishing-as-a-Service platforms like VENOM, specifically targeting high-value executive accounts, demands enhanced user awareness training and robust multi-factor authentication. Organizations should review their defenses against targeted credential harvesting and spear-phishing attempts.
+    link: https://www.microsoft.com/en-us/security/blog/2023/11/15/new-phishing-as-a-service-venom-targets-microsoft-365-credentials/
+    link_label: Microsoft VENOM Analysis
     badge: signal
     tags:
       - phishing
+      - credential-theft
+      - microsoft-365
       - threat-intel
-      - credential-harvesting
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
