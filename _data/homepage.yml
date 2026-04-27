@@ -22,46 +22,46 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: "Exploit Diversity: Zero-Days in OS and Apps Persist"
-    text: Zero-day vulnerabilities continue to be actively exploited across operating systems and widely used applications.
-    detail: Recent reports highlight zero-days impacting Windows (BlueHammer) and Adobe Reader, underscoring the ongoing threat from unknown vulnerabilities. Professionals should prioritize patching known vulnerabilities and maintaining robust endpoint detection and response (EDR) solutions to mitigate risks from these novel exploits.
-    link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
-    link_label: Known Exploited Vulnerabilities Catalog
-    badge: signal
-    tags:
-      - threat-intel
-      - vulnerability
-      - zero-day
-  - title: "AI Guardrails Under Siege: Prompt Injection Risks Emerge"
-    text: AI systems, even with built-in defenses, are vulnerable to prompt injection attacks.
-    detail: The successful bypass of guardrails in Apple Intelligence demonstrates that sophisticated prompt injection techniques can manipulate AI behavior. Organizations integrating AI should implement robust input validation and monitor AI outputs for unexpected or malicious responses to prevent misuse.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+  - title: AI Guardrails Under Siege by Prompt Injection
+    text: Advanced AI systems, including Apple Intelligence, are vulnerable to prompt injection attacks.
+    detail: Researchers have demonstrated the ability to bypass AI guardrails through clever prompt engineering, posing a significant risk to the integrity and security of AI-powered features. Professionals should monitor evolving attack vectors and implement robust input validation and output filtering for AI integrations.
+    link: https://owasp.org/www-community/LLM_Security_Top_10
     link_label: OWASP LLM Top 10
     badge: signal
     tags:
-      - threat-intel
       - ai-security
       - prompt-injection
-  - title: Supply Chain Attacks Target Popular CMS Plugins
-    text: Compromised updates for widely used WordPress and Joomla plugins are a significant threat.
-    detail: The hijacking of Smart Slider 3 Pro updates highlights the persistent risk of supply chain attacks through third-party software. Teams should scrutinize plugin updates, maintain strict change control, and implement application whitelisting to prevent the introduction of backdoored code.
-    link: https://owasp.org/www-project-software-supply-chain-security/
-    link_label: OWASP Supply Chain Security
+      - threat-intel
+  - title: "Exploiting Legacy Software: Old Flaws Remain Critical"
+    text: New hybrid botnets are leveraging old Apache flaws, highlighting persistent software vulnerabilities.
+    detail: The emergence of sophisticated botnets exploiting long-known vulnerabilities in software like Apache underscores the ongoing risk of unpatched systems. Prioritize regular auditing and patching of all network-facing services, especially those with known, unmitigated vulnerabilities, to prevent compromise.
+    link: https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=listing&query=apache
+    link_label: NVD Apache Vulnerabilities
     badge: signal
     tags:
-      - threat-intel
+      - vulnerability
+      - botnet
+      - patch-management
+  - title: Supply Chain Attacks Target Popular Plugins
+    text: Compromised updates for WordPress and Joomla plugins are distributing backdoors.
+    detail: The hijacking of update mechanisms for popular plugins like Smart Slider 3 Pro demonstrates a critical supply chain risk. Organizations must implement strict controls on software updates, utilize integrity checks, and consider sandboxing or staged rollouts for third-party components.
+    link: https://owasp.org/www-project-software-component-analysis/
+    link_label: OWASP SCA Project
+    badge: signal
+    tags:
       - supply-chain
       - malware
-  - title: "APT Activity: Targeted Espionage and Financial Scams Persist"
-    text: Advanced Persistent Threats continue to engage in both state-sponsored espionage and financially motivated attacks.
-    detail: Reports on Fancy Bear APT's global reach and Russian GRU's router network disruption, alongside Storm-2755 targeting Canadian payrolls, illustrate the dual threat. Organizations must maintain strong access controls, monitor for unusual network activity, and implement comprehensive threat intelligence feeds.
-    link: https://attack.mitre.org/groups/
-    link_label: MITRE ATT&CK Groups
+      - plugin-security
+  - title: "Phishing Evolves: C-Suite and Global Targets"
+    text: New 'VENOM' platform targets C-suite Microsoft logins, and nation-state actors target critical infrastructure.
+    detail: Sophisticated phishing-as-a-service platforms and state-sponsored campaigns are increasingly targeting high-value credentials and critical infrastructure. Enhance multi-factor authentication, conduct regular phishing awareness training, and monitor for targeted credential harvesting attempts against executive personnel.
+    link: https://www.cisa.gov/news-events/advisories/aa23-317a
+    link_label: CISA Phishing Advisory
     badge: signal
     tags:
+      - phishing
       - threat-intel
-      - apt
-      - espionage
+      - credential-harvesting
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
