@@ -22,49 +22,46 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: New PhaaS platforms like VENOM are increasingly targeting high-value credentials, demanding advanced detection.
-    detail: The VENOM platform highlights a growing trend of sophisticated, specialized phishing-as-a-service operations. These platforms are designed to efficiently target and compromise high-value credentials, particularly C-suite Microsoft logins. Organizations must bolster email security and user awareness training to combat these evolving threats.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
-    link_label: Phishing Awareness Guide
-    badge: signal
-    tags:
-      - threat-intel
-      - phishing
-      - credentials
-  - title: IoT Botnets Exploit Evasion Tactics
-    text: Emerging botnets like Masjesu are stealthily targeting IoT devices, employing advanced evasion techniques.
-    detail: The Masjesu botnet exemplifies a concerning trend in IoT security, where new threats are specifically designed to evade detection by avoiding common scanning patterns. This necessitates proactive network segmentation and continuous monitoring for anomalous device behavior to protect against widespread compromise.
-    link: https://www.cisa.gov/news-events/directives/ics-advisory-22-348-01
-    link_label: IoT Security Guidance
-    badge: signal
-    tags:
-      - threat-intel
-      - malware
-      - iot
-      - botnet
-  - title: Supply Chain Attacks Target Plugin Updates
-    text: Attackers are hijacking legitimate update mechanisms for popular plugins like Smart Slider.
-    detail: The compromise of Smart Slider's update process demonstrates a significant supply chain risk. By injecting backdoored versions through official channels, attackers bypass traditional security perimeters. Regularly verifying plugin integrity and maintaining strict update policies are crucial mitigation steps.
-    link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: Supply Chain Security Best Practices
-    badge: signal
-    tags:
-      - threat-intel
-      - supply-chain
-      - malware
-      - vulnerability
-  - title: Zero-Day Exploits Focus on Widely Used Software
-    text: Zero-day vulnerabilities are actively exploited in Adobe Reader and Windows, underscoring patching urgency.
-    detail: The active exploitation of zero-day flaws in widely used software like Adobe Reader and Windows (e.g., BlueHammer) highlights the critical need for rapid patching and robust endpoint detection. Relying solely on vendor patches is insufficient; proactive threat hunting and exploit mitigation are essential.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2023-21839
-    link_label: Adobe Reader Vulnerability Analysis
+  - title: "Exploit Diversity: Zero-Days in OS and Apps Persist"
+    text: Zero-day vulnerabilities continue to be actively exploited across operating systems and widely used applications.
+    detail: Recent reports highlight zero-days impacting Windows (BlueHammer) and Adobe Reader, underscoring the ongoing threat from unknown vulnerabilities. Professionals should prioritize patching known vulnerabilities and maintaining robust endpoint detection and response (EDR) solutions to mitigate risks from these novel exploits.
+    link: https://www.cisa.gov/news-events/directives/known-exploited-vulnerabilities-catalog
+    link_label: Known Exploited Vulnerabilities Catalog
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-      - patching
+  - title: "AI Guardrails Under Siege: Prompt Injection Risks Emerge"
+    text: AI systems, even with built-in defenses, are vulnerable to prompt injection attacks.
+    detail: The successful bypass of guardrails in Apple Intelligence demonstrates that sophisticated prompt injection techniques can manipulate AI behavior. Organizations integrating AI should implement robust input validation and monitor AI outputs for unexpected or malicious responses to prevent misuse.
+    link: https://owasp.org/www-project-top-10-for-large-language-applications/
+    link_label: OWASP LLM Top 10
+    badge: signal
+    tags:
+      - threat-intel
+      - ai-security
+      - prompt-injection
+  - title: Supply Chain Attacks Target Popular CMS Plugins
+    text: Compromised updates for widely used WordPress and Joomla plugins are a significant threat.
+    detail: The hijacking of Smart Slider 3 Pro updates highlights the persistent risk of supply chain attacks through third-party software. Teams should scrutinize plugin updates, maintain strict change control, and implement application whitelisting to prevent the introduction of backdoored code.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: OWASP Supply Chain Security
+    badge: signal
+    tags:
+      - threat-intel
+      - supply-chain
+      - malware
+  - title: "APT Activity: Targeted Espionage and Financial Scams Persist"
+    text: Advanced Persistent Threats continue to engage in both state-sponsored espionage and financially motivated attacks.
+    detail: Reports on Fancy Bear APT's global reach and Russian GRU's router network disruption, alongside Storm-2755 targeting Canadian payrolls, illustrate the dual threat. Organizations must maintain strong access controls, monitor for unusual network activity, and implement comprehensive threat intelligence feeds.
+    link: https://attack.mitre.org/groups/
+    link_label: MITRE ATT&CK Groups
+    badge: signal
+    tags:
+      - threat-intel
+      - apt
+      - espionage
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
