@@ -1,5 +1,5 @@
 {
-  "tipNumber": 11,
+  "tipNumber": 12,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -11,7 +11,8 @@
     "win-002",
     "aws-002",
     "az-002",
-    "lin-003"
+    "lin-003",
+    "win-003"
   ],
   "round": 1,
   "history": [
@@ -123,6 +124,16 @@
       "linkedInId": "urn:li:share:7454460987874693121",
       "telegramMsgId": 880,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-003/"
+    },
+    {
+      "tipNumber": 12,
+      "id": "win-003",
+      "platform": "windows",
+      "title": "Require NTLMv2 and refuse LM/NTLMv1",
+      "date": "2026-04-28T15:40:14.357Z",
+      "linkedInId": "urn:li:share:7454917398106693632",
+      "telegramMsgId": 945,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-003/"
     }
   ]
 }
