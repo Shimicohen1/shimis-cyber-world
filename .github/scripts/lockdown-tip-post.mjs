@@ -834,7 +834,7 @@ function commitAndPushSitePost(filepath, tip, tipNumber) {
   }
 }
 
-async function waitForLive(url, { maxSeconds = 300, intervalSeconds = 15 } = {}) {
+async function waitForLive(url, { maxSeconds = 720, intervalSeconds = 15 } = {}) {
   console.log(`⏳ Waiting for ${url} to go live...`);
   const deadline = Date.now() + maxSeconds * 1000;
   let attempt = 0;
@@ -1031,12 +1031,16 @@ async function main() {
     console.log('   ✓ committed & pushed');
 
     const live = await waitForLive(sitePost.postUrl);
-    if (!live) {
-      console.error(`❌ Site post never went live: ${sitePost.postUrl} — aborting`);
-      process.exit(1);
-    }
     siteUrl = sitePost.postUrl;
-    console.log(`   ✓ live at ${siteUrl}`);
+    if (!live) {
+      // GitHub Pages legacy builds are sometimes slow (6–12 min). The post WAS
+      // committed and pushed, so the URL will be live within minutes. Posting to
+      // LinkedIn now with a URL that is briefly 404 is much better than skipping
+      // the daily LinkedIn post entirely — by the time anyone clicks, it's live.
+      console.warn(`⚠️  Site URL ${siteUrl} not live yet — proceeding to social post anyway (Pages will catch up).`);
+    } else {
+      console.log(`   ✓ live at ${siteUrl}`);
+    }
 
     // Rewrite the social text so the primary CTA points at the site post,
     // with the hardening checklist as the secondary deep-link.
