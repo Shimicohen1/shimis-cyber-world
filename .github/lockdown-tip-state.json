@@ -1,5 +1,5 @@
 {
-  "tipNumber": 12,
+  "tipNumber": 13,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -12,7 +12,8 @@
     "aws-002",
     "az-002",
     "lin-003",
-    "win-003"
+    "win-003",
+    "aws-003"
   ],
   "round": 1,
   "history": [
@@ -134,6 +135,16 @@
       "linkedInId": "urn:li:share:7454917398106693632",
       "telegramMsgId": 945,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-003/"
+    },
+    {
+      "tipNumber": 13,
+      "id": "aws-003",
+      "platform": "aws",
+      "title": "Enforce MFA for IAM users",
+      "date": "2026-04-29T09:27:32.965Z",
+      "linkedInId": "urn:li:share:7455185994712064000",
+      "telegramMsgId": 962,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-003/"
     }
   ]
 }
