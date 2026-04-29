@@ -22,46 +22,46 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: "Malware Evolves: From Stealth to Bold Tactics"
-    text: Malware is shifting tactics, moving from stealthy approaches to more brazen and direct attack methods.
-    detail: Observe the evolution of malware like ClickFix on macOS, which has ditched stealth for bolder distribution. This trend suggests attackers are becoming more confident in their ability to evade detection. Cybersecurity professionals should prioritize robust endpoint detection and response (EDR) solutions and stay vigilant against new, less subtle infection vectors.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/malware-awareness-month
-    link_label: Malware Awareness
-    badge: signal
-    tags:
-      - malware
-      - threat-evolution
-      - macos
   - title: "AI Guardrails Under Siege: Prompt Injection Risks"
-    text: Sophisticated prompt injection attacks are bypassing AI guardrails, posing new security challenges.
-    detail: The successful bypassing of AI guardrails in systems like Apple Intelligence highlights a critical vulnerability. Attackers can manipulate AI models through clever prompt engineering, leading to unintended outputs or breaches of sensitive information. Organizations deploying AI must implement rigorous input validation and continuously monitor AI behavior for anomalies.
+    text: AI systems, including Apple's Intelligence, are vulnerable to prompt injection attacks.
+    detail: Researchers have demonstrated successful bypasses of AI guardrails using clever prompt injection techniques. This highlights a critical emerging threat vector for AI-powered systems, demanding robust input validation and ongoing monitoring to prevent unauthorized actions or data exfiltration. Prioritize security testing for AI implementations.
     link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: LLM Security Risks
+    link_label: LLM Top 10 Risks
     badge: signal
     tags:
-      - ai-security
-      - prompt-injection
+      - ai
       - vulnerability
-  - title: Supply Chain Attacks Target Popular Plugins
-    text: Attackers are hijacking update mechanisms of widely used plugins, injecting backdoors.
-    detail: The hijacking of Smart Slider 3 Pro's update mechanism for WordPress and Joomla demonstrates a significant supply chain risk. This tactic allows attackers to distribute malicious code through trusted channels, compromising numerous end-users. It's crucial for organizations to implement strict software vetting and monitor update sources for suspicious activity.
-    link: https://www.cisa.gov/news-events/advisories/aa23-281a
-    link_label: Supply Chain Guidance
+      - threat-intel
+  - title: Zero-Days Abound in Widely Used Software
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows is a growing concern.
+    detail: The emergence of 'BlueHammer' zero-day exploits for Windows and actively exploited Adobe Reader flaws underscore the persistent risk of unknown vulnerabilities. Organizations must maintain robust patch management and threat hunting capabilities to detect and respond to these novel threats before widespread compromise.
+    link: https://www.cisa.gov/news-events/advisories/known-exploited-vulnerabilities-catalog
+    link_label: CISA Known Exploited Vulnerabilities
+    badge: signal
+    tags:
+      - vulnerability
+      - zero-day
+      - threat-intel
+  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
+    text: New 'VENOM' platform targets C-suite Microsoft logins via phishing-as-a-service.
+    detail: The VENOM platform represents a concerning evolution in targeted phishing, specifically aiming for high-value Microsoft credentials of executives. The rise of sophisticated PhaaS tools lowers the barrier for attackers, necessitating enhanced endpoint detection, user awareness training, and multi-factor authentication for critical accounts.
+    link: https://www.microsoft.com/en-us/security/blog/2023/11/16/new-phishing-as-a-service-platform-targets-microsoft-365-users/
+    link_label: Microsoft Threat Analysis
+    badge: signal
+    tags:
+      - phishing
+      - microsoft
+      - threat-intel
+  - title: Supply Chain Attacks Target Software Updates
+    text: Hijacked Smart Slider updates delivered backdoored WordPress/Joomla plugins.
+    detail: The compromise of Smart Slider 3 Pro's update mechanism highlights a critical supply chain risk. Attackers are injecting backdoors through trusted update channels, impacting users of popular CMS platforms. Organizations must scrutinize software updates and implement strong verification processes for third-party components.
+    link: https://owasp.org/www-community/Supply_Chain_Attacks
+    link_label: OWASP Supply Chain Risks
     badge: signal
     tags:
       - supply-chain
-      - plugin-security
       - malware
-  - title: "Zero-Days Persist: Exploits in the Wild"
-    text: Zero-day vulnerabilities in widespread software continue to be actively exploited.
-    detail: The active exploitation of zero-day flaws in Adobe Reader and Windows (BlueHammer) underscore the persistent threat of unknown vulnerabilities. These exploits bypass traditional signature-based defenses, making proactive threat hunting and rapid patching critical. Users must apply vendor updates immediately upon release and employ advanced threat detection.
-    link: https://www.cisa.gov/news-events/advisories/aa22-309a
-    link_label: Exploit Mitigation
-    badge: signal
-    tags:
-      - zero-day
-      - vulnerability
-      - exploit
+      - threat-intel
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
