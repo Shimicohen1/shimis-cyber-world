@@ -1,0 +1,95 @@
+---
+title: "SAP npm Packages Compromised by \"Mini Shai-Hulud\" Credential Stealing Malware"
+date: 2026-04-29 16:26:00 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability, malware, cloud, identity]
+excerpt: "A new supply chain attack campaign, dubbed \"mini Shai-Hulud,\" is actively targeting SAP-related npm packages with credential-stealing malware. The Hacker News reports that this cam"
+summary: "A new supply chain attack campaign, dubbed \"mini Shai-Hulud,\" is actively targeting SAP-related npm packages with credential-stealing malware. The Hacker News reports that this campaign impacts packages associated with SAP's JavaScript and cloud application ecosystem. This isn't just a theoretical t"
+layout: post
+section: vulnerabilities
+score: HIGH
+curated: false
+featured: false
+priority: 75
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-032.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-032.png"
+source_url: "https://thehackernews.com/2026/04/sap-npm-packages-compromised-by-mini.html"
+tlp: "TLP:CLEAR"
+event_type: "supply-chain"
+organizations:
+  - name: "SAP"
+    domain: "sap.com"
+    role: "vendor"
+  - name: "Aikido Security"
+    domain: "aikido.security"
+    role: "research"
+  - name: "SafeDep"
+    domain: "safedep.io"
+    role: "research"
+  - name: "Socket"
+    domain: "socket.dev"
+    role: "research"
+  - name: "StepSecurity"
+    domain: "stepsecurity.io"
+    role: "research"
+  - name: "Wiz"
+    domain: "wiz.io"
+    role: "research"
+  - name: "Google"
+    domain: "google.com"
+    role: "vendor"
+malware_families:
+  - "Shai-Hulud"
+iocs:
+  - id: "Mini-Shai-Hulud"
+    type: "Supply Chain Attack"
+    indicator: "SAP-related npm Packages"
+  - id: "Mini-Shai-Hulud"
+    type: "Credential Stealing"
+    indicator: "Malware named 'mini Shai-Hulud'"
+  - id: "Mini-Shai-Hulud"
+    type: "Information Disclosure"
+    indicator: "Credentials stolen from SAP JavaScript and cloud application npm packages"
+mitre_attack:
+  - id: "T1195.002"
+    name: "Compromise Software Supply Chain"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1195/002/"
+  - id: "T1078.004"
+    name: "Cloud Accounts"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1078/004/"
+  - id: "T1555.003"
+    name: "Credentials from Web Browsers"
+    tactic: "Credential Access"
+    url: "https://attack.mitre.org/techniques/T1555/003/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Supply Chain Compromise: SAP npm Packages - Mini Shai-Hulud"
+  preview_level: "critical"
+  preview_technique: "T1071.004"
+  preview_tactic: "Command and Control"
+  preview_yaml_b64: "dGl0bGU6IFN1cHBseSBDaGFpbiBDb21wcm9taXNlOiBTQVAgbnBtIFBhY2thZ2VzIC0gTWluaSBTaGFpLUh1bHVkCmlkOiBzY3ctMjAyNi0wNC0yOS1haS0xCnN0YXR1czogZXhwZXJpbWVudGFsCmxldmVsOiBjcml0aWNhbApkZXNjcmlwdGlvbjogfAogIERldGVjdHMgdGhlIHVzZSBvZiBucG0gdG8gaW5zdGFsbCBwYWNrYWdlcyB0aGF0IGFyZSBrbm93biB0byBiZSBjb21wcm9taXNlZCBieSB0aGUgJ01pbmkgU2hhaS1IdWx1ZCcgY2FtcGFpZ24sIHNwZWNpZmljYWxseSB0YXJnZXRpbmcgU0FQLXJlbGF0ZWQgcGFja2FnZXMgYW5kIHJlZmVyZW5jaW5nIHRoZSBzZWN1cml0eSByZXNlYXJjaCBmaXJtcyB0aGF0IGlkZW50aWZpZWQgdGhlIHRocmVhdC4gVGhpcyBydWxlIGFpbXMgdG8gaWRlbnRpZnkgdGhlIGluaXRpYWwgY29tcHJvbWlzZSB2ZWN0b3IgYnkgb2JzZXJ2aW5nIHRoZSBpbnN0YWxsYXRpb24gb2YgdGhlc2UgbWFsaWNpb3VzIGRlcGVuZGVuY2llcy4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNC0yOQpyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNC0yOS1zYXAtbnBtLXBhY2thZ2VzLWNvbXByb21pc2VkLWJ5LW1pbmktc2hhaS1odWx1ZC1jcmVkZW50aWFsLTRzYzAzCnRhZ3M6CiAgLSBhdHRhY2suY29tbWFuZF9hbmRfY29udHJvbAogIC0gYXR0YWNrLnQxMDcxLjAwNApsb2dzb3VyY2U6CiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvbgpkZXRlY3Rpb246CiAgc2VsZWN0aW9uOgogICAgICBJbWFnZXxjb250YWluczoKICAgICAgICAgIC0gJ25wbScKICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6CiAgICAgICAgICAtICdpbnN0YWxsJwogICAgICBDb21tYW5kTGluZXxjb250YWluczoKICAgICAgICAgIC0gJ0BzYXAvJwogICAgICBDb21tYW5kTGluZXxjb250YWluczoKICAgICAgICAgIC0gJ2Fpa2lkbycKICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6CiAgICAgICAgICAtICdzYWZlZGVwJwogICAgICBDb21tYW5kTGluZXxjb250YWluczoKICAgICAgICAgIC0gJ3NvY2tldC5kZXYnCiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOgogICAgICAgICAgLSAnc3RlcHNlY3VyaXR5LmlvJwogICAgICBDb21tYW5kTGluZXxjb250YWluczoKICAgICAgICAgIC0gJ3dpei5pbycKICBjb25kaXRpb246IHNlbGVjdGlvbgpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJTdXBwbHkgQ2hhaW4gQ29tcHJvbWlzZTogU0FQIG5wbSBQYWNrYWdlcyAtIE1pbmkgU2hhaS1IdWx1ZCIsImxldmVsIjoiY3JpdGljYWwiLCJ0ZWNobmlxdWUiOiJUMTA3MS4wMDQiLCJ0YWN0aWMiOiJDb21tYW5kIGFuZCBDb250cm9sIiwidGllciI6ImZyZWUiLCJ5YW1sIjoidGl0bGU6IFN1cHBseSBDaGFpbiBDb21wcm9taXNlOiBTQVAgbnBtIFBhY2thZ2VzIC0gTWluaSBTaGFpLUh1bHVkXG5pZDogc2N3LTIwMjYtMDQtMjktYWktMVxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBjcml0aWNhbFxuZGVzY3JpcHRpb246IHxcbiAgRGV0ZWN0cyB0aGUgdXNlIG9mIG5wbSB0byBpbnN0YWxsIHBhY2thZ2VzIHRoYXQgYXJlIGtub3duIHRvIGJlIGNvbXByb21pc2VkIGJ5IHRoZSAnTWluaSBTaGFpLUh1bHVkJyBjYW1wYWlnbiwgc3BlY2lmaWNhbGx5IHRhcmdldGluZyBTQVAtcmVsYXRlZCBwYWNrYWdlcyBhbmQgcmVmZXJlbmNpbmcgdGhlIHNlY3VyaXR5IHJlc2VhcmNoIGZpcm1zIHRoYXQgaWRlbnRpZmllZCB0aGUgdGhyZWF0LiBUaGlzIHJ1bGUgYWltcyB0byBpZGVudGlmeSB0aGUgaW5pdGlhbCBjb21wcm9taXNlIHZlY3RvciBieSBvYnNlcnZpbmcgdGhlIGluc3RhbGxhdGlvbiBvZiB0aGVzZSBtYWxpY2lvdXMgZGVwZW5kZW5jaWVzLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDQtMjlcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNC0yOS1zYXAtbnBtLXBhY2thZ2VzLWNvbXByb21pc2VkLWJ5LW1pbmktc2hhaS1odWx1ZC1jcmVkZW50aWFsLTRzYzAzXG50YWdzOlxuICAtIGF0dGFjay5jb21tYW5kX2FuZF9jb250cm9sXG4gIC0gYXR0YWNrLnQxMDcxLjAwNFxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBwcm9jZXNzX2NyZWF0aW9uXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIEltYWdlfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ25wbSdcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2luc3RhbGwnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICdAc2FwLydcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2Fpa2lkbydcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ3NhZmVkZXAnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICdzb2NrZXQuZGV2J1xuICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6XG4gICAgICAgICAgLSAnc3RlcHNlY3VyaXR5LmlvJ1xuICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6XG4gICAgICAgICAgLSAnd2l6LmlvJ1xuICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJTdXBwbHkgQ2hhaW4gQ29tcHJvbWlzZTogTWFsaWNpb3VzIENvZGUgRXhlY3V0aW9uIGluIFNBUCBucG0gUGFja2FnZXMiLCJsZXZlbCI6ImNyaXRpY2FsIiwidGVjaG5pcXVlIjoiVDEwNzEuMDA0IiwidGFjdGljIjoiQ29tbWFuZCBhbmQgQ29udHJvbCIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBTdXBwbHkgQ2hhaW4gQ29tcHJvbWlzZTogTWFsaWNpb3VzIENvZGUgRXhlY3V0aW9uIGluIFNBUCBucG0gUGFja2FnZXNcbmlkOiBzY3ctMjAyNi0wNC0yOS1haS0yXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGNyaXRpY2FsXG5kZXNjcmlwdGlvbjogfFxuICBUaGlzIHJ1bGUgZGV0ZWN0cyBwb3RlbnRpYWwgbWFsaWNpb3VzIGNvZGUgZXhlY3V0aW9uIGR1cmluZyB0aGUgaW5zdGFsbGF0aW9uIG9mIFNBUC1yZWxhdGVkIG5wbSBwYWNrYWdlcy4gVGhlICdNaW5pIFNoYWktSHVsdWQnIGNhbXBhaWduIGluamVjdHMgbWFsaWNpb3VzIGNvZGUgdGhhdCBjYW4gYmUgdHJpZ2dlcmVkIGR1cmluZyB0aGUgaW5zdGFsbGF0aW9uIHByb2Nlc3MuIE9ic2VydmluZyAnbm9kZScgcHJvY2Vzc2VzIHdpdGggc3BlY2lmaWMgY29tbWFuZC1saW5lIGFyZ3VtZW50cyByZWxhdGVkIHRvIHBhY2thZ2UgaW5zdGFsbGF0aW9uIGFuZCBTQVAgcGFja2FnZXMgY2FuIGluZGljYXRlIHRoaXMgY29tcHJvbWlzZS5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA0LTI5XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDQtMjktc2FwLW5wbS1wYWNrYWdlcy1jb21wcm9taXNlZC1ieS1taW5pLXNoYWktaHVsdWQtY3JlZGVudGlhbC00c2MwM1xudGFnczpcbiAgLSBhdHRhY2suY29tbWFuZF9hbmRfY29udHJvbFxuICAtIGF0dGFjay50MTA3MS4wMDRcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvblxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBJbWFnZXxjb250YWluczpcbiAgICAgICAgICAtICdub2RlJ1xuICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6XG4gICAgICAgICAgLSAnaW5zdGFsbCdcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy0tc2NyaXB0cy1wcmVwZW5kLXRvLXBhdGgnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICdAc2FwLydcbiAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiU3VwcGx5IENoYWluIENvbXByb21pc2U6IFBvdGVudGlhbCBDcmVkZW50aWFsIEFjY2VzcyB2aWEgU0FQIG5wbSBQYWNrYWdlcyIsImxldmVsIjoiY3JpdGljYWwiLCJ0ZWNobmlxdWUiOiJUMTA3MS4wMDQiLCJ0YWN0aWMiOiJDb21tYW5kIGFuZCBDb250cm9sIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IFN1cHBseSBDaGFpbiBDb21wcm9taXNlOiBQb3RlbnRpYWwgQ3JlZGVudGlhbCBBY2Nlc3MgdmlhIFNBUCBucG0gUGFja2FnZXNcbmlkOiBzY3ctMjAyNi0wNC0yOS1haS0zXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGNyaXRpY2FsXG5kZXNjcmlwdGlvbjogfFxuICBEZXRlY3RzIHRoZSBpbnN0YWxsYXRpb24gb2YgU0FQIG5wbSBwYWNrYWdlcyB3aXRoIHRoZSAnLS11bnNhZmUtcGVybScgZmxhZywgd2hpY2ggaXMgb2Z0ZW4gdXNlZCB0byBieXBhc3MgcGVybWlzc2lvbiByZXN0cmljdGlvbnMgYW5kIGNhbiBiZSBleHBsb2l0ZWQgYnkgbWFsd2FyZSB0byBleGVjdXRlIGFyYml0cmFyeSBjb2RlLiBUaGUgJ01pbmkgU2hhaS1IdWx1ZCcgY2FtcGFpZ24gbGV2ZXJhZ2VzIHN1Y2ggdGVjaG5pcXVlcyB0byBzdGVhbCBjcmVkZW50aWFscy4gVGhpcyBydWxlIGhlbHBzIGlkZW50aWZ5IHBvdGVudGlhbCBjcmVkZW50aWFsIGFjY2VzcyBhdHRlbXB0cyBkdXJpbmcgdGhlIGluc3RhbGxhdGlvbiBvZiBjb21wcm9taXNlZCBTQVAgZGVwZW5kZW5jaWVzLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDQtMjlcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNC0yOS1zYXAtbnBtLXBhY2thZ2VzLWNvbXByb21pc2VkLWJ5LW1pbmktc2hhaS1odWx1ZC1jcmVkZW50aWFsLTRzYzAzXG50YWdzOlxuICAtIGF0dGFjay5jb21tYW5kX2FuZF9jb250cm9sXG4gIC0gYXR0YWNrLnQxMDcxLjAwNFxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBwcm9jZXNzX2NyZWF0aW9uXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIEltYWdlfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ25vZGUnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICducG0nXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICdpbnN0YWxsJ1xuICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6XG4gICAgICAgICAgLSAnLS11bnNhZmUtcGVybSdcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ0BzYXAvJ1xuICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9XQ=="
+why_it_matters:
+  - "If your organization develops with or uses SAP-related JavaScript and cloud application npm packages, you need to immediately audit your dependencies. Identify any packages that could be affected by the \"mini Shai-Hulud\" campaign. Review build logs for suspicious activity and rotate any credentials that might have been exposed during the build process. This isn't a drill; assume compromise until proven otherwise."
+bot_cta_title: "Check for SAP Supply Chain Threat Intel"
+bot_cta_description: "Use /brief to get an analyst-ready summary of recent supply chain threats, including those targeting SAP dependencies."
+---
+
+A new supply chain attack campaign, dubbed "mini Shai-Hulud," is actively targeting SAP-related npm packages with credential-stealing malware. The Hacker News reports that this campaign impacts packages associated with SAP's JavaScript and cloud application ecosystem. This isn't just a theoretical threat; it's a direct assault on the build and deployment pipelines of organizations reliant on SAP development.
+
+Researchers from Aikido Security, SafeDep, Socket, StepSecurity, and Google-owned Wiz have all confirmed the compromise. The attackers are clearly leveraging the trust inherent in developer dependencies, a common but highly effective vector. By injecting malicious code into widely used npm packages, they gain access to sensitive credentials, which can then be used to pivot deeper into development environments, cloud infrastructure, or even production systems.
+
+This campaign underscores the critical need for robust supply chain security. Defenders must assume that any third-party dependency, no matter how reputable, can become a conduit for compromise. The attacker's calculus here is simple: target the weakest link in the software delivery chain to achieve maximum impact with minimal effort. This isn't about sophisticated zero-days; it's about exploiting trust and poor hygiene.
