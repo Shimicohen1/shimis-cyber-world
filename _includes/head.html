@@ -32,6 +32,37 @@
 <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="{{ '/feed.xml' | absolute_url }}">
 <link rel="canonical" href="{{ page.url | absolute_url }}">
 
+{%- comment -%}── Low-value content gate (AdSense + SEO compliance) ──
+  Legacy Telegram-mirror posts (thin, ~3-word body) and daily-digest list pages
+  fail Google Publisher Policy "Inventory value → replicated content without
+  added value". We mark them noindex,follow so Google stops indexing them and
+  AdSense stops counting them as low-value inventory, while still following
+  internal links so the rest of the site keeps its link graph.
+
+  EXEMPTIONS (a Telegram post stays indexable + ad-eligible if ANY of):
+    • ai_rewritten: true            (engine added original commentary)
+    • enriched: true                (weekly enrichment added analysis)
+    • summary length >= 200 chars   (substantive original summary)
+  Pages can also opt-in via `noindex: true` in front matter (already used
+  by /auth/signin/).
+  Note: do NOT use `content | strip_html` here — in head.html `content` is the
+  full rendered template (chrome, related posts, footer) and would falsely
+  exempt every page.
+{%- endcomment -%}
+{%- assign _scw_noindex = false -%}
+{%- if page.noindex == true -%}{%- assign _scw_noindex = true -%}{%- endif -%}
+{%- if page.url contains 'daily-digest' -%}{%- assign _scw_noindex = true -%}{%- endif -%}
+{%- if page.source == 'Telegram' -%}
+  {%- assign _scw_thin = true -%}
+  {%- if page.ai_rewritten == true -%}{%- assign _scw_thin = false -%}{%- endif -%}
+  {%- if page.enriched == true -%}{%- assign _scw_thin = false -%}{%- endif -%}
+  {%- assign _summary_len = page.summary | default: '' | strip | size -%}
+  {%- if _summary_len >= 200 -%}{%- assign _scw_thin = false -%}{%- endif -%}
+  {%- if _scw_thin -%}{%- assign _scw_noindex = true -%}{%- endif -%}
+{%- endif -%}
+{%- if _scw_noindex -%}<meta name="robots" content="noindex,follow">
+{%- endif -%}
+
 {% comment %}── Structured Data for Google ──{% endcomment %}
 {% if page.layout == 'post' %}
 {% comment %}── Use NewsArticle for fresh news/vuln posts (better Google News surfacing); fallback Article for evergreen ──{% endcomment %}

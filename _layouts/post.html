@@ -431,8 +431,18 @@ layout: default
     {% assign _related_posts = _rel %}
     {% endif %}
 
-    {% comment %}── Mid-Post AdSense Slot ──{% endcomment %}
-    {% include ad-slot.html type="adsense" slot="post-mid" %}
+    {% comment %}── Mid-Post AdSense Slot (skip on thin legacy posts for AdSense policy compliance) ──{% endcomment %}
+    {%- assign _scw_show_ads = true -%}
+    {%- if page.source == 'Telegram' -%}
+      {%- assign _scw_show_ads = false -%}
+      {%- if page.ai_rewritten == true -%}{%- assign _scw_show_ads = true -%}{%- endif -%}
+      {%- if page.enriched == true -%}{%- assign _scw_show_ads = true -%}{%- endif -%}
+      {%- assign _ads_summary_len = page.summary | default: '' | strip | size -%}
+      {%- if _ads_summary_len >= 200 -%}{%- assign _scw_show_ads = true -%}{%- endif -%}
+    {%- endif -%}
+    {%- if page.url contains 'daily-digest' -%}{%- assign _scw_show_ads = false -%}{%- endif -%}
+    {%- if page.noindex == true -%}{%- assign _scw_show_ads = false -%}{%- endif -%}
+    {% if _scw_show_ads %}{% include ad-slot.html type="adsense" slot="post-mid" %}{% endif %}
 
     {% comment %}── Attribution & Disclaimer ──{% endcomment %}
     {% if page.curated %}
