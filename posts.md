@@ -33,7 +33,9 @@ permalink: /posts/
 
 <div class="archive">
   <div class="archive__list" id="feed-list">
-    {% assign visible_posts = site.posts | where_exp: "post", "post.hidden != true" %}
+    {% assign all_visible = site.posts | where_exp: "post", "post.hidden != true" %}
+    {% comment %} Exclude CVE/NVD/INCD/KEV — those have their own dedicated /vulnerabilities/ page. /posts/ is for editorial, news & community content. {% endcomment %}
+    {% assign visible_posts = all_visible | where_exp: "post", "post.channel != 'NVD'" | where_exp: "post", "post.channel != 'CVE Notify'" | where_exp: "post", "post.channel != 'CISA KEV'" | where_exp: "post", "post.channel != 'INCD'" | where_exp: "post", "post.section != 'vulnerabilities'" %}
     {% assign ad_freq = site.data.monetization.feed_ads.frequency | default: 6 %}
     {% assign ad_items = site.data.monetization.feed_ads.items %}
     {% assign ad_count = ad_items | size %}
