@@ -1,5 +1,5 @@
 {
-  "tipNumber": 13,
+  "tipNumber": 14,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -13,7 +13,8 @@
     "az-002",
     "lin-003",
     "win-003",
-    "aws-003"
+    "aws-003",
+    "az-003"
   ],
   "round": 1,
   "history": [
@@ -145,6 +146,16 @@
       "linkedInId": "urn:li:share:7455185994712064000",
       "telegramMsgId": 962,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-003/"
+    },
+    {
+      "tipNumber": 14,
+      "id": "az-003",
+      "platform": "azure",
+      "title": "Enable Privileged Identity Management (PIM)",
+      "date": "2026-04-30T09:33:45.529Z",
+      "linkedInId": "urn:li:share:7455549947380166657",
+      "telegramMsgId": 988,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-003/"
     }
   ]
 }
