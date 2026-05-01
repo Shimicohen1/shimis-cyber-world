@@ -1,0 +1,83 @@
+---
+title: "Facebook Accounts Hacked via Google AppSheet Phishing Campaign"
+date: 2026-05-01 18:09:00 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability, phishing]
+excerpt: "A Vietnamese-linked operation, dubbed \"AccountDumpling\" by Guardio, has compromised approximately 30,000 Facebook accounts. The Hacker News reports that attackers are leveraging Go"
+summary: "A Vietnamese-linked operation, dubbed \"AccountDumpling\" by Guardio, has compromised approximately 30,000 Facebook accounts. The Hacker News reports that attackers are leveraging Google AppSheet as a \"phishing relay\" to distribute malicious emails designed to steal Facebook credentials. This sophisti"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-022.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-022.png"
+source_url: "https://thehackernews.com/2026/05/30000-facebook-accounts-hacked-via.html"
+tlp: "TLP:CLEAR"
+event_type: "fraud"
+organizations:
+  - name: "Facebook"
+    domain: "facebook.com"
+    role: "victim"
+  - name: "Google AppSheet"
+    domain: "appsheet.com"
+    role: "vendor"
+link_preview:
+  url: "https://thehackernews.com/2026/05/30000-facebook-accounts-hacked-via.html"
+  title: "30,000 Facebook Accounts Hacked via Google AppSheet Phishing Campaign"
+  domain: "thehackernews.com"
+  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilUS_xmTpvaJtwhFTnxsBtKSx2hWroMJKWUCKeB_CNx_9-5T85bdpqGfTZ0__XITi-i6ZnndaiiiFggf3Cgf-35KK-G6sEwvnlqom2DK6U-oH_o9GhEGNyd9kiSti-QC_dpl3v7b7IniC9kAUzV265yVbVsWAnLnH1RfQxrftUHj5MFAm03MOBw3Z6UEVb/s1600/phish.jpg"
+iocs:
+  - id: "AccountDumpling"
+    type: "Phishing"
+    indicator: "Google AppSheet used as a phishing relay"
+  - id: "AccountDumpling"
+    type: "Phishing"
+    indicator: "Compromise of Facebook accounts"
+  - id: "AccountDumpling"
+    type: "Information Disclosure"
+    indicator: "Stolen Facebook account credentials"
+mitre_attack:
+  - id: "T1566.002"
+    name: "Phishing: Spearphishing Attachment"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1566/002/"
+  - id: "T1534"
+    name: "Internal Spearphishing"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1534/"
+  - id: "T1071.001"
+    name: "Web Protocols: Web Protocol"
+    tactic: "Command and Control"
+    url: "https://attack.mitre.org/techniques/T1071/001/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "AccountDumpling Phishing via Google AppSheet"
+  preview_level: "critical"
+  preview_technique: "T1566.002"
+  preview_tactic: "Initial Access"
+  preview_yaml_b64: "dGl0bGU6IEFjY291bnREdW1wbGluZyBQaGlzaGluZyB2aWEgR29vZ2xlIEFwcFNoZWV0CmlkOiBzY3ctMjAyNi0wNS0wMS1haS0xCnN0YXR1czogZXhwZXJpbWVudGFsCmxldmVsOiBjcml0aWNhbApkZXNjcmlwdGlvbjogfAogIERldGVjdHMgcGhpc2hpbmcgZW1haWxzIGxldmVyYWdpbmcgR29vZ2xlIEFwcFNoZWV0IHRvIGltcGVyc29uYXRlIEZhY2Vib29rLiBUaGUgcHJlc2VuY2Ugb2YgJ2dvb2dsZS5jb20nIGFuZCAnYXBwc2hlZXQuY29tJyBpbiB0aGUgZGVzdGluYXRpb24gZG9tYWluIGFuZCBVUkksIGNvbWJpbmVkIHdpdGggYSBGYWNlYm9vayByZWZlcmVyIGFuZCBhbiAnZnJhdWQnIEV2ZW50VHlwZSwgc3Ryb25nbHkgaW5kaWNhdGVzIHRoZSBBY2NvdW50RHVtcGxpbmcgcGhpc2hpbmcgY2FtcGFpZ24gdGFyZ2V0aW5nIEZhY2Vib29rIGNyZWRlbnRpYWxzLgphdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKQpkYXRlOiAyMDI2LTA1LTAxCnJlZmVyZW5jZXM6CiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTAxLTMwLTAwMC1mYWNlYm9vay1hY2NvdW50cy1oYWNrZWQtdmlhLWdvb2dsZS1hcHBzaGVldC1waGlzaGluZy0xbm1lNQp0YWdzOgogIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzCiAgLSBhdHRhY2sudDE1NjYuMDAyCmxvZ3NvdXJjZToKICAgIGNhdGVnb3J5OiBlbWFpbApkZXRlY3Rpb246CiAgc2VsZWN0aW9uOgogICAgICBkc3RfZG9tYWlufGNvbnRhaW5zOgogICAgICAgICAgLSAnZ29vZ2xlLmNvbScKICAgICAgY3MtdXJpfGNvbnRhaW5zOgogICAgICAgICAgLSAnYXBwc2hlZXQuY29tJwogICAgICByZWZlcmVyfGNvbnRhaW5zOgogICAgICAgICAgLSAnZmFjZWJvb2suY29tJwogICAgICBFdmVudFR5cGV8ZXhhY3Q6CiAgICAgICAgICAtICdmcmF1ZCcKICBjb25kaXRpb246IHNlbGVjdGlvbgpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJBY2NvdW50RHVtcGxpbmcgUGhpc2hpbmcgdmlhIEdvb2dsZSBBcHBTaGVldCIsImxldmVsIjoiY3JpdGljYWwiLCJ0ZWNobmlxdWUiOiJUMTU2Ni4wMDIiLCJ0YWN0aWMiOiJJbml0aWFsIEFjY2VzcyIsInRpZXIiOiJmcmVlIiwieWFtbCI6InRpdGxlOiBBY2NvdW50RHVtcGxpbmcgUGhpc2hpbmcgdmlhIEdvb2dsZSBBcHBTaGVldFxuaWQ6IHNjdy0yMDI2LTA1LTAxLWFpLTFcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIERldGVjdHMgcGhpc2hpbmcgZW1haWxzIGxldmVyYWdpbmcgR29vZ2xlIEFwcFNoZWV0IHRvIGltcGVyc29uYXRlIEZhY2Vib29rLiBUaGUgcHJlc2VuY2Ugb2YgJ2dvb2dsZS5jb20nIGFuZCAnYXBwc2hlZXQuY29tJyBpbiB0aGUgZGVzdGluYXRpb24gZG9tYWluIGFuZCBVUkksIGNvbWJpbmVkIHdpdGggYSBGYWNlYm9vayByZWZlcmVyIGFuZCBhbiAnZnJhdWQnIEV2ZW50VHlwZSwgc3Ryb25nbHkgaW5kaWNhdGVzIHRoZSBBY2NvdW50RHVtcGxpbmcgcGhpc2hpbmcgY2FtcGFpZ24gdGFyZ2V0aW5nIEZhY2Vib29rIGNyZWRlbnRpYWxzLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMDFcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wMS0zMC0wMDAtZmFjZWJvb2stYWNjb3VudHMtaGFja2VkLXZpYS1nb29nbGUtYXBwc2hlZXQtcGhpc2hpbmctMW5tZTVcbnRhZ3M6XG4gIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzXG4gIC0gYXR0YWNrLnQxNTY2LjAwMlxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBlbWFpbFxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBkc3RfZG9tYWlufGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2dvb2dsZS5jb20nXG4gICAgICBjcy11cml8Y29udGFpbnM6XG4gICAgICAgICAgLSAnYXBwc2hlZXQuY29tJ1xuICAgICAgcmVmZXJlcnxjb250YWluczpcbiAgICAgICAgICAtICdmYWNlYm9vay5jb20nXG4gICAgICBFdmVudFR5cGV8ZXhhY3Q6XG4gICAgICAgICAgLSAnZnJhdWQnXG4gIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6IkFjY291bnREdW1wbGluZyBQaGlzaGluZyBMaW5rIENsaWNrZWQiLCJsZXZlbCI6ImhpZ2giLCJ0ZWNobmlxdWUiOiJUMTU2Ni4wMDIiLCJ0YWN0aWMiOiJJbml0aWFsIEFjY2VzcyIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBBY2NvdW50RHVtcGxpbmcgUGhpc2hpbmcgTGluayBDbGlja2VkXG5pZDogc2N3LTIwMjYtMDUtMDEtYWktMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBoaWdoXG5kZXNjcmlwdGlvbjogfFxuICBNb25pdG9ycyBwcm94eSBsb2dzIGZvciB1c2VycyBjbGlja2luZyBvbiBwaGlzaGluZyBsaW5rcyB0aGF0IG9yaWdpbmF0ZSBmcm9tIEdvb2dsZSBBcHBTaGVldCBhbmQgYXJlIGRpc2d1aXNlZCBhcyBGYWNlYm9vay1yZWxhdGVkLiBUaGlzIHJ1bGUgc3BlY2lmaWNhbGx5IHRhcmdldHMgdGhlIHJlZGlyZWN0aW9uIHRvIEFwcFNoZWV0IGRvbWFpbnMgZnJvbSBGYWNlYm9vay1yZWxhdGVkIHJlZmVyZXJzLCBpbmRpY2F0aW5nIGEgcG90ZW50aWFsIHBoaXNoaW5nIGF0dGVtcHQgYnkgdGhlIEFjY291bnREdW1wbGluZyBvcGVyYXRpb24uXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0wMVxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTAxLTMwLTAwMC1mYWNlYm9vay1hY2NvdW50cy1oYWNrZWQtdmlhLWdvb2dsZS1hcHBzaGVldC1waGlzaGluZy0xbm1lNVxudGFnczpcbiAgLSBhdHRhY2suaW5pdGlhbF9hY2Nlc3NcbiAgLSBhdHRhY2sudDE1NjYuMDAyXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHByb3h5XG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIGRzdF9kb21haW58Y29udGFpbnM6XG4gICAgICAgICAgLSAnZ29vZ2xlLmNvbSdcbiAgICAgIHVyaXxjb250YWluczpcbiAgICAgICAgICAtICdhcHBzaGVldC5jb20nXG4gICAgICByZWZlcmVyfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2ZhY2Vib29rLmNvbSdcbiAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiQWNjb3VudER1bXBsaW5nIFN0b2xlbiBGYWNlYm9vayBBY2NvdW50IFNhbGUiLCJsZXZlbCI6Im1lZGl1bSIsInRlY2huaXF1ZSI6IlQxNTM3IiwidGFjdGljIjoiRXhmaWx0cmF0aW9uIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IEFjY291bnREdW1wbGluZyBTdG9sZW4gRmFjZWJvb2sgQWNjb3VudCBTYWxlXG5pZDogc2N3LTIwMjYtMDUtMDEtYWktM1xuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBtZWRpdW1cbmRlc2NyaXB0aW9uOiB8XG4gIERldGVjdHMgcG90ZW50aWFsIHNhbGVzIG9mIGNvbXByb21pc2VkIEZhY2Vib29rIGFjY291bnRzIG9uIGlsbGljaXQgb25saW5lIHN0b3JlZnJvbnRzLiBUaGlzIHJ1bGUgbG9va3MgZm9yIHdlYiBzZXJ2ZXIgYWNjZXNzIHBhdHRlcm5zIGluZGljYXRpdmUgb2YgbWFya2V0cGxhY2VzIG9yIHNob3BzIHRoYXQgbWlnaHQgYmUgc2VsbGluZyBzdG9sZW4gY3JlZGVudGlhbHMsIHNwZWNpZmljYWxseSBtZW50aW9uaW5nICdmYWNlYm9vay5jb20nIGFuZCB0ZXJtcyByZWxhdGVkIHRvIGFjY291bnRzIG9yIGxvZ2lucy5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTAxXG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDEtMzAtMDAwLWZhY2Vib29rLWFjY291bnRzLWhhY2tlZC12aWEtZ29vZ2xlLWFwcHNoZWV0LXBoaXNoaW5nLTFubWU1XG50YWdzOlxuICAtIGF0dGFjay5leGZpbHRyYXRpb25cbiAgLSBhdHRhY2sudDE1MzdcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogd2Vic2VydmVyXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIGNzLXVyaXxjb250YWluczpcbiAgICAgICAgICAtICcvbWFya2V0cGxhY2UvJ1xuICAgICAgICAgIC0gJy9zaG9wLydcbiAgICAgICAgICAtICcvc3RvcmUvJ1xuICAgICAgY3MtdXJpLXF1ZXJ5fGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2ZhY2Vib29rLmNvbSdcbiAgICAgICAgICAtICdhY2NvdW50J1xuICAgICAgICAgIC0gJ2xvZ2luJ1xuICAgICAgc2Mtc3RhdHVzfGV4YWN0OlxuICAgICAgICAgIC0gJzIwMCdcbiAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifV0="
+why_it_matters:
+  - "If your organization relies on Facebook for business or marketing, or if your employees use Facebook, this campaign directly impacts your security posture. Remind all users about the dangers of unsolicited emails, even if they appear to originate from legitimate services like Google. Emphasize multi-factor authentication (MFA) for all Facebook accounts and any associated business pages. Attackers are not just going for personal data; they're looking for access to broader networks."
+bot_cta_title: "Check the latest phishing threats"
+bot_cta_description: "Use /brief to get an analyst-ready weekly threat summary, including new phishing tactics and key IOCs."
+---
+
+A Vietnamese-linked operation, dubbed "AccountDumpling" by Guardio, has compromised approximately 30,000 Facebook accounts. The Hacker News reports that attackers are leveraging Google AppSheet as a "phishing relay" to distribute malicious emails designed to steal Facebook credentials. This sophisticated use of a legitimate cloud service for phishing bypasses traditional email security controls, making detection challenging for many organizations.
+
+Once compromised, these Facebook accounts are not just for social engineering; The Hacker News indicates they are being sold through illicit online storefronts operated by the threat actors. This monetization strategy underscores the financial motivation behind the campaign, turning stolen access into direct profit for the attackers. The scale of 30,000 accounts signifies a significant, ongoing operation, not just a one-off attack.
+
+This campaign highlights a critical shift in attacker tactics: abusing trusted platforms to lend legitimacy to phishing attempts. Defenders need to recognize that the mere presence of a Google domain in a URL no longer guarantees safety. Attackers are constantly evolving, finding new ways to weaponize legitimate infrastructure against unsuspecting users.
