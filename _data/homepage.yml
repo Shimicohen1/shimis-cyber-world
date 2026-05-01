@@ -22,46 +22,47 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Phishing-as-a-Service Platforms Escalate C-Suite Targeting
-    text: Sophisticated PhaaS platforms are increasingly targeting high-value Microsoft credentials of executives.
-    detail: The VENOM platform exemplifies a growing trend where dedicated phishing-as-a-service operations are specifically designed to compromise the Microsoft 365 accounts of C-suite executives. This elevated targeting necessitates advanced email security and user awareness training focused on sophisticated spear-phishing tactics.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-tips-individuals
-    link_label: Phishing Awareness Tips
+  - title: Sophisticated Phishing Targets C-Suite and Organizations
+    text: New 'VENOM' platform and LucidRook malware focus on high-value targets.
+    detail: Threat actors are increasingly employing sophisticated phishing-as-a-service platforms like VENOM to specifically target Microsoft credentials of C-suite executives. Concurrently, malware like LucidRook is being used in spear-phishing campaigns against NGOs and universities. Organizations should reinforce multi-factor authentication and conduct targeted phishing awareness training for leadership and critical personnel.
+    link: https://owasp.org/www-community/attacks/Phishing
+    link_label: OWASP Phishing Guidance
     badge: signal
     tags:
-      - threat-intel
       - phishing
-      - credential-theft
-  - title: Zero-Day Exploits Target Widely Used Software
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows highlights disclosure process challenges.
-    detail: The emergence of zero-day exploits like 'BlueHammer' for Windows and vulnerabilities in Adobe Reader signifies a persistent threat vector. Organizations must prioritize rapid patching and robust endpoint detection and response (EDR) to mitigate risks associated with previously unknown flaws.
-    link: https://nvd.nist.gov/vuln/search
-    link_label: NVD Vulnerability Search
+      - threat-intel
+      - malware
+  - title: Zero-Day Exploits Escalate in Windows and Adobe Products
+    text: Active exploitation of zero-days in Windows and Adobe Reader demands immediate patching.
+    detail: The emergence of 'BlueHammer' zero-day in Windows and active exploitation of an Adobe Reader vulnerability highlight a critical trend. Attackers are leveraging unknown flaws to bypass defenses. Stay vigilant for vendor advisories and prioritize patching for operating systems and widely used applications like Adobe Reader to mitigate these high-severity risks.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Security Advisories
     badge: signal
     tags:
-      - threat-intel
       - vulnerability
+      - threat-intel
       - zero-day
-  - title: IoT Botnets Evolve with Stealthy Evasion Tactics
-    text: New botnets like Masjesu are stealthily targeting IoT devices, evading detection through unique strategies.
-    detail: The Masjesu botnet's deliberate strategy to avoid detection by evading high-traffic ports indicates a sophisticated evolution in IoT-focused malware. Defenders should implement network segmentation, monitor for unusual IoT traffic patterns, and ensure all IoT devices are secured with strong credentials and up-to-date firmware.
-    link: https://www.cisa.gov/news-events/advisories/aa22-286a
-    link_label: Securing IoT Devices
+  - title: Ransomware and Botnets Expand Reach in Healthcare and IoT
+    text: Ransomware disrupts healthcare, while new botnets like Masjesu target IoT devices.
+    detail: The ransomware attack on ChipSoft underscores the ongoing threat to critical infrastructure, particularly healthcare. Simultaneously, botnets like Masjesu are stealthily targeting IoT devices, posing a distributed denial-of-service and surveillance risk. Implementing robust network segmentation and regularly updating IoT device firmware are crucial defensive measures.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/ransomware-awareness
+    link_label: CISA Ransomware Awareness
     badge: signal
     tags:
-      - threat-intel
+      - ransomware
       - malware
       - iot
-  - title: Supply Chain Attacks Target Plugin Update Mechanisms
-    text: Hijacked update channels for popular CMS plugins are distributing backdoored versions to users.
-    detail: The compromise of Smart Slider 3 Pro's update mechanism for WordPress and Joomla demonstrates a critical supply chain risk. Organizations using these plugins should verify the integrity of recent updates, consider disabling auto-updates for critical components, and maintain strict vendor security assessments.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerability
-    link_label: OWASP Supply Chain Security
+      - threat-intel
+  - title: AI Guardrails Challenged by Prompt Injection Techniques
+    text: AI systems, including Apple Intelligence, are vulnerable to prompt injection attacks.
+    detail: Researchers have successfully bypassed AI guardrails in systems like Apple Intelligence using prompt injection. This indicates that current AI security measures may not be sufficient to prevent malicious manipulation. Organizations deploying AI should implement rigorous input validation and monitor AI outputs for unexpected or harmful behavior.
+    link: https://owasp.org/www-community/attacks/Prompt_Injection
+    link_label: OWASP Prompt Injection
     badge: signal
     tags:
+      - ai-security
       - threat-intel
-      - supply-chain
-      - malware
+      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
