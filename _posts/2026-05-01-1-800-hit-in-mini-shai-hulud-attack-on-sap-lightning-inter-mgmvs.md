@@ -1,0 +1,84 @@
+---
+title: "Supply Chain Attack Hits SAP, Lightning, Intercom Users"
+date: 2026-05-01 07:33:40 +0000
+source: RSS
+source_name: "SecurityWeek"
+channel: "SecurityWeek"
+tags: [threat-intel, vulnerability]
+excerpt: "A recent supply chain attack, dubbed \"Mini Shai-Hulud\" by SecurityWeek, has impacted approximately 1,800 organizations. The attack leveraged compromised versions of the popular Lig"
+summary: "A recent supply chain attack, dubbed \"Mini Shai-Hulud\" by SecurityWeek, has impacted approximately 1,800 organizations. The attack leveraged compromised versions of the popular Lightning and Intercom software packages, which collectively see nearly 10 million monthly downloads. This broad reach high"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/vulnerability/vulnerability-025.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/vulnerability/vulnerability-025.png"
+source_url: "https://www.securityweek.com/1800-hit-in-mini-shai-hulud-attack-on-sap-lightning-intercom/"
+tlp: "TLP:CLEAR"
+event_type: "supply-chain"
+organizations:
+  - name: "SAP"
+    domain: "sap.com"
+    role: "victim"
+  - name: "Lightning"
+    domain: "lightning.ai"
+    role: "vendor"
+  - name: "Intercom"
+    domain: "intercom.com"
+    role: "vendor"
+malware_families:
+  - "Shai-Hulud"
+link_preview:
+  url: "https://www.securityweek.com/1800-hit-in-mini-shai-hulud-attack-on-sap-lightning-intercom/"
+  title: "1,800 Hit in Mini Shai-Hulud Attack on SAP, Lightning, Intercom"
+  domain: "securityweek.com"
+  image: "https://www.securityweek.com/wp-content/uploads/2023/01/Cybersecurity_News-SecurityWeek.jpg"
+iocs:
+  - id: "Mini-Shai-Hulud-Attack"
+    type: "Supply Chain Attack"
+    indicator: "Compromised package: Lightning"
+  - id: "Mini-Shai-Hulud-Attack"
+    type: "Supply Chain Attack"
+    indicator: "Compromised package: Intercom"
+  - id: "Mini-Shai-Hulud-Attack"
+    type: "Targeted System"
+    indicator: "Affected system: SAP"
+mitre_attack:
+  - id: "T1195"
+    name: "Compromise Infrastructure"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1195/"
+  - id: "T1195.002"
+    name: "Compromise Software Supply Chain"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1195/002/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Supply Chain Compromise via Lightning or Intercom Packages"
+  preview_level: "critical"
+  preview_technique: "T1190"
+  preview_tactic: "Initial Access"
+  preview_yaml_b64: "dGl0bGU6IFN1cHBseSBDaGFpbiBDb21wcm9taXNlIHZpYSBMaWdodG5pbmcgb3IgSW50ZXJjb20gUGFja2FnZXMKaWQ6IHNjdy0yMDI2LTA1LTAxLWFpLTEKc3RhdHVzOiBleHBlcmltZW50YWwKbGV2ZWw6IGNyaXRpY2FsCmRlc2NyaXB0aW9uOiB8CiAgRGV0ZWN0cyB0aGUgZXhlY3V0aW9uIG9mIGNvbXByb21pc2VkIExpZ2h0bmluZyBvciBJbnRlcmNvbSBleGVjdXRhYmxlcyBpbml0aWF0ZWQgYnkgY29tbW9uIGNvbW1hbmQtbGluZSBpbnRlcnByZXRlcnMsIGluZGljYXRpbmcgYSBwb3RlbnRpYWwgaW5pdGlhbCBhY2Nlc3MgdmlhIHN1cHBseSBjaGFpbiBjb21wcm9taXNlIGFzIGRlc2NyaWJlZCBpbiB0aGUgTWluaSBTaGFpLUh1bHVkIGF0dGFjay4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNS0wMQpyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wMS0xLTgwMC1oaXQtaW4tbWluaS1zaGFpLWh1bHVkLWF0dGFjay1vbi1zYXAtbGlnaHRuaW5nLWludGVyLW1nbXZzCnRhZ3M6CiAgLSBhdHRhY2suaW5pdGlhbF9hY2Nlc3MKICAtIGF0dGFjay50MTE5MApsb2dzb3VyY2U6CiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvbgpkZXRlY3Rpb246CiAgc2VsZWN0aW9uOgogICAgICBJbWFnZXxjb250YWluczoKICAgICAgICAgIC0gJ2xpZ2h0bmluZy5leGUnCiAgICAgICAgICAtICdpbnRlcmNvbS5leGUnCiAgICAgIFBhcmVudEltYWdlfGNvbnRhaW5zOgogICAgICAgICAgLSAnY21kLmV4ZScKICAgICAgICAgIC0gJ3Bvd2Vyc2hlbGwuZXhlJwogICAgICBjb25kaXRpb246IHNlbGVjdGlvbgpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJTdXBwbHkgQ2hhaW4gQ29tcHJvbWlzZSB2aWEgTGlnaHRuaW5nIG9yIEludGVyY29tIFBhY2thZ2VzIiwibGV2ZWwiOiJjcml0aWNhbCIsInRlY2huaXF1ZSI6IlQxMTkwIiwidGFjdGljIjoiSW5pdGlhbCBBY2Nlc3MiLCJ0aWVyIjoiZnJlZSIsInlhbWwiOiJ0aXRsZTogU3VwcGx5IENoYWluIENvbXByb21pc2UgdmlhIExpZ2h0bmluZyBvciBJbnRlcmNvbSBQYWNrYWdlc1xuaWQ6IHNjdy0yMDI2LTA1LTAxLWFpLTFcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIERldGVjdHMgdGhlIGV4ZWN1dGlvbiBvZiBjb21wcm9taXNlZCBMaWdodG5pbmcgb3IgSW50ZXJjb20gZXhlY3V0YWJsZXMgaW5pdGlhdGVkIGJ5IGNvbW1vbiBjb21tYW5kLWxpbmUgaW50ZXJwcmV0ZXJzLCBpbmRpY2F0aW5nIGEgcG90ZW50aWFsIGluaXRpYWwgYWNjZXNzIHZpYSBzdXBwbHkgY2hhaW4gY29tcHJvbWlzZSBhcyBkZXNjcmliZWQgaW4gdGhlIE1pbmkgU2hhaS1IdWx1ZCBhdHRhY2suXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0wMVxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTAxLTEtODAwLWhpdC1pbi1taW5pLXNoYWktaHVsdWQtYXR0YWNrLW9uLXNhcC1saWdodG5pbmctaW50ZXItbWdtdnNcbnRhZ3M6XG4gIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzXG4gIC0gYXR0YWNrLnQxMTkwXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb25cbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgSW1hZ2V8Y29udGFpbnM6XG4gICAgICAgICAgLSAnbGlnaHRuaW5nLmV4ZSdcbiAgICAgICAgICAtICdpbnRlcmNvbS5leGUnXG4gICAgICBQYXJlbnRJbWFnZXxjb250YWluczpcbiAgICAgICAgICAtICdjbWQuZXhlJ1xuICAgICAgICAgIC0gJ3Bvd2Vyc2hlbGwuZXhlJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiU3VzcGljaW91cyBOZXR3b3JrIENvbm5lY3Rpb24gZnJvbSBDb21wcm9taXNlZCBTb2Z0d2FyZSIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMDcxLjAwMSIsInRhY3RpYyI6IkNvbW1hbmQgYW5kIENvbnRyb2wiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogU3VzcGljaW91cyBOZXR3b3JrIENvbm5lY3Rpb24gZnJvbSBDb21wcm9taXNlZCBTb2Z0d2FyZVxuaWQ6IHNjdy0yMDI2LTA1LTAxLWFpLTJcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgTW9uaXRvcnMgZm9yIEROUyByZXF1ZXN0cyB0byBrbm93biBvciBzdXNwZWN0ZWQgbWFsaWNpb3VzIGRvbWFpbnMgb3JpZ2luYXRpbmcgZnJvbSBwcm9jZXNzZXMgYXNzb2NpYXRlZCB3aXRoIExpZ2h0bmluZyBvciBJbnRlcmNvbSBzb2Z0d2FyZSwgc3VnZ2VzdGluZyBwb3RlbnRpYWwgY29tbWFuZCBhbmQgY29udHJvbCBjb21tdW5pY2F0aW9uIGFmdGVyIGEgc3VwcGx5IGNoYWluIGNvbXByb21pc2UuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0wMVxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTAxLTEtODAwLWhpdC1pbi1taW5pLXNoYWktaHVsdWQtYXR0YWNrLW9uLXNhcC1saWdodG5pbmctaW50ZXItbWdtdnNcbnRhZ3M6XG4gIC0gYXR0YWNrLmNvbW1hbmRfYW5kX2NvbnRyb2xcbiAgLSBhdHRhY2sudDEwNzEuMDAxXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGRuc1xuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb25fYmFzZTpcbiAgICAgIGRzdF9kb21haW58Y29udGFpbnM6XG4gICAgICAgICAgLSAnLmxpZ2h0bmluZy1jZG4uY29tJ1xuICAgICAgICAgIC0gJy5pbnRlcmNvbS1jZG4uY29tJ1xuICBzZWxlY3Rpb25faW5kaWNhdG9yczpcbiAgICAgIGRzdF9kb21haW58Y29udGFpbnM6XG4gICAgICAgICAgLSAnbWFsaWNpb3VzLWRvbWFpbi5jb20nXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvbl9iYXNlIEFORCBzZWxlY3Rpb25faW5kaWNhdG9yc1xuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJVbnVzdWFsIEZpbGUgTW9kaWZpY2F0aW9uIGJ5IExpZ2h0bmluZyBvciBJbnRlcmNvbSBQcm9jZXNzZXMiLCJsZXZlbCI6Im1lZGl1bSIsInRlY2huaXF1ZSI6IlQxMDgzIiwidGFjdGljIjoiRGlzY292ZXJ5IiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IFVudXN1YWwgRmlsZSBNb2RpZmljYXRpb24gYnkgTGlnaHRuaW5nIG9yIEludGVyY29tIFByb2Nlc3Nlc1xuaWQ6IHNjdy0yMDI2LTA1LTAxLWFpLTNcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogbWVkaXVtXG5kZXNjcmlwdGlvbjogfFxuICBEZXRlY3RzIHVuZXhwZWN0ZWQgZmlsZSBtb2RpZmljYXRpb25zIChlLmcuLCBjb25maWd1cmF0aW9uIGZpbGVzKSBieSBMaWdodG5pbmcgb3IgSW50ZXJjb20gcHJvY2Vzc2VzLiBUaGlzIGNvdWxkIGluZGljYXRlIHBvc3QtY29tcHJvbWlzZSBhY3Rpdml0eSBzdWNoIGFzIHJlY29ubmFpc3NhbmNlIG9yIHRhbXBlcmluZyB3aXRoIHNldHRpbmdzIGFmdGVyIGEgc3VwcGx5IGNoYWluIGF0dGFjay5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTAxXG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDEtMS04MDAtaGl0LWluLW1pbmktc2hhaS1odWx1ZC1hdHRhY2stb24tc2FwLWxpZ2h0bmluZy1pbnRlci1tZ212c1xudGFnczpcbiAgLSBhdHRhY2suZGlzY292ZXJ5XG4gIC0gYXR0YWNrLnQxMDgzXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGZpbGVfZXZlbnRcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgSW1hZ2V8Y29udGFpbnM6XG4gICAgICAgICAgLSAnbGlnaHRuaW5nLmV4ZSdcbiAgICAgICAgICAtICdpbnRlcmNvbS5leGUnXG4gICAgICBUYXJnZXRGaWxlbmFtZXxjb250YWluczpcbiAgICAgICAgICAtICcuY29uZmlnJ1xuICAgICAgICAgIC0gJy5pbmknXG4gICAgICAgICAgLSAnLnhtbCdcbiAgICAgIGFjdGlvbnxjb250YWluczpcbiAgICAgICAgICAtICdtb2RpZnknXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9XQ=="
+why_it_matters:
+  - "If your organization uses Lightning, Intercom, or SAP, you need to immediately audit your deployments for signs of compromise related to the \"Mini Shai-Hulud\" attack. Scrutinize your software supply chain for any unauthorized modifications or unexpected dependencies. This isn't about a perimeter breach; it's about malicious code already inside your trusted ecosystem. Isolate and investigate any systems running these packages."
+bot_cta_title: "Check Supply Chain Exposure"
+bot_cta_description: "Use /brief to get an analyst-ready summary of supply chain threats and key IOCs."
+---
+
+A recent supply chain attack, dubbed "Mini Shai-Hulud" by SecurityWeek, has impacted approximately 1,800 organizations. The attack leveraged compromised versions of the popular Lightning and Intercom software packages, which collectively see nearly 10 million monthly downloads. This broad reach highlights the significant risk posed by software supply chain vulnerabilities, where a single compromise can cascade across a vast user base.
+
+The attackers injected malicious code into these widely used packages, enabling them to target downstream users, including those utilizing SAP systems. This method bypasses traditional perimeter defenses, as the malicious code is delivered via trusted software updates or dependencies. The sheer volume of downloads for Lightning and Intercom indicates a high potential for widespread compromise, making this a critical concern for any organization relying on these components.
+
+For defenders, this incident underscores the urgent need for robust supply chain security. Attackers are increasingly focusing on these vectors because they offer high impact with relatively low effort once a popular upstream component is compromised. Simply patching known vulnerabilities isn't enough; organizations must scrutinize their software dependencies and implement mechanisms to detect tampering.
