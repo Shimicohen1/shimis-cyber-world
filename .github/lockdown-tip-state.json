@@ -1,5 +1,5 @@
 {
-  "tipNumber": 15,
+  "tipNumber": 16,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -15,7 +15,8 @@
     "win-003",
     "aws-003",
     "az-003",
-    "az-003"
+    "az-003",
+    "lin-004"
   ],
   "round": 1,
   "history": [
@@ -167,6 +168,16 @@
       "linkedInId": "urn:li:share:7455556119164329984",
       "telegramMsgId": 989,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-003/"
+    },
+    {
+      "tipNumber": 16,
+      "id": "lin-004",
+      "platform": "linux",
+      "title": "Restrict sudo access",
+      "date": "2026-05-01T09:13:28.509Z",
+      "linkedInId": "urn:li:share:7455907230501101568",
+      "telegramMsgId": 1016,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-004/"
     }
   ]
 }
