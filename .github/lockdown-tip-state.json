@@ -1,5 +1,5 @@
 {
-  "tipNumber": 16,
+  "tipNumber": 17,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -16,7 +16,8 @@
     "aws-003",
     "az-003",
     "az-003",
-    "lin-004"
+    "lin-004",
+    "win-004"
   ],
   "round": 1,
   "history": [
@@ -178,6 +179,16 @@
       "linkedInId": "urn:li:share:7455907230501101568",
       "telegramMsgId": 1016,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-004/"
+    },
+    {
+      "tipNumber": 17,
+      "id": "win-004",
+      "platform": "windows",
+      "title": "Enable Windows Firewall on all profiles",
+      "date": "2026-05-02T08:32:51.114Z",
+      "linkedInId": "urn:li:share:7456259395081965568",
+      "telegramMsgId": 1045,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-004/"
     }
   ]
 }
