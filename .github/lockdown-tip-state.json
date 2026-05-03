@@ -1,5 +1,5 @@
 {
-  "tipNumber": 17,
+  "tipNumber": 18,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -17,7 +17,8 @@
     "az-003",
     "az-003",
     "lin-004",
-    "win-004"
+    "win-004",
+    "aws-004"
   ],
   "round": 1,
   "history": [
@@ -189,6 +190,16 @@
       "linkedInId": "urn:li:share:7456259395081965568",
       "telegramMsgId": 1045,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-004/"
+    },
+    {
+      "tipNumber": 18,
+      "id": "aws-004",
+      "platform": "aws",
+      "title": "Enforce least privilege IAM policies",
+      "date": "2026-05-03T09:00:04.257Z",
+      "linkedInId": "urn:li:share:7456628633185509376",
+      "telegramMsgId": 1146,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-004/"
     }
   ]
 }
