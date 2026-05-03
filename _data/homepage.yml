@@ -22,51 +22,47 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: New PhaaS platforms like VENOM are specifically targeting C-suite Microsoft credentials.
-    detail: The emergence of sophisticated PhaaS platforms like VENOM indicates a growing trend of targeted, high-value credential harvesting. Organizations must enhance multi-factor authentication and user awareness training, especially for executive leadership, to counter these advanced phishing operations.
-    link: https://owasp.org/www-community/attacks/Phishing
-    link_label: OWASP Phishing Guide
+  - title: Phishing-as-a-Service Platforms Evolving Rapidly
+    text: New PhaaS platforms like VENOM are increasingly targeting high-value credentials with sophisticated campaigns.
+    detail: The emergence of platforms like VENOM demonstrates a growing trend in specialized phishing services, making advanced attacks more accessible. Cybersecurity professionals should reinforce multi-factor authentication and conduct regular phishing awareness training, focusing on sophisticated social engineering tactics targeting executive accounts.
+    link: https://www.cisa.gov/news-events/news/phishing-threats-continue-evolve-and-increase
+    link_label: Phishing Threats Evolving
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - microsoft
-      - credential-harvesting
-  - title: Supply Chain Attacks on Popular CMS Plugins Persist
-    text: Hijacked updates for Smart Slider 3 Pro introduced backdoors into WordPress and Joomla sites.
-    detail: The compromise of the Smart Slider 3 Pro update mechanism highlights the ongoing risk of supply chain attacks within the CMS ecosystem. Regularly review and audit plugin update sources, implement strict plugin vetting processes, and maintain robust backup and recovery plans to mitigate these threats.
-    link: https://owasp.org/www-project-software-component-analysis/
-    link_label: OWASP SCA Project
-    badge: signal
-    tags:
-      - threat-intel
-      - supply-chain
-      - malware
-      - wordpress
-      - joomla
+      - phaas
   - title: Zero-Day Exploits Continue to Target Widely Used Software
-    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows underscores ongoing risks.
-    detail: The active exploitation of zero-day vulnerabilities in critical software like Adobe Reader and Windows demonstrates the persistent threat posed by unknown flaws. Prioritize prompt patching for vendor advisories and implement robust endpoint detection and response (EDR) solutions to detect and contain suspicious activity.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
-    link_label: CISA Vulnerability Advisories
+    text: Active exploitation of zero-day vulnerabilities in Adobe Reader and Windows underscores the need for rapid patching.
+    detail: The continuous discovery and exploitation of zero-day flaws in critical software like Adobe Reader and Windows highlight persistent supply chain risks. Organizations must prioritize robust patch management strategies, threat hunting for indicators of compromise, and consider proactive security solutions that can detect novel threats.
+    link: https://www.nist.gov/cyberframework/threat-hunting
+    link_label: Threat Hunting Guidance
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-      - patch-management
-  - title: AI Systems Face Evolving Prompt Injection Threats
-    text: AI guardrails, including those in Apple Intelligence, are being bypassed via prompt injection.
-    detail: The successful bypass of AI guardrails through prompt injection signals a new frontier in threat actor tactics. Developers and users must remain vigilant, continuously update AI models with new defenses, and implement input validation and output monitoring to prevent unintended AI behavior and data leakage.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP Top 10 for LLMs
+  - title: IoT and Cloud Infrastructure Remain Prime Targets
+    text: Botnets like Masjesu and vulnerabilities in SDKs are increasingly compromising IoT devices and cloud-connected applications.
+    detail: The proliferation of IoT devices and the interconnectedness of cloud services present a growing attack surface. Security teams should focus on securing IoT endpoints, implementing strong access controls for cloud resources, and regularly auditing third-party SDKs for potential vulnerabilities that could lead to widespread compromise.
+    link: https://www.owasp.org/www-project-mobile-security-testing-guide/
+    link_label: Mobile Security Testing
     badge: signal
     tags:
       - threat-intel
-      - ai-security
-      - prompt-injection
-      - apple-intelligence
+      - iot
+      - cloud-security
+      - malware
+  - title: Geopolitical Tensions Fuel State-Sponsored Cyber Activity
+    text: Iranian and Russian state-sponsored actors are actively targeting industrial devices and critical infrastructure globally.
+    detail: Recent reports indicate that state-sponsored threat actors, including Iranian and Russian APT groups, continue to target critical infrastructure and industrial control systems. Organizations in these sectors must bolster their defenses, implement network segmentation, and stay informed about evolving TTPs from known nation-state actors.
+    link: https://www.mitre.org/capabilities/cybersecurity/cyber-threat-intelligence
+    link_label: Cyber Threat Intelligence
+    badge: signal
+    tags:
+      - threat-intel
+      - apt
+      - nation-state
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
