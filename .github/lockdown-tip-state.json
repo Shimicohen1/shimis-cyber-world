@@ -1,5 +1,5 @@
 {
-  "tipNumber": 18,
+  "tipNumber": 19,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -18,7 +18,8 @@
     "az-003",
     "lin-004",
     "win-004",
-    "aws-004"
+    "aws-004",
+    "az-004"
   ],
   "round": 1,
   "history": [
@@ -200,6 +201,16 @@
       "linkedInId": "urn:li:share:7456628633185509376",
       "telegramMsgId": 1146,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-004/"
+    },
+    {
+      "tipNumber": 19,
+      "id": "az-004",
+      "platform": "azure",
+      "title": "Configure Network Security Groups (NSGs)",
+      "date": "2026-05-04T09:36:08.511Z",
+      "linkedInId": "urn:li:share:7457000096526692352",
+      "telegramMsgId": 1167,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-004/"
     }
   ]
 }
