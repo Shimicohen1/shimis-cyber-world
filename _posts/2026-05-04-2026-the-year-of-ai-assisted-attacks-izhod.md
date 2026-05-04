@@ -1,0 +1,78 @@
+---
+title: "Kaikatsu Club Breach: 17-Year-Old Exposes 7 Million Users for Pokémon Cards"
+date: 2026-05-04 11:58:00 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability]
+excerpt: "A 17-year-old in Osaka was arrested on December 4, 2025, under Japan's Unauthorized Access Prohibition Act for extracting personal data from over 7 million users of Kaikatsu Club,"
+summary: "A 17-year-old in Osaka was arrested on December 4, 2025, under Japan's Unauthorized Access Prohibition Act for extracting personal data from over 7 million users of Kaikatsu Club, Japan's largest internet cafe chain. The Hacker News reported that the motivation behind the breach was to acquire funds"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-044.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-044.png"
+source_url: "https://thehackernews.com/2026/05/2026-year-of-ai-assisted-attacks.html"
+tlp: "TLP:CLEAR"
+event_type: "data-breach"
+organizations:
+  - name: "Kaikatsu Club"
+    domain: "kaikatsuclub.com"
+    role: "victim"
+countries: [JP]
+link_preview:
+  url: "https://thehackernews.com/2026/05/2026-year-of-ai-assisted-attacks.html"
+  title: "2026: The Year of AI-Assisted Attacks"
+  domain: "thehackernews.com"
+  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEji6GV4hhCDB_wJkm6REZZfugW5H5hF8g8X27oGcUHnOSxYst1aJJspKKl6joygytGLwgKYvfDU_DD8DFHQ-vPt-_Tc1yzG8fJl_0tHuyOLgJC3eHKGFM_YZA_OIYoL7wI8lUWZrpGO_E2Sjunen7Y9g2fY7sRTi6cvk4DgBW5plToR5U-Je5GQeJsKuqY/s1600/ai-cyberattacks.png"
+iocs:
+  - id: "Kaikatsu-Club-Data-Breach-2025"
+    type: "Information Disclosure"
+    indicator: "Kaikatsu Club user personal data"
+  - id: "Kaikatsu-Club-Data-Breach-2025"
+    type: "Code Injection"
+    indicator: "malicious code execution against Kaikatsu Club systems"
+mitre_attack:
+  - id: "T1110"
+    name: "Brute Force"
+    tactic: "Credential Access"
+    url: "https://attack.mitre.org/techniques/T1110/"
+  - id: "T1531"
+    name: "Account Access Removal"
+    tactic: "Defense Evasion"
+    url: "https://attack.mitre.org/techniques/T1531/"
+  - id: "T1078.004"
+    name: "Cloud Accounts"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1078/004/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Kaikatsu Club Data Breach - Large Data Extraction"
+  preview_level: "critical"
+  preview_technique: "T1119"
+  preview_tactic: "Collection"
+  preview_yaml_b64: "dGl0bGU6IEthaWthdHN1IENsdWIgRGF0YSBCcmVhY2ggLSBMYXJnZSBEYXRhIEV4dHJhY3Rpb24KaWQ6IHNjdy0yMDI2LTA1LTA0LWFpLTEKc3RhdHVzOiBleHBlcmltZW50YWwKbGV2ZWw6IGNyaXRpY2FsCmRlc2NyaXB0aW9uOiB8CiAgVGhpcyBydWxlIGRldGVjdHMgdGhlIHBvdGVudGlhbCBleGZpbHRyYXRpb24gb2YgbGFyZ2UgYW1vdW50cyBvZiB1c2VyIGRhdGEgZnJvbSBhIHdlYiBhcHBsaWNhdGlvbiwgbWltaWNraW5nIHRoZSBLYWlrYXRzdSBDbHViIGJyZWFjaCB3aGVyZSBwZXJzb25hbCBkYXRhIG9mIG1pbGxpb25zIG9mIHVzZXJzIHdhcyBleHRyYWN0ZWQuIEl0IGxvb2tzIGZvciBzcGVjaWZpYyBVUkkgcGF0dGVybnMgaW5kaWNhdGl2ZSBvZiBkYXRhIGV4cG9ydCBmdW5jdGlvbnMgcmV0dXJuaW5nIGEgc3VjY2Vzc2Z1bCBzdGF0dXMgY29kZSAoMjAwKS4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNS0wNApyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wNC0yMDI2LXRoZS15ZWFyLW9mLWFpLWFzc2lzdGVkLWF0dGFja3MtaXpob2QKdGFnczoKICAtIGF0dGFjay5jb2xsZWN0aW9uCiAgLSBhdHRhY2sudDExMTkKbG9nc291cmNlOgogICAgY2F0ZWdvcnk6IHdlYnNlcnZlcgpkZXRlY3Rpb246CiAgc2VsZWN0aW9uOgogICAgICBjcy11cml8Y29udGFpbnM6CiAgICAgICAgICAtICcvdXNlci9kYXRhL2V4cG9ydCcKICAgICAgICAgIC0gJy9hY2NvdW50L2Rvd25sb2FkJwogICAgICBzYy1zdGF0dXM6CiAgICAgICAgICAtIDIwMAogICAgICBjb25kaXRpb246IHNlbGVjdGlvbgpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJLYWlrYXRzdSBDbHViIERhdGEgQnJlYWNoIC0gTGFyZ2UgRGF0YSBFeHRyYWN0aW9uIiwibGV2ZWwiOiJjcml0aWNhbCIsInRlY2huaXF1ZSI6IlQxMTE5IiwidGFjdGljIjoiQ29sbGVjdGlvbiIsInRpZXIiOiJmcmVlIiwieWFtbCI6InRpdGxlOiBLYWlrYXRzdSBDbHViIERhdGEgQnJlYWNoIC0gTGFyZ2UgRGF0YSBFeHRyYWN0aW9uXG5pZDogc2N3LTIwMjYtMDUtMDQtYWktMVxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBjcml0aWNhbFxuZGVzY3JpcHRpb246IHxcbiAgVGhpcyBydWxlIGRldGVjdHMgdGhlIHBvdGVudGlhbCBleGZpbHRyYXRpb24gb2YgbGFyZ2UgYW1vdW50cyBvZiB1c2VyIGRhdGEgZnJvbSBhIHdlYiBhcHBsaWNhdGlvbiwgbWltaWNraW5nIHRoZSBLYWlrYXRzdSBDbHViIGJyZWFjaCB3aGVyZSBwZXJzb25hbCBkYXRhIG9mIG1pbGxpb25zIG9mIHVzZXJzIHdhcyBleHRyYWN0ZWQuIEl0IGxvb2tzIGZvciBzcGVjaWZpYyBVUkkgcGF0dGVybnMgaW5kaWNhdGl2ZSBvZiBkYXRhIGV4cG9ydCBmdW5jdGlvbnMgcmV0dXJuaW5nIGEgc3VjY2Vzc2Z1bCBzdGF0dXMgY29kZSAoMjAwKS5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA0XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDQtMjAyNi10aGUteWVhci1vZi1haS1hc3Npc3RlZC1hdHRhY2tzLWl6aG9kXG50YWdzOlxuICAtIGF0dGFjay5jb2xsZWN0aW9uXG4gIC0gYXR0YWNrLnQxMTE5XG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHdlYnNlcnZlclxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBjcy11cml8Y29udGFpbnM6XG4gICAgICAgICAgLSAnL3VzZXIvZGF0YS9leHBvcnQnXG4gICAgICAgICAgLSAnL2FjY291bnQvZG93bmxvYWQnXG4gICAgICBzYy1zdGF0dXM6XG4gICAgICAgICAgLSAyMDBcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6IkthaWthdHN1IENsdWIgRGF0YSBCcmVhY2ggLSBTdXNwaWNpb3VzIEZpbGUgQWNjZXNzIFBhdHRlcm4iLCJsZXZlbCI6Im1lZGl1bSIsInRlY2huaXF1ZSI6IlQxMDA1IiwidGFjdGljIjoiQ29sbGVjdGlvbiIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBLYWlrYXRzdSBDbHViIERhdGEgQnJlYWNoIC0gU3VzcGljaW91cyBGaWxlIEFjY2VzcyBQYXR0ZXJuXG5pZDogc2N3LTIwMjYtMDUtMDQtYWktMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBtZWRpdW1cbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIGFjY2VzcyB0byB1c2VyIGRhdGEgZGlyZWN0b3JpZXMsIHdoaWNoIGNvdWxkIGluZGljYXRlIGFuIGF0dGFja2VyIGF0dGVtcHRpbmcgdG8gY29sbGVjdCBzZW5zaXRpdmUgaW5mb3JtYXRpb24sIGFzIHNlZW4gaW4gdGhlIEthaWthdHN1IENsdWIgYnJlYWNoLiBJdCBmb2N1c2VzIG9uIHNwZWNpZmljIGZpbGUgcGF0aHMgbGlrZWx5IHRvIGNvbnRhaW4gdXNlciBkYXRhIHdpdGhpbiB0aGUgS2Fpa2F0c3UgQ2x1YiBlbnZpcm9ubWVudC5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA0XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDQtMjAyNi10aGUteWVhci1vZi1haS1hc3Npc3RlZC1hdHRhY2tzLWl6aG9kXG50YWdzOlxuICAtIGF0dGFjay5jb2xsZWN0aW9uXG4gIC0gYXR0YWNrLnQxMDA1XG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGZpbGVfYWNjZXNzXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIFRhcmdldEZpbGVuYW1lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy92YXIvd3d3L2h0bWwva2Fpa2F0c3VfY2x1Yi91c2VyX2RhdGEvJ1xuICAgICAgICAgIC0gJ0M6XFxcXFByb2dyYW0gRmlsZXNcXFxcS2Fpa2F0c3VDbHViXFxcXFVzZXJEYXRhXFxcXCdcbiAgICAgIEV2ZW50VHlwZTpcbiAgICAgICAgICAtICdyZWFkJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiS2Fpa2F0c3UgQ2x1YiBEYXRhIEJyZWFjaCAtIFVudXN1YWwgVXNlciBBZ2VudCBmb3IgRGF0YSBSZXRyaWV2YWwiLCJsZXZlbCI6Im1lZGl1bSIsInRlY2huaXF1ZSI6IlQxMDcxLjAwMSIsInRhY3RpYyI6IkNvbW1hbmQgYW5kIENvbnRyb2wiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogS2Fpa2F0c3UgQ2x1YiBEYXRhIEJyZWFjaCAtIFVudXN1YWwgVXNlciBBZ2VudCBmb3IgRGF0YSBSZXRyaWV2YWxcbmlkOiBzY3ctMjAyNi0wNS0wNC1haS0zXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IG1lZGl1bVxuZGVzY3JpcHRpb246IHxcbiAgVGhpcyBydWxlIGRldGVjdHMgdW51c3VhbCB3ZWIgcmVxdWVzdHMgdGhhdCBtaWdodCBiZSBwYXJ0IG9mIGEgZGF0YSBzY3JhcGluZyBvciBleHRyYWN0aW9uIHByb2Nlc3MsIHNpbWlsYXIgdG8gaG93IHRoZSBLYWlrYXRzdSBDbHViIGRhdGEgd2FzIGxpa2VseSBhY2Nlc3NlZC4gSXQgbG9va3MgZm9yIHNwZWNpZmljIHF1ZXJ5IHBhcmFtZXRlcnMgYXNzb2NpYXRlZCB3aXRoIHVzZXIgaWRlbnRpZmljYXRpb24gYW5kIGEgcmVmZXJlciBoZWFkZXIgcG9pbnRpbmcgdG8gdGhlIHZpY3RpbSdzIGRvbWFpbiwgc3VnZ2VzdGluZyBwcm9ncmFtbWF0aWMgYWNjZXNzLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMDRcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wNC0yMDI2LXRoZS15ZWFyLW9mLWFpLWFzc2lzdGVkLWF0dGFja3MtaXpob2RcbnRhZ3M6XG4gIC0gYXR0YWNrLmNvbW1hbmRfYW5kX2NvbnRyb2xcbiAgLSBhdHRhY2sudDEwNzEuMDAxXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHdlYnNlcnZlclxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBjcy11cmktcXVlcnl8Y29udGFpbnM6XG4gICAgICAgICAgLSAndXNlcl9pZD0nIFxuICAgICAgICAgIC0gJ2FjY291bnRfaWQ9J1xuICAgICAgcmVmZXJlcnxjb250YWluczpcbiAgICAgICAgICAtICdrYWlrYXRzdWNsdWIuanAnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9XQ=="
+why_it_matters:
+  - "If your organization handles extensive customer data, this breach is a stark reminder that motive doesn't dictate impact. Review your internal access controls, especially for systems storing PII. Implement strict least privilege principles and ensure robust logging and monitoring are in place to detect anomalous data access patterns. Focus on mitigating the *opportunity* for large-scale data exfiltration, not just the *intent* of the attacker."
+bot_cta_title: "Check Latest Breaches and Threat Actor Activity"
+bot_cta_description: "Use /breach to see the latest data breaches and ransomware events."
+---
+
+A 17-year-old in Osaka was arrested on December 4, 2025, under Japan's Unauthorized Access Prohibition Act for extracting personal data from over 7 million users of Kaikatsu Club, Japan's largest internet cafe chain. The Hacker News reported that the motivation behind the breach was to acquire funds for Pokémon cards.
+
+This incident, while seemingly minor in motivation, underscores the pervasive risk of insider threats and the ease with which even unsophisticated actors can compromise significant user data. It highlights critical failings in access controls and data segregation within large service providers.
+
+From a defensive perspective, this isn't about the sophistication of the attacker; it's about the fundamental security posture of the victim. Whether the motive is state-sponsored espionage or a teenager's hobby, the outcome is the same: massive data exposure. Enterprises must assume internal threats are a constant, regardless of perceived attacker skill level.
