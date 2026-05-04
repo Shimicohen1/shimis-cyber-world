@@ -22,46 +22,46 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: New PhaaS platforms like VENOM are specifically targeting high-value Microsoft credentials.
-    detail: The rise of specialized PhaaS platforms like VENOM signifies a maturing threat landscape where attackers offer sophisticated, targeted tools. Cybersecurity teams should enhance detection for credential harvesting campaigns, particularly those mimicking legitimate Microsoft login pages, and prioritize user training on recognizing advanced phishing tactics.
-    link: https://www.cisa.gov/news-events/advisories/aa23-287a
-    link_label: CISA Phishing Advisory
+  - title: "AI Guardrails Under Siege: Prompt Injection Risks Emerge"
+    text: Sophisticated prompt injection attacks are bypassing AI safety measures, posing a risk to AI-driven systems.
+    detail: Researchers have demonstrated successful bypasses of AI guardrails, including those in Apple Intelligence. This highlights a critical vulnerability in how AI models interpret and execute commands. Cybersecurity professionals should monitor AI system outputs for anomalous behavior and review prompt engineering best practices to mitigate risks.
+    link: https://owasp.org/www-community/LLM_Security_Top_10/
+    link_label: LLM Security Top 10
     badge: signal
     tags:
+      - ai-security
+      - prompt-injection
       - threat-intel
-      - phishing
-      - paas
-  - title: Exploitation of Zero-Day Vulnerabilities Continues
-    text: Zero-day exploits for Adobe Reader and Windows are actively being used in the wild.
-    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows underscores the persistent threat. Organizations must maintain robust patch management strategies, implement layered security controls, and prepare for rapid incident response to mitigate the impact of novel exploits.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/vulnerability-management
+  - title: Zero-Day Exploitation of Widely Used Software Accelerates
+    text: Zero-day vulnerabilities in popular software like Adobe Reader and Windows are being actively exploited.
+    detail: The rapid exploitation of zero-day flaws in widely used applications such as Adobe Reader and Microsoft Windows underscores the urgency of patch management. Organizations must prioritize rapid patching cycles and implement robust endpoint detection and response (EDR) solutions to counter in-the-wild exploits.
+    link: https://www.cisa.gov/news-events/advisories/aa23-281a
+    link_label: CISA Alert
     badge: signal
     tags:
-      - threat-intel
-      - vulnerability
       - zero-day
-  - title: IoT and Infrastructure Devices Remain Prime Targets
-    text: New botnets like Masjesu target IoT devices, while over 5,200 US industrial devices are at risk.
-    detail: The ongoing targeting of IoT and industrial control systems (ICS) by botnets and nation-state actors highlights critical infrastructure vulnerabilities. Organizations must prioritize securing these devices through network segmentation, regular firmware updates, and stringent access controls to prevent large-scale disruptions.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories/ics-advisory-iad-22-253-01
-    link_label: CISA ICS Advisories
+      - vulnerability
+      - patch-management
+  - title: Supply Chain Attacks Target Popular CMS Plugins
+    text: Attackers are hijacking update mechanisms for WordPress and Joomla plugins to distribute malware.
+    detail: The hijacking of the Smart Slider 3 Pro plugin's update process demonstrates a significant supply chain risk. This tactic allows attackers to distribute backdoored versions of legitimate software. Organizations should implement strict vetting of software updates and consider sandboxing plugin updates before full deployment.
+    link: https://owasp.org/www-project-software-supply-chain-security/
+    link_label: OWASP Supply Chain Security
     badge: signal
     tags:
-      - threat-intel
-      - iot
-      - ics
-      - botnet
-  - title: Supply Chain Attacks Expand to Software Updates
-    text: Hijacked update mechanisms for popular plugins are distributing malware.
-    detail: Recent incidents demonstrate attackers compromising legitimate software update channels, such as for WordPress and Joomla plugins, to distribute backdoored versions. Defenders must implement strict supply chain security measures, including verifying software integrity and limiting plugin functionalities, to prevent these insidious attacks.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerability
-    link_label: OWASP Supply Chain Guidance
-    badge: signal
-    tags:
-      - threat-intel
       - supply-chain
       - malware
+      - cms-security
+  - title: Sophisticated Phishing-as-a-Service Platforms Emerge
+    text: New PhaaS platforms like 'VENOM' are specifically targeting high-value Microsoft credentials.
+    detail: The emergence of advanced PhaaS platforms like VENOM, designed to steal C-suite Microsoft logins, signifies a growing threat to executive-level accounts. This requires enhanced user awareness training focused on spear-phishing, robust multi-factor authentication (MFA) implementation, and advanced email filtering solutions.
+    link: https://www.microsoft.com/en-us/security/blog/2023/11/15/new-phishing-as-a-service-campaign-targets-microsoft-365-logins/
+    link_label: Microsoft Security Blog
+    badge: signal
+    tags:
+      - phishing
+      - microsoft-365
+      - threat-actor
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
