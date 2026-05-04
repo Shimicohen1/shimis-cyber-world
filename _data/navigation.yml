@@ -12,7 +12,7 @@
       desc: Free CVE & breach search on Telegram
       icon: 🤖
     - label: LockDown
-      url: /lockdown-lab/
+      url: /hardening/
       desc: Free hardening tool & daily tips
       icon: 🔒
     - label: Detection Vault
