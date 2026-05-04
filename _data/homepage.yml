@@ -23,41 +23,40 @@ identity:
     url: /about/
 quick_signals:
   - title: Sophisticated Phishing-as-a-Service Platforms Emerge
-    text: Emerging PhaaS platforms like VENOM are increasingly targeting high-value Microsoft credentials.
-    detail: Cyber threat intelligence indicates a rise in sophisticated Phishing-as-a-Service (PhaaS) platforms specifically targeting executive Microsoft accounts. These platforms offer advanced capabilities, enabling attackers to conduct highly selective and impactful credential harvesting operations. Organizations should reinforce multi-factor authentication and user awareness training for C-suite personnel to mitigate this evolving threat.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
-    link_label: Phishing Prevention Guide
+    text: New PhaaS platforms like VENOM are specifically targeting high-value Microsoft credentials.
+    detail: The rise of specialized PhaaS platforms like VENOM signifies a maturing threat landscape where attackers offer sophisticated, targeted tools. Cybersecurity teams should enhance detection for credential harvesting campaigns, particularly those mimicking legitimate Microsoft login pages, and prioritize user training on recognizing advanced phishing tactics.
+    link: https://www.cisa.gov/news-events/advisories/aa23-287a
+    link_label: CISA Phishing Advisory
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - microsoft
-  - title: IoT Devices Remain Prime Targets for Botnets
-    text: New botnets like Masjesu are stealthily targeting IoT devices, evading detection.
-    detail: The Masjesu botnet highlights a persistent trend of threat actors focusing on Internet of Things (IoT) devices. Its evasive tactics underscore the need for robust IoT security measures, including regular firmware updates, network segmentation, and disabling unnecessary services. Defenders must proactively monitor and secure these often-overlooked endpoints to prevent botnet expansion.
-    link: https://www.cisa.gov/news-events/advisories/aa22-283a
-    link_label: Securing IoT Devices
-    badge: signal
-    tags:
-      - threat-intel
-      - botnet
-      - iot
-      - malware
-  - title: Zero-Day Exploits Continue to Target Widely Used Software
-    text: Zero-day vulnerabilities in Adobe Reader and Windows are being actively exploited in the wild.
-    detail: Recent reports confirm active exploitation of zero-day vulnerabilities in widely adopted software like Adobe Reader and Microsoft Windows. This underscores the critical importance of prompt patching and robust endpoint detection and response (EDR) solutions. Organizations should prioritize threat intelligence feeds for timely alerts on emerging zero-days and maintain agile patch management processes.
-    link: https://nvd.nist.gov/vuln/search
-    link_label: Vulnerability Database
+      - paas
+  - title: Exploitation of Zero-Day Vulnerabilities Continues
+    text: Zero-day exploits for Adobe Reader and Windows are actively being used in the wild.
+    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows underscores the persistent threat. Organizations must maintain robust patch management strategies, implement layered security controls, and prepare for rapid incident response to mitigate the impact of novel exploits.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/vulnerability-management
     badge: signal
     tags:
       - threat-intel
       - vulnerability
       - zero-day
-  - title: Supply Chain Attacks Increasingly Target Software Updates
-    text: Hijacked update mechanisms are delivering backdoored plugins for popular CMS platforms.
-    detail: The hijacking of update mechanisms for plugins like Smart Slider 3 Pro demonstrates a significant evolution in supply chain attacks. Threat actors are compromising legitimate update channels to distribute malware. Organizations must implement strict vetting of software sources, monitor for unexpected plugin behavior, and maintain offline backups to recover from such incidents.
-    link: https://owasp.org/www-community/Supply_Chain_Security
-    link_label: Supply Chain Security Best Practices
+  - title: IoT and Infrastructure Devices Remain Prime Targets
+    text: New botnets like Masjesu target IoT devices, while over 5,200 US industrial devices are at risk.
+    detail: The ongoing targeting of IoT and industrial control systems (ICS) by botnets and nation-state actors highlights critical infrastructure vulnerabilities. Organizations must prioritize securing these devices through network segmentation, regular firmware updates, and stringent access controls to prevent large-scale disruptions.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories/ics-advisory-iad-22-253-01
+    link_label: CISA ICS Advisories
+    badge: signal
+    tags:
+      - threat-intel
+      - iot
+      - ics
+      - botnet
+  - title: Supply Chain Attacks Expand to Software Updates
+    text: Hijacked update mechanisms for popular plugins are distributing malware.
+    detail: Recent incidents demonstrate attackers compromising legitimate software update channels, such as for WordPress and Joomla plugins, to distribute backdoored versions. Defenders must implement strict supply chain security measures, including verifying software integrity and limiting plugin functionalities, to prevent these insidious attacks.
+    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Vulnerability
+    link_label: OWASP Supply Chain Guidance
     badge: signal
     tags:
       - threat-intel
