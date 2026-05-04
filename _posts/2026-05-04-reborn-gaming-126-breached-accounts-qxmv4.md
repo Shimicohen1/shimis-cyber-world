@@ -1,0 +1,81 @@
+---
+title: "Reborn Gaming Breach: cPanel/WHM Vulnerability Exposes User Data"
+date: 2026-05-04 03:43:06 +0000
+source: RSS
+source_name: "Have I Been Pwned"
+channel: "Have I Been Pwned"
+tags: [data-breach, vulnerability]
+excerpt: "The gaming community Reborn Gaming experienced a data breach in April 2026, stemming from a vulnerability within cPanel and WebHost Manager (WHM). Have I Been Pwned confirmed the i"
+summary: "The gaming community Reborn Gaming experienced a data breach in April 2026, stemming from a vulnerability within cPanel and WebHost Manager (WHM). Have I Been Pwned confirmed the incident, with Reborn Gaming self-submitting the compromised data. The breach exposed a total of 126 unique email address"
+layout: post
+section: vulnerabilities
+score: HIGH
+curated: false
+featured: false
+priority: 85
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-018.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-018.png"
+source_url: "https://haveibeenpwned.com/Breach/RebornGaming"
+tlp: "TLP:CLEAR"
+event_type: "data-breach"
+organizations:
+  - name: "Reborn Gaming"
+    role: "victim"
+  - name: "cPanel"
+    domain: "cpanel.net"
+    role: "vendor"
+  - name: "WebHost Manager"
+    domain: "cpanel.net"
+    role: "vendor"
+link_preview:
+  url: "https://haveibeenpwned.com/Breach/RebornGaming"
+  title: "Have I Been Pwned: Reborn Gaming Data Breach"
+  domain: "haveibeenpwned.com"
+  image: "https://haveibeenpwned.com/Images/OG/RebornGaming"
+iocs:
+  - id: "RebornGaming-2026-04"
+    type: "Information Disclosure"
+    indicator: "Reborn Gaming community data breach"
+  - id: "RebornGaming-2026-04"
+    type: "Misconfiguration"
+    indicator: "Vulnerability in cPanel and WebHost Manager (WHM)"
+  - id: "RebornGaming-2026-04"
+    type: "Information Disclosure"
+    indicator: "Exposed data: email addresses, IP addresses, Steam IDs"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1200"
+    name: "Hardware Additions"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1200/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Reborn Gaming Breach - cPanel/WHM Data Exposure"
+  preview_level: "critical"
+  preview_technique: "T1119"
+  preview_tactic: "Impact"
+  preview_yaml_b64: "dGl0bGU6IFJlYm9ybiBHYW1pbmcgQnJlYWNoIC0gY1BhbmVsL1dITSBEYXRhIEV4cG9zdXJlCmlkOiBzY3ctMjAyNi0wNS0wNC1haS0xCnN0YXR1czogZXhwZXJpbWVudGFsCmxldmVsOiBjcml0aWNhbApkZXNjcmlwdGlvbjogfAogIFRoaXMgcnVsZSBkZXRlY3RzIGFjY2VzcyB0byBjUGFuZWwgb3IgV0hNIGludGVyZmFjZXMgd2l0aCBxdWVyeSBwYXJhbWV0ZXJzIGluZGljYXRpdmUgb2YgZGF0YSBleGZpbHRyYXRpb24sIHN1Y2ggYXMgJ2VtYWlsJywgJ2lwJywgb3IgJ3N0ZWFtaWQnLCByZXR1cm5pbmcgYSBzdWNjZXNzZnVsIEhUVFAgc3RhdHVzIGNvZGUgKDIwMCkuIFRoaXMgaXMgc3BlY2lmaWMgdG8gdGhlIFJlYm9ybiBHYW1pbmcgYnJlYWNoIHdoZXJlIHRoZXNlIHBhcmFtZXRlcnMgd2VyZSBsaWtlbHkgaW52b2x2ZWQgaW4gdGhlIGV4cG9zdXJlIG9mIHVzZXIgZGF0YS4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNS0wNApyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wNC1yZWJvcm4tZ2FtaW5nLTEyNi1icmVhY2hlZC1hY2NvdW50cy1xeG12NAp0YWdzOgogIC0gYXR0YWNrLmltcGFjdAogIC0gYXR0YWNrLnQxMTE5CmxvZ3NvdXJjZToKICAgIGNhdGVnb3J5OiB3ZWJzZXJ2ZXIKZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgY3MtdXJpfGNvbnRhaW5zOgogICAgICAgICAgLSAnL2NwYW5lbCcKICAgICAgICAgIC0gJy93aG0nCiAgICAgIGNzLXVyaS1xdWVyeXxjb250YWluczoKICAgICAgICAgIC0gJ2VtYWlsJwogICAgICAgICAgLSAnaXAnCiAgICAgICAgICAtICdzdGVhbWlkJwogICAgICBzYy1zdGF0dXM6CiAgICAgICAgICAtIDIwMAogICAgICBjb25kaXRpb246IHNlbGVjdGlvbgpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJSZWJvcm4gR2FtaW5nIEJyZWFjaCAtIGNQYW5lbC9XSE0gRGF0YSBFeHBvc3VyZSIsImxldmVsIjoiY3JpdGljYWwiLCJ0ZWNobmlxdWUiOiJUMTExOSIsInRhY3RpYyI6IkltcGFjdCIsInRpZXIiOiJmcmVlIiwieWFtbCI6InRpdGxlOiBSZWJvcm4gR2FtaW5nIEJyZWFjaCAtIGNQYW5lbC9XSE0gRGF0YSBFeHBvc3VyZVxuaWQ6IHNjdy0yMDI2LTA1LTA0LWFpLTFcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIGFjY2VzcyB0byBjUGFuZWwgb3IgV0hNIGludGVyZmFjZXMgd2l0aCBxdWVyeSBwYXJhbWV0ZXJzIGluZGljYXRpdmUgb2YgZGF0YSBleGZpbHRyYXRpb24sIHN1Y2ggYXMgJ2VtYWlsJywgJ2lwJywgb3IgJ3N0ZWFtaWQnLCByZXR1cm5pbmcgYSBzdWNjZXNzZnVsIEhUVFAgc3RhdHVzIGNvZGUgKDIwMCkuIFRoaXMgaXMgc3BlY2lmaWMgdG8gdGhlIFJlYm9ybiBHYW1pbmcgYnJlYWNoIHdoZXJlIHRoZXNlIHBhcmFtZXRlcnMgd2VyZSBsaWtlbHkgaW52b2x2ZWQgaW4gdGhlIGV4cG9zdXJlIG9mIHVzZXIgZGF0YS5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA0XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDQtcmVib3JuLWdhbWluZy0xMjYtYnJlYWNoZWQtYWNjb3VudHMtcXhtdjRcbnRhZ3M6XG4gIC0gYXR0YWNrLmltcGFjdFxuICAtIGF0dGFjay50MTExOVxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiB3ZWJzZXJ2ZXJcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgY3MtdXJpfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy9jcGFuZWwnXG4gICAgICAgICAgLSAnL3dobSdcbiAgICAgIGNzLXVyaS1xdWVyeXxjb250YWluczpcbiAgICAgICAgICAtICdlbWFpbCdcbiAgICAgICAgICAtICdpcCdcbiAgICAgICAgICAtICdzdGVhbWlkJ1xuICAgICAgc2Mtc3RhdHVzOlxuICAgICAgICAgIC0gMjAwXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJSZWJvcm4gR2FtaW5nIEJyZWFjaCAtIFN1c3BpY2lvdXMgY1BhbmVsL1dITSBGaWxlIEFjY2VzcyIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMDgzIiwidGFjdGljIjoiRGlzY292ZXJ5IiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IFJlYm9ybiBHYW1pbmcgQnJlYWNoIC0gU3VzcGljaW91cyBjUGFuZWwvV0hNIEZpbGUgQWNjZXNzXG5pZDogc2N3LTIwMjYtMDUtMDQtYWktMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBoaWdoXG5kZXNjcmlwdGlvbjogfFxuICBUaGlzIHJ1bGUgZmxhZ3MgZmlsZSBhY2Nlc3Mgd2l0aGluIGNvbW1vbiBjUGFuZWwvV0hNIHVzZXIgZGlyZWN0b3JpZXMgb3IgY29uZmlndXJhdGlvbiBmaWxlcyBieSBjUGFuZWwvV0hNIHJlbGF0ZWQgdXNlcnMuIFRoaXMgY291bGQgaW5kaWNhdGUgYW4gYXR0YWNrZXIgZW51bWVyYXRpbmcgdXNlciBkYXRhIG9yIGNvbmZpZ3VyYXRpb24gZmlsZXMsIGEgc3RlcCBvZnRlbiBwcmVjZWRpbmcgb3IgZm9sbG93aW5nIGEgZGF0YSBicmVhY2ggbGlrZSB0aGUgb25lIGF0IFJlYm9ybiBHYW1pbmcuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0wNFxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTA0LXJlYm9ybi1nYW1pbmctMTI2LWJyZWFjaGVkLWFjY291bnRzLXF4bXY0XG50YWdzOlxuICAtIGF0dGFjay5kaXNjb3ZlcnlcbiAgLSBhdHRhY2sudDEwODNcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogZmlsZV9hY2Nlc3NcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgVGFyZ2V0RmlsZW5hbWV8Y29udGFpbnM6XG4gICAgICAgICAgLSAnL2hvbWUvKi9wdWJsaWNfaHRtbC8nXG4gICAgICAgICAgLSAnL3Zhci9jcGFuZWwvdXNlcnMvJ1xuICAgICAgVXNlcnxjb250YWluczpcbiAgICAgICAgICAtICdjcGFuZWwnXG4gICAgICAgICAgLSAnd2htJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiUmVib3JuIEdhbWluZyBCcmVhY2ggLSBjUGFuZWwvV0hNIEFkbWluIExvZ2luIEF0dGVtcHQiLCJsZXZlbCI6Im1lZGl1bSIsInRlY2huaXF1ZSI6IlQxMTEwIiwidGFjdGljIjoiQ3JlZGVudGlhbCBBY2Nlc3MiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogUmVib3JuIEdhbWluZyBCcmVhY2ggLSBjUGFuZWwvV0hNIEFkbWluIExvZ2luIEF0dGVtcHRcbmlkOiBzY3ctMjAyNi0wNS0wNC1haS0zXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IG1lZGl1bVxuZGVzY3JpcHRpb246IHxcbiAgVGhpcyBydWxlIGRldGVjdHMgbG9naW4gYXR0ZW1wdHMgdG8gY1BhbmVsL1dITSBhZG1pbmlzdHJhdGl2ZSBhY2NvdW50cyAoZS5nLiwgcm9vdCwgYWRtaW4pIGZyb20gcG90ZW50aWFsbHkgc3VzcGljaW91cyBJUCBhZGRyZXNzZXMuIFdoaWxlIG5vdCBkaXJlY3RseSB0aGUgYnJlYWNoIGV2ZW50LCBzdWNjZXNzZnVsIG9yIHJlcGVhdGVkIGZhaWxlZCBhdHRlbXB0cyBmcm9tIHVudXN1YWwgc291cmNlcyBjb3VsZCBpbmRpY2F0ZSBhbiBhdHRhY2tlciB0YXJnZXRpbmcgdGhlIGFkbWluaXN0cmF0aXZlIGludGVyZmFjZSwgYXMgc2VlbiBpbiB0aGUgUmVib3JuIEdhbWluZyBpbmNpZGVudC5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA0XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDQtcmVib3JuLWdhbWluZy0xMjYtYnJlYWNoZWQtYWNjb3VudHMtcXhtdjRcbnRhZ3M6XG4gIC0gYXR0YWNrLmNyZWRlbnRpYWxfYWNjZXNzXG4gIC0gYXR0YWNrLnQxMTEwXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGF1dGhlbnRpY2F0aW9uXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIFVzZXJ8Y29udGFpbnM6XG4gICAgICAgICAgLSAncm9vdCdcbiAgICAgICAgICAtICdhZG1pbidcbiAgICAgIHNyY19pcDpcbiAgICAgICAgICAtICcwLjAuMC4wLzAnICMgUGxhY2Vob2xkZXIgZm9yIGFueSBJUCwgYWRqdXN0IGFzIG5lZWRlZFxuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifV0="
+why_it_matters:
+  - "If your organization uses cPanel or WHM, you must ensure all installations are fully patched and hardened. This Reborn Gaming breach, while specific to a gaming community, highlights that even widely used administrative tools become high-value targets. Attackers leverage these vulnerabilities to gain initial access, regardless of the target's size. Audit your cPanel/WHM logs for any unusual activity and review access controls immediately."
+bot_cta_title: "Check cPanel/WHM vulnerability impact"
+bot_cta_description: "Use /breach to see the latest data breaches and ransomware events."
+---
+
+The gaming community Reborn Gaming experienced a data breach in April 2026, stemming from a vulnerability within cPanel and WebHost Manager (WHM). Have I Been Pwned confirmed the incident, with Reborn Gaming self-submitting the compromised data.
+
+The breach exposed a total of 126 unique email addresses, alongside associated IP addresses and Steam IDs. While the scale might seem small, the exposure of Steam IDs and IP addresses provides attackers with valuable pivot points for further social engineering or targeted attacks against individual users.
+
+This incident underscores the ongoing risk posed by administrative panel vulnerabilities, even in seemingly niche communities. Attackers consistently target the weakest link, and misconfigurations or unpatched flaws in widely used control panels like cPanel remain a prime target.
