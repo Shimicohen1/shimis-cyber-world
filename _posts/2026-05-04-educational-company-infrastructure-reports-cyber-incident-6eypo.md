@@ -1,0 +1,57 @@
+---
+title: "Infrastructure Education Company Reports Cyber Incident, User Data Exposed"
+date: 2026-05-04 17:19:00 +0000
+source: RSS
+source_name: "The Record by Recorded Future"
+channel: "The Record by Recorded Future"
+tags: [threat-intel, data-breach, government, microsoft]
+excerpt: "The Record by Recorded Future reports that Infrastructure, an educational technology company, confirmed a cyber incident. Steve Proud, Infrastructure’s CISO, stated that attackers"
+summary: "The Record by Recorded Future reports that Infrastructure, an educational technology company, confirmed a cyber incident. Steve Proud, Infrastructure’s CISO, stated that attackers accessed user data from several educational institutions. This breach exposed names, email addresses, student ID numbers"
+layout: post
+section: live-feed
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-053.png"
+author: research
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-053.png"
+source_url: "https://therecord.media/infrastructure-education-company-canvas-incident"
+tlp: "TLP:CLEAR"
+event_type: "data-breach"
+organizations:
+  - name: "Infrastructure"
+    domain: "infrastructure.com"
+    role: "victim"
+link_preview:
+  url: "https://therecord.media/infrastructure-education-company-canvas-incident"
+  title: "Educational company Infrastructure reports cyber incident"
+  domain: "therecord.media"
+  image: "https://cms.therecord.media/uploads/school_class_2_42809b7a22.jpg"
+sigma_rules:
+  count: 2
+  free_count: 1
+  paid_count: 1
+  preview_title: "Monitor Authentication from Breached Vendor — Infrastructure"
+  preview_level: "high"
+  preview_technique: "data-breach"
+  preview_tactic: "event-type"
+  preview_yaml_b64: "dGl0bGU6IE1vbml0b3IgQXV0aGVudGljYXRpb24gZnJvbSBCcmVhY2hlZCBWZW5kb3Ig4oCUIEluZnJhc3RydWN0dXJlCmlkOiBzY3ctMjAyNi0wNS0wNC1ldnQtMQpzdGF0dXM6IGV4cGVyaW1lbnRhbApsZXZlbDogaGlnaApkZXNjcmlwdGlvbjogfAogIEZvbGxvd2luZyB0aGUgSW5mcmFzdHJ1Y3R1cmUgZGF0YSBicmVhY2gsIG1vbml0b3IgZm9yIGxvZ2luIGF0dGVtcHRzIHVzaW5nIHBvdGVudGlhbGx5IGNvbXByb21pc2VkIGNyZWRlbnRpYWxzLiBBbGVydCBvbiBhbnkgYXV0aGVudGljYXRpb24gZnJvbSBpbmZyYXN0cnVjdHVyZS5jb20gYWNjb3VudHMgYW5kIGNyZWRlbnRpYWwgc3R1ZmZpbmcgcGF0dGVybnMuCmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChhdXRvLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNS0wNApyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wNC1lZHVjYXRpb25hbC1jb21wYW55LWluZnJhc3RydWN0dXJlLXJlcG9ydHMtY3liZXItaW5jaWRlbnQtNmV5cG8KdGFnczoKICAtIGF0dGFjay5nZW5lcmFsCiAgLSBhdHRhY2suZGF0YS1icmVhY2gKbG9nc291cmNlOgogICAgY2F0ZWdvcnk6IGF1dGhlbnRpY2F0aW9uCmRldGVjdGlvbjoKICBzZWxlY3Rpb25fZG9tYWluOgogICAgICBVc2VyfGVuZHN3aXRoOgogICAgICAgIC0gJ0BpbmZyYXN0cnVjdHVyZS5jb20nCiAgICBzZWxlY3Rpb25fZmFpbHVyZToKICAgICAgRXZlbnRUeXBlOiAnbG9naW5fZmFpbHVyZScKICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25fZG9tYWluIG9yIHNlbGVjdGlvbl9mYWlsdXJlIHwgY291bnQoVXNlcikgYnkgc3JjX2lwID4gMTAKZmFsc2Vwb3NpdGl2ZXM6CiAgLSBMZWdpdGltYXRlIGFjdGl2aXR5IGZyb20gSW5mcmFzdHJ1Y3R1cmU="
+  all_rules_b64: "W3sidGl0bGUiOiJNb25pdG9yIEF1dGhlbnRpY2F0aW9uIGZyb20gQnJlYWNoZWQgVmVuZG9yIOKAlCBJbmZyYXN0cnVjdHVyZSIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6ImRhdGEtYnJlYWNoIiwidGFjdGljIjoiZXZlbnQtdHlwZSIsInRpZXIiOiJmcmVlIiwieWFtbCI6InRpdGxlOiBNb25pdG9yIEF1dGhlbnRpY2F0aW9uIGZyb20gQnJlYWNoZWQgVmVuZG9yIOKAlCBJbmZyYXN0cnVjdHVyZVxuaWQ6IHNjdy0yMDI2LTA1LTA0LWV2dC0xXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGhpZ2hcbmRlc2NyaXB0aW9uOiB8XG4gIEZvbGxvd2luZyB0aGUgSW5mcmFzdHJ1Y3R1cmUgZGF0YSBicmVhY2gsIG1vbml0b3IgZm9yIGxvZ2luIGF0dGVtcHRzIHVzaW5nIHBvdGVudGlhbGx5IGNvbXByb21pc2VkIGNyZWRlbnRpYWxzLiBBbGVydCBvbiBhbnkgYXV0aGVudGljYXRpb24gZnJvbSBpbmZyYXN0cnVjdHVyZS5jb20gYWNjb3VudHMgYW5kIGNyZWRlbnRpYWwgc3R1ZmZpbmcgcGF0dGVybnMuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoYXV0by1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA0XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDQtZWR1Y2F0aW9uYWwtY29tcGFueS1pbmZyYXN0cnVjdHVyZS1yZXBvcnRzLWN5YmVyLWluY2lkZW50LTZleXBvXG50YWdzOlxuICAtIGF0dGFjay5nZW5lcmFsXG4gIC0gYXR0YWNrLmRhdGEtYnJlYWNoXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGF1dGhlbnRpY2F0aW9uXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbl9kb21haW46XG4gICAgICBVc2VyfGVuZHN3aXRoOlxuICAgICAgICAtICdAaW5mcmFzdHJ1Y3R1cmUuY29tJ1xuICAgIHNlbGVjdGlvbl9mYWlsdXJlOlxuICAgICAgRXZlbnRUeXBlOiAnbG9naW5fZmFpbHVyZSdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uX2RvbWFpbiBvciBzZWxlY3Rpb25fZmFpbHVyZSB8IGNvdW50KFVzZXIpIGJ5IHNyY19pcCA+IDEwXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFjdGl2aXR5IGZyb20gSW5mcmFzdHJ1Y3R1cmUifSx7InRpdGxlIjoiRW1haWwgZnJvbSBCcmVhY2hlZCBJbmZyYXN0cnVjdHVyZSBEb21haW4g4oCUIFBoaXNoaW5nIFJpc2siLCJsZXZlbCI6Im1lZGl1bSIsInRlY2huaXF1ZSI6ImRhdGEtYnJlYWNoIiwidGFjdGljIjoiZXZlbnQtdHlwZSIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBFbWFpbCBmcm9tIEJyZWFjaGVkIEluZnJhc3RydWN0dXJlIERvbWFpbiDigJQgUGhpc2hpbmcgUmlza1xuaWQ6IHNjdy0yMDI2LTA1LTA0LWV2dC0yXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IG1lZGl1bVxuZGVzY3JpcHRpb246IHxcbiAgRmxhZyBlbWFpbHMgd2l0aCBhdHRhY2htZW50cyBmcm9tIGluZnJhc3RydWN0dXJlLmNvbS4gQnJlYWNoZWQgb3JnYW5pemF0aW9ucyBhcmUgZnJlcXVlbnRseSBpbXBlcnNvbmF0ZWQgaW4gZm9sbG93LXVwIHBoaXNoaW5nIGNhbXBhaWducy5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChhdXRvLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMDRcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wNC1lZHVjYXRpb25hbC1jb21wYW55LWluZnJhc3RydWN0dXJlLXJlcG9ydHMtY3liZXItaW5jaWRlbnQtNmV5cG9cbnRhZ3M6XG4gIC0gYXR0YWNrLmdlbmVyYWxcbiAgLSBhdHRhY2suZGF0YS1icmVhY2hcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogZW1haWxcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgc2VuZGVyX2RvbWFpbjogJ2luZnJhc3RydWN0dXJlLmNvbSdcbiAgICAgIGF0dGFjaG1lbnRzfGd0OiAwXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhY3Rpdml0eSBmcm9tIEluZnJhc3RydWN0dXJlIn1d"
+why_it_matters:
+  - "If your institution uses Infrastructure or similar educational platforms, you must immediately audit what data is shared with third-party vendors. Begin a forensic review of user activity logs for any anomalies and warn users about potential phishing attempts using their exposed PII. This isn't theoretical; this data is now out there, ready for exploitation."
+bot_cta_title: "Check for Education Sector Breaches"
+bot_cta_description: "Use /breach to see the latest breaches, including those impacting the education sector."
+---
+
+The Record by Recorded Future reports that Infrastructure, an educational technology company, confirmed a cyber incident. Steve Proud, Infrastructure’s CISO, stated that attackers accessed user data from several educational institutions. This breach exposed names, email addresses, student ID numbers, and even private messages exchanged between users.
+
+This isn't just a data leak; it's a direct compromise of trust in a sector already struggling with security. Educational platforms hold extremely sensitive data, especially for minors. The attacker's calculus here is clear: target the weakest link in the supply chain – often third-party vendors – to gain access to a trove of PII. For defenders, this highlights the critical need for rigorous vendor security assessments, especially for services handling student data.
+
+The implications for affected students and faculty are significant. This data can be weaponized for phishing campaigns, identity theft, or even social engineering attacks targeting the broader academic community. CISOs in education must assume their third-party exposure is real and act accordingly.
