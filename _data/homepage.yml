@@ -22,46 +22,47 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: "AI Guardrails Under Siege: Prompt Injection Risks Escalate"
-    text: AI systems, including Apple Intelligence, are vulnerable to prompt injection attacks, bypassing safety measures.
-    detail: Sophisticated prompt injection techniques are successfully circumventing AI guardrails, as demonstrated by recent exploits targeting Apple Intelligence. This trend highlights the critical need for robust defenses against adversarial AI prompting to prevent misuse and protect sensitive operations. Organizations should prioritize AI security best practices and continuous monitoring.
-    link: https://owasp.org/www-project-top-10-for-large-language-applications/
-    link_label: OWASP LLM Top 10
+  - title: Evolving Phishing-as-a-Service Platforms
+    text: New PhaaS platforms like VENOM are sophisticatedly targeting C-suite Microsoft logins.
+    detail: The emergence of advanced Phishing-as-a-Service (PhaaS) platforms, such as VENOM, indicates a growing trend of highly targeted and sophisticated phishing operations. These services lower the barrier to entry for cybercriminals, enabling them to conduct large-scale attacks with minimal technical expertise. Organizations should reinforce multi-factor authentication and conduct regular phishing awareness training, especially for executive leadership.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-what-it-how-protect-yourself
+    link_label: Phishing Awareness Guide
     badge: signal
     tags:
-      - ai-security
-      - prompt-injection
       - threat-intel
-  - title: Zero-Day Exploits Continue to Target Widely Used Software
-    text: Zero-day vulnerabilities are actively exploited in Adobe Reader and Windows OS, demanding rapid patching.
-    detail: The active exploitation of zero-day flaws in critical software like Adobe Reader and Windows underscores the persistent threat of unknown vulnerabilities. Organizations must adopt proactive vulnerability management and rapid patching strategies. Staying informed via vendor advisories and threat intelligence feeds is crucial for timely mitigation.
-    link: https://www.cisa.gov/news-events/advisories/known-exploited-vulnerabilities-catalog
-    link_label: CISA Known Exploited Vulnerabilities
+      - phishing
+      - microsoft
+  - title: Zero-Day Exploits Target Widely Used Software
+    text: Zero-day vulnerabilities are actively exploited in Adobe Reader and Windows, demanding rapid patching.
+    detail: The active exploitation of zero-day vulnerabilities in widely used software like Adobe Reader and Windows underscores the persistent threat posed by unknown flaws. This trend highlights the critical need for robust vulnerability management programs and rapid patching strategies. Organizations must prioritize timely updates and implement defense-in-depth measures to mitigate risks associated with unpatched vulnerabilities.
+    link: https://www.nist.gov/cyberframework/resources
+    link_label: Cybersecurity Framework
     badge: signal
     tags:
+      - threat-intel
       - vulnerability
       - zero-day
-      - patch-management
-  - title: Supply Chain Attacks on CMS Plugins Persist
-    text: Hijacked updates for WordPress and Joomla plugins like Smart Slider 3 Pro deliver backdoored code.
-    detail: Compromised plugin update mechanisms, as seen with Smart Slider 3 Pro for WordPress and Joomla, represent a significant supply chain risk. Attackers inject backdoors through seemingly legitimate updates, impacting numerous downstream users. Strict vetting of plugin sources and update verification are essential defense measures.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Attacks
-    link_label: OWASP Supply Chain Attacks
+  - title: Supply Chain Attacks Target Software Updates
+    text: Smart Slider plugin hijack demonstrates the risk of compromised update mechanisms.
+    detail: The hijacking of the Smart Slider plugin's update mechanism to distribute backdoored versions is a clear example of a sophisticated supply chain attack. This pattern suggests threat actors are increasingly targeting trusted software distribution channels to compromise end-users. Organizations should implement strict controls over software updates, verify digital signatures, and consider application whitelisting.
+    link: https://owasp.org/www-community/Supply_Chain_Security
+    link_label: Supply Chain Security
     badge: signal
     tags:
+      - threat-intel
       - supply-chain
       - malware
-      - cms-security
-  - title: APT Groups Leverage Diverse Tactics Against Critical Infrastructure
-    text: Nation-state actors like Fancy Bear and Iranian-backed groups target industrial devices and global entities.
-    detail: Advanced Persistent Threats (APTs) continue to pose a significant risk, with groups like Fancy Bear and Iranian actors targeting critical infrastructure and industrial control systems. Their evolving tactics necessitate robust threat intelligence gathering and defense strategies focused on protecting high-value assets and network perimeters.
-    link: https://www.mitre.org/attack-matrix
-    link_label: MITRE ATT&CK Framework
+  - title: Malware Evolving to Target IoT and Mobile
+    text: New botnets like Masjesu target IoT, while Android SDK flaws expose millions.
+    detail: The emergence of malware specifically targeting IoT devices, such as the Masjesu botnet, alongside critical vulnerabilities in Android SDKs affecting millions of wallets, points to a growing threat landscape for connected devices and mobile ecosystems. This necessitates enhanced security for IoT deployments and diligent vetting of third-party SDKs in mobile application development.
+    link: https://www.cisa.gov/news-events/advisories/aa22-286a
+    link_label: Securing IoT Devices
     badge: signal
     tags:
-      - apt
       - threat-intel
-      - industrial-control-systems
+      - malware
+      - iot
+      - android
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
