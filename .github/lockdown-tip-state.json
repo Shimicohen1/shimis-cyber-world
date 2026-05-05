@@ -1,5 +1,5 @@
 {
-  "tipNumber": 19,
+  "tipNumber": 20,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -19,7 +19,8 @@
     "lin-004",
     "win-004",
     "aws-004",
-    "az-004"
+    "az-004",
+    "lin-005"
   ],
   "round": 1,
   "history": [
@@ -211,6 +212,16 @@
       "linkedInId": "urn:li:share:7457000096526692352",
       "telegramMsgId": 1167,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-004/"
+    },
+    {
+      "tipNumber": 20,
+      "id": "lin-005",
+      "platform": "linux",
+      "title": "Lock inactive user accounts",
+      "date": "2026-05-05T09:20:31.934Z",
+      "linkedInId": "urn:li:share:7457358558062362624",
+      "telegramMsgId": 1208,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-005/"
     }
   ]
 }
