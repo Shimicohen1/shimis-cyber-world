@@ -1,0 +1,76 @@
+---
+title: "WhatsApp Patches File Spoofing and URL Scheme Vulnerabilities"
+date: 2026-05-05 09:01:14 +0000
+source: RSS
+source_name: "SecurityWeek"
+channel: "SecurityWeek"
+tags: [threat-intel, vulnerability, tools]
+excerpt: "SecurityWeek reports that WhatsApp has addressed critical vulnerabilities related to file spoofing and arbitrary URL schemes. These issues were responsibly disclosed to Meta via th"
+summary: "SecurityWeek reports that WhatsApp has addressed critical vulnerabilities related to file spoofing and arbitrary URL schemes. These issues were responsibly disclosed to Meta via their bug bounty program and have since been patched in updates released earlier this year. The exact nature of the file s"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 70
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-032.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-032.png"
+source_url: "https://www.securityweek.com/whatsapp-discloses-file-spoofing-arbitrary-url-scheme-vulnerabilities/"
+tlp: "TLP:CLEAR"
+event_type: "vulnerability"
+organizations:
+  - name: "WhatsApp"
+    domain: "whatsapp.com"
+    role: "vendor"
+  - name: "Meta"
+    domain: "meta.com"
+    role: "vendor"
+threat_actors:
+  - "APT41"
+link_preview:
+  url: "https://www.securityweek.com/whatsapp-discloses-file-spoofing-arbitrary-url-scheme-vulnerabilities/"
+  title: "WhatsApp Discloses File Spoofing, Arbitrary URL Scheme Vulnerabilities"
+  domain: "securityweek.com"
+  image: "https://www.securityweek.com/wp-content/uploads/2025/06/WhatsApp-Vulnerability-attack-e1761292707809.jpg"
+iocs:
+  - id: "WhatsApp-Advisory-2023-09"
+    type: "File Spoofing"
+    indicator: "WhatsApp application"
+  - id: "WhatsApp-Advisory-2023-09"
+    type: "Arbitrary URL Scheme"
+    indicator: "WhatsApp application"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1566.002"
+    name: "Phishing: Spearphishing Link"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1566/002/"
+sigma_rules:
+  count: 2
+  free_count: 1
+  paid_count: 1
+  preview_title: "WhatsApp File Spoofing Attempt"
+  preview_level: "high"
+  preview_technique: "T1190"
+  preview_tactic: "Initial Access"
+  preview_yaml_b64: "dGl0bGU6IFdoYXRzQXBwIEZpbGUgU3Bvb2ZpbmcgQXR0ZW1wdAppZDogc2N3LTIwMjYtMDUtMDUtYWktMQpzdGF0dXM6IGV4cGVyaW1lbnRhbApsZXZlbDogaGlnaApkZXNjcmlwdGlvbjogfAogIERldGVjdHMgcG90ZW50aWFsIGZpbGUgc3Bvb2ZpbmcgYXR0ZW1wdHMgd2l0aGluIFdoYXRzQXBwIGJ5IG1vbml0b3JpbmcgZm9yIFdoYXRzQXBwIHByb2Nlc3NlcyBhdHRlbXB0aW5nIHRvIGV4ZWN1dGUgb3IgaW50ZXJhY3Qgd2l0aCBmaWxlcyB0aGF0IGhhdmUgZXh0ZW5zaW9ucyBjb21tb25seSBhc3NvY2lhdGVkIHdpdGggbWFsaWNpb3VzIHBheWxvYWRzLCB3aGljaCBjb3VsZCBiZSBsZXZlcmFnZWQgYnkgdGhlIGZpbGUgc3Bvb2ZpbmcgdnVsbmVyYWJpbGl0eS4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNS0wNQpyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wNS13aGF0c2FwcC1kaXNjbG9zZXMtZmlsZS1zcG9vZmluZy1hcmJpdHJhcnktdXJsLXNjaGVtZS12dWxuZS00ZzJ2bwp0YWdzOgogIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzCiAgLSBhdHRhY2sudDExOTAKbG9nc291cmNlOgogICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb24KZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgSW1hZ2V8Y29udGFpbnM6CiAgICAgICAgICAtICdXaGF0c0FwcC5leGUnCiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOgogICAgICAgICAgLSAnLmV4ZScKICAgICAgICAgIC0gJy5iYXQnCiAgICAgICAgICAtICcuY21kJwogICAgICAgICAgLSAnLnZicycKICAgICAgICAgIC0gJy5qcycKICAgICAgICAgIC0gJy5odGEnCiAgICAgICAgICAtICcuc2NyJwogICAgICAgICAgLSAnLmRsbCcKICAgICAgICAgIC0gJy5wczEnCiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uCmZhbHNlcG9zaXRpdmVzOgogIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eQ=="
+  all_rules_b64: "W3sidGl0bGUiOiJXaGF0c0FwcCBGaWxlIFNwb29maW5nIEF0dGVtcHQiLCJsZXZlbCI6ImhpZ2giLCJ0ZWNobmlxdWUiOiJUMTE5MCIsInRhY3RpYyI6IkluaXRpYWwgQWNjZXNzIiwidGllciI6ImZyZWUiLCJ5YW1sIjoidGl0bGU6IFdoYXRzQXBwIEZpbGUgU3Bvb2ZpbmcgQXR0ZW1wdFxuaWQ6IHNjdy0yMDI2LTA1LTA1LWFpLTFcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgRGV0ZWN0cyBwb3RlbnRpYWwgZmlsZSBzcG9vZmluZyBhdHRlbXB0cyB3aXRoaW4gV2hhdHNBcHAgYnkgbW9uaXRvcmluZyBmb3IgV2hhdHNBcHAgcHJvY2Vzc2VzIGF0dGVtcHRpbmcgdG8gZXhlY3V0ZSBvciBpbnRlcmFjdCB3aXRoIGZpbGVzIHRoYXQgaGF2ZSBleHRlbnNpb25zIGNvbW1vbmx5IGFzc29jaWF0ZWQgd2l0aCBtYWxpY2lvdXMgcGF5bG9hZHMsIHdoaWNoIGNvdWxkIGJlIGxldmVyYWdlZCBieSB0aGUgZmlsZSBzcG9vZmluZyB2dWxuZXJhYmlsaXR5LlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMDVcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wNS13aGF0c2FwcC1kaXNjbG9zZXMtZmlsZS1zcG9vZmluZy1hcmJpdHJhcnktdXJsLXNjaGVtZS12dWxuZS00ZzJ2b1xudGFnczpcbiAgLSBhdHRhY2suaW5pdGlhbF9hY2Nlc3NcbiAgLSBhdHRhY2sudDExOTBcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvblxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBJbWFnZXxjb250YWluczpcbiAgICAgICAgICAtICdXaGF0c0FwcC5leGUnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICcuZXhlJ1xuICAgICAgICAgIC0gJy5iYXQnXG4gICAgICAgICAgLSAnLmNtZCdcbiAgICAgICAgICAtICcudmJzJ1xuICAgICAgICAgIC0gJy5qcydcbiAgICAgICAgICAtICcuaHRhJ1xuICAgICAgICAgIC0gJy5zY3InXG4gICAgICAgICAgLSAnLmRsbCdcbiAgICAgICAgICAtICcucHMxJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiV2hhdHNBcHAgTWFsaWNpb3VzIFVSTCBTY2hlbWUgUmVkaXJlY3Rpb24iLCJsZXZlbCI6Im1lZGl1bSIsInRlY2huaXF1ZSI6IlQxNTY2LjAwMiIsInRhY3RpYyI6IkluaXRpYWwgQWNjZXNzIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IFdoYXRzQXBwIE1hbGljaW91cyBVUkwgU2NoZW1lIFJlZGlyZWN0aW9uXG5pZDogc2N3LTIwMjYtMDUtMDUtYWktMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBtZWRpdW1cbmRlc2NyaXB0aW9uOiB8XG4gIE1vbml0b3JzIGZvciBXaGF0c0FwcCBwcm9jZXNzZXMgaW5pdGlhdGluZyBjb21tYW5kcyB0aGF0IHV0aWxpemUgc3BlY2lmaWMgV2hhdHNBcHAgVVJMIHNjaGVtZXMuIFRoaXMgcnVsZSBhaW1zIHRvIGRldGVjdCB0aGUgZXhwbG9pdGF0aW9uIG9mIHRoZSBVUkwgc2NoZW1lIHZ1bG5lcmFiaWxpdHksIHdoZXJlIGNyYWZ0ZWQgbGlua3MgY291bGQgbGVhZCB0byB1bmludGVuZGVkIGFjdGlvbnMgb3IgcmVkaXJlY3Rpb24gdG8gbWFsaWNpb3VzIHNpdGVzLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMDVcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wNS13aGF0c2FwcC1kaXNjbG9zZXMtZmlsZS1zcG9vZmluZy1hcmJpdHJhcnktdXJsLXNjaGVtZS12dWxuZS00ZzJ2b1xudGFnczpcbiAgLSBhdHRhY2suaW5pdGlhbF9hY2Nlc3NcbiAgLSBhdHRhY2sudDE1NjYuMDAyXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb25cbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uX2Jhc2U6XG4gICAgICBJbWFnZXxjb250YWluczpcbiAgICAgICAgICAtICdXaGF0c0FwcC5leGUnXG4gIHNlbGVjdGlvbl9pbmRpY2F0b3JzOlxuICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6XG4gICAgICAgICAgLSAnd2hhdHNhcHA6Ly9zZW5kP3Bob25lPSdcbiAgICAgICAgICAtICd3aGF0c2FwcDovL2NoYXQ/Y29kZT0nXG4gICAgICAgICAgLSAnd2hhdHNhcHA6Ly9qb2luLWdyb3VwP2ludml0ZT0nXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvbl9iYXNlIEFORCBzZWxlY3Rpb25faW5kaWNhdG9yc1xuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9XQ=="
+why_it_matters:
+  - "If your organization uses WhatsApp for communication or has employees who do, verify that all devices have the latest WhatsApp version installed. Audit any internal policies regarding file sharing via encrypted messaging apps and reinforce user awareness training on recognizing suspicious links and file types."
+bot_cta_title: "Check for WhatsApp-related threats"
+bot_cta_description: "Use /org whatsapp.com to see related vulnerabilities and advisories."
+---
+
+SecurityWeek reports that WhatsApp has addressed critical vulnerabilities related to file spoofing and arbitrary URL schemes. These issues were responsibly disclosed to Meta via their bug bounty program and have since been patched in updates released earlier this year. The exact nature of the file spoofing allows for the potential misrepresentation of file types, while the URL scheme vulnerability could enable malicious redirection or execution of unintended actions through specially crafted links.
+
+While the specifics of exploitation are not detailed, the implications for users are significant. Successful exploitation could lead to users unknowingly executing malicious code, downloading unsafe files, or being directed to phishing sites. Defenders should ensure all WhatsApp clients are updated to the latest version to mitigate these risks. Given WhatsApp's massive user base, even a small window of exploitability can have widespread impact.
