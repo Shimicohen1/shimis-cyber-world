@@ -1,5 +1,5 @@
 {
-  "tipNumber": 20,
+  "tipNumber": 21,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -20,7 +20,8 @@
     "win-004",
     "aws-004",
     "az-004",
-    "lin-005"
+    "lin-005",
+    "win-005"
   ],
   "round": 1,
   "history": [
@@ -222,6 +223,16 @@
       "linkedInId": "urn:li:share:7457358558062362624",
       "telegramMsgId": 1208,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-005/"
+    },
+    {
+      "tipNumber": 21,
+      "id": "win-005",
+      "platform": "windows",
+      "title": "Disable SMBv1",
+      "date": "2026-05-07T09:42:49.758Z",
+      "linkedInId": "urn:li:share:7458088943557931008",
+      "telegramMsgId": 1260,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-005/"
     }
   ]
 }
