@@ -1,0 +1,82 @@
+---
+title: "Fake Call History Apps Steal Payments After Millions of Play Store Downloads"
+date: 2026-05-08 15:08:00 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability]
+excerpt: "The Hacker News reports a significant mobile fraud campaign involving 28 malicious apps on the official Google Play Store. These apps, collectively downloaded over 7.3 million time"
+summary: "The Hacker News reports a significant mobile fraud campaign involving 28 malicious apps on the official Google Play Store. These apps, collectively downloaded over 7.3 million times, masqueraded as tools to access call histories for any phone number. This functionality, predictably, was fake. Instea"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-016.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-016.png"
+source_url: "https://thehackernews.com/2026/05/fake-call-history-apps-stole-payments.html"
+tlp: "TLP:CLEAR"
+event_type: "fraud"
+organizations:
+  - name: "Google Play Store"
+    domain: "play.google.com"
+    role: "vendor"
+malware_families:
+  - "PLAY"
+link_preview:
+  url: "https://thehackernews.com/2026/05/fake-call-history-apps-stole-payments.html"
+  title: "Fake Call History Apps Stole Payments From Users After 7.3 Million Play Store Downloads"
+  domain: "thehackernews.com"
+  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBMXgW6K0BZvt0-jhZ_smX3Uy-nsd9wb9g7Gs7d3G7uH-HIlEcNhEt9xpaKD_62iJol_LK5Expt-6qCuvIf7llqtQclB64I9zZm_i8CIC0lMJiIz8nx6r4C-Nj4cUgd3cQEtu3_lGFa7wcmR6q9otQhCLoB1Mbnmn7NgH6-djLs_ScqanZFNC-EVOwYyO7/s1600/android-calls.jpg"
+iocs:
+  - id: "Fake-Call-History-Apps"
+    type: "Misconfiguration"
+    indicator: "Google Play Store"
+  - id: "Fake-Call-History-Apps"
+    type: "Information Disclosure"
+    indicator: "Fraudulent Android applications claiming to offer call history access"
+  - id: "Fake-Call-History-Apps"
+    type: "Financial Fraud"
+    indicator: "Subscription scam providing fake data and incurring financial loss"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1588.002"
+    name: "Obtain Capabilities: Malware"
+    tactic: "Resource Development"
+    url: "https://attack.mitre.org/techniques/T1588/002/"
+  - id: "T1491.001"
+    name: "Deception: Phishing for Information"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1491/001/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Mobile Fraud - Fake Call History App Subscription"
+  preview_level: "critical"
+  preview_technique: "T1598"
+  preview_tactic: "Initial Access"
+  preview_yaml_b64: "dGl0bGU6IE1vYmlsZSBGcmF1ZCAtIEZha2UgQ2FsbCBIaXN0b3J5IEFwcCBTdWJzY3JpcHRpb24KaWQ6IHNjdy0yMDI2LTA1LTA4LWFpLTEKc3RhdHVzOiBleHBlcmltZW50YWwKbGV2ZWw6IGNyaXRpY2FsCmRlc2NyaXB0aW9uOiB8CiAgRGV0ZWN0cyBhdHRlbXB0cyB0byBzdWJzY3JpYmUgdG8gc2VydmljZXMgYXNzb2NpYXRlZCB3aXRoIGZha2UgY2FsbCBoaXN0b3J5IGFwcHMuIFRoZXNlIGFwcHMsIGRvd25sb2FkZWQgbWlsbGlvbnMgb2YgdGltZXMsIGZhbHNlbHkgYWR2ZXJ0aXNlZCBjYWxsIGhpc3RvcnkgYWNjZXNzIGJ1dCBpbnN0ZWFkIGluaXRpYXRlZCBmcmF1ZHVsZW50IHJlY3VycmluZyBzdWJzY3JpcHRpb25zLiBUaGlzIHJ1bGUgc3BlY2lmaWNhbGx5IHRhcmdldHMgdGhlIHN1YnNjcmlwdGlvbiBlbmRwb2ludCBvZnRlbiB1c2VkIGJ5IHN1Y2ggbWFsaWNpb3VzIGFwcGxpY2F0aW9ucy4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNS0wOApyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wOC1mYWtlLWNhbGwtaGlzdG9yeS1hcHBzLXN0b2xlLXBheW1lbnRzLWZyb20tdXNlcnMtYWZ0ZXItNy0zLW0tdjBrNGcKdGFnczoKICAtIGF0dGFjay5pbml0aWFsX2FjY2VzcwogIC0gYXR0YWNrLnQxNTk4CmxvZ3NvdXJjZToKICAgIGNhdGVnb3J5OiB3ZWJzZXJ2ZXIKZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgY3MtdXJpfGNvbnRhaW5zOgogICAgICAgICAgLSAnL3N1YnNjcmliZScKICAgICAgY3MtdXJpfGNvbnRhaW5zOgogICAgICAgICAgLSAnY2FsbF9oaXN0b3J5JwogICAgICBzYy1zdGF0dXM6CiAgICAgICAgICAtICcyMDAnCiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uCmZhbHNlcG9zaXRpdmVzOgogIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eQ=="
+  all_rules_b64: "W3sidGl0bGUiOiJNb2JpbGUgRnJhdWQgLSBGYWtlIENhbGwgSGlzdG9yeSBBcHAgU3Vic2NyaXB0aW9uIiwibGV2ZWwiOiJjcml0aWNhbCIsInRlY2huaXF1ZSI6IlQxNTk4IiwidGFjdGljIjoiSW5pdGlhbCBBY2Nlc3MiLCJ0aWVyIjoiZnJlZSIsInlhbWwiOiJ0aXRsZTogTW9iaWxlIEZyYXVkIC0gRmFrZSBDYWxsIEhpc3RvcnkgQXBwIFN1YnNjcmlwdGlvblxuaWQ6IHNjdy0yMDI2LTA1LTA4LWFpLTFcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIERldGVjdHMgYXR0ZW1wdHMgdG8gc3Vic2NyaWJlIHRvIHNlcnZpY2VzIGFzc29jaWF0ZWQgd2l0aCBmYWtlIGNhbGwgaGlzdG9yeSBhcHBzLiBUaGVzZSBhcHBzLCBkb3dubG9hZGVkIG1pbGxpb25zIG9mIHRpbWVzLCBmYWxzZWx5IGFkdmVydGlzZWQgY2FsbCBoaXN0b3J5IGFjY2VzcyBidXQgaW5zdGVhZCBpbml0aWF0ZWQgZnJhdWR1bGVudCByZWN1cnJpbmcgc3Vic2NyaXB0aW9ucy4gVGhpcyBydWxlIHNwZWNpZmljYWxseSB0YXJnZXRzIHRoZSBzdWJzY3JpcHRpb24gZW5kcG9pbnQgb2Z0ZW4gdXNlZCBieSBzdWNoIG1hbGljaW91cyBhcHBsaWNhdGlvbnMuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0wOFxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTA4LWZha2UtY2FsbC1oaXN0b3J5LWFwcHMtc3RvbGUtcGF5bWVudHMtZnJvbS11c2Vycy1hZnRlci03LTMtbS12MGs0Z1xudGFnczpcbiAgLSBhdHRhY2suaW5pdGlhbF9hY2Nlc3NcbiAgLSBhdHRhY2sudDE1OThcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogd2Vic2VydmVyXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIGNzLXVyaXxjb250YWluczpcbiAgICAgICAgICAtICcvc3Vic2NyaWJlJ1xuICAgICAgY3MtdXJpfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2NhbGxfaGlzdG9yeSdcbiAgICAgIHNjLXN0YXR1czpcbiAgICAgICAgICAtICcyMDAnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJNb2JpbGUgRnJhdWQgLSBTdXNwaWNpb3VzIEluLUFwcCBQdXJjaGFzZSBJbml0aWF0aW9uIiwibGV2ZWwiOiJoaWdoIiwidGVjaG5pcXVlIjoiVDE1OTgiLCJ0YWN0aWMiOiJJbml0aWFsIEFjY2VzcyIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBNb2JpbGUgRnJhdWQgLSBTdXNwaWNpb3VzIEluLUFwcCBQdXJjaGFzZSBJbml0aWF0aW9uXG5pZDogc2N3LTIwMjYtMDUtMDgtYWktMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBoaWdoXG5kZXNjcmlwdGlvbjogfFxuICBNb25pdG9ycyBmb3Igd2ViIHNlcnZlciByZXF1ZXN0cyB0aGF0IGFwcGVhciB0byBpbml0aWF0ZSBpbi1hcHAgcHVyY2hhc2VzIG9yIHN1YnNjcmlwdGlvbnMsIHNwZWNpZmljYWxseSBsb29raW5nIGZvciBwYXJhbWV0ZXJzIGNvbW1vbmx5IGFzc29jaWF0ZWQgd2l0aCBmcmF1ZHVsZW50IHN1YnNjcmlwdGlvbiBzY2hlbWVzLiBUaGlzIHJ1bGUgYWltcyB0byBjYXRjaCB0aGUgYWN0dWFsIHRyYW5zYWN0aW9uIGluaXRpYXRpb24gcGhhc2Ugb2YgdGhlIGZha2UgY2FsbCBoaXN0b3J5IGFwcCBmcmF1ZC5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA4XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDgtZmFrZS1jYWxsLWhpc3RvcnktYXBwcy1zdG9sZS1wYXltZW50cy1mcm9tLXVzZXJzLWFmdGVyLTctMy1tLXYwazRnXG50YWdzOlxuICAtIGF0dGFjay5pbml0aWFsX2FjY2Vzc1xuICAtIGF0dGFjay50MTU5OFxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiB3ZWJzZXJ2ZXJcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgY3MtdXJpLXF1ZXJ5fGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ3BheW1lbnQnXG4gICAgICBjcy11cmktcXVlcnl8Y29udGFpbnM6XG4gICAgICAgICAgLSAnc3Vic2NyaXB0aW9uX2lkJ1xuICAgICAgc2Mtc3RhdHVzOlxuICAgICAgICAgIC0gJzIwMCdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6Ik1vYmlsZSBGcmF1ZCAtIEFwcCBDb21tdW5pY2F0aW5nIHdpdGggS25vd24gRnJhdWR1bGVudCBEb21haW5zIiwibGV2ZWwiOiJoaWdoIiwidGVjaG5pcXVlIjoiVDE1OTgiLCJ0YWN0aWMiOiJJbml0aWFsIEFjY2VzcyIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBNb2JpbGUgRnJhdWQgLSBBcHAgQ29tbXVuaWNhdGluZyB3aXRoIEtub3duIEZyYXVkdWxlbnQgRG9tYWluc1xuaWQ6IHNjdy0yMDI2LTA1LTA4LWFpLTNcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgSWRlbnRpZmllcyBETlMgcmVxdWVzdHMgdG8gZG9tYWlucyBrbm93biB0byBiZSBhc3NvY2lhdGVkIHdpdGggZnJhdWR1bGVudCBzdWJzY3JpcHRpb24gc2VydmljZXMgb3IgYmlsbGluZyBpbmZyYXN0cnVjdHVyZSB1c2VkIGJ5IG1hbGljaW91cyBhcHBzLiBUaGlzIHJ1bGUgaGVscHMgZGV0ZWN0IGNvbW11bmljYXRpb24gZnJvbSB0aGUgZmFrZSBjYWxsIGhpc3RvcnkgYXBwcyB0byB0aGVpciBjb21tYW5kIGFuZCBjb250cm9sIG9yIHBheW1lbnQgcHJvY2Vzc2luZyBzZXJ2ZXJzLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMDhcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wOC1mYWtlLWNhbGwtaGlzdG9yeS1hcHBzLXN0b2xlLXBheW1lbnRzLWZyb20tdXNlcnMtYWZ0ZXItNy0zLW0tdjBrNGdcbnRhZ3M6XG4gIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzXG4gIC0gYXR0YWNrLnQxNTk4XG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGRuc1xuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBkc3RfZG9tYWlufGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy5mcmF1ZHVsZW50LXNlcnZpY2UuY29tJ1xuICAgICAgICAgIC0gJy5tYWxpY2lvdXMtYmlsbGluZy5uZXQnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9XQ=="
+why_it_matters:
+  - "If your organization's users download apps from public stores, this is a direct threat to their personal finances and, potentially, to corporate devices if those apps request excessive permissions. Educate your users immediately about the risks of third-party apps promising impossible functionality. Emphasize that official app stores are not foolproof. Review mobile device management (MDM) policies to restrict app installations to whitelisted sources where possible, or at least flag high-risk categories."
+bot_cta_title: "Mobile App Fraud Trends"
+bot_cta_description: "Use /brief for an analyst-ready weekly threat summary covering the latest fraud campaigns and mobile threats."
+---
+
+The Hacker News reports a significant mobile fraud campaign involving 28 malicious apps on the official Google Play Store. These apps, collectively downloaded over 7.3 million times, masqueraded as tools to access call histories for any phone number. This functionality, predictably, was fake.
+
+Instead of providing data, the apps tricked users into recurring subscriptions that delivered no legitimate service, directly leading to financial loss for victims. This is a classic bait-and-switch, leveraging user curiosity and a perceived utility to bypass Google's vetting processes and monetize through fraudulent subscriptions.
+
+This incident underscores a persistent challenge: even official app stores remain vulnerable to sophisticated social engineering and abuse. Defenders must recognize that app store presence does not equate to security. The attacker's calculus here is simple: volume and plausible deniability. With millions of downloads, even a small conversion rate yields substantial illicit gains, and the apps' initial appearance of legitimate utility helps them evade detection for extended periods.
