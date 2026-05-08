@@ -1,0 +1,60 @@
+---
+title: "GM Fined $12 Million in California Privacy Settlement Over Driver Data"
+date: 2026-05-08 19:35:00 +0000
+source: RSS
+source_name: "The Record by Recorded Future"
+channel: "The Record by Recorded Future"
+tags: [threat-intel, data-breach, government]
+excerpt: "GM has agreed to pay over $12 million in a privacy settlement with California officials, marking the largest fine issued under the California Consumer Privacy Act (CCPA) in its fiv"
+summary: "GM has agreed to pay over $12 million in a privacy settlement with California officials, marking the largest fine issued under the California Consumer Privacy Act (CCPA) in its five-year history, as reported by The Record by Recorded Future. This significant penalty underscores the growing regulator"
+layout: post
+section: live-feed
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-025.png"
+author: research
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-025.png"
+source_url: "https://therecord.media/gm-to-pay-12-million-california-privacy-settlement"
+tlp: "TLP:CLEAR"
+event_type: "data-breach"
+organizations:
+  - name: "General Motors"
+    domain: "gm.com"
+    role: "victim"
+threat_actors:
+  - "APT41"
+countries: [US]
+link_preview:
+  url: "https://therecord.media/gm-to-pay-12-million-california-privacy-settlement"
+  title: "GM to pay over $12 million in California privacy settlement involving driver data"
+  domain: "therecord.media"
+  image: "https://cms.therecord.media/uploads/general_motors_424808a8e8.jpg"
+sigma_rules:
+  count: 2
+  free_count: 1
+  paid_count: 1
+  preview_title: "Monitor Authentication from Breached Vendor — General Motors"
+  preview_level: "high"
+  preview_technique: "data-breach"
+  preview_tactic: "event-type"
+  preview_yaml_b64: "dGl0bGU6IE1vbml0b3IgQXV0aGVudGljYXRpb24gZnJvbSBCcmVhY2hlZCBWZW5kb3Ig4oCUIEdlbmVyYWwgTW90b3JzCmlkOiBzY3ctMjAyNi0wNS0wOC1ldnQtMQpzdGF0dXM6IGV4cGVyaW1lbnRhbApsZXZlbDogaGlnaApkZXNjcmlwdGlvbjogfAogIEZvbGxvd2luZyB0aGUgR2VuZXJhbCBNb3RvcnMgZGF0YSBicmVhY2gsIG1vbml0b3IgZm9yIGxvZ2luIGF0dGVtcHRzIHVzaW5nIHBvdGVudGlhbGx5IGNvbXByb21pc2VkIGNyZWRlbnRpYWxzLiBBbGVydCBvbiBhbnkgYXV0aGVudGljYXRpb24gZnJvbSBnbS5jb20gYWNjb3VudHMgYW5kIGNyZWRlbnRpYWwgc3R1ZmZpbmcgcGF0dGVybnMuCmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChhdXRvLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNS0wOApyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0wOC1nbS10by1wYXktb3Zlci0xMi1taWxsaW9uLWluLWNhbGlmb3JuaWEtcHJpdmFjeS1zZXR0bGVtZW50LWZtN3hhCnRhZ3M6CiAgLSBhdHRhY2suZ2VuZXJhbAogIC0gYXR0YWNrLmRhdGEtYnJlYWNoCmxvZ3NvdXJjZToKICAgIGNhdGVnb3J5OiBhdXRoZW50aWNhdGlvbgpkZXRlY3Rpb246CiAgc2VsZWN0aW9uX2RvbWFpbjoKICAgICAgVXNlcnxlbmRzd2l0aDoKICAgICAgICAtICdAZ20uY29tJwogICAgc2VsZWN0aW9uX2ZhaWx1cmU6CiAgICAgIEV2ZW50VHlwZTogJ2xvZ2luX2ZhaWx1cmUnCiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uX2RvbWFpbiBvciBzZWxlY3Rpb25fZmFpbHVyZSB8IGNvdW50KFVzZXIpIGJ5IHNyY19pcCA+IDEwCmZhbHNlcG9zaXRpdmVzOgogIC0gTGVnaXRpbWF0ZSBhY3Rpdml0eSBmcm9tIEdlbmVyYWwgTW90b3Jz"
+  all_rules_b64: "W3sidGl0bGUiOiJNb25pdG9yIEF1dGhlbnRpY2F0aW9uIGZyb20gQnJlYWNoZWQgVmVuZG9yIOKAlCBHZW5lcmFsIE1vdG9ycyIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6ImRhdGEtYnJlYWNoIiwidGFjdGljIjoiZXZlbnQtdHlwZSIsInRpZXIiOiJmcmVlIiwieWFtbCI6InRpdGxlOiBNb25pdG9yIEF1dGhlbnRpY2F0aW9uIGZyb20gQnJlYWNoZWQgVmVuZG9yIOKAlCBHZW5lcmFsIE1vdG9yc1xuaWQ6IHNjdy0yMDI2LTA1LTA4LWV2dC0xXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGhpZ2hcbmRlc2NyaXB0aW9uOiB8XG4gIEZvbGxvd2luZyB0aGUgR2VuZXJhbCBNb3RvcnMgZGF0YSBicmVhY2gsIG1vbml0b3IgZm9yIGxvZ2luIGF0dGVtcHRzIHVzaW5nIHBvdGVudGlhbGx5IGNvbXByb21pc2VkIGNyZWRlbnRpYWxzLiBBbGVydCBvbiBhbnkgYXV0aGVudGljYXRpb24gZnJvbSBnbS5jb20gYWNjb3VudHMgYW5kIGNyZWRlbnRpYWwgc3R1ZmZpbmcgcGF0dGVybnMuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoYXV0by1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA4XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDgtZ20tdG8tcGF5LW92ZXItMTItbWlsbGlvbi1pbi1jYWxpZm9ybmlhLXByaXZhY3ktc2V0dGxlbWVudC1mbTd4YVxudGFnczpcbiAgLSBhdHRhY2suZ2VuZXJhbFxuICAtIGF0dGFjay5kYXRhLWJyZWFjaFxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBhdXRoZW50aWNhdGlvblxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb25fZG9tYWluOlxuICAgICAgVXNlcnxlbmRzd2l0aDpcbiAgICAgICAgLSAnQGdtLmNvbSdcbiAgICBzZWxlY3Rpb25fZmFpbHVyZTpcbiAgICAgIEV2ZW50VHlwZTogJ2xvZ2luX2ZhaWx1cmUnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvbl9kb21haW4gb3Igc2VsZWN0aW9uX2ZhaWx1cmUgfCBjb3VudChVc2VyKSBieSBzcmNfaXAgPiAxMFxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhY3Rpdml0eSBmcm9tIEdlbmVyYWwgTW90b3JzIn0seyJ0aXRsZSI6IkVtYWlsIGZyb20gQnJlYWNoZWQgR2VuZXJhbCBNb3RvcnMgRG9tYWluIOKAlCBQaGlzaGluZyBSaXNrIiwibGV2ZWwiOiJtZWRpdW0iLCJ0ZWNobmlxdWUiOiJkYXRhLWJyZWFjaCIsInRhY3RpYyI6ImV2ZW50LXR5cGUiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogRW1haWwgZnJvbSBCcmVhY2hlZCBHZW5lcmFsIE1vdG9ycyBEb21haW4g4oCUIFBoaXNoaW5nIFJpc2tcbmlkOiBzY3ctMjAyNi0wNS0wOC1ldnQtMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBtZWRpdW1cbmRlc2NyaXB0aW9uOiB8XG4gIEZsYWcgZW1haWxzIHdpdGggYXR0YWNobWVudHMgZnJvbSBnbS5jb20uIEJyZWFjaGVkIG9yZ2FuaXphdGlvbnMgYXJlIGZyZXF1ZW50bHkgaW1wZXJzb25hdGVkIGluIGZvbGxvdy11cCBwaGlzaGluZyBjYW1wYWlnbnMuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoYXV0by1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA4XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDgtZ20tdG8tcGF5LW92ZXItMTItbWlsbGlvbi1pbi1jYWxpZm9ybmlhLXByaXZhY3ktc2V0dGxlbWVudC1mbTd4YVxudGFnczpcbiAgLSBhdHRhY2suZ2VuZXJhbFxuICAtIGF0dGFjay5kYXRhLWJyZWFjaFxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBlbWFpbFxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBzZW5kZXJfZG9tYWluOiAnZ20uY29tJ1xuICAgICAgYXR0YWNobWVudHN8Z3Q6IDBcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFjdGl2aXR5IGZyb20gR2VuZXJhbCBNb3RvcnMifV0="
+why_it_matters:
+  - "If your organization collects and processes consumer data, especially from connected devices, you must immediately audit your data privacy practices against CCPA and similar regulations. This GM settlement demonstrates that regulators are serious about enforcement and will levy substantial fines. Ensure your data collection, consent, and retention policies are airtight and transparent."
+bot_cta_title: "Check Latest Breaches & Threat Intelligence"
+bot_cta_description: "Use /breach to see the latest data breaches and ransomware events, or /brief for an analyst-ready threat summary."
+---
+
+GM has agreed to pay over $12 million in a privacy settlement with California officials, marking the largest fine issued under the California Consumer Privacy Act (CCPA) in its five-year history, as reported by The Record by Recorded Future. This significant penalty underscores the growing regulatory scrutiny on how automotive manufacturers collect and utilize driver data.
+
+The settlement highlights the critical need for organizations, particularly those in the connected vehicle space, to ensure their data collection practices are transparent and compliant with evolving privacy legislation. The Record by Recorded Future noted that this case sets a precedent for future enforcement actions against companies handling vast amounts of sensitive consumer information.
+
+For CISOs, this isn't just about California. It's a clear signal that data privacy is moving beyond theoretical compliance into tangible, multi-million dollar penalties. The attacker's calculus here is simple: if organizations are sloppy with compliance, they're likely sloppy with security. This creates an expanded attack surface where data mishandling can lead to both regulatory fines and direct compromise.
