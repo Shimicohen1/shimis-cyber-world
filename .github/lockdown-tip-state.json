@@ -1,5 +1,5 @@
 {
-  "tipNumber": 21,
+  "tipNumber": 22,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -21,7 +21,8 @@
     "aws-004",
     "az-004",
     "lin-005",
-    "win-005"
+    "win-005",
+    "aws-005"
   ],
   "round": 1,
   "history": [
@@ -233,6 +234,16 @@
       "linkedInId": "urn:li:share:7458088943557931008",
       "telegramMsgId": 1260,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-005/"
+    },
+    {
+      "tipNumber": 22,
+      "id": "aws-005",
+      "platform": "aws",
+      "title": "Remove 0.0.0.0/0 from security groups",
+      "date": "2026-05-08T08:35:32.434Z",
+      "linkedInId": "urn:li:share:7458434395872325632",
+      "telegramMsgId": 1293,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-005/"
     }
   ]
 }
