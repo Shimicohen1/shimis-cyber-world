@@ -1,0 +1,83 @@
+---
+title: "ShinyHunters Claims Canvas Breach Affects 9,000 Schools, Demands Payment"
+date: 2026-05-08 13:29:45 +0000
+source: RSS
+source_name: "CyberScoop"
+channel: "CyberScoop"
+tags: [threat-intel, policy, government, data-breach]
+excerpt: "ShinyHunters, a prolific criminal hacker and extortion group, claims to have breached Instructure's Canvas learning management system, affecting nearly 9,000 educational institutio"
+summary: "ShinyHunters, a prolific criminal hacker and extortion group, claims to have breached Instructure's Canvas learning management system, affecting nearly 9,000 educational institutions. CyberScoop reports the group exfiltrated several terabytes of data containing personal information from 275 million"
+layout: post
+section: live-feed
+score: MEDIUM
+curated: false
+featured: false
+priority: 70
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/vulnerability/vulnerability-019.png"
+author: research
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/vulnerability/vulnerability-019.png"
+source_url: "https://edscoop.com/shinyhunters-claims-nearly-9000-schools-affected-by-canvas-data-breach/"
+tlp: "TLP:CLEAR"
+event_type: "data-breach"
+organizations:
+  - name: "Instructure"
+    domain: "instructure.com"
+    role: "vendor"
+  - name: "Canvas"
+    domain: "instructure.com"
+    role: "victim"
+  - name: "Cambridge University"
+    domain: "cam.ac.uk"
+    role: "victim"
+  - name: "Columbia University"
+    domain: "columbia.edu"
+    role: "victim"
+  - name: "Cornell University"
+    domain: "cornell.edu"
+    role: "victim"
+  - name: "Georgetown University"
+    domain: "georgetown.edu"
+    role: "victim"
+  - name: "Harvard University"
+    domain: "harvard.edu"
+    role: "victim"
+  - name: "MIT"
+    domain: "mit.edu"
+    role: "victim"
+  - name: "UC Berkeley"
+    domain: "berkeley.edu"
+    role: "victim"
+threat_actors:
+  - "ShinyHunters"
+link_preview:
+  url: "https://edscoop.com/shinyhunters-claims-nearly-9000-schools-affected-by-canvas-data-breach/"
+  title: "ShinyHunters claims nearly 9,000 schools affected by Canvas data breach | EdScoop"
+  domain: "edscoop.com"
+  image: "https://edscoop.com/wp-content/uploads/sites/4/2026/05/GettyImages-2227049611.jpg"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "ShinyHunters Canvas Data Exfiltration via Tox"
+  preview_level: "critical"
+  preview_technique: "T1041"
+  preview_tactic: "Exfiltration"
+  preview_yaml_b64: "dGl0bGU6IFNoaW55SHVudGVycyBDYW52YXMgRGF0YSBFeGZpbHRyYXRpb24gdmlhIFRveAppZDogc2N3LTIwMjYtMDUtMDgtYWktMQpzdGF0dXM6IGV4cGVyaW1lbnRhbApsZXZlbDogY3JpdGljYWwKZGVzY3JpcHRpb246IHwKICBUaGlzIHJ1bGUgZGV0ZWN0cyB0aGUgZXhlY3V0aW9uIG9mIHRoZSBUb3ggY2xpZW50IHdpdGggdGhlICdzZW5kJyBjb21tYW5kLCB3aGljaCBpcyBpbmRpY2F0aXZlIG9mIFNoaW55SHVudGVycycgbWV0aG9kIG9mIGNvbW11bmljYXRpbmcgZXhmaWx0cmF0ZWQgZGF0YSBvciBuZWdvdGlhdGlvbiBpbnN0cnVjdGlvbnMgdG8gdmljdGltcywgYXMgZGVzY3JpYmVkIGluIHRoZSB0aHJlYXQgaW50ZWxsaWdlbmNlLiBUaGlzIGlzIGEgZGlyZWN0IGluZGljYXRvciBvZiB0aGUgZ3JvdXAncyBvcGVyYXRpb25hbCB0YWN0aWNzLgphdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKQpkYXRlOiAyMDI2LTA1LTA4CnJlZmVyZW5jZXM6CiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTA4LXNoaW55aHVudGVycy1jbGFpbXMtbmVhcmx5LTktMDAwLXNjaG9vbHMtYWZmZWN0ZWQtYnktY2FudmFzLXByNjlsCnRhZ3M6CiAgLSBhdHRhY2suZXhmaWx0cmF0aW9uCiAgLSBhdHRhY2sudDEwNDEKbG9nc291cmNlOgogICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb24KZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgSW1hZ2V8ZW5kc3dpdGg6CiAgICAgICAgICAtICd0b3guZXhlJwogICAgICBDb21tYW5kTGluZXxjb250YWluczoKICAgICAgICAgIC0gJy1zZW5kJwogICAgICBjb25kaXRpb246IHNlbGVjdGlvbgpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJTaGlueUh1bnRlcnMgQ2FudmFzIERhdGEgRXhmaWx0cmF0aW9uIHZpYSBUb3giLCJsZXZlbCI6ImNyaXRpY2FsIiwidGVjaG5pcXVlIjoiVDEwNDEiLCJ0YWN0aWMiOiJFeGZpbHRyYXRpb24iLCJ0aWVyIjoiZnJlZSIsInlhbWwiOiJ0aXRsZTogU2hpbnlIdW50ZXJzIENhbnZhcyBEYXRhIEV4ZmlsdHJhdGlvbiB2aWEgVG94XG5pZDogc2N3LTIwMjYtMDUtMDgtYWktMVxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBjcml0aWNhbFxuZGVzY3JpcHRpb246IHxcbiAgVGhpcyBydWxlIGRldGVjdHMgdGhlIGV4ZWN1dGlvbiBvZiB0aGUgVG94IGNsaWVudCB3aXRoIHRoZSAnc2VuZCcgY29tbWFuZCwgd2hpY2ggaXMgaW5kaWNhdGl2ZSBvZiBTaGlueUh1bnRlcnMnIG1ldGhvZCBvZiBjb21tdW5pY2F0aW5nIGV4ZmlsdHJhdGVkIGRhdGEgb3IgbmVnb3RpYXRpb24gaW5zdHJ1Y3Rpb25zIHRvIHZpY3RpbXMsIGFzIGRlc2NyaWJlZCBpbiB0aGUgdGhyZWF0IGludGVsbGlnZW5jZS4gVGhpcyBpcyBhIGRpcmVjdCBpbmRpY2F0b3Igb2YgdGhlIGdyb3VwJ3Mgb3BlcmF0aW9uYWwgdGFjdGljcy5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTA4XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMDgtc2hpbnlodW50ZXJzLWNsYWltcy1uZWFybHktOS0wMDAtc2Nob29scy1hZmZlY3RlZC1ieS1jYW52YXMtcHI2OWxcbnRhZ3M6XG4gIC0gYXR0YWNrLmV4ZmlsdHJhdGlvblxuICAtIGF0dGFjay50MTA0MVxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBwcm9jZXNzX2NyZWF0aW9uXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIEltYWdlfGVuZHN3aXRoOlxuICAgICAgICAgIC0gJ3RveC5leGUnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICctc2VuZCdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6IlNoaW55SHVudGVycyBDYW52YXMgRGlyZWN0IE91dHJlYWNoIHRvIEluc3RpdHV0aW9ucyIsImxldmVsIjoibWVkaXVtIiwidGVjaG5pcXVlIjoiVDE1NjYuMDAxIiwidGFjdGljIjoiSW5pdGlhbCBBY2Nlc3MiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogU2hpbnlIdW50ZXJzIENhbnZhcyBEaXJlY3QgT3V0cmVhY2ggdG8gSW5zdGl0dXRpb25zXG5pZDogc2N3LTIwMjYtMDUtMDgtYWktMlxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBtZWRpdW1cbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIGVtYWlscyB3aXRoIHN1YmplY3RzIGFuZCBzZW5kZXIgaW5kaWNhdG9ycyBkaXJlY3RseSByZWxhdGVkIHRvIFNoaW55SHVudGVycycgZXh0b3J0aW9uIGNhbXBhaWduIHRhcmdldGluZyBlZHVjYXRpb25hbCBpbnN0aXR1dGlvbnMgYWZmZWN0ZWQgYnkgdGhlIENhbnZhcyBicmVhY2guIFRoZSBkaXJlY3Qgb3V0cmVhY2ggYnlwYXNzZXMgdGhlIHZlbmRvciAoSW5zdHJ1Y3R1cmUpIGFuZCBpcyBhIHNwZWNpZmljIHRhY3RpYyBlbXBsb3llZCBieSB0aGUgZ3JvdXAuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0wOFxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTA4LXNoaW55aHVudGVycy1jbGFpbXMtbmVhcmx5LTktMDAwLXNjaG9vbHMtYWZmZWN0ZWQtYnktY2FudmFzLXByNjlsXG50YWdzOlxuICAtIGF0dGFjay5pbml0aWFsX2FjY2Vzc1xuICAtIGF0dGFjay50MTU2Ni4wMDFcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogZW1haWxcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgU3ViamVjdHxjb250YWluczpcbiAgICAgICAgICAtICdDYW52YXMgQnJlYWNoJ1xuICAgICAgICAgIC0gJ0luc3RydWN0dXJlIERhdGEnXG4gICAgICBGcm9tfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ1NoaW55SHVudGVycydcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6IlNoaW55SHVudGVycyBDYW52YXMgRGF0YSBFeGZpbHRyYXRpb24gLSBMYXJnZSBEYXRhIFRyYW5zZmVyIiwibGV2ZWwiOiJoaWdoIiwidGVjaG5pcXVlIjoiVDEwNDEiLCJ0YWN0aWMiOiJFeGZpbHRyYXRpb24iLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogU2hpbnlIdW50ZXJzIENhbnZhcyBEYXRhIEV4ZmlsdHJhdGlvbiAtIExhcmdlIERhdGEgVHJhbnNmZXJcbmlkOiBzY3ctMjAyNi0wNS0wOC1haS0zXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGhpZ2hcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIGxhcmdlIFBPU1QgcmVxdWVzdHMgdG8gc3BlY2lmaWMgVVJJIHBhdGhzIGNvbW1vbmx5IGFzc29jaWF0ZWQgd2l0aCBkYXRhIGV4ZmlsdHJhdGlvbiB3aXRoaW4gYSBsZWFybmluZyBtYW5hZ2VtZW50IHN5c3RlbSBsaWtlIENhbnZhcywgZXNwZWNpYWxseSB3aGVuIGNvdXBsZWQgd2l0aCBhIHN1Y2Nlc3NmdWwgc3RhdHVzIGNvZGUuIFRoaXMgdGFyZ2V0cyB0aGUgcG90ZW50aWFsIGV4ZmlsdHJhdGlvbiBvZiAnc2V2ZXJhbCB0ZXJhYnl0ZXMgb2YgZGF0YScgY2xhaW1lZCBieSBTaGlueUh1bnRlcnMuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0wOFxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTA4LXNoaW55aHVudGVycy1jbGFpbXMtbmVhcmx5LTktMDAwLXNjaG9vbHMtYWZmZWN0ZWQtYnktY2FudmFzLXByNjlsXG50YWdzOlxuICAtIGF0dGFjay5leGZpbHRyYXRpb25cbiAgLSBhdHRhY2sudDEwNDFcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJveHlcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgY3MtdXJpfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy9jYW52YXMvZGF0YSdcbiAgICAgIHNjLXN0YXR1c3xleGFjdDpcbiAgICAgICAgICAtIDIwMFxuICAgICAgY3MtbWV0aG9kfGV4YWN0OlxuICAgICAgICAgIC0gJ1BPU1QnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9XQ=="
+why_it_matters:
+  - "If your institution uses Canvas, assume your student and faculty data is compromised. Immediately assess your exposure based on the list ShinyHunters provided. Do not wait for Instructure to confirm; the attacker's calculus is to force your hand. Engage incident response, notify stakeholders, and prepare for potential data release, regardless of any negotiation attempts."
+bot_cta_title: "Check Instructure Breach Exposure"
+bot_cta_description: "Use /org instructure.com to see related breach intelligence."
+---
+
+ShinyHunters, a prolific criminal hacker and extortion group, claims to have breached Instructure's Canvas learning management system, affecting nearly 9,000 educational institutions. CyberScoop reports the group exfiltrated several terabytes of data containing personal information from 275 million users. Initially setting a May 1 deadline for negotiations, ShinyHunters extended it to May 12 after Instructure reportedly failed to engage.
+
+The group is now directly advising affected schools to seek security professionals and negotiate a "settlement" via the Tox messaging protocol. CyberScoop highlighted that the list of affected institutions includes numerous school districts and prominent universities such as Cambridge, Columbia, Cornell, Georgetown, Harvard, MIT, and UC Berkeley, among others. This incident marks what ShinyHunters claims is a repeat breach of Instructure's systems.
+
+This isn't just a data dump; it's a targeted extortion campaign against the institutions themselves. ShinyHunters' direct outreach to schools, bypassing Instructure, signals a calculated move to maximize pressure and payouts. Their claim of Instructure's inaction, whether true or not, is designed to erode trust and push schools to pay up.
