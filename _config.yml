@@ -32,6 +32,7 @@ defaults:
 
 exclude:
   - _backup
+  - _archive
   - Gemfile
   - Gemfile.lock
   - vendor
