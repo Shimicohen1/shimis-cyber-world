@@ -22,47 +22,54 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Zero-Days Remain High-Impact Threats
-    text: Zero-day vulnerabilities in widely used software continue to be exploited in the wild.
-    detail: Recent reports highlight active exploitation of zero-day flaws in Adobe Reader and Windows. These vulnerabilities pose significant risks, emphasizing the critical need for rapid patching and robust endpoint detection and response (EDR) solutions. Stay vigilant for vendor advisories and prioritize updates for critical software.
-    link: https://www.cisa.gov/news-events/advisories/known-exploited-vulnerabilities-catalog
-    link_label: CISA Known Exploited Vulnerabilities
+  - title: Weblate Vulnerabilities Expose Sensitive Data and Code Execution Risks
+    text: Multiple high-severity vulnerabilities in Weblate versions prior to 5.17 expose user data and allow for code execution.
+    detail: Weblate, a popular localization tool, has seen several critical flaws, including SSRF, symlink traversal, and RCE via backup files. Organizations using Weblate should prioritize updating to version 5.17 or later to mitigate risks of data exposure and unauthorized code execution.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-34393
+    link_label: Weblate Security Advisories
     badge: signal
     tags:
       - vulnerability
-      - threat-intel
-      - zero-day
-  - title: Phishing-as-a-Service Platforms Escalate Targeted Attacks
-    text: Sophisticated PhaaS platforms like VENOM are enabling targeted attacks against high-value executives.
-    detail: The emergence of platforms like VENOM signifies a growing trend in cybercrime-as-a-service, lowering the barrier for sophisticated phishing campaigns. Focus on advanced threat detection, user awareness training for C-suite personnel, and multi-factor authentication (MFA) to mitigate credential theft risks.
-    link: https://owasp.org/www-community/vulnerabilities/Phishing
-    link_label: OWASP Phishing Guidance
+      - weblate
+      - rce
+      - ssrf
+      - data-exposure
+  - title: Cisco Products Targeted with Critical RCE and Authentication Bypass Flaws
+    text: Cisco devices, including ISE and AsyncOS, are affected by critical vulnerabilities allowing RCE and authentication bypass.
+    detail: Recent advisories highlight critical RCE flaws in Cisco ISE (CVE-2026-20186, CVE-2026-20180, CVE-2026-20147) and authentication bypass in Cisco AsyncOS (CVE-2026-20152). Administrators must apply patches promptly to prevent unauthorized system access and command execution.
+    link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-20186
+    link_label: Cisco Vulnerability Reports
     badge: signal
     tags:
+      - vulnerability
+      - cisco
+      - rce
+      - authentication-bypass
+      - critical
+  - title: Splunk Vulnerabilities Enable Privilege Escalation and Session Token Exposure
+    text: Splunk Enterprise and MCP Server have vulnerabilities allowing low-privilege users to gain elevated access and expose session tokens.
+    detail: Several Splunk vulnerabilities (e.g., CVE-2026-20205, CVE-2026-20204) permit attackers to escalate privileges or steal session tokens. Prompt patching is crucial to protect sensitive credentials and prevent unauthorized system control.
+    link: https://www.splunk.com/en_us/product-security.html
+    link_label: Splunk Security Bulletins
+    badge: signal
+    tags:
+      - vulnerability
+      - splunk
+      - privilege-escalation
+      - session-tokens
+      - rce
+  - title: Exploitation of Workflow Automation Tools for Malware Delivery
+    text: Threat actors are abusing workflow automation tools like n8n for phishing and malware delivery campaigns.
+    detail: Reports indicate sophisticated phishing campaigns leveraging n8n to deliver malicious payloads. This highlights a growing trend of weaponizing legitimate automation tools for cybercrime, necessitating enhanced endpoint security and user awareness training.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/spotlight-phishing-awareness
+    link_label: Phishing Awareness Resources
+    badge: signal
+    tags:
+      - threat-intel
+      - malware-delivery
       - phishing
-      - threat-intel
-      - credential-theft
-  - title: IoT and ICS Devices Targeted by Evolving Botnets
-    text: New botnets like Masjesu are stealthily targeting IoT devices, posing widespread risks.
-    detail: The increasing sophistication of botnets, such as Masjesu, which targets IoT devices with stealth, highlights a growing attack surface. Organizations must implement network segmentation, secure IoT device configurations, and monitor for unusual network traffic patterns to defend against these pervasive threats.
-    link: https://www.cisa.gov/news-events/advisories/ics-advisory/icsa-23-276-01
-    link_label: CISA ICS Advisories
-    badge: signal
-    tags:
-      - malware
-      - iot
-      - botnet
-      - threat-intel
-  - title: Supply Chain Attacks Target Software Updates
-    text: Hijacked update mechanisms for popular plugins are delivering backdoored software.
-    detail: Recent incidents involving hijacked Smart Slider plugin updates demonstrate a persistent threat to software supply chains. Organizations should implement strict validation of software updates, utilize code signing, and maintain an inventory of all third-party dependencies to detect and prevent malicious insertions.
-    link: https://owasp.org/www-community/vulnerabilities/Supply_Chain_Attacks
-    link_label: OWASP Supply Chain Risks
-    badge: signal
-    tags:
-      - supply-chain
-      - threat-intel
-      - malware
+      - automation-tools
+      - n8n
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
