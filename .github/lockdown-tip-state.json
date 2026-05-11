@@ -1,5 +1,5 @@
 {
-  "tipNumber": 23,
+  "tipNumber": 24,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -23,7 +23,8 @@
     "lin-005",
     "win-005",
     "aws-005",
-    "az-005"
+    "az-005",
+    "lin-006"
   ],
   "round": 1,
   "history": [
@@ -255,6 +256,16 @@
       "linkedInId": "urn:li:share:7459541069194620928",
       "telegramMsgId": 1347,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-005/"
+    },
+    {
+      "tipNumber": 24,
+      "id": "lin-006",
+      "platform": "linux",
+      "title": "Configure firewall (iptables/nftables)",
+      "date": "2026-05-11T10:50:18.668Z",
+      "linkedInId": "urn:li:share:7459555478310858752",
+      "telegramMsgId": 1349,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-006/"
     }
   ]
 }
