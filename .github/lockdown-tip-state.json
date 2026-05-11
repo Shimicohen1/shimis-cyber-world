@@ -1,5 +1,5 @@
 {
-  "tipNumber": 22,
+  "tipNumber": 23,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -22,7 +22,8 @@
     "az-004",
     "lin-005",
     "win-005",
-    "aws-005"
+    "aws-005",
+    "az-005"
   ],
   "round": 1,
   "history": [
@@ -244,6 +245,16 @@
       "linkedInId": "urn:li:share:7458434395872325632",
       "telegramMsgId": 1293,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-005/"
+    },
+    {
+      "tipNumber": 23,
+      "id": "az-005",
+      "platform": "azure",
+      "title": "Enable Microsoft Defender for Cloud",
+      "date": "2026-05-11T09:53:03.260Z",
+      "linkedInId": "urn:li:share:7459541069194620928",
+      "telegramMsgId": 1347,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-005/"
     }
   ]
 }
