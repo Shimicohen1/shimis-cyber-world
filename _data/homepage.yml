@@ -22,55 +22,51 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Weblate Vulnerabilities Plague Localization Tool
-    text: Multiple high-severity vulnerabilities found in Weblate impact data exposure, RCE, and SSRF.
-    detail: Recent advisories highlight a concerning pattern of vulnerabilities in Weblate, a popular localization tool. Issues like CVE-2026-34393 (data exposure) and CVE-2026-33435 (RCE via backups) underscore the need for prompt patching and security reviews for systems utilizing this software. Organizations should prioritize updating to the latest secure versions to mitigate these risks.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-34393
-    link_label: Weblate Vulnerability Details
+  - title: Weblate & Cisco Vulnerabilities Demand Urgent Patching
+    text: Multiple high-severity vulnerabilities in Weblate and Cisco products require immediate attention.
+    detail: Recent NVD advisories highlight critical flaws in Weblate (versions prior to 5.17) and various Cisco products (ISE, Webex). These issues include remote code execution, SSRF, and privilege escalation. Prioritize patching these systems to mitigate significant security risks.
+    link: https://www.cisa.gov/news-events/cybersecurity-advisories
+    link_label: CISA Advisories
     badge: signal
     tags:
-      - weblate
-      - vulnerability
-      - rce
-      - ssrf
+      - vulnerability-management
       - patching
-  - title: Cisco Products Face Critical RCE and SSO Flaws
-    text: Critical RCE vulnerabilities affect Cisco ISE, while Webex SSO integration poses impersonation risks.
-    detail: Cisco's Identity Services Engine (ISE) is targeted by critical RCE vulnerabilities (e.g., CVE-2026-20186, CVE-2026-20180), allowing authenticated attackers root access. Additionally, Cisco Webex faces an SSO flaw (CVE-2026-20184) enabling unauthenticated user impersonation. Both require immediate attention and vendor advisories should be consulted for mitigation steps.
-    link: https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-ise-rce-9f9M4tJd
-    link_label: Cisco Security Advisory
+      - cisco
+      - weblate
+  - title: SSRF and Path Traversal Exploits Affecting Web Applications
+    text: Server-Side Request Forgery and Path Traversal vulnerabilities are actively being disclosed.
+    detail: Web applications, notably Weblate, are showing a pattern of Server-Side Request Forgery (CVE-2026-34244) and Symlink Traversal (CVE-2026-34242) vulnerabilities. These allow attackers to access internal resources or traverse file systems. Review application configurations and apply necessary updates.
+    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
+    link_label: OWASP SSRF Guide
     badge: signal
     tags:
-      - cisco
-      - rce
-      - sso
-      - impersonation
-      - critical-vulnerability
-  - title: Splunk Vulnerabilities Threaten Data Integrity and Access
-    text: Splunk Enterprise and MCP Server suffer from RCE, improper access control, and token exposure.
-    detail: A series of Splunk vulnerabilities, including RCE for low-privilege users (CVE-2026-20204) and improper access control (CVE-2026-20203), present significant risks. Splunk MCP Server also has a flaw exposing session tokens (CVE-2026-20205). Organizations must apply the latest patches to protect sensitive data and system integrity.
+      - ssrf
+      - path-traversal
+      - web-application-security
+      - cwe-918
+  - title: Splunk Security Weaknesses Expose Sensitive Data and RCE
+    text: Splunk products exhibit vulnerabilities leading to data exposure and remote code execution.
+    detail: Several Splunk advisories (CVE-2026-20205, CVE-2026-20204, CVE-2026-20203) point to privilege escalation, session token leaks, and remote code execution opportunities for low-privileged users. Ensure Splunk instances are updated to the latest versions to protect credentials and system integrity.
     link: https://www.splunk.com/en_us/product-security.html
-    link_label: Splunk Security Information
+    link_label: Splunk Security Advisories
     badge: signal
     tags:
       - splunk
-      - rce
-      - access-control
       - data-exposure
-      - patching
+      - rce
+      - privilege-escalation
   - title: AI Workflow Tools Abused for Malware Delivery
-    text: n8n automation platform is being weaponized for sophisticated phishing and malware delivery campaigns.
-    detail: Reports indicate threat actors are exploiting n8n, an AI workflow automation tool, to conduct advanced phishing campaigns and deliver malware. This trend highlights the emerging risks associated with AI-powered tools in the hands of attackers. Security teams should increase vigilance against phishing attempts originating from unexpected or automated sources.
-    link: https://thehackernews.com/2026/01/n8n-webhooks-abused-for-malware-delivery-via-phishing.html
-    link_label: n8n Phishing Campaign Report
+    text: AI workflow platforms like n8n are being weaponized for phishing and malware distribution.
+    detail: Threat intelligence indicates that n8n and similar AI workflow tools are being exploited by adversaries to craft sophisticated phishing campaigns and deliver malware. Organizations should review their usage of such platforms and implement stricter security controls to prevent abuse.
+    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-awareness
+    link_label: Phishing Awareness Resources
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - malware
+      - malware-delivery
       - ai-security
       - n8n
-      - automation
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
