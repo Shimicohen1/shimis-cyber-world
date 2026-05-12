@@ -22,51 +22,48 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Weblate & Cisco Vulnerabilities Demand Urgent Patching
-    text: Multiple high-severity vulnerabilities in Weblate and Cisco products require immediate attention.
-    detail: Recent NVD advisories highlight critical flaws in Weblate (versions prior to 5.17) and various Cisco products (ISE, Webex). These issues include remote code execution, SSRF, and privilege escalation. Prioritize patching these systems to mitigate significant security risks.
+  - title: "Weblate and Cisco ISE: Frequent Targets for High-Severity Exploits"
+    text: Multiple high-severity vulnerabilities affecting Weblate and Cisco ISE highlight them as critical targets for attackers.
+    detail: Recent advisories reveal numerous critical and high-severity vulnerabilities in Weblate (CVE-2026-34393, CVE-2026-33435, etc.) and Cisco ISE (CVE-2026-20186, CVE-2026-20180, CVE-2026-20147). These often lead to RCE or privilege escalation. Prioritize patching and reviewing configurations for these platforms to mitigate risk.
     link: https://www.cisa.gov/news-events/cybersecurity-advisories
     link_label: CISA Advisories
     badge: signal
     tags:
       - vulnerability-management
-      - patching
-      - cisco
-      - weblate
-  - title: SSRF and Path Traversal Exploits Affecting Web Applications
-    text: Server-Side Request Forgery and Path Traversal vulnerabilities are actively being disclosed.
-    detail: Web applications, notably Weblate, are showing a pattern of Server-Side Request Forgery (CVE-2026-34244) and Symlink Traversal (CVE-2026-34242) vulnerabilities. These allow attackers to access internal resources or traverse file systems. Review application configurations and apply necessary updates.
-    link: https://owasp.org/www-community/vulnerabilities/Server-Side_Request_Forgery
-    link_label: OWASP SSRF Guide
-    badge: signal
-    tags:
-      - ssrf
-      - path-traversal
-      - web-application-security
-      - cwe-918
-  - title: Splunk Security Weaknesses Expose Sensitive Data and RCE
-    text: Splunk products exhibit vulnerabilities leading to data exposure and remote code execution.
-    detail: Several Splunk advisories (CVE-2026-20205, CVE-2026-20204, CVE-2026-20203) point to privilege escalation, session token leaks, and remote code execution opportunities for low-privileged users. Ensure Splunk instances are updated to the latest versions to protect credentials and system integrity.
+      - cve
+      - patch-management
+  - title: Splunk Vulnerabilities Expose Sensitive Data and Enable RCE
+    text: Splunk platforms are facing multiple vulnerabilities, risking data exposure and remote code execution.
+    detail: Recent NVD entries for Splunk (CVE-2026-20205, CVE-2026-20204, CVE-2026-20203) indicate issues ranging from session token exposure to RCE for low-privileged users. Administrators must ensure their Splunk deployments are updated to the latest versions to prevent unauthorized access and system compromise.
     link: https://www.splunk.com/en_us/product-security.html
     link_label: Splunk Security Advisories
     badge: signal
     tags:
       - splunk
-      - data-exposure
       - rce
-      - privilege-escalation
-  - title: AI Workflow Tools Abused for Malware Delivery
-    text: AI workflow platforms like n8n are being weaponized for phishing and malware distribution.
-    detail: Threat intelligence indicates that n8n and similar AI workflow tools are being exploited by adversaries to craft sophisticated phishing campaigns and deliver malware. Organizations should review their usage of such platforms and implement stricter security controls to prevent abuse.
-    link: https://www.cisa.gov/news-events/cybersecurity-awareness-month/phishing-awareness
-    link_label: Phishing Awareness Resources
+      - data-exposure
+  - title: Automation Tools Abused for Phishing and Malware Delivery
+    text: Workflow automation tools like n8n are being weaponized by threat actors for phishing and malware distribution.
+    detail: Reports indicate threat actors are leveraging platforms like n8n to facilitate sophisticated phishing campaigns, delivering malicious payloads. This trend underscores the need for robust email security, user awareness training, and scrutiny of automated workflows to prevent abuse.
+    link: https://www.owasp.org/www-community/vulnerabilities/Phishing
+    link_label: OWASP Phishing
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - malware-delivery
-      - ai-security
-      - n8n
+      - malware
+      - automation-security
+  - title: Credential Theft Risks from Git for Windows and NTLM Hashes
+    text: Git for Windows vulnerabilities pose a risk of NTLM hash leakage, enabling credential theft.
+    detail: CVE-2026-32631 highlights a critical flaw in Git for Windows allowing attackers to obtain NTLM hashes by tricking users into cloning malicious repositories. Organizations should ensure Git clients are updated and educate users about the risks of interacting with untrusted repositories.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-32631
+    link_label: CVE-2026-32631 Details
+    badge: signal
+    tags:
+      - credential-theft
+      - git
+      - ntlm
+      - vulnerability
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
