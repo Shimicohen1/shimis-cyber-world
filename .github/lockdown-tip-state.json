@@ -1,5 +1,5 @@
 {
-  "tipNumber": 24,
+  "tipNumber": 25,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -24,7 +24,8 @@
     "win-005",
     "aws-005",
     "az-005",
-    "lin-006"
+    "lin-006",
+    "win-006"
   ],
   "round": 1,
   "history": [
@@ -266,6 +267,16 @@
       "linkedInId": "urn:li:share:7459555478310858752",
       "telegramMsgId": 1349,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-006/"
+    },
+    {
+      "tipNumber": 25,
+      "id": "win-006",
+      "platform": "windows",
+      "title": "Enable PowerShell script block logging",
+      "date": "2026-05-12T09:54:19.931Z",
+      "linkedInId": "urn:li:share:7459903778062831616",
+      "telegramMsgId": 1380,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-006/"
     }
   ]
 }
