@@ -1,0 +1,66 @@
+name: GSC Validate Fix Reminder
+
+# One-shot reminder: fires June 1, 2026 at 09:00 UTC (12:00 Israel) to
+# remind Shimi to revisit "Crawled - currently not indexed" in GSC and
+# decide whether to click "Validate Fix" (after thin-post archive on May 9).
+# After firing, this workflow can be deleted.
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check date gate
+        id: gate
+        run: |
+          TODAY=$(date -u +%Y-%m-%d)
+          TARGET="2026-06-01"
+          if [ "$TODAY" = "$TARGET" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "fire=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Today $TODAY != target $TARGET; skipping."
+            echo "fire=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send reminder email via Brevo
+        if: steps.gate.outputs.fire == 'true'
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${BREVO_API_KEY:-}" ]; then
+            echo "::error::BREVO_API_KEY secret not set"
+            exit 1
+          fi
+
+          PAYLOAD=$(cat <<'JSON'
+          {
+            "sender": {"name": "SCW SEO Monitor", "email": "shimicyberworld@gmail.com"},
+            "to": [{"email": "shimicyberworld@gmail.com", "name": "Shimi"}],
+            "subject": "🔍 GSC: Time to Re-check 'Crawled - not indexed' (Validate Fix?)",
+            "htmlContent": "<div style=\"font-family:Inter,system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#0d0d14;color:#f0f0f5\"><h1 style=\"color:#3b82f6;font-size:22px;margin:0 0 16px\">GSC — 3 Weeks Since Thin-Post Archive</h1><p style=\"color:#cccccc;line-height:1.6\">On <b>May 9, 2026</b> you archived 593 thin posts. As of May 12, GSC showed <b>2,020 pages</b> in 'Crawled - currently not indexed'. Three weeks have passed — Google should have re-crawled and re-evaluated.</p><h2 style=\"color:#a855f7;font-size:16px;margin:24px 0 8px\">✅ Steps (5 min)</h2><ol style=\"color:#cccccc;line-height:1.8\"><li>Open <a href=\"https://search.google.com/search-console?resource_id=sc-domain%3Ashimiscyberworld.com\" style=\"color:#3b82f6\">GSC → Pages → Crawled - currently not indexed</a></li><li>Compare count: was <b>2,020</b> on May 12. Expect significant drop.</li><li><b>If count dropped &gt;50%</b> → click <b>Validate Fix</b>. Google will re-test.</li><li><b>If count is still ~2,000</b> → DO NOT click validate. Open 5 sample URLs, check if they 404 (good — archived) or are real pages (need investigation).</li><li>Check 'Indexed' count vs May 12 baseline — should be growing.</li></ol><h2 style=\"color:#a855f7;font-size:16px;margin:24px 0 8px\">📊 Also check</h2><ul style=\"color:#cccccc;line-height:1.8\"><li>AdSense status (resubmitted May 9 — response by ~May 19)</li><li>Sitemap last-read date in GSC (should be recent)</li><li>Total indexed pages vs baseline (~2,844 posts now)</li></ul><p style=\"color:#888;font-size:12px;margin-top:32px;border-top:1px solid #333;padding-top:16px\">Reminder workflow: <code>.github/workflows/gsc-validate-reminder.yml</code><br>After today, this workflow can be deleted.</p></div>"
+          }
+          JSON
+          )
+
+          echo "Sending reminder email..."
+          HTTP_CODE=$(curl -sS -o /tmp/brevo.json -w "%{http_code}" \
+            -X POST 'https://api.brevo.com/v3/smtp/email' \
+            -H "api-key: $BREVO_API_KEY" \
+            -H 'Content-Type: application/json' \
+            -H 'accept: application/json' \
+            -d "$PAYLOAD")
+          echo "Brevo HTTP: $HTTP_CODE"
+          cat /tmp/brevo.json
+          if [ "$HTTP_CODE" != "201" ]; then
+            echo "::error::Brevo API returned $HTTP_CODE"
+            exit 1
+          fi
+          echo "✅ Reminder email sent."
