@@ -1,0 +1,86 @@
+---
+title: "Microsoft Patches 137 Vulnerabilities, Including Critical Azure, Windows Flaws"
+date: 2026-05-12 18:07:39 +0000
+source: RSS
+source_name: "SecurityWeek"
+channel: "SecurityWeek"
+tags: [threat-intel, vulnerability, cloud, microsoft, identity]
+excerpt: "Microsoft's latest security updates address 137 vulnerabilities, according to SecurityWeek. This significant patch Tuesday includes fixes for critical flaws across key products lik"
+summary: "Microsoft's latest security updates address 137 vulnerabilities, according to SecurityWeek. This significant patch Tuesday includes fixes for critical flaws across key products like Azure, Windows, Dynamics 365, and the SSO Plugin for Jira & Confluence. The sheer volume underscores the ongoing chall"
+layout: post
+section: vulnerabilities
+score: HIGH
+curated: false
+featured: false
+priority: 80
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-051.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-051.png"
+source_url: "https://www.securityweek.com/microsoft-patches-137-vulnerabilities/"
+tlp: "TLP:CLEAR"
+event_type: "vulnerability"
+organizations:
+  - name: "Microsoft"
+    domain: "microsoft.com"
+    role: "vendor"
+  - name: "Atlassian"
+    domain: "atlassian.com"
+    role: "vendor"
+link_preview:
+  url: "https://www.securityweek.com/microsoft-patches-137-vulnerabilities/"
+  title: "Microsoft Patches 137 Vulnerabilities"
+  domain: "securityweek.com"
+  image: "https://www.securityweek.com/wp-content/uploads/2025/10/Windows-10.jpeg"
+iocs:
+  - id: "Microsoft-Patch-Tuesday-April-2024"
+    type: "Multiple Vulnerabilities"
+    indicator: "Microsoft Azure"
+  - id: "Microsoft-Patch-Tuesday-April-2024"
+    type: "Multiple Vulnerabilities"
+    indicator: "Microsoft Windows"
+  - id: "Microsoft-Patch-Tuesday-April-2024"
+    type: "Multiple Vulnerabilities"
+    indicator: "Microsoft Dynamics 365"
+  - id: "Microsoft-Patch-Tuesday-April-2024"
+    type: "Multiple Vulnerabilities"
+    indicator: "SSO Plugin for Jira & Confluence"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1200"
+    name: "Hardware Additions"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1200/"
+  - id: "T1068"
+    name: "Exploitation for Privilege Escalation"
+    tactic: "Privilege Escalation"
+    url: "https://attack.mitre.org/techniques/T1068/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Microsoft Azure Vulnerability Exploitation (CVE-XXXX-XXXX)"
+  preview_level: "critical"
+  preview_technique: "T1190"
+  preview_tactic: "Initial Access"
+  preview_yaml_b64: "dGl0bGU6IE1pY3Jvc29mdCBBenVyZSBWdWxuZXJhYmlsaXR5IEV4cGxvaXRhdGlvbiAoQ1ZFLVhYWFgtWFhYWCkKaWQ6IHNjdy0yMDI2LTA1LTEyLWFpLTEKc3RhdHVzOiBleHBlcmltZW50YWwKbGV2ZWw6IGNyaXRpY2FsCmRlc2NyaXB0aW9uOiB8CiAgVGhpcyBydWxlIGRldGVjdHMgcG90ZW50aWFsIGV4cGxvaXRhdGlvbiBhdHRlbXB0cyBhZ2FpbnN0IE1pY3Jvc29mdCBBenVyZSBzZXJ2aWNlcywgc3BlY2lmaWNhbGx5IHRhcmdldGluZyB0aGUgJy9hcGkvdjIvc3Vic2NyaXB0aW9ucycgZW5kcG9pbnQgdmlhIFBPU1QgcmVxdWVzdHMgdGhhdCByZXN1bHQgaW4gYSBzdWNjZXNzZnVsIHJlc3BvbnNlICgyMDAgc3RhdHVzIGNvZGUpLiBUaGlzIGlzIGluZGljYXRpdmUgb2YgYXR0ZW1wdHMgdG8gYWJ1c2UgdnVsbmVyYWJpbGl0aWVzIHBhdGNoZWQgaW4gTWljcm9zb2Z0J3MgbGF0ZXN0IHNlY3VyaXR5IHVwZGF0ZXMsIHBvdGVudGlhbGx5IGxlYWRpbmcgdG8gdW5hdXRob3JpemVkIGFjY2VzcyBvciByZXNvdXJjZSBtYW5pcHVsYXRpb24uCmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpCmRhdGU6IDIwMjYtMDUtMTIKcmVmZXJlbmNlczoKICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTItbWljcm9zb2Z0LXBhdGNoZXMtMTM3LXZ1bG5lcmFiaWxpdGllcy1wdTVhcAp0YWdzOgogIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzCiAgLSBhdHRhY2sudDExOTAKbG9nc291cmNlOgogICAgY2F0ZWdvcnk6IHdlYnNlcnZlcgpkZXRlY3Rpb246CiAgc2VsZWN0aW9uOgogICAgICBjcy11cml8Y29udGFpbnM6CiAgICAgICAgICAtICcvYXBpL3YyL3N1YnNjcmlwdGlvbnMnCiAgICAgIGNzLW1ldGhvZDoKICAgICAgICAgIC0gJ1BPU1QnCiAgICAgIHNjLXN0YXR1czoKICAgICAgICAgIC0gJzIwMCcKICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb24KZmFsc2Vwb3NpdGl2ZXM6CiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5"
+  all_rules_b64: "W3sidGl0bGUiOiJNaWNyb3NvZnQgQXp1cmUgVnVsbmVyYWJpbGl0eSBFeHBsb2l0YXRpb24gKENWRS1YWFhYLVhYWFgpIiwibGV2ZWwiOiJjcml0aWNhbCIsInRlY2huaXF1ZSI6IlQxMTkwIiwidGFjdGljIjoiSW5pdGlhbCBBY2Nlc3MiLCJ0aWVyIjoiZnJlZSIsInlhbWwiOiJ0aXRsZTogTWljcm9zb2Z0IEF6dXJlIFZ1bG5lcmFiaWxpdHkgRXhwbG9pdGF0aW9uIChDVkUtWFhYWC1YWFhYKVxuaWQ6IHNjdy0yMDI2LTA1LTEyLWFpLTFcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIHBvdGVudGlhbCBleHBsb2l0YXRpb24gYXR0ZW1wdHMgYWdhaW5zdCBNaWNyb3NvZnQgQXp1cmUgc2VydmljZXMsIHNwZWNpZmljYWxseSB0YXJnZXRpbmcgdGhlICcvYXBpL3YyL3N1YnNjcmlwdGlvbnMnIGVuZHBvaW50IHZpYSBQT1NUIHJlcXVlc3RzIHRoYXQgcmVzdWx0IGluIGEgc3VjY2Vzc2Z1bCByZXNwb25zZSAoMjAwIHN0YXR1cyBjb2RlKS4gVGhpcyBpcyBpbmRpY2F0aXZlIG9mIGF0dGVtcHRzIHRvIGFidXNlIHZ1bG5lcmFiaWxpdGllcyBwYXRjaGVkIGluIE1pY3Jvc29mdCdzIGxhdGVzdCBzZWN1cml0eSB1cGRhdGVzLCBwb3RlbnRpYWxseSBsZWFkaW5nIHRvIHVuYXV0aG9yaXplZCBhY2Nlc3Mgb3IgcmVzb3VyY2UgbWFuaXB1bGF0aW9uLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMTJcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0xMi1taWNyb3NvZnQtcGF0Y2hlcy0xMzctdnVsbmVyYWJpbGl0aWVzLXB1NWFwXG50YWdzOlxuICAtIGF0dGFjay5pbml0aWFsX2FjY2Vzc1xuICAtIGF0dGFjay50MTE5MFxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiB3ZWJzZXJ2ZXJcbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgY3MtdXJpfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy9hcGkvdjIvc3Vic2NyaXB0aW9ucydcbiAgICAgIGNzLW1ldGhvZDpcbiAgICAgICAgICAtICdQT1NUJ1xuICAgICAgc2Mtc3RhdHVzOlxuICAgICAgICAgIC0gJzIwMCdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6IldpbmRvd3MgUHJpdmlsZWdlIEVzY2FsYXRpb24gdmlhIFZ1bG5lcmFibGUgU2VydmljZSAoQ1ZFLVhYWFgtWFhYWCkiLCJsZXZlbCI6ImhpZ2giLCJ0ZWNobmlxdWUiOiJUMTU0OCIsInRhY3RpYyI6IlByaXZpbGVnZSBFc2NhbGF0aW9uIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IFdpbmRvd3MgUHJpdmlsZWdlIEVzY2FsYXRpb24gdmlhIFZ1bG5lcmFibGUgU2VydmljZSAoQ1ZFLVhYWFgtWFhYWClcbmlkOiBzY3ctMjAyNi0wNS0xMi1haS0yXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGhpZ2hcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBtb25pdG9ycyBmb3Igc3VzcGljaW91cyBwcm9jZXNzIGNyZWF0aW9uIHBhdHRlcm5zIHJlbGF0ZWQgdG8gV2luZG93cyBzZXJ2aWNlcywgc3BlY2lmaWNhbGx5IHN2Y2hvc3QuZXhlIGJlaW5nIGxhdW5jaGVkIHdpdGggc3BlY2lmaWMgY29tbWFuZC1saW5lIGFyZ3VtZW50cyAoJy1rIG5ldHN2Y3MnKSBhbmQgb3JpZ2luYXRpbmcgZnJvbSBzZXJ2aWNlcy5leGUuIFRoaXMgY291bGQgaW5kaWNhdGUgZXhwbG9pdGF0aW9uIG9mIGEgdnVsbmVyYWJpbGl0eSB3aXRoaW4gYSBXaW5kb3dzIHNlcnZpY2UgdGhhdCBhbGxvd3MgZm9yIHByaXZpbGVnZSBlc2NhbGF0aW9uLCBhcyBhZGRyZXNzZWQgaW4gTWljcm9zb2Z0J3Mgc2VjdXJpdHkgdXBkYXRlcy5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTEyXG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTItbWljcm9zb2Z0LXBhdGNoZXMtMTM3LXZ1bG5lcmFiaWxpdGllcy1wdTVhcFxudGFnczpcbiAgLSBhdHRhY2sucHJpdmlsZWdlX2VzY2FsYXRpb25cbiAgLSBhdHRhY2sudDE1NDhcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvblxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb25fYmFzZTpcbiAgICAgIEltYWdlfGVuZHN3aXRoOlxuICAgICAgICAgIC0gJ3N2Y2hvc3QuZXhlJ1xuICBzZWxlY3Rpb25faW5kaWNhdG9yczpcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy1rIG5ldHN2Y3MnXG4gICAgICBQYXJlbnRJbWFnZXxlbmRzd2l0aDpcbiAgICAgICAgICAtICdzZXJ2aWNlcy5leGUnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvbl9iYXNlIEFORCBzZWxlY3Rpb25faW5kaWNhdG9yc1xuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJTU08gUGx1Z2luIGZvciBKaXJhL0NvbmZsdWVuY2UgRXhwbG9pdGF0aW9uIEF0dGVtcHQgKENWRS1YWFhYLVhYWFgpIiwibGV2ZWwiOiJjcml0aWNhbCIsInRlY2huaXF1ZSI6IlQxMTkwIiwidGFjdGljIjoiSW5pdGlhbCBBY2Nlc3MiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogU1NPIFBsdWdpbiBmb3IgSmlyYS9Db25mbHVlbmNlIEV4cGxvaXRhdGlvbiBBdHRlbXB0IChDVkUtWFhYWC1YWFhYKVxuaWQ6IHNjdy0yMDI2LTA1LTEyLWFpLTNcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIHBvdGVudGlhbCBleHBsb2l0YXRpb24gYXR0ZW1wdHMgdGFyZ2V0aW5nIHRoZSBTU08gUGx1Z2luIGZvciBKaXJhICYgQ29uZmx1ZW5jZS4gSXQgc3BlY2lmaWNhbGx5IGxvb2tzIGZvciBQT1NUIHJlcXVlc3RzIHRvIHRoZSAnL3Jlc3QvYXV0aC9sYXRlc3Qvc2Vzc2lvbicgZW5kcG9pbnQsIHdoaWNoIGlzIGEgY29tbW9uIGVudHJ5IHBvaW50IGZvciBhdXRoZW50aWNhdGlvbi1yZWxhdGVkIGZ1bmN0aW9uYWxpdGllcy4gRXhwbG9pdGF0aW9uIG9mIHZ1bG5lcmFiaWxpdGllcyBpbiB0aGlzIHBsdWdpbiBjb3VsZCBsZWFkIHRvIHVuYXV0aG9yaXplZCBhY2Nlc3MgdG8gc2Vuc2l0aXZlIGluZm9ybWF0aW9uIG9yIHN5c3RlbXMuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0xMlxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTEyLW1pY3Jvc29mdC1wYXRjaGVzLTEzNy12dWxuZXJhYmlsaXRpZXMtcHU1YXBcbnRhZ3M6XG4gIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzXG4gIC0gYXR0YWNrLnQxMTkwXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHdlYnNlcnZlclxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICB1cml8Y29udGFpbnM6XG4gICAgICAgICAgLSAnL3Jlc3QvYXV0aC9sYXRlc3Qvc2Vzc2lvbidcbiAgICAgIGNzLW1ldGhvZDpcbiAgICAgICAgICAtICdQT1NUJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifV0="
+why_it_matters:
+  - "If your organization relies on Microsoft products, you need to be patching these 137 vulnerabilities immediately. Focus first on the critical flaws in Azure, Windows, Dynamics 365, and the SSO Plugin for Jira & Confluence. Attackers are already reverse-engineering these patches; delay is not an option."
+bot_cta_title: "Check Microsoft Vulnerabilities"
+bot_cta_description: "Use /brief for an analyst-ready weekly threat summary with severity rankings and key IOCs, including Microsoft vulnerabilities."
+---
+
+Microsoft's latest security updates address 137 vulnerabilities, according to SecurityWeek. This significant patch Tuesday includes fixes for critical flaws across key products like Azure, Windows, Dynamics 365, and the SSO Plugin for Jira & Confluence. The sheer volume underscores the ongoing challenge of maintaining a secure posture in complex enterprise environments.
+
+The update specifically highlights critical vulnerabilities in Azure and Windows, which are foundational to most enterprise operations. Attackers consistently target these platforms due to their pervasive use and potential for broad impact. Neglecting these patches creates immediate exposure points, making organizations low-hanging fruit for exploitation.
+
+For defenders, this means a focused and rapid patching cycle is non-negotiable. Prioritize the critical vulnerabilities in Azure and Windows first, as these often present the most direct routes to system compromise or data exfiltration. The inclusion of Dynamics 365 and SSO Plugin flaws also signals the need to broaden the scope of patching to business-critical applications and identity management solutions.
