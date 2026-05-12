@@ -16,14 +16,17 @@ permalink: /premium/
 </div>
 </div>
 
+{% assign harden_total = site.data.hardening.items | size %}
+{% assign harden_platforms = site.data.hardening.items | map: "platform" | uniq | size %}
+
 <!-- ── Stats bar: proof ── -->
 <div class="elite-stats reveal">
 <div class="elite-stat">
-<span class="elite-stat__num">935</span>
+<span class="elite-stat__num">{{ harden_total }}</span>
 <span class="elite-stat__label">Hardening Checks</span>
 </div>
 <div class="elite-stat">
-<span class="elite-stat__num">23</span>
+<span class="elite-stat__num">{{ harden_platforms }}</span>
 <span class="elite-stat__label">Platforms</span>
 </div>
 <div class="elite-stat">
@@ -67,10 +70,10 @@ permalink: /premium/
 <span class="elite-card__status elite-card__status--live">LIVE</span>
 </div>
 <h3>LockDown</h3>
-<p>935 security hardening checks. 23 platforms — including CrowdStrike, Palo Alto, Cisco, Fortinet, Okta, Kubernetes, and GitHub CI/CD. Real commands you copy-paste, not theory you read.</p>
+<p>{{ harden_total }} security hardening checks. {{ harden_platforms }} platforms — including CrowdStrike, Palo Alto, Cisco, Fortinet, Okta, Kubernetes, and GitHub CI/CD. Real commands you copy-paste, not theory you read.</p>
 <div class="elite-card__meta">
-<span>23 platforms</span>
-<span>935 items</span>
+<span>{{ harden_platforms }} platforms</span>
+<span>{{ harden_total }} items</span>
 <span>Copy & export</span>
 </div>
 </div>
