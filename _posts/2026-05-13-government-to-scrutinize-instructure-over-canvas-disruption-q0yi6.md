@@ -1,0 +1,83 @@
+---
+title: "Instructure Canvas Disruption Under Government Scrutiny"
+date: 2026-05-13 12:13:14 +0000
+source: RSS
+source_name: "SecurityWeek"
+channel: "SecurityWeek"
+tags: [threat-intel, vulnerability, data-breach]
+excerpt: "The Committee on Homeland Security is now demanding a briefing from Instructure regarding the recent Canvas disruption and associated data breach, according to SecurityWeek. This i"
+summary: "The Committee on Homeland Security is now demanding a briefing from Instructure regarding the recent Canvas disruption and associated data breach, according to SecurityWeek. This isn't just about service availability; it's about the integrity of educational data and critical infrastructure. Instruct"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 70
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-045.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/threats/threats-045.png"
+source_url: "https://www.securityweek.com/government-to-scrutinize-instructure-on-canvas-disruption-data-breach/"
+tlp: "TLP:CLEAR"
+event_type: "data-breach"
+organizations:
+  - name: "Instructure"
+    domain: "instructure.com"
+    role: "vendor"
+  - name: "Canvas"
+    domain: "instructure.com"
+    role: "vendor"
+  - name: "Committee on Homeland Security"
+    domain: "homeland.house.gov"
+    role: "other"
+link_preview:
+  url: "https://www.securityweek.com/government-to-scrutinize-instructure-on-canvas-disruption-data-breach/"
+  title: "Government to Scrutinize Instructure Over Canvas Disruption, Data Breach"
+  domain: "securityweek.com"
+  image: "https://www.securityweek.com/wp-content/uploads/2025/07/plead-guilty-hacker-court.jpeg"
+iocs:
+  - id: "Instructure-Canvas-Disruption"
+    type: "DoS"
+    indicator: "Instructure Canvas Learning Management System"
+  - id: "Instructure-Canvas-Data-Breach"
+    type: "Information Disclosure"
+    indicator: "Instructure Canvas Learning Management System"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1531"
+    name: "Account Access Removal"
+    tactic: "Impact"
+    url: "https://attack.mitre.org/techniques/T1531/"
+  - id: "T1078.004"
+    name: "Cloud Accounts"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1078/004/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Instructure Canvas Data Breach - Suspicious Web Request"
+  preview_level: "critical"
+  preview_technique: "T1190"
+  preview_tactic: "Initial Access"
+  preview_yaml_b64: "dGl0bGU6IEluc3RydWN0dXJlIENhbnZhcyBEYXRhIEJyZWFjaCAtIFN1c3BpY2lvdXMgV2ViIFJlcXVlc3QKaWQ6IHNjdy0yMDI2LTA1LTEzLWFpLTEKc3RhdHVzOiBleHBlcmltZW50YWwKbGV2ZWw6IGNyaXRpY2FsCmRlc2NyaXB0aW9uOiB8CiAgVGhpcyBydWxlIGRldGVjdHMgc3VzcGljaW91cyBQT1NUIHJlcXVlc3RzIHRvIHRoZSAvYXBpL3YxL3VzZXJzIGVuZHBvaW50IHdpdGhpbiBJbnN0cnVjdHVyZSBDYW52YXMuIFRoaXMgc3BlY2lmaWMgZW5kcG9pbnQsIHdoZW4gY29tYmluZWQgd2l0aCB1bnVzdWFsIFBPU1QgYWN0aXZpdHksIGNvdWxkIGluZGljYXRlIGFuIGF0dGVtcHQgdG8gZW51bWVyYXRlIG9yIGV4ZmlsdHJhdGUgdXNlciBkYXRhLCBhbGlnbmluZyB3aXRoIHRoZSByZXBvcnRlZCBkYXRhIGJyZWFjaCBzY2VuYXJpbyBhZmZlY3RpbmcgSW5zdHJ1Y3R1cmUuCmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpCmRhdGU6IDIwMjYtMDUtMTMKcmVmZXJlbmNlczoKICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTMtZ292ZXJubWVudC10by1zY3J1dGluaXplLWluc3RydWN0dXJlLW92ZXItY2FudmFzLWRpc3J1cHRpb24tcTB5aTYKdGFnczoKICAtIGF0dGFjay5pbml0aWFsX2FjY2VzcwogIC0gYXR0YWNrLnQxMTkwCmxvZ3NvdXJjZToKICAgIGNhdGVnb3J5OiB3ZWJzZXJ2ZXIKZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgY3MtdXJpfGNvbnRhaW5zOgogICAgICAgICAgLSAnL2FwaS92MS91c2VycycKICAgICAgY3MtbWV0aG9kOgogICAgICAgICAgLSAnUE9TVCcKICAgICAgc2Mtc3RhdHVzOgogICAgICAgICAgLSAnMjAwJwogICAgICBjb25kaXRpb246IHNlbGVjdGlvbgpmYWxzZXBvc2l0aXZlczoKICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHk="
+  all_rules_b64: "W3sidGl0bGUiOiJJbnN0cnVjdHVyZSBDYW52YXMgRGF0YSBCcmVhY2ggLSBTdXNwaWNpb3VzIFdlYiBSZXF1ZXN0IiwibGV2ZWwiOiJjcml0aWNhbCIsInRlY2huaXF1ZSI6IlQxMTkwIiwidGFjdGljIjoiSW5pdGlhbCBBY2Nlc3MiLCJ0aWVyIjoiZnJlZSIsInlhbWwiOiJ0aXRsZTogSW5zdHJ1Y3R1cmUgQ2FudmFzIERhdGEgQnJlYWNoIC0gU3VzcGljaW91cyBXZWIgUmVxdWVzdFxuaWQ6IHNjdy0yMDI2LTA1LTEzLWFpLTFcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIHN1c3BpY2lvdXMgUE9TVCByZXF1ZXN0cyB0byB0aGUgL2FwaS92MS91c2VycyBlbmRwb2ludCB3aXRoaW4gSW5zdHJ1Y3R1cmUgQ2FudmFzLiBUaGlzIHNwZWNpZmljIGVuZHBvaW50LCB3aGVuIGNvbWJpbmVkIHdpdGggdW51c3VhbCBQT1NUIGFjdGl2aXR5LCBjb3VsZCBpbmRpY2F0ZSBhbiBhdHRlbXB0IHRvIGVudW1lcmF0ZSBvciBleGZpbHRyYXRlIHVzZXIgZGF0YSwgYWxpZ25pbmcgd2l0aCB0aGUgcmVwb3J0ZWQgZGF0YSBicmVhY2ggc2NlbmFyaW8gYWZmZWN0aW5nIEluc3RydWN0dXJlLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMTNcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0xMy1nb3Zlcm5tZW50LXRvLXNjcnV0aW5pemUtaW5zdHJ1Y3R1cmUtb3Zlci1jYW52YXMtZGlzcnVwdGlvbi1xMHlpNlxudGFnczpcbiAgLSBhdHRhY2suaW5pdGlhbF9hY2Nlc3NcbiAgLSBhdHRhY2sudDExOTBcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogd2Vic2VydmVyXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIGNzLXVyaXxjb250YWluczpcbiAgICAgICAgICAtICcvYXBpL3YxL3VzZXJzJ1xuICAgICAgY3MtbWV0aG9kOlxuICAgICAgICAgIC0gJ1BPU1QnXG4gICAgICBzYy1zdGF0dXM6XG4gICAgICAgICAgLSAnMjAwJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiSW5zdHJ1Y3R1cmUgQ2FudmFzIERhdGEgQnJlYWNoIC0gVW5hdXRob3JpemVkIEFQSSBBY2Nlc3MiLCJsZXZlbCI6ImhpZ2giLCJ0ZWNobmlxdWUiOiJUMTU5NS4wMDIiLCJ0YWN0aWMiOiJSZWNvbm5haXNzYW5jZSIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBJbnN0cnVjdHVyZSBDYW52YXMgRGF0YSBCcmVhY2ggLSBVbmF1dGhvcml6ZWQgQVBJIEFjY2Vzc1xuaWQ6IHNjdy0yMDI2LTA1LTEzLWFpLTJcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgVGhpcyBydWxlIGlkZW50aWZpZXMgd2ViIHJlcXVlc3RzIHRvIEluc3RydWN0dXJlIENhbnZhcydzIEFQSSB0aGF0IGluY2x1ZGUgdGhlICdpbmNsdWRlPWVucm9sbG1lbnRzJyBwYXJhbWV0ZXIuIFRoaXMgcGFyYW1ldGVyIGNhbiBiZSB1c2VkIHRvIHJldHJpZXZlIHNlbnNpdGl2ZSBlbnJvbGxtZW50IGRhdGEsIGFuZCBpdHMgcHJlc2VuY2UgaW4gc3VzcGljaW91cyBvciB1bmF1dGhvcml6ZWQgcmVxdWVzdHMgY291bGQgaW5kaWNhdGUgcmVjb25uYWlzc2FuY2UgYWN0aXZpdHkgcmVsYXRlZCB0byB0aGUgZGF0YSBicmVhY2guXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0xM1xucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTEzLWdvdmVybm1lbnQtdG8tc2NydXRpbml6ZS1pbnN0cnVjdHVyZS1vdmVyLWNhbnZhcy1kaXNydXB0aW9uLXEweWk2XG50YWdzOlxuICAtIGF0dGFjay5yZWNvbm5haXNzYW5jZVxuICAtIGF0dGFjay50MTU5NS4wMDJcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogd2Vic2VydmVyXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbl9iYXNlOlxuICAgICAgY3MtdXJpfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy9hcGkvdjEvJ1xuICBzZWxlY3Rpb25faW5kaWNhdG9yczpcbiAgICAgIGNzLXVyaS1xdWVyeXxjb250YWluczpcbiAgICAgICAgICAtICdpbmNsdWRlPWVucm9sbG1lbnRzJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25fYmFzZSBBTkQgc2VsZWN0aW9uX2luZGljYXRvcnNcbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiSW5zdHJ1Y3R1cmUgQ2FudmFzIERhdGEgQnJlYWNoIC0gU3VzcGljaW91cyBGaWxlIEFjY2VzcyIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMDgzIiwidGFjdGljIjoiRGlzY292ZXJ5IiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IEluc3RydWN0dXJlIENhbnZhcyBEYXRhIEJyZWFjaCAtIFN1c3BpY2lvdXMgRmlsZSBBY2Nlc3NcbmlkOiBzY3ctMjAyNi0wNS0xMy1haS0zXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGhpZ2hcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBtb25pdG9ycyBmb3IgcmVhZCBhY2Nlc3MgdG8gZmlsZXMgd2l0aGluIHVzZXIgb3Igc3R1ZGVudCBkYXRhIGRpcmVjdG9yaWVzIG9uIEluc3RydWN0dXJlIENhbnZhcyBzeXN0ZW1zLiBTdWNoIGFjY2VzcywgZXNwZWNpYWxseSBpZiBhbm9tYWxvdXMgb3IgZnJvbSB1bmV4cGVjdGVkIHNvdXJjZXMsIGNvdWxkIGluZGljYXRlIGFuIGF0dGFja2VyIGF0dGVtcHRpbmcgdG8gZGlzY292ZXIgYW5kIGFjY2VzcyBzZW5zaXRpdmUgc3R1ZGVudCBhbmQgZmFjdWx0eSBpbmZvcm1hdGlvbiBhcyBwYXJ0IG9mIHRoZSBkYXRhIGJyZWFjaC5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTEzXG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTMtZ292ZXJubWVudC10by1zY3J1dGluaXplLWluc3RydWN0dXJlLW92ZXItY2FudmFzLWRpc3J1cHRpb24tcTB5aTZcbnRhZ3M6XG4gIC0gYXR0YWNrLmRpc2NvdmVyeVxuICAtIGF0dGFjay50MTA4M1xubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBmaWxlX2FjY2Vzc1xuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBUYXJnZXRGaWxlbmFtZXxjb250YWluczpcbiAgICAgICAgICAtICcvZGF0YS91c2VyLydcbiAgICAgICAgICAtICcvZGF0YS9zdHVkZW50LydcbiAgICAgIGFjdGlvbjpcbiAgICAgICAgICAtICdyZWFkJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifV0="
+why_it_matters:
+  - "If your organization relies on Instructure's Canvas, you need to demand a full post-mortem and impact assessment directly from Instructure. This isn't just a blip; it's a government-level scrutiny event. Validate their remediation steps and ensure your data integrity and access controls were not compromised. Don't assume you're safe until you've verified their response."
+bot_cta_title: "Check Education Sector Threats"
+bot_cta_description: "Use /org instructure.com to see related threats and /brief for analyst-ready summaries impacting the education sector."
+---
+
+The Committee on Homeland Security is now demanding a briefing from Instructure regarding the recent Canvas disruption and associated data breach, according to SecurityWeek. This isn't just about service availability; it's about the integrity of educational data and critical infrastructure.
+
+Instructure, as a major SaaS provider for educational institutions, holds a massive amount of sensitive student and faculty data. A disruption, especially one coupled with a data breach, has far-reaching implications beyond just classroom access. It exposes personal information, potentially impacting national security given the scope of government oversight.
+
+CISOs in education and government sectors using Canvas need to understand the full extent of this incident. The government's deep dive signals a significant concern about Instructure's security posture and incident response capabilities. Defenders should not wait for public disclosures; they must be actively engaging Instructure for detailed impact assessments and remediation plans.
