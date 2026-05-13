@@ -1,5 +1,5 @@
 {
-  "tipNumber": 25,
+  "tipNumber": 26,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -25,7 +25,8 @@
     "aws-005",
     "az-005",
     "lin-006",
-    "win-006"
+    "win-006",
+    "aws-006"
   ],
   "round": 1,
   "history": [
@@ -277,6 +278,16 @@
       "linkedInId": "urn:li:share:7459903778062831616",
       "telegramMsgId": 1380,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-006/"
+    },
+    {
+      "tipNumber": 26,
+      "id": "aws-006",
+      "platform": "aws",
+      "title": "Enable CloudTrail in all regions",
+      "date": "2026-05-13T09:58:59.754Z",
+      "linkedInId": "urn:li:share:7460267340094525440",
+      "telegramMsgId": 1444,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-006/"
     }
   ]
 }
