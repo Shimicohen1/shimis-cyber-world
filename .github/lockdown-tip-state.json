@@ -1,5 +1,5 @@
 {
-  "tipNumber": 26,
+  "tipNumber": 27,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -26,7 +26,8 @@
     "az-005",
     "lin-006",
     "win-006",
-    "aws-006"
+    "aws-006",
+    "az-006"
   ],
   "round": 1,
   "history": [
@@ -288,6 +289,16 @@
       "linkedInId": "urn:li:share:7460267340094525440",
       "telegramMsgId": 1444,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-006/"
+    },
+    {
+      "tipNumber": 27,
+      "id": "az-006",
+      "platform": "azure",
+      "title": "Enable diagnostic logging for key resources",
+      "date": "2026-05-14T09:48:40.858Z",
+      "linkedInId": "urn:li:share:7460627132046700544",
+      "telegramMsgId": 1486,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-006/"
     }
   ]
 }
