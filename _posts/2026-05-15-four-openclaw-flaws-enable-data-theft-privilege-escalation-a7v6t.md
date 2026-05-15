@@ -1,0 +1,82 @@
+---
+title: "OpenClaw Flaws Chained for Data Theft, Persistence"
+date: 2026-05-15 13:35:04 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability, malware, cloud]
+excerpt: "The Hacker News reports on a critical set of four vulnerabilities, collectively dubbed \"Claw Chain\" by Cyera, impacting OpenClaw. These flaws aren't theoretical; they can be chaine"
+summary: "The Hacker News reports on a critical set of four vulnerabilities, collectively dubbed \"Claw Chain\" by Cyera, impacting OpenClaw. These flaws aren't theoretical; they can be chained to achieve significant impact, including data theft, privilege escalation, and establishing persistence within comprom"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-024.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/news/news-024.png"
+source_url: "https://thehackernews.com/2026/05/four-openclaw-flaws-enable-data-theft.html"
+tlp: "TLP:CLEAR"
+event_type: "vulnerability"
+organizations:
+  - name: "Cyera"
+    domain: "cyera.com"
+    role: "researcher"
+malware_families:
+  - "Leverage"
+link_preview:
+  url: "https://thehackernews.com/2026/05/four-openclaw-flaws-enable-data-theft.html"
+  title: "Four OpenClaw Flaws Enable Data Theft, Privilege Escalation, and Persistence"
+  domain: "thehackernews.com"
+  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgz_tK9S8jS_n5CK694-FLGjQP5_Mmpg7z9ZRiBayWsJLsuFRIm-8j1hTlhH90779FvnvhpiFKeGP9CzI5RCPsxQEnOzAIQsPzUsAJhUWtNm9iwf9C1W9DbDmqoQ_jjHhM7huYDV210OB9o1L9NPoJ0IL6R9Xc-V4JQ91Kn-b47_2ravRJ6-qlZOVrqsuAz/s16000/openclaw.png"
+iocs:
+  - id: "Claw-Chain"
+    type: "Information Disclosure"
+    indicator: "OpenClaw"
+  - id: "Claw-Chain"
+    type: "Privilege Escalation"
+    indicator: "OpenClaw"
+  - id: "Claw-Chain"
+    type: "Persistence"
+    indicator: "OpenClaw"
+mitre_attack:
+  - id: "T1190"
+    name: "Exploit Public-Facing Application"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1190/"
+  - id: "T1068"
+    name: "Exploitation for Privilege Escalation"
+    tactic: "Privilege Escalation"
+    url: "https://attack.mitre.org/techniques/T1068/"
+  - id: "T1547.001"
+    name: "Registry Run Keys / Startup Folder"
+    tactic: "Persistence"
+    url: "https://attack.mitre.org/techniques/T1547/001/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "OpenClaw Claw Chain Initial Access via Path Traversal"
+  preview_level: "critical"
+  preview_technique: "T1190"
+  preview_tactic: "Initial Access"
+  preview_yaml_b64: "dGl0bGU6IE9wZW5DbGF3IENsYXcgQ2hhaW4gSW5pdGlhbCBBY2Nlc3MgdmlhIFBhdGggVHJhdmVyc2FsCmlkOiBzY3ctMjAyNi0wNS0xNS1haS0xCnN0YXR1czogZXhwZXJpbWVudGFsCmxldmVsOiBjcml0aWNhbApkZXNjcmlwdGlvbjogfAogIFRoaXMgcnVsZSBkZXRlY3RzIHBvdGVudGlhbCBleHBsb2l0YXRpb24gb2YgT3BlbkNsYXcgdnVsbmVyYWJpbGl0aWVzIGJ5IGxvb2tpbmcgZm9yIHBhdGggdHJhdmVyc2FsIGF0dGVtcHRzICgnLi4vJykgd2l0aGluIHRoZSBxdWVyeSBwYXJhbWV0ZXJzIG9mIHJlcXVlc3RzIHRhcmdldGluZyB0aGUgJy9vcGVuY2xhdy9hcGkvJyBlbmRwb2ludC4gVGhpcyBpcyBhIGNvbW1vbiB0ZWNobmlxdWUgdXNlZCBpbiBjaGFpbmVkIGV4cGxvaXRzIHRvIGdhaW4gaW5pdGlhbCBhY2Nlc3MuCmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpCmRhdGU6IDIwMjYtMDUtMTUKcmVmZXJlbmNlczoKICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTUtZm91ci1vcGVuY2xhdy1mbGF3cy1lbmFibGUtZGF0YS10aGVmdC1wcml2aWxlZ2UtZXNjYWxhdGlvbi1hN3Y2dAp0YWdzOgogIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzCiAgLSBhdHRhY2sudDExOTAKbG9nc291cmNlOgogICAgY2F0ZWdvcnk6IHdlYnNlcnZlcgpkZXRlY3Rpb246CiAgc2VsZWN0aW9uOgogICAgICBjcy11cmktcXVlcnl8Y29udGFpbnM6CiAgICAgICAgICAtICcuLi8nCiAgICAgIGNzLXVyaXxjb250YWluczoKICAgICAgICAgIC0gJy9vcGVuY2xhdy9hcGkvJwogICAgICBjcy1tZXRob2R8ZXhhY3Q6CiAgICAgICAgICAtICdHRVQnCiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uCmZhbHNlcG9zaXRpdmVzOgogIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eQ=="
+  all_rules_b64: "W3sidGl0bGUiOiJPcGVuQ2xhdyBDbGF3IENoYWluIEluaXRpYWwgQWNjZXNzIHZpYSBQYXRoIFRyYXZlcnNhbCIsImxldmVsIjoiY3JpdGljYWwiLCJ0ZWNobmlxdWUiOiJUMTE5MCIsInRhY3RpYyI6IkluaXRpYWwgQWNjZXNzIiwidGllciI6ImZyZWUiLCJ5YW1sIjoidGl0bGU6IE9wZW5DbGF3IENsYXcgQ2hhaW4gSW5pdGlhbCBBY2Nlc3MgdmlhIFBhdGggVHJhdmVyc2FsXG5pZDogc2N3LTIwMjYtMDUtMTUtYWktMVxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBjcml0aWNhbFxuZGVzY3JpcHRpb246IHxcbiAgVGhpcyBydWxlIGRldGVjdHMgcG90ZW50aWFsIGV4cGxvaXRhdGlvbiBvZiBPcGVuQ2xhdyB2dWxuZXJhYmlsaXRpZXMgYnkgbG9va2luZyBmb3IgcGF0aCB0cmF2ZXJzYWwgYXR0ZW1wdHMgKCcuLi8nKSB3aXRoaW4gdGhlIHF1ZXJ5IHBhcmFtZXRlcnMgb2YgcmVxdWVzdHMgdGFyZ2V0aW5nIHRoZSAnL29wZW5jbGF3L2FwaS8nIGVuZHBvaW50LiBUaGlzIGlzIGEgY29tbW9uIHRlY2huaXF1ZSB1c2VkIGluIGNoYWluZWQgZXhwbG9pdHMgdG8gZ2FpbiBpbml0aWFsIGFjY2Vzcy5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTE1XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTUtZm91ci1vcGVuY2xhdy1mbGF3cy1lbmFibGUtZGF0YS10aGVmdC1wcml2aWxlZ2UtZXNjYWxhdGlvbi1hN3Y2dFxudGFnczpcbiAgLSBhdHRhY2suaW5pdGlhbF9hY2Nlc3NcbiAgLSBhdHRhY2sudDExOTBcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogd2Vic2VydmVyXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIGNzLXVyaS1xdWVyeXxjb250YWluczpcbiAgICAgICAgICAtICcuLi8nXG4gICAgICBjcy11cml8Y29udGFpbnM6XG4gICAgICAgICAgLSAnL29wZW5jbGF3L2FwaS8nXG4gICAgICBjcy1tZXRob2R8ZXhhY3Q6XG4gICAgICAgICAgLSAnR0VUJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifSx7InRpdGxlIjoiT3BlbkNsYXcgQ2xhdyBDaGFpbiBEYXRhIEV4ZmlsdHJhdGlvbiB2aWEgU3VzcGljaW91cyBGaWxlIEFjY2VzcyIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMDQ4IiwidGFjdGljIjoiRXhmaWx0cmF0aW9uIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IE9wZW5DbGF3IENsYXcgQ2hhaW4gRGF0YSBFeGZpbHRyYXRpb24gdmlhIFN1c3BpY2lvdXMgRmlsZSBBY2Nlc3NcbmlkOiBzY3ctMjAyNi0wNS0xNS1haS0yXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGhpZ2hcbmRlc2NyaXB0aW9uOiB8XG4gIFRoaXMgcnVsZSBkZXRlY3RzIGF0dGVtcHRzIHRvIGV4ZmlsdHJhdGUgc2Vuc2l0aXZlIHN5c3RlbSBpbmZvcm1hdGlvbiwgc3VjaCBhcyB1c2VyIGNyZWRlbnRpYWxzIG9yIHN5c3RlbSB2ZXJzaW9uIGRldGFpbHMsIHdoaWNoIGNvdWxkIGJlIHBhcnQgb2YgdGhlIE9wZW5DbGF3IENsYXcgQ2hhaW4gZXhwbG9pdC4gQWNjZXNzaW5nIGZpbGVzIGxpa2UgL2V0Yy9wYXNzd2Qgb3IgL2V0Yy9zaGFkb3cgaXMgaGlnaGx5IHN1c3BpY2lvdXMgYW5kIGluZGljYXRpdmUgb2YgZGF0YSB0aGVmdC5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTE1XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTUtZm91ci1vcGVuY2xhdy1mbGF3cy1lbmFibGUtZGF0YS10aGVmdC1wcml2aWxlZ2UtZXNjYWxhdGlvbi1hN3Y2dFxudGFnczpcbiAgLSBhdHRhY2suZXhmaWx0cmF0aW9uXG4gIC0gYXR0YWNrLnQxMDQ4XG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGZpbGVfYWNjZXNzXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIFRhcmdldEZpbGVuYW1lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy9ldGMvcGFzc3dkJ1xuICAgICAgICAgIC0gJy9ldGMvc2hhZG93J1xuICAgICAgICAgIC0gJy9wcm9jL3ZlcnNpb24nXG4gICAgICBhY3Rpb258ZXhhY3Q6XG4gICAgICAgICAgLSAncmVhZCdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6Ik9wZW5DbGF3IENsYXcgQ2hhaW4gUGVyc2lzdGVuY2UgdmlhIFN1c3BpY2lvdXMgUHJvY2VzcyBDcmVhdGlvbiIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxMDU5IiwidGFjdGljIjoiUGVyc2lzdGVuY2UiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogT3BlbkNsYXcgQ2xhdyBDaGFpbiBQZXJzaXN0ZW5jZSB2aWEgU3VzcGljaW91cyBQcm9jZXNzIENyZWF0aW9uXG5pZDogc2N3LTIwMjYtMDUtMTUtYWktM1xuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBoaWdoXG5kZXNjcmlwdGlvbjogfFxuICBUaGlzIHJ1bGUgZGV0ZWN0cyBzdXNwaWNpb3VzIGNvbW1hbmQtbGluZSBhY3Rpdml0eSB0aGF0IGNvdWxkIGluZGljYXRlIHBlcnNpc3RlbmNlIG1lY2hhbmlzbXMgYmVpbmcgZXN0YWJsaXNoZWQgYXMgcGFydCBvZiB0aGUgT3BlbkNsYXcgQ2xhdyBDaGFpbi4gVGhlIHByZXNlbmNlIG9mIHNoZWxsIGNvbW1hbmRzIGNvbWJpbmVkIHdpdGggbmV0d29yayB1dGlsaXRpZXMgbGlrZSBuZXRjYXQsIHdnZXQsIG9yIGN1cmwgc3VnZ2VzdHMgYW4gYXR0YWNrZXIgYXR0ZW1wdGluZyB0byBtYWludGFpbiBhY2Nlc3Mgb3IgZG93bmxvYWQgYWRkaXRpb25hbCBwYXlsb2Fkcy5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTE1XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTUtZm91ci1vcGVuY2xhdy1mbGF3cy1lbmFibGUtZGF0YS10aGVmdC1wcml2aWxlZ2UtZXNjYWxhdGlvbi1hN3Y2dFxudGFnczpcbiAgLSBhdHRhY2sucGVyc2lzdGVuY2VcbiAgLSBhdHRhY2sudDEwNTlcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvblxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb25fYmFzZTpcbiAgICAgIEltYWdlfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2Jhc2gnXG4gICAgICAgICAgLSAnc2gnXG4gIHNlbGVjdGlvbl9pbmRpY2F0b3JzOlxuICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6XG4gICAgICAgICAgLSAnLWMnXG4gICAgICAgICAgLSAnbmMgLWxwJ1xuICAgICAgICAgIC0gJ3dnZXQgaHR0cDovLydcbiAgICAgICAgICAtICdjdXJsIGh0dHA6Ly8nXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvbl9iYXNlIEFORCBzZWxlY3Rpb25faW5kaWNhdG9yc1xuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9XQ=="
+why_it_matters:
+  - "If your organization utilizes OpenClaw, you need to identify all instances immediately. Prioritize patching these \"Claw Chain\" vulnerabilities as soon as fixes are available. In the interim, assume these systems are vulnerable and implement enhanced monitoring for suspicious activity, especially data exfiltration attempts and unauthorized persistence mechanisms."
+bot_cta_title: "OpenClaw Vulnerabilities: Check Your Exposure"
+bot_cta_description: "Use /brief to get an analyst-ready summary of recent critical vulnerabilities and their impact."
+---
+
+The Hacker News reports on a critical set of four vulnerabilities, collectively dubbed "Claw Chain" by Cyera, impacting OpenClaw. These flaws aren't theoretical; they can be chained to achieve significant impact, including data theft, privilege escalation, and establishing persistence within compromised environments.
+
+This isn't just a bug bounty finding; it's a full attack chain. An attacker can leverage these OpenClaw weaknesses to gain an initial foothold, exfiltrate sensitive data, and plant backdoors. The implications are clear: a complete compromise from initial access to data exfiltration and ongoing presence.
+
+For defenders, this means OpenClaw deployments are a high-value target. Attackers are constantly looking for these types of chained exploits because they offer maximum bang for the buck. Don't wait for a patch; assume compromise and audit.
