@@ -1,5 +1,5 @@
 {
-  "tipNumber": 27,
+  "tipNumber": 28,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -27,7 +27,8 @@
     "lin-006",
     "win-006",
     "aws-006",
-    "az-006"
+    "az-006",
+    "lin-007"
   ],
   "round": 1,
   "history": [
@@ -299,6 +300,16 @@
       "linkedInId": "urn:li:share:7460627132046700544",
       "telegramMsgId": 1486,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-az-006/"
+    },
+    {
+      "tipNumber": 28,
+      "id": "lin-007",
+      "platform": "linux",
+      "title": "Disable IP forwarding",
+      "date": "2026-05-15T10:02:12.505Z",
+      "linkedInId": "urn:li:share:7460992924579921920",
+      "telegramMsgId": 1513,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-007/"
     }
   ]
 }
