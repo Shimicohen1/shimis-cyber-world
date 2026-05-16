@@ -1,5 +1,5 @@
 {
-  "tipNumber": 28,
+  "tipNumber": 29,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -28,7 +28,8 @@
     "win-006",
     "aws-006",
     "az-006",
-    "lin-007"
+    "lin-007",
+    "win-007"
   ],
   "round": 1,
   "history": [
@@ -310,6 +311,16 @@
       "linkedInId": "urn:li:share:7460992924579921920",
       "telegramMsgId": 1513,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-lin-007/"
+    },
+    {
+      "tipNumber": 29,
+      "id": "win-007",
+      "platform": "windows",
+      "title": "Configure Windows Event Forwarding (WEF)",
+      "date": "2026-05-16T09:01:44.789Z",
+      "linkedInId": "urn:li:share:7461340096173076480",
+      "telegramMsgId": 1532,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-007/"
     }
   ]
 }
