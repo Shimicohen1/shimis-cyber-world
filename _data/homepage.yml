@@ -22,44 +22,44 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Weblate Vulnerabilities Continue to Pose Significant Risk
-    text: Multiple high-severity vulnerabilities in Weblate versions prior to 5.17 highlight ongoing risks.
-    detail: Recent advisories reveal a pattern of critical flaws in Weblate, including RCE via backups, SSRF, and data exposure. Organizations using Weblate should prioritize immediate patching or implement compensating controls to mitigate these widespread risks.
-    link: https://github.com/weblateio/weblate/releases/tag/5.17
-    link_label: Weblate 5.17 Release Notes
+  - title: Weblate Vulnerabilities Proliferate with High Severity
+    text: Multiple critical vulnerabilities in Weblate versions prior to 5.17 expose sensitive data and allow code execution.
+    detail: Recent advisories highlight a surge in high-severity vulnerabilities affecting Weblate, including SSRF, symlink traversal, and RCE via backup configurations. Organizations using Weblate must prioritize patching to version 5.17 or later to mitigate these risks, which can lead to significant data breaches and system compromise. Review the official NVD entries for detailed remediation steps.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-34393
+    link_label: Weblate Vulnerabilities
     badge: signal
     tags:
-      - vulnerability
       - weblate
+      - vulnerability
       - rce
       - ssrf
-  - title: Cisco Product Vulnerabilities Demand Urgent Attention
-    text: A wave of critical vulnerabilities across Cisco products requires immediate security focus.
-    detail: Recent disclosures highlight critical RCE and impersonation risks in Cisco ISE, Webex, and AsyncOS. Attackers are exploiting these flaws to gain root access, bypass authentication, and execute arbitrary commands. Prompt patching and configuration review are essential.
-    link: https://www.cisa.gov/news-events/cybersecurity-advisories
-    link_label: CISA Cybersecurity Advisories
+  - title: Cisco Product Flaws Grant Broad Access and RCE
+    text: Critical vulnerabilities in Cisco ISE and Webex permit RCE and unauthorized access, even for authenticated users.
+    detail: Several Cisco products, including Identity Services Engine (ISE) and Webex, are affected by critical vulnerabilities. These flaws allow authenticated attackers with varying privilege levels to achieve remote code execution or impersonate users. Administrators should immediately review Cisco security advisories and apply necessary updates to protect their networks.
+    link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-20186
+    link_label: Cisco ISE RCE
     badge: signal
     tags:
-      - vulnerability
       - cisco
       - rce
-      - critical
-  - title: Splunk Exploits Grant Elevated Privileges and RCE
-    text: Low-privileged users can achieve RCE and access sensitive data in Splunk.
-    detail: Multiple Splunk vulnerabilities allow authenticated low-privilege users to gain remote code execution or expose session tokens. Organizations must update Splunk Enterprise and Cloud Platform versions promptly to prevent unauthorized access and system compromise.
+      - privilege-escalation
+      - vulnerability
+  - title: Splunk Vulnerabilities Expose Sensitive Data and Enable RCE
+    text: Splunk Enterprise and Cloud Platform have multiple high-severity flaws impacting access control and code execution.
+    detail: Recent advisories detail several high-severity vulnerabilities in Splunk, including improper access control and remote code execution. These issues can allow low-privileged users to gain elevated access or execute arbitrary code. Ensure all Splunk instances are updated to the latest patched versions to prevent unauthorized access and system compromise.
     link: https://www.splunk.com/en_us/product-security.html
-    link_label: Splunk Product Security
+    link_label: Splunk Security Advisories
     badge: signal
     tags:
-      - vulnerability
       - splunk
+      - vulnerability
       - rce
-      - privilege-escalation
-  - title: AI Workflow Tools Used for Malware Delivery
-    text: AI workflow tools like n8n are being weaponized for phishing and malware.
-    detail: Threat actors are leveraging platforms like n8n to facilitate sophisticated phishing campaigns, delivering malicious payloads. This trend highlights the emerging risks associated with AI-powered automation tools in the hands of attackers. Enhance endpoint detection and user awareness.
-    link: https://owasp.org/www-project-top-10-ai-security-risks/
-    link_label: OWASP Top 10 AI Security Risks
+      - access-control
+  - title: AI Workflows Abused for Phishing and Malware Delivery
+    text: Threat actors weaponize AI workflow tools like n8n for sophisticated phishing and malware distribution.
+    detail: Reports indicate that popular AI workflow automation platforms are being leveraged by threat actors to conduct advanced phishing campaigns. These campaigns aim to deliver malicious payloads, often bypassing traditional security measures. Organizations should enhance endpoint detection and network monitoring, and educate users on recognizing sophisticated phishing tactics.
+    link: https://www.cisas.gov/news-events/news/cisas-advises-defend-against-phishing-attacks
+    link_label: Phishing Defense
     badge: signal
     tags:
       - threat-intel
