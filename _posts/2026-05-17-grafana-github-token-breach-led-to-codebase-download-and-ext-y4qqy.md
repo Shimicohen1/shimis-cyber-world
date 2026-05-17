@@ -1,0 +1,83 @@
+---
+title: "Grafana GitHub Token Breach Led to Codebase Download"
+date: 2026-05-17 07:13:33 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability, data-breach, tools]
+excerpt: "Grafana recently disclosed that an unauthorized party gained access to its GitHub environment by obtaining a token. This access allowed the attacker to download the company's codeb"
+summary: "Grafana recently disclosed that an unauthorized party gained access to its GitHub environment by obtaining a token. This access allowed the attacker to download the company's codebase. The Hacker News reports that Grafana's internal investigation found no evidence of customer data or personal inform"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 70
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-008.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/tools/tools-008.png"
+source_url: "https://thehackernews.com/2026/05/grafana-github-token-breach-led-to.html"
+tlp: "TLP:CLEAR"
+event_type: "supply-chain"
+organizations:
+  - name: "Grafana"
+    domain: "grafana.com"
+    role: "victim"
+  - name: "GitHub"
+    domain: "github.com"
+    role: "vendor"
+link_preview:
+  url: "https://thehackernews.com/2026/05/grafana-github-token-breach-led-to.html"
+  title: "Grafana GitHub Token Breach Led to Codebase Download and Extortion Attempt"
+  domain: "thehackernews.com"
+  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNcCJY0s2GwOwFeSuqVz941pWrGK3theum-FBFyYO97JnK22OamMheCtr9yEEFfHMvurI7UBgl72blFK6Hm9u358g1V9HbZOk5vocuYMvgjfYLmf2XPNsSG1IiFxlbLvnRaotutjUB5I7sVLVTf1HTozz9FoeVxA3DJOn9wAOolL-HwmATDLlAD-Mgs-tO/s1600/grafana.jpg"
+iocs:
+  - id: "Grafana-GitHub-Breach-2026-05"
+    type: "Information Disclosure"
+    indicator: "Grafana GitHub environment"
+  - id: "Grafana-GitHub-Breach-2026-05"
+    type: "Information Disclosure"
+    indicator: "Grafana codebase download"
+  - id: "Grafana-GitHub-Breach-2026-05"
+    type: "Auth Bypass"
+    indicator: "GitHub token compromise"
+mitre_attack:
+  - id: "T1110"
+    name: "Brute Force"
+    tactic: "Credential Access"
+    url: "https://attack.mitre.org/techniques/T1110/"
+  - id: "T1078.004"
+    name: "Cloud Accounts"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1078/004/"
+  - id: "T1041"
+    name: "Exfiltration Over C2 Channel"
+    tactic: "Exfiltration"
+    url: "https://attack.mitre.org/techniques/T1041/"
+sigma_rules:
+  count: 3
+  free_count: 1
+  paid_count: 2
+  preview_title: "Grafana GitHub Token Access to Codebase Download"
+  preview_level: "critical"
+  preview_technique: "T1119"
+  preview_tactic: "Defense Evasion"
+  preview_yaml_b64: "dGl0bGU6IEdyYWZhbmEgR2l0SHViIFRva2VuIEFjY2VzcyB0byBDb2RlYmFzZSBEb3dubG9hZAppZDogc2N3LTIwMjYtMDUtMTctYWktMQpzdGF0dXM6IGV4cGVyaW1lbnRhbApsZXZlbDogY3JpdGljYWwKZGVzY3JpcHRpb246IHwKICBEZXRlY3RzIHRoZSBkb3dubG9hZCBvZiB0aGUgR3JhZmFuYSBjb2RlYmFzZSBmcm9tIGEgR2l0SHViIGVudmlyb25tZW50LCB3aGljaCBpcyB0aGUgcHJpbWFyeSBhY3Rpdml0eSBkZXNjcmliZWQgaW4gdGhlIEdyYWZhbmEgR2l0SHViIHRva2VuIGJyZWFjaCBpbmNpZGVudC4gVGhpcyBydWxlIHNwZWNpZmljYWxseSB0YXJnZXRzIHRoZSBkb3dubG9hZCBvZiB0aGUgJ2dyYWZhbmEvZ3JhZmFuYScgcmVwb3NpdG9yeSwgaW5kaWNhdGluZyBhIHBvdGVudGlhbCBjb21wcm9taXNlIHJlbGF0ZWQgdG8gdGhpcyBzcGVjaWZpYyBldmVudC4KYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZCkKZGF0ZTogMjAyNi0wNS0xNwpyZWZlcmVuY2VzOgogIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0xNy1ncmFmYW5hLWdpdGh1Yi10b2tlbi1icmVhY2gtbGVkLXRvLWNvZGViYXNlLWRvd25sb2FkLWFuZC1leHQteTRxcXkKdGFnczoKICAtIGF0dGFjay5kZWZlbnNlX2V2YXNpb24KICAtIGF0dGFjay50MTExOQpsb2dzb3VyY2U6CiAgICBjYXRlZ29yeTogZmlsZV9hY2Nlc3MKZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgVGFyZ2V0RmlsZW5hbWV8Y29udGFpbnM6CiAgICAgICAgICAtICcvZ3JhZmFuYS9ncmFmYW5hLycKICAgICAgRXZlbnRUeXBlOgogICAgICAgICAgLSAnZG93bmxvYWQnCiAgY29uZGl0aW9uOiBzZWxlY3Rpb24KZmFsc2Vwb3NpdGl2ZXM6CiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5"
+  all_rules_b64: "W3sidGl0bGUiOiJHcmFmYW5hIEdpdEh1YiBUb2tlbiBBY2Nlc3MgdG8gQ29kZWJhc2UgRG93bmxvYWQiLCJsZXZlbCI6ImNyaXRpY2FsIiwidGVjaG5pcXVlIjoiVDExMTkiLCJ0YWN0aWMiOiJEZWZlbnNlIEV2YXNpb24iLCJ0aWVyIjoiZnJlZSIsInlhbWwiOiJ0aXRsZTogR3JhZmFuYSBHaXRIdWIgVG9rZW4gQWNjZXNzIHRvIENvZGViYXNlIERvd25sb2FkXG5pZDogc2N3LTIwMjYtMDUtMTctYWktMVxuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBjcml0aWNhbFxuZGVzY3JpcHRpb246IHxcbiAgRGV0ZWN0cyB0aGUgZG93bmxvYWQgb2YgdGhlIEdyYWZhbmEgY29kZWJhc2UgZnJvbSBhIEdpdEh1YiBlbnZpcm9ubWVudCwgd2hpY2ggaXMgdGhlIHByaW1hcnkgYWN0aXZpdHkgZGVzY3JpYmVkIGluIHRoZSBHcmFmYW5hIEdpdEh1YiB0b2tlbiBicmVhY2ggaW5jaWRlbnQuIFRoaXMgcnVsZSBzcGVjaWZpY2FsbHkgdGFyZ2V0cyB0aGUgZG93bmxvYWQgb2YgdGhlICdncmFmYW5hL2dyYWZhbmEnIHJlcG9zaXRvcnksIGluZGljYXRpbmcgYSBwb3RlbnRpYWwgY29tcHJvbWlzZSByZWxhdGVkIHRvIHRoaXMgc3BlY2lmaWMgZXZlbnQuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0xN1xucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTE3LWdyYWZhbmEtZ2l0aHViLXRva2VuLWJyZWFjaC1sZWQtdG8tY29kZWJhc2UtZG93bmxvYWQtYW5kLWV4dC15NHFxeVxudGFnczpcbiAgLSBhdHRhY2suZGVmZW5zZV9ldmFzaW9uXG4gIC0gYXR0YWNrLnQxMTE5XG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGZpbGVfYWNjZXNzXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIFRhcmdldEZpbGVuYW1lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJy9ncmFmYW5hL2dyYWZhbmEvJ1xuICAgICAgRXZlbnRUeXBlOlxuICAgICAgICAgIC0gJ2Rvd25sb2FkJ1xuICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJHcmFmYW5hIEdpdEh1YiBUb2tlbiBVbmF1dGhvcml6ZWQgQWNjZXNzIEF0dGVtcHQiLCJsZXZlbCI6ImhpZ2giLCJ0ZWNobmlxdWUiOiJUMTEzMyIsInRhY3RpYyI6IkluaXRpYWwgQWNjZXNzIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IEdyYWZhbmEgR2l0SHViIFRva2VuIFVuYXV0aG9yaXplZCBBY2Nlc3MgQXR0ZW1wdFxuaWQ6IHNjdy0yMDI2LTA1LTE3LWFpLTJcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgTW9uaXRvcnMgZm9yIGF1dGhlbnRpY2F0aW9uIGV2ZW50cyB1c2luZyB0b2tlbnMgdGhhdCBhcHBlYXIgdG8gYmUgYXNzb2NpYXRlZCB3aXRoIEdpdEh1Yiwgc3BlY2lmaWNhbGx5IGxvb2tpbmcgZm9yIHN1Y2Nlc3NmdWwgbG9naW5zLiBUaGlzIGNvdWxkIGluZGljYXRlIGFuIGF0dGFja2VyIGF0dGVtcHRpbmcgdG8gbGV2ZXJhZ2UgYSBjb21wcm9taXNlZCBHaXRIdWIgdG9rZW4gdG8gZ2FpbiBhY2Nlc3MgdG8gR3JhZmFuYSdzIGVudmlyb25tZW50LCBhcyBkZXNjcmliZWQgaW4gdGhlIGluY2lkZW50LlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMTdcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0xNy1ncmFmYW5hLWdpdGh1Yi10b2tlbi1icmVhY2gtbGVkLXRvLWNvZGViYXNlLWRvd25sb2FkLWFuZC1leHQteTRxcXlcbnRhZ3M6XG4gIC0gYXR0YWNrLmluaXRpYWxfYWNjZXNzXG4gIC0gYXR0YWNrLnQxMTMzXG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IGF1dGhlbnRpY2F0aW9uXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIFVzZXJ8Y29udGFpbnM6XG4gICAgICAgICAgLSAnZ2l0aHViX3Rva2VuXydcbiAgICAgIGFjdGlvbjpcbiAgICAgICAgICAtICdsb2dpbidcbiAgICAgIHNjLXN0YXR1czpcbiAgICAgICAgICAtICcyMDAnXG4gIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6IkdyYWZhbmEgR2l0SHViIFRva2VuIENvZGViYXNlIERvd25sb2FkIHZpYSBHaXQgQ29tbWFuZCIsImxldmVsIjoiY3JpdGljYWwiLCJ0ZWNobmlxdWUiOiJUMTA3MS4wMDQiLCJ0YWN0aWMiOiJDb21tYW5kIGFuZCBDb250cm9sIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IEdyYWZhbmEgR2l0SHViIFRva2VuIENvZGViYXNlIERvd25sb2FkIHZpYSBHaXQgQ29tbWFuZFxuaWQ6IHNjdy0yMDI2LTA1LTE3LWFpLTNcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogY3JpdGljYWxcbmRlc2NyaXB0aW9uOiB8XG4gIERldGVjdHMgdGhlIHVzZSBvZiB0aGUgJ2dpdCBjbG9uZScgY29tbWFuZCB0YXJnZXRpbmcgdGhlIEdyYWZhbmEgcmVwb3NpdG9yeSBvbiBHaXRIdWIuIFRoaXMgaXMgYSBzcGVjaWZpYyBpbmRpY2F0b3Igb2YgdGhlIGFjdGl2aXR5IGRlc2NyaWJlZCBpbiB0aGUgR3JhZmFuYSBHaXRIdWIgdG9rZW4gYnJlYWNoLCB3aGVyZSBhbiBhdHRhY2tlciB1c2VkIGEgdG9rZW4gdG8gZG93bmxvYWQgdGhlIGNvZGViYXNlLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMTdcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0xNy1ncmFmYW5hLWdpdGh1Yi10b2tlbi1icmVhY2gtbGVkLXRvLWNvZGViYXNlLWRvd25sb2FkLWFuZC1leHQteTRxcXlcbnRhZ3M6XG4gIC0gYXR0YWNrLmNvbW1hbmRfYW5kX2NvbnRyb2xcbiAgLSBhdHRhY2sudDEwNzEuMDA0XG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb25cbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uX2Jhc2U6XG4gICAgICBJbWFnZXxjb250YWluczpcbiAgICAgICAgICAtICdnaXQuZXhlJ1xuICBzZWxlY3Rpb25faW5kaWNhdG9yczpcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2Nsb25lJ1xuICAgICAgICAgIC0gJ2dpdGh1Yi5jb20vZ3JhZmFuYS9ncmFmYW5hJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25fYmFzZSBBTkQgc2VsZWN0aW9uX2luZGljYXRvcnNcbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifV0="
+why_it_matters:
+  - "If your organization uses Grafana, understand that a codebase compromise introduces potential future risks. While no customer data was reportedly breached, attackers now have the blueprint. For your internal development, immediately audit all GitHub tokens and API keys. Implement short-lived tokens, mandatory MFA, and regularly rotate credentials, especially for automated processes. Ensure your CI/CD pipelines are hardened against supply chain attacks."
+bot_cta_title: "Check Latest Breaches & Threats"
+bot_cta_description: "Use /breach to see the latest breaches and ransomware events."
+---
+
+Grafana recently disclosed that an unauthorized party gained access to its GitHub environment by obtaining a token. This access allowed the attacker to download the company's codebase. The Hacker News reports that Grafana's internal investigation found no evidence of customer data or personal information compromise, nor any impact to customer systems or operations.
+
+While Grafana states no customer data was accessed, the download of their codebase is a serious concern. Attackers with access to source code can analyze it for hidden vulnerabilities, backdoors, or intellectual property that could be exploited in future targeted attacks against Grafana or its users. This isn't just about immediate data loss; it's about long-term risk exposure and potential for sophisticated follow-on attacks.
+
+This incident underscores the critical importance of robust access controls and continuous monitoring for development environments. GitHub tokens, like any privileged credential, are high-value targets. Organizations must treat them with the same rigor as production system access, implementing least privilege, regular rotation, and strong anomaly detection.
