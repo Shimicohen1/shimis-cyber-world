@@ -22,50 +22,50 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Weblate Vulnerabilities Proliferate with High Severity
-    text: Multiple critical vulnerabilities in Weblate versions prior to 5.17 expose sensitive data and allow code execution.
-    detail: Recent advisories highlight a surge in high-severity vulnerabilities affecting Weblate, including SSRF, symlink traversal, and RCE via backup configurations. Organizations using Weblate must prioritize patching to version 5.17 or later to mitigate these risks, which can lead to significant data breaches and system compromise. Review the official NVD entries for detailed remediation steps.
-    link: https://nvd.nist.gov/vuln/detail/CVE-2026-34393
-    link_label: Weblate Vulnerabilities
+  - title: Weblate Vulnerabilities Expose Broad Attack Surface
+    text: Multiple CVEs highlight significant risks in Weblate, including RCE, SSRF, and data exposure.
+    detail: Weblate versions prior to 5.17 are affected by numerous vulnerabilities, including remote code execution via project backups (CVE-2026-33435), server-side request forgery (CVE-2026-34244), and symlink traversal (CVE-2026-34242). Organizations using Weblate should prioritize immediate patching to version 5.17 or later to mitigate these critical risks.
+    link: https://nvd.nist.gov/vuln/detail/CVE-2026-33435
+    link_label: Weblate RCE Advisory
     badge: signal
     tags:
       - weblate
-      - vulnerability
       - rce
       - ssrf
-  - title: Cisco Product Flaws Grant Broad Access and RCE
-    text: Critical vulnerabilities in Cisco ISE and Webex permit RCE and unauthorized access, even for authenticated users.
-    detail: Several Cisco products, including Identity Services Engine (ISE) and Webex, are affected by critical vulnerabilities. These flaws allow authenticated attackers with varying privilege levels to achieve remote code execution or impersonate users. Administrators should immediately review Cisco security advisories and apply necessary updates to protect their networks.
-    link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-20186
-    link_label: Cisco ISE RCE
+      - vulnerability-management
+  - title: Cisco Ecosystem Faces Multiple Critical Vulnerabilities
+    text: Cisco ISE, Webex, and Unity Connection are impacted by RCE, SSO bypass, and file access flaws.
+    detail: Recent advisories reveal critical vulnerabilities across Cisco's product lines. Cisco ISE (CVE-2026-20186, CVE-2026-20180, CVE-2026-20147) faces RCE for authenticated users, while Webex (CVE-2026-20184) has an SSO impersonation flaw. Ensure all affected Cisco products are updated per vendor guidance.
+    link: https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-ise-rce-J73f9H8z
+    link_label: Cisco ISE RCE Advisory
     badge: signal
     tags:
       - cisco
       - rce
-      - privilege-escalation
-      - vulnerability
-  - title: Splunk Vulnerabilities Expose Sensitive Data and Enable RCE
-    text: Splunk Enterprise and Cloud Platform have multiple high-severity flaws impacting access control and code execution.
-    detail: Recent advisories detail several high-severity vulnerabilities in Splunk, including improper access control and remote code execution. These issues can allow low-privileged users to gain elevated access or execute arbitrary code. Ensure all Splunk instances are updated to the latest patched versions to prevent unauthorized access and system compromise.
-    link: https://www.splunk.com/en_us/product-security.html
-    link_label: Splunk Security Advisories
-    badge: signal
-    tags:
-      - splunk
-      - vulnerability
-      - rce
-      - access-control
-  - title: AI Workflows Abused for Phishing and Malware Delivery
-    text: Threat actors weaponize AI workflow tools like n8n for sophisticated phishing and malware distribution.
-    detail: Reports indicate that popular AI workflow automation platforms are being leveraged by threat actors to conduct advanced phishing campaigns. These campaigns aim to deliver malicious payloads, often bypassing traditional security measures. Organizations should enhance endpoint detection and network monitoring, and educate users on recognizing sophisticated phishing tactics.
-    link: https://www.cisas.gov/news-events/news/cisas-advises-defend-against-phishing-attacks
-    link_label: Phishing Defense
+      - sso
+      - critical-vulnerabilities
+  - title: AI Workflow Tools Abused for Phishing and Malware
+    text: Platforms like n8n are being weaponized for sophisticated phishing campaigns delivering malware.
+    detail: Threat actors are leveraging AI workflow automation tools, such as n8n, to craft advanced phishing campaigns. These campaigns are designed to deliver malicious payloads, indicating a growing trend in using legitimate tools for nefarious purposes. Organizations should enhance endpoint detection and user training to counter these evolving threats.
+    link: https://www.owasp.org/www-community/attacks/Phishing
+    link_label: OWASP Phishing Information
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - malware
+      - malware-delivery
       - ai-security
+  - title: Privilege Escalation and Credential Risks Persist
+    text: Flaws in Barracuda RMM, Git for Windows, and Splunk enable privilege escalation and hash leaks.
+    detail: New vulnerabilities highlight persistent risks in privilege escalation and credential exposure. Barracuda RMM (CVE-2026-22676) allows SYSTEM privileges, while Git for Windows (CVE-2026-32631) can leak NTLM hashes. Splunk also faces RCE and improper access control issues. Implement vendor patches and review access controls rigorously.
+    link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-22676
+    link_label: Barracuda RMM Privilege Escalation
+    badge: signal
+    tags:
+      - privilege-escalation
+      - credential-theft
+      - splunk
+      - git
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
