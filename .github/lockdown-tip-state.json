@@ -1,5 +1,5 @@
 {
-  "tipNumber": 29,
+  "tipNumber": 30,
   "usedIds": [
     "cps-001",
     "cps-002",
@@ -29,7 +29,8 @@
     "aws-006",
     "az-006",
     "lin-007",
-    "win-007"
+    "win-007",
+    "aws-007"
   ],
   "round": 1,
   "history": [
@@ -321,6 +322,16 @@
       "linkedInId": "urn:li:share:7461340096173076480",
       "telegramMsgId": 1532,
       "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-win-007/"
+    },
+    {
+      "tipNumber": 30,
+      "id": "aws-007",
+      "platform": "aws",
+      "title": "Enable GuardDuty",
+      "date": "2026-05-18T11:13:41.670Z",
+      "linkedInId": "urn:li:share:7462098077449904128",
+      "telegramMsgId": 1556,
+      "siteUrl": "https://shimiscyberworld.com/lockdown-lab/lockdown-aws-007/"
     }
   ]
 }
