@@ -1,0 +1,89 @@
+---
+title: "Malicious npm Packages Deliver Infostealers and Phantom Bot DDoS Malware"
+date: 2026-05-18 08:57:26 +0000
+source: RSS
+source_name: "The Hacker News"
+channel: "The Hacker News"
+tags: [threat-intel, vulnerability, malware]
+excerpt: "The Hacker News reports the discovery of four new npm packages embedding information-stealing malware. One of these, `chalk-tempalte`, is a direct clone of the open-source Shai-Hul"
+summary: "The Hacker News reports the discovery of four new npm packages embedding information-stealing malware. One of these, `chalk-tempalte`, is a direct clone of the open-source Shai-Hulud worm developed by TeamPCP. The other identified malicious packages are `@deadcode09284814/axios-util`, `axois-utils`,"
+layout: post
+section: vulnerabilities
+score: MEDIUM
+curated: false
+featured: false
+priority: 65
+hidden: false
+cover_image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/vulnerability/vulnerability-043.png"
+author: vuln-desk
+ai_rewritten: true
+ai_attribution: "Shimi's Cyber World Editorial"
+ai_quality_score: 100
+ai_quality_flags: [clean]
+image_pool_used: true
+image: "https://raw.githubusercontent.com/Shimicohen1/scw-post-images/main/pool/vulnerability/vulnerability-043.png"
+source_url: "https://thehackernews.com/2026/05/four-malicious-npm-packages-deliver.html"
+tlp: "TLP:CLEAR"
+event_type: "supply-chain"
+organizations:
+  - name: "TeamPCP"
+    role: "other"
+threat_actors:
+  - "TeamPCP"
+malware_families:
+  - "Shai-Hulud"
+link_preview:
+  url: "https://thehackernews.com/2026/05/four-malicious-npm-packages-deliver.html"
+  title: "Four Malicious npm Packages Deliver Infostealers and Phantom Bot DDoS Malware"
+  domain: "thehackernews.com"
+  image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhbN7WbW1cUkMzMJl0HPvRrQQUc5MQEE3Pvrc735aG7RGwpguum4POxa4yeQjyYIyiAYBDj_Zl6Ud8esex0AnQSG2J6TVWat57BLALA4WTi3gr5mfrLC2AHloSuvzx6fg9bTxZUvO-aA5VwHjyqbYecAWm2DnM9SRyt0M1GaqYzlBBKdgUR8BXV3xIDVnVN/s1600/npm-hacking.jpg"
+iocs:
+  - id: "npm-malware-2026-05"
+    type: "Information Disclosure"
+    indicator: "npm package: chalk-tempalte"
+  - id: "npm-malware-2026-05"
+    type: "Information Disclosure"
+    indicator: "npm package: @deadcode09284814/axios-util"
+  - id: "npm-malware-2026-05"
+    type: "Information Disclosure"
+    indicator: "npm package: axois-utils"
+  - id: "npm-malware-2026-05"
+    type: "Information Disclosure"
+    indicator: "npm package: color-style-utils"
+  - id: "npm-malware-2026-05"
+    type: "DoS"
+    indicator: "Phantom Bot DDoS Malware"
+mitre_attack:
+  - id: "T1195.002"
+    name: "Compromise Software Supply Chain"
+    tactic: "Initial Access"
+    url: "https://attack.mitre.org/techniques/T1195/002/"
+  - id: "T1071.004"
+    name: "Web Protocols"
+    tactic: "Command and Control"
+    url: "https://attack.mitre.org/techniques/T1071/004/"
+  - id: "T1555"
+    name: "Credentials from Password Stores"
+    tactic: "Credential Access"
+    url: "https://attack.mitre.org/techniques/T1555/"
+sigma_rules:
+  count: 4
+  free_count: 1
+  paid_count: 3
+  preview_title: "Malicious npm package installation - chalk-tempalte"
+  preview_level: "critical"
+  preview_technique: "T1505"
+  preview_tactic: "Persistence"
+  preview_yaml_b64: "dGl0bGU6IE1hbGljaW91cyBucG0gcGFja2FnZSBpbnN0YWxsYXRpb24gLSBjaGFsay10ZW1wYWx0ZQppZDogc2N3LTIwMjYtMDUtMTgtYWktMQpzdGF0dXM6IGV4cGVyaW1lbnRhbApsZXZlbDogY3JpdGljYWwKZGVzY3JpcHRpb246IHwKICBEZXRlY3RzIHRoZSBpbnN0YWxsYXRpb24gb2YgdGhlIG1hbGljaW91cyBucG0gcGFja2FnZSAnY2hhbGstdGVtcGFsdGUnLCB3aGljaCBpcyBhIGNsb25lIG9mIHRoZSBTaGFpLUh1bHVkIHdvcm0gYW5kIGRlbGl2ZXJzIGluZm9zdGVhbGVycyBhbmQgUGhhbnRvbSBCb3QgRERvUyBtYWx3YXJlLiBUaGlzIHJ1bGUgc3BlY2lmaWNhbGx5IHRhcmdldHMgdGhlIGluc3RhbGxhdGlvbiBjb21tYW5kIGZvciB0aGlzIGtub3duIG1hbGljaW91cyBwYWNrYWdlLgphdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKQpkYXRlOiAyMDI2LTA1LTE4CnJlZmVyZW5jZXM6CiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTE4LWZvdXItbWFsaWNpb3VzLW5wbS1wYWNrYWdlcy1kZWxpdmVyLWluZm9zdGVhbGVycy1hbmQtcGhhbnRvbS1oeGJ0eAp0YWdzOgogIC0gYXR0YWNrLnBlcnNpc3RlbmNlCiAgLSBhdHRhY2sudDE1MDUKbG9nc291cmNlOgogICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb24KZGV0ZWN0aW9uOgogIHNlbGVjdGlvbjoKICAgICAgSW1hZ2U6ICducG0uZXhlJwogICAgICBDb21tYW5kTGluZXxjb250YWluczoKICAgICAgICAgIC0gJ2luc3RhbGwgY2hhbGstdGVtcGFsdGUnCiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uCmZhbHNlcG9zaXRpdmVzOgogIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eQ=="
+  all_rules_b64: "W3sidGl0bGUiOiJNYWxpY2lvdXMgbnBtIHBhY2thZ2UgaW5zdGFsbGF0aW9uIC0gY2hhbGstdGVtcGFsdGUiLCJsZXZlbCI6ImNyaXRpY2FsIiwidGVjaG5pcXVlIjoiVDE1MDUiLCJ0YWN0aWMiOiJQZXJzaXN0ZW5jZSIsInRpZXIiOiJmcmVlIiwieWFtbCI6InRpdGxlOiBNYWxpY2lvdXMgbnBtIHBhY2thZ2UgaW5zdGFsbGF0aW9uIC0gY2hhbGstdGVtcGFsdGVcbmlkOiBzY3ctMjAyNi0wNS0xOC1haS0xXG5zdGF0dXM6IGV4cGVyaW1lbnRhbFxubGV2ZWw6IGNyaXRpY2FsXG5kZXNjcmlwdGlvbjogfFxuICBEZXRlY3RzIHRoZSBpbnN0YWxsYXRpb24gb2YgdGhlIG1hbGljaW91cyBucG0gcGFja2FnZSAnY2hhbGstdGVtcGFsdGUnLCB3aGljaCBpcyBhIGNsb25lIG9mIHRoZSBTaGFpLUh1bHVkIHdvcm0gYW5kIGRlbGl2ZXJzIGluZm9zdGVhbGVycyBhbmQgUGhhbnRvbSBCb3QgRERvUyBtYWx3YXJlLiBUaGlzIHJ1bGUgc3BlY2lmaWNhbGx5IHRhcmdldHMgdGhlIGluc3RhbGxhdGlvbiBjb21tYW5kIGZvciB0aGlzIGtub3duIG1hbGljaW91cyBwYWNrYWdlLlxuYXV0aG9yOiBTQ1cgRmVlZCBFbmdpbmUgKEFJLWdlbmVyYXRlZClcbmRhdGU6IDIwMjYtMDUtMThcbnJlZmVyZW5jZXM6XG4gIC0gaHR0cHM6Ly9zaGltaXNjeWJlcndvcmxkLmNvbS9fcG9zdHMvMjAyNi0wNS0xOC1mb3VyLW1hbGljaW91cy1ucG0tcGFja2FnZXMtZGVsaXZlci1pbmZvc3RlYWxlcnMtYW5kLXBoYW50b20taHhidHhcbnRhZ3M6XG4gIC0gYXR0YWNrLnBlcnNpc3RlbmNlXG4gIC0gYXR0YWNrLnQxNTA1XG5sb2dzb3VyY2U6XG4gICAgY2F0ZWdvcnk6IHByb2Nlc3NfY3JlYXRpb25cbmRldGVjdGlvbjpcbiAgc2VsZWN0aW9uOlxuICAgICAgSW1hZ2U6ICducG0uZXhlJ1xuICAgICAgQ29tbWFuZExpbmV8Y29udGFpbnM6XG4gICAgICAgICAgLSAnaW5zdGFsbCBjaGFsay10ZW1wYWx0ZSdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6Ik1hbGljaW91cyBucG0gcGFja2FnZSBpbnN0YWxsYXRpb24gLSBAZGVhZGNvZGUwOTI4NDgxNC9heGlvcy11dGlsIiwibGV2ZWwiOiJoaWdoIiwidGVjaG5pcXVlIjoiVDE1MDUiLCJ0YWN0aWMiOiJQZXJzaXN0ZW5jZSIsInRpZXIiOiJwYWlkIiwieWFtbCI6InRpdGxlOiBNYWxpY2lvdXMgbnBtIHBhY2thZ2UgaW5zdGFsbGF0aW9uIC0gQGRlYWRjb2RlMDkyODQ4MTQvYXhpb3MtdXRpbFxuaWQ6IHNjdy0yMDI2LTA1LTE4LWFpLTJcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgRGV0ZWN0cyB0aGUgaW5zdGFsbGF0aW9uIG9mIHRoZSBtYWxpY2lvdXMgbnBtIHBhY2thZ2UgJ0BkZWFkY29kZTA5Mjg0ODE0L2F4aW9zLXV0aWwnLCB3aGljaCBkZWxpdmVycyBpbmZvc3RlYWxlcnMgYW5kIFBoYW50b20gQm90IEREb1MgbWFsd2FyZS4gVGhpcyBydWxlIHNwZWNpZmljYWxseSB0YXJnZXRzIHRoZSBpbnN0YWxsYXRpb24gY29tbWFuZCBmb3IgdGhpcyBrbm93biBtYWxpY2lvdXMgcGFja2FnZS5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTE4XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTgtZm91ci1tYWxpY2lvdXMtbnBtLXBhY2thZ2VzLWRlbGl2ZXItaW5mb3N0ZWFsZXJzLWFuZC1waGFudG9tLWh4YnR4XG50YWdzOlxuICAtIGF0dGFjay5wZXJzaXN0ZW5jZVxuICAtIGF0dGFjay50MTUwNVxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBwcm9jZXNzX2NyZWF0aW9uXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIEltYWdlOiAnbnBtLmV4ZSdcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2luc3RhbGwgQGRlYWRjb2RlMDkyODQ4MTQvYXhpb3MtdXRpbCdcbiAgICAgIGNvbmRpdGlvbjogc2VsZWN0aW9uXG5mYWxzZXBvc2l0aXZlczpcbiAgLSBMZWdpdGltYXRlIGFkbWluaXN0cmF0aXZlIGFjdGl2aXR5In0seyJ0aXRsZSI6Ik1hbGljaW91cyBucG0gcGFja2FnZSBpbnN0YWxsYXRpb24gLSBheG9pcy11dGlscyIsImxldmVsIjoiaGlnaCIsInRlY2huaXF1ZSI6IlQxNTA1IiwidGFjdGljIjoiUGVyc2lzdGVuY2UiLCJ0aWVyIjoicGFpZCIsInlhbWwiOiJ0aXRsZTogTWFsaWNpb3VzIG5wbSBwYWNrYWdlIGluc3RhbGxhdGlvbiAtIGF4b2lzLXV0aWxzXG5pZDogc2N3LTIwMjYtMDUtMTgtYWktM1xuc3RhdHVzOiBleHBlcmltZW50YWxcbmxldmVsOiBoaWdoXG5kZXNjcmlwdGlvbjogfFxuICBEZXRlY3RzIHRoZSBpbnN0YWxsYXRpb24gb2YgdGhlIG1hbGljaW91cyBucG0gcGFja2FnZSAnYXhvaXMtdXRpbHMnLCB3aGljaCBkZWxpdmVycyBpbmZvc3RlYWxlcnMgYW5kIFBoYW50b20gQm90IEREb1MgbWFsd2FyZS4gVGhpcyBydWxlIHNwZWNpZmljYWxseSB0YXJnZXRzIHRoZSBpbnN0YWxsYXRpb24gY29tbWFuZCBmb3IgdGhpcyBrbm93biBtYWxpY2lvdXMgcGFja2FnZS5cbmF1dGhvcjogU0NXIEZlZWQgRW5naW5lIChBSS1nZW5lcmF0ZWQpXG5kYXRlOiAyMDI2LTA1LTE4XG5yZWZlcmVuY2VzOlxuICAtIGh0dHBzOi8vc2hpbWlzY3liZXJ3b3JsZC5jb20vX3Bvc3RzLzIwMjYtMDUtMTgtZm91ci1tYWxpY2lvdXMtbnBtLXBhY2thZ2VzLWRlbGl2ZXItaW5mb3N0ZWFsZXJzLWFuZC1waGFudG9tLWh4YnR4XG50YWdzOlxuICAtIGF0dGFjay5wZXJzaXN0ZW5jZVxuICAtIGF0dGFjay50MTUwNVxubG9nc291cmNlOlxuICAgIGNhdGVnb3J5OiBwcm9jZXNzX2NyZWF0aW9uXG5kZXRlY3Rpb246XG4gIHNlbGVjdGlvbjpcbiAgICAgIEltYWdlOiAnbnBtLmV4ZSdcbiAgICAgIENvbW1hbmRMaW5lfGNvbnRhaW5zOlxuICAgICAgICAgIC0gJ2luc3RhbGwgYXhvaXMtdXRpbHMnXG4gICAgICBjb25kaXRpb246IHNlbGVjdGlvblxuZmFsc2Vwb3NpdGl2ZXM6XG4gIC0gTGVnaXRpbWF0ZSBhZG1pbmlzdHJhdGl2ZSBhY3Rpdml0eSJ9LHsidGl0bGUiOiJNYWxpY2lvdXMgbnBtIHBhY2thZ2UgaW5zdGFsbGF0aW9uIC0gY29sb3Itc3R5bGUtdXRpbHMiLCJsZXZlbCI6ImhpZ2giLCJ0ZWNobmlxdWUiOiJUMTUwNSIsInRhY3RpYyI6IlBlcnNpc3RlbmNlIiwidGllciI6InBhaWQiLCJ5YW1sIjoidGl0bGU6IE1hbGljaW91cyBucG0gcGFja2FnZSBpbnN0YWxsYXRpb24gLSBjb2xvci1zdHlsZS11dGlsc1xuaWQ6IHNjdy0yMDI2LTA1LTE4LWFpLTRcbnN0YXR1czogZXhwZXJpbWVudGFsXG5sZXZlbDogaGlnaFxuZGVzY3JpcHRpb246IHxcbiAgRGV0ZWN0cyB0aGUgaW5zdGFsbGF0aW9uIG9mIHRoZSBtYWxpY2lvdXMgbnBtIHBhY2thZ2UgJ2NvbG9yLXN0eWxlLXV0aWxzJywgd2hpY2ggZGVsaXZlcnMgaW5mb3N0ZWFsZXJzIGFuZCBQaGFudG9tIEJvdCBERG9TIG1hbHdhcmUuIFRoaXMgcnVsZSBzcGVjaWZpY2FsbHkgdGFyZ2V0cyB0aGUgaW5zdGFsbGF0aW9uIGNvbW1hbmQgZm9yIHRoaXMga25vd24gbWFsaWNpb3VzIHBhY2thZ2UuXG5hdXRob3I6IFNDVyBGZWVkIEVuZ2luZSAoQUktZ2VuZXJhdGVkKVxuZGF0ZTogMjAyNi0wNS0xOFxucmVmZXJlbmNlczpcbiAgLSBodHRwczovL3NoaW1pc2N5YmVyd29ybGQuY29tL19wb3N0cy8yMDI2LTA1LTE4LWZvdXItbWFsaWNpb3VzLW5wbS1wYWNrYWdlcy1kZWxpdmVyLWluZm9zdGVhbGVycy1hbmQtcGhhbnRvbS1oeGJ0eFxudGFnczpcbiAgLSBhdHRhY2sucGVyc2lzdGVuY2VcbiAgLSBhdHRhY2sudDE1MDVcbmxvZ3NvdXJjZTpcbiAgICBjYXRlZ29yeTogcHJvY2Vzc19jcmVhdGlvblxuZGV0ZWN0aW9uOlxuICBzZWxlY3Rpb246XG4gICAgICBJbWFnZTogJ25wbS5leGUnXG4gICAgICBDb21tYW5kTGluZXxjb250YWluczpcbiAgICAgICAgICAtICdpbnN0YWxsIGNvbG9yLXN0eWxlLXV0aWxzJ1xuICAgICAgY29uZGl0aW9uOiBzZWxlY3Rpb25cbmZhbHNlcG9zaXRpdmVzOlxuICAtIExlZ2l0aW1hdGUgYWRtaW5pc3RyYXRpdmUgYWN0aXZpdHkifV0="
+why_it_matters:
+  - "If your development teams use npm, you need to audit your dependencies immediately. Scrutinize `package.json` files for `chalk-tempalte`, `@deadcode09284814/axios-util`, `axois-utils`, and `color-style-utils`. Even if downloads seem low, the impact of an infostealer or DDoS bot is severe. Implement strict dependency review processes and consider private registries for critical projects to mitigate this supply chain risk."
+bot_cta_title: "Check Latest Supply Chain Threats"
+bot_cta_description: "Use /brief to get an analyst-ready weekly threat summary including supply chain attacks."
+---
+
+The Hacker News reports the discovery of four new npm packages embedding information-stealing malware. One of these, `chalk-tempalte`, is a direct clone of the open-source Shai-Hulud worm developed by TeamPCP. The other identified malicious packages are `@deadcode09284814/axios-util`, `axois-utils`, and `color-style-utils`.
+
+These packages deliver both infostealers and Phantom Bot DDoS malware, posing a dual threat. The infostealers aim to exfiltrate sensitive data, while the DDoS component prepares compromised systems for denial-of-service attacks. The download counts for these packages—ranging from 284 to 963—indicate a concerning level of adoption before discovery.
+
+This incident underscores the persistent supply chain risk within public package registries like npm. Attackers are constantly leveraging typosquatting and legitimate-looking package names to trick developers into integrating malicious code. It's a low-cost, high-impact attack vector that bypasses traditional perimeter defenses.
