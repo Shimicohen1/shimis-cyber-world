@@ -22,50 +22,54 @@ identity:
     text: About SCW →
     url: /about/
 quick_signals:
-  - title: Weblate Vulnerabilities Expose Broad Attack Surface
-    text: Multiple CVEs highlight significant risks in Weblate, including RCE, SSRF, and data exposure.
-    detail: Weblate versions prior to 5.17 are affected by numerous vulnerabilities, including remote code execution via project backups (CVE-2026-33435), server-side request forgery (CVE-2026-34244), and symlink traversal (CVE-2026-34242). Organizations using Weblate should prioritize immediate patching to version 5.17 or later to mitigate these critical risks.
+  - title: Weblate Vulnerabilities Persist Across Multiple CVEs
+    text: Multiple high-severity vulnerabilities in Weblate versions prior to 5.17 expose users to RCE, data exposure, and SSRF.
+    detail: Recent disclosures highlight a concerning pattern of critical flaws in Weblate, affecting versions before 5.17. These include RCE via backup files (CVE-2026-33435), SSRF (CVE-2026-34244), and symlink traversal (CVE-2026-34242). Organizations using Weblate should prioritize immediate patching or mitigation to prevent exploitation.
     link: https://nvd.nist.gov/vuln/detail/CVE-2026-33435
-    link_label: Weblate RCE Advisory
+    link_label: CVE-2026-33435 Details
     badge: signal
     tags:
       - weblate
+      - vulnerability
       - rce
       - ssrf
-      - vulnerability-management
-  - title: Cisco Ecosystem Faces Multiple Critical Vulnerabilities
-    text: Cisco ISE, Webex, and Unity Connection are impacted by RCE, SSO bypass, and file access flaws.
-    detail: Recent advisories reveal critical vulnerabilities across Cisco's product lines. Cisco ISE (CVE-2026-20186, CVE-2026-20180, CVE-2026-20147) faces RCE for authenticated users, while Webex (CVE-2026-20184) has an SSO impersonation flaw. Ensure all affected Cisco products are updated per vendor guidance.
-    link: https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-ise-rce-J73f9H8z
-    link_label: Cisco ISE RCE Advisory
+      - patching
+  - title: Cisco Products Face Critical RCE and Authentication Bypass
+    text: Critical RCE vulnerabilities in Cisco ISE and authentication bypass in AsyncOS Software pose significant risks.
+    detail: Cisco's Identity Services Engine (ISE) is affected by critical RCE flaws (CVE-2026-20186, CVE-2026-20180, CVE-2026-20147) allowing authenticated attackers to gain root access. Additionally, Cisco AsyncOS Software has an authentication bypass vulnerability (CVE-2026-20152). Promptly apply vendor patches to protect against these severe threats.
+    link: https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-ise-rce-K9yR4tT5
+    link_label: Cisco ISE Advisory
     badge: signal
     tags:
       - cisco
       - rce
-      - sso
-      - critical-vulnerabilities
-  - title: AI Workflow Tools Abused for Phishing and Malware
-    text: Platforms like n8n are being weaponized for sophisticated phishing campaigns delivering malware.
-    detail: Threat actors are leveraging AI workflow automation tools, such as n8n, to craft advanced phishing campaigns. These campaigns are designed to deliver malicious payloads, indicating a growing trend in using legitimate tools for nefarious purposes. Organizations should enhance endpoint detection and user training to counter these evolving threats.
-    link: https://www.owasp.org/www-community/attacks/Phishing
-    link_label: OWASP Phishing Information
+      - authentication-bypass
+      - critical
+      - patching
+  - title: Splunk Vulnerabilities Allow Privilege Escalation and RCE
+    text: Multiple Splunk vulnerabilities enable low-privilege users to achieve RCE and session token exposure.
+    detail: Recent advisories reveal several high-severity vulnerabilities in Splunk Enterprise and Splunk Cloud Platform, including RCE for low-privilege users (CVE-2026-20204) and exposure of session tokens (CVE-2026-20205). Organizations must update to the patched versions to prevent unauthorized access and code execution.
+    link: https://www.splunk.com/en_us/product-security.html
+    link_label: Splunk Security Advisories
+    badge: signal
+    tags:
+      - splunk
+      - rce
+      - privilege-escalation
+      - session-tokens
+      - update
+  - title: n8n Leveraged for Sophisticated Phishing and Malware Delivery
+    text: Threat actors are using n8n workflows to deliver malware via advanced phishing campaigns.
+    detail: Reports indicate threat actors are weaponizing n8n, an AI workflow automation tool, for sophisticated phishing operations. These campaigns aim to deliver malicious payloads by exploiting n8n's webhook capabilities. Security teams should enhance detection for suspicious n8n-related traffic and educate users on evolving phishing tactics.
+    link: https://owasp.org/www-community/attacks/Phishing
+    link_label: OWASP Phishing
     badge: signal
     tags:
       - threat-intel
       - phishing
-      - malware-delivery
+      - malware
+      - n8n
       - ai-security
-  - title: Privilege Escalation and Credential Risks Persist
-    text: Flaws in Barracuda RMM, Git for Windows, and Splunk enable privilege escalation and hash leaks.
-    detail: New vulnerabilities highlight persistent risks in privilege escalation and credential exposure. Barracuda RMM (CVE-2026-22676) allows SYSTEM privileges, while Git for Windows (CVE-2026-32631) can leak NTLM hashes. Splunk also faces RCE and improper access control issues. Implement vendor patches and review access controls rigorously.
-    link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-22676
-    link_label: Barracuda RMM Privilege Escalation
-    badge: signal
-    tags:
-      - privilege-escalation
-      - credential-theft
-      - splunk
-      - git
 vault_picks:
   - name: OWASP Top 10
     description: The definitive list of critical web application security risks.
